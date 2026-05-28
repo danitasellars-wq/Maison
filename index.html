@@ -3,47 +3,25 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
-<meta name="mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
-<meta name="apple-mobile-web-app-status-bar-style" content="default"/>
-<meta name="apple-mobile-web-app-title" content="MAISON"/>
 <meta name="theme-color" content="#f7f3ed"/>
-<meta name="description" content="Your private home & wedding planning journal."/>
 <title>MAISON — Home & Wedding Journal</title>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet"/>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-:root{
-  --ink:#1c140a;--cream:#f7f3ed;--bone:#ede4d5;--warm:#c9b89a;
-  --muted:#8a7a68;--red:#a82020;--green:#2a5f3f;--gold:#b8962e;
-  --section-pad:28px 20px 160px;
-}
-body{font-family:'EB Garamond',serif;background:var(--cream);color:var(--ink);min-height:100vh;overflow-x:hidden;-webkit-text-size-adjust:100%}
+:root{--ink:#1c140a;--cream:#f7f3ed;--bone:#ede4d5;--warm:#c9b89a;--muted:#8a7a68;--red:#a82020;--green:#2a5f3f;--gold:#b8962e;--section-pad:28px 20px 160px;}
+body{font-family:'EB Garamond',serif;background:var(--cream);color:var(--ink);min-height:100vh;overflow-x:hidden}
 ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:var(--warm);border-radius:2px}
 input,textarea,select{font-family:'EB Garamond',serif;font-size:16px;background:transparent}
 input::placeholder,textarea::placeholder{color:#bbb;font-style:italic}
 button{font-family:'Cormorant Garamond',serif;cursor:pointer;touch-action:manipulation}
-a{color:var(--ink)}
-img{display:block;max-width:100%}
-select{cursor:pointer}
+a{color:var(--ink)}img{display:block;max-width:100%}select{cursor:pointer}
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");opacity:.35;}
 
-body::after{
-  content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;
-  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-  opacity:.35;
-}
-
-#auth-screen{
-  min-height:100vh;display:flex;flex-direction:column;
-  align-items:center;justify-content:center;padding:24px;
-  background:var(--cream);position:relative;overflow:hidden;
-}
-#auth-screen::before,#auth-screen::after{
-  content:'';position:absolute;left:0;right:0;height:4px;
-  background:repeating-linear-gradient(90deg,var(--ink) 0,var(--ink) 35px,transparent 35px,transparent 70px);
-}
+/* ── AUTH ── */
+#auth-screen{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;background:var(--cream);position:relative;overflow:hidden;}
+#auth-screen::before,#auth-screen::after{content:'';position:absolute;left:0;right:0;height:4px;background:repeating-linear-gradient(90deg,var(--ink) 0,var(--ink) 35px,transparent 35px,transparent 70px);}
 #auth-screen::before{top:0}#auth-screen::after{bottom:0}
 .auth-deco{position:absolute;font-family:'Cormorant Garamond',serif;font-size:220px;font-weight:700;color:var(--bone);letter-spacing:-.04em;line-height:1;pointer-events:none;user-select:none;top:50%;left:50%;transform:translate(-50%,-50%);white-space:nowrap}
 .auth-box{max-width:380px;width:100%;position:relative;z-index:1}
@@ -52,25 +30,39 @@ body::after{
 .masthead-title{font-family:'Cormorant Garamond',serif;font-size:80px;font-weight:700;color:var(--ink);line-height:.85;letter-spacing:-.02em}
 .masthead-rule{width:48px;height:1px;background:var(--warm);margin:22px auto 12px}
 .masthead-tagline{font-size:11px;letter-spacing:.35em;text-transform:uppercase;color:var(--muted);font-family:'Cormorant Garamond',serif}
-.field-label{display:block;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:5px;font-weight:600}
-.field-input{width:100%;border:none;border-bottom:1px solid var(--warm);padding:9px 2px;color:var(--ink);font-size:15px;outline:none;margin-bottom:18px;border-radius:0;transition:border-color .2s}
-.field-input:focus{border-bottom-color:var(--ink)}
-textarea.field-input{resize:vertical;min-height:80px;border:1px solid var(--warm);padding:9px}
-select.field-input{appearance:none;-webkit-appearance:none}
-.btn-solid{background:var(--ink);border:none;color:var(--cream);font-family:'Cormorant Garamond',serif;font-size:13px;letter-spacing:.14em;text-transform:uppercase;padding:13px 28px;width:100%;transition:opacity .2s}
-.btn-solid:hover{opacity:.82}
-.btn-solid.sm{padding:9px 20px;width:auto;font-size:12px}
-.btn-solid.green{background:var(--green)}
-.btn-solid.red{background:var(--red)}
-.btn-ghost{background:transparent;border:1px solid rgba(28,20,10,.22);color:var(--muted);font-family:'Cormorant Garamond',serif;font-size:11px;letter-spacing:.14em;text-transform:uppercase;padding:7px 16px;transition:all .2s}
-.btn-ghost:hover,.btn-ghost.active{background:rgba(28,20,10,.08);border-color:var(--ink);color:var(--ink)}
-.btn-ghost.danger{border-color:var(--red);color:var(--red)}
-.btn-ghost.danger:hover{background:rgba(168,32,32,.08)}
-.btn-text{background:none;border:none;font-family:'Cormorant Garamond',serif;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);padding:0}
-.btn-text:hover{color:var(--ink)}
 .auth-note{text-align:center;font-size:12px;color:var(--muted);margin-top:18px;font-style:italic;line-height:1.6}
 .err-msg{color:var(--red);font-size:13px;margin-bottom:12px;font-style:italic}
 
+/* ── SIDE PANEL ── */
+#panel-overlay{position:fixed;inset:0;background:rgba(28,20,10,.45);z-index:400;display:none;backdrop-filter:blur(4px)}
+#panel-overlay.open{display:block}
+#side-panel{position:fixed;top:0;left:0;bottom:0;width:300px;max-width:90vw;background:var(--cream);z-index:401;transform:translateX(-100%);transition:transform .3s cubic-bezier(.4,0,.2,1);overflow-y:auto;display:flex;flex-direction:column;border-right:1px solid var(--bone)}
+#side-panel.open{transform:translateX(0)}
+.panel-head{padding:20px 18px 14px;border-bottom:3px solid var(--ink);display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:var(--cream);z-index:1}
+.panel-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700;letter-spacing:-.01em;text-transform:uppercase}
+.panel-close{background:none;border:none;font-size:22px;color:var(--muted);line-height:1;font-family:serif}
+.panel-close:hover{color:var(--ink)}
+.panel-filter-row{display:flex;gap:6px;padding:12px 18px;border-bottom:1px solid var(--bone);flex-wrap:wrap}
+.panel-filter{background:none;border:1px solid rgba(28,20,10,.18);color:var(--muted);font-family:'Cormorant Garamond',serif;font-size:10px;letter-spacing:.12em;text-transform:uppercase;padding:4px 10px;transition:all .2s}
+.panel-filter.active{background:var(--ink);border-color:var(--ink);color:var(--cream)}
+.panel-body{padding:14px 18px 80px;flex:1}
+.panel-section-label{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);font-family:'Cormorant Garamond',serif;margin:16px 0 8px;font-weight:600}
+.panel-section-label:first-child{margin-top:0}
+.panel-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:4px}
+.panel-photo{position:relative;overflow:hidden;border:1px solid var(--bone);background:var(--bone);aspect-ratio:1;cursor:pointer;transition:box-shadow .2s}
+.panel-photo:hover{box-shadow:0 3px 14px rgba(28,20,10,.14)}
+.panel-photo img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s}
+.panel-photo:hover img{transform:scale(1.06)}
+.panel-photo-liked{position:absolute;top:5px;left:5px;width:6px;height:6px;border-radius:50%;background:var(--red)}
+.panel-photo-like{position:absolute;top:5px;right:5px;background:rgba(247,243,237,.88);border:none;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:13px;opacity:0;transition:opacity .2s;color:var(--muted)}
+.panel-photo:hover .panel-photo-like{opacity:1}
+.panel-photo-like.on{opacity:1;color:var(--red);background:rgba(168,32,32,.12)}
+.panel-photo-dest{position:absolute;bottom:0;left:0;right:0;background:rgba(28,20,10,.6);color:var(--cream);font-size:9px;letter-spacing:.1em;text-transform:uppercase;font-family:'Cormorant Garamond',serif;padding:4px 6px;transform:translateY(100%);transition:transform .2s}
+.panel-photo:hover .panel-photo-dest{transform:translateY(0)}
+.panel-empty{font-size:13px;color:var(--muted);font-style:italic;text-align:center;padding:32px 0}
+.panel-pinned-label{display:flex;align-items:center;gap:6px;font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--red);font-family:'Cormorant Garamond',serif;margin:0 0 8px;font-weight:600}
+
+/* ── APP SHELL ── */
 #app{display:none;min-height:100vh;flex-direction:column}
 #app.visible{display:flex}
 header{position:sticky;top:0;z-index:200;background:rgba(247,243,237,.97);backdrop-filter:blur(12px);border-bottom:1px solid var(--bone)}
@@ -81,23 +73,29 @@ header{position:sticky;top:0;z-index:200;background:rgba(247,243,237,.97);backdr
 .header-brand{text-align:center}
 .brand-name{font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:700;letter-spacing:-.025em;color:var(--ink);line-height:1}
 .brand-sub{font-size:8px;letter-spacing:.55em;text-transform:uppercase;color:var(--warm);font-family:'Cormorant Garamond',serif}
-.header-settings{background:none;border:none;color:var(--muted);display:flex;align-items:center;gap:5px;font-family:'Cormorant Garamond',serif;font-size:10px;letter-spacing:.2em;text-transform:uppercase;transition:color .2s}
-.header-settings:hover{color:var(--ink)}
-nav{display:flex;justify-content:center;border-top:1px solid var(--bone);overflow-x:auto;-webkit-overflow-scrolling:touch;gap:0}
+.header-right{display:flex;align-items:center;gap:12px}
+.header-btn{background:none;border:none;color:var(--muted);display:flex;align-items:center;gap:5px;font-family:'Cormorant Garamond',serif;font-size:10px;letter-spacing:.2em;text-transform:uppercase;transition:color .2s}
+.header-btn:hover{color:var(--ink)}
+.panel-toggle{position:relative}
+.panel-badge{position:absolute;top:-4px;right:-4px;background:var(--red);color:#fff;width:14px;height:14px;border-radius:50%;font-size:8px;display:flex;align-items:center;justify-content:center;font-family:sans-serif;display:none}
+.panel-badge.show{display:flex}
+nav{display:flex;justify-content:center;border-top:1px solid var(--bone);overflow-x:auto;gap:0}
 .nav-btn{background:none;border:none;border-bottom:2px solid transparent;padding:11px 20px;font-family:'Cormorant Garamond',serif;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:-1px;white-space:nowrap;transition:color .2s}
 .nav-btn.active{border-bottom-color:var(--ink);color:var(--ink)}
 main{max-width:980px;margin:0 auto;padding:var(--section-pad);width:100%;flex:1}
 
+/* ── CAMERA DOCK ── */
 #camera-dock{position:fixed;bottom:0;left:0;right:0;z-index:150;background:rgba(247,243,237,.96);backdrop-filter:blur(16px);border-top:1px solid var(--bone);display:flex;justify-content:center;padding:14px 0 calc(20px + env(safe-area-inset-bottom));gap:20px}
 .cam-wrap{display:flex;flex-direction:column;align-items:center;gap:5px}
-.cam-btn{width:58px;height:58px;border-radius:50%;background:var(--ink);border:3px solid var(--cream);outline:1px solid var(--ink);display:flex;align-items:center;justify-content:center;color:var(--cream);box-shadow:0 4px 20px rgba(28,20,10,.22);transition:transform .2s,box-shadow .2s;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
-.cam-btn:active{transform:scale(0.96)}
+.cam-btn{width:58px;height:58px;border-radius:50%;background:var(--ink);border:3px solid var(--cream);outline:1px solid var(--ink);display:flex;align-items:center;justify-content:center;color:var(--cream);box-shadow:0 4px 20px rgba(28,20,10,.22);transition:transform .2s,box-shadow .2s;touch-action:manipulation}
+.cam-btn:active{transform:scale(.96)}
 .cam-btn:hover{transform:scale(1.07);box-shadow:0 6px 28px rgba(28,20,10,.3)}
 .cam-btn.mood{background:var(--gold)}
+.cam-btn.photos{background:var(--green)}
 .cam-label{font-size:8px;letter-spacing:.3em;text-transform:uppercase;color:var(--muted);font-family:'Cormorant Garamond',serif}
-#file-input{display:none}
-#file-input-camera{display:none}
+#file-input,#file-input-camera{display:none}
 
+/* ── MODAL ── */
 .modal-overlay{position:fixed;inset:0;background:rgba(28,20,10,.52);backdrop-filter:blur(8px);z-index:500;display:flex;align-items:center;justify-content:center;padding:16px}
 .modal-box{background:var(--cream);max-width:540px;width:100%;max-height:92vh;overflow-y:auto;padding:32px 36px;animation:modalIn .22s ease;border-top:3px solid var(--ink)}
 @keyframes modalIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
@@ -108,13 +106,15 @@ main{max-width:980px;margin:0 auto;padding:var(--section-pad);width:100%;flex:1}
 .modal-preview{width:100%;max-height:240px;object-fit:cover;margin-bottom:16px;border:1px solid var(--bone)}
 .modal-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
 
+/* ── SECTION ── */
 .section-rule{border-top:3px solid var(--ink);padding-top:18px;margin-bottom:26px;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:12px}
 .section-title{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:700;color:var(--ink);text-transform:uppercase;letter-spacing:-.01em}
 .section-sub{font-family:'EB Garamond',serif;font-size:13px;color:var(--muted);font-style:italic;margin-top:4px}
-.room-tabs-row{display:flex;border-bottom:1px solid var(--bone);margin-bottom:22px;overflow-x:auto;-webkit-overflow-scrolling:touch;gap:0}
+.room-tabs-row{display:flex;border-bottom:1px solid var(--bone);margin-bottom:22px;overflow-x:auto;gap:0}
 .room-tab{background:none;border:none;border-bottom:2px solid transparent;padding:10px 18px;font-family:'Cormorant Garamond',serif;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);white-space:nowrap;margin-bottom:-1px;transition:color .2s}
 .room-tab.active{border-bottom-color:var(--ink);color:var(--ink)}
 
+/* ── BUDGET ── */
 .budget-block{background:var(--bone);padding:18px 22px;margin-bottom:22px;border-left:3px solid var(--ink)}
 .budget-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px}
 .budget-label{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);font-family:'Cormorant Garamond',serif;font-weight:600}
@@ -126,6 +126,7 @@ main{max-width:980px;margin:0 auto;padding:var(--section-pad);width:100%;flex:1}
 .bar-note{font-family:'Cormorant Garamond',serif;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
 .bar-note.over{color:var(--red)}
 
+/* ── PHOTO GRID ── */
 .photo-grid{columns:2 180px;gap:12px;margin-top:16px}
 .photo-card{break-inside:avoid;margin-bottom:12px;position:relative;overflow:hidden;background:var(--bone);border:1px solid var(--bone);transition:box-shadow .2s}
 .photo-card:hover{box-shadow:0 4px 20px rgba(28,20,10,.12)}
@@ -134,15 +135,16 @@ main{max-width:980px;margin:0 auto;padding:var(--section-pad);width:100%;flex:1}
 .photo-card-actions{position:absolute;top:7px;right:7px;display:flex;flex-direction:column;gap:5px;opacity:0;transition:opacity .2s}
 .photo-card:hover .photo-card-actions{opacity:1}
 .img-btn{width:28px;height:28px;border:none;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);transition:all .2s}
-.img-btn.default{background:rgba(247,243,237,.9);color:var(--ink)}
+.img-btn.default{background:rgba(247,243,237,.9);color:var(--muted)}
 .img-btn.liked{background:rgba(168,32,32,.88);color:var(--cream)}
 .img-btn.del{background:rgba(168,32,32,.88);color:var(--cream)}
 .photo-note{padding:10px 12px 12px;font-size:13px;color:var(--ink);line-height:1.55;background:var(--cream);border-top:1px solid var(--bone)}
 .photo-link{display:block;padding:6px 12px;font-size:11px;color:var(--muted);font-family:'Cormorant Garamond',serif;letter-spacing:.1em;background:var(--bone);border-top:1px solid rgba(28,20,10,.07);text-decoration:none;text-overflow:ellipsis;overflow:hidden;white-space:nowrap}
 .photo-link:hover{color:var(--ink)}
 .photo-price{padding:4px 12px 10px;font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--green)}
-.liked-dot{position:absolute;top:7px;left:7px;width:6px;height:6px;border-radius:50%;background:var(--red)}
+.liked-dot{position:absolute;top:7px;left:7px;width:8px;height:8px;border-radius:50%;background:var(--red);box-shadow:0 0 0 2px rgba(247,243,237,.8)}
 
+/* ── ITEMS ── */
 .item-row{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid var(--bone)}
 .item-thumb{width:52px;height:52px;object-fit:cover;flex-shrink:0;border:1px solid var(--bone)}
 .item-thumb-ph{width:52px;height:52px;background:var(--bone);flex-shrink:0;display:flex;align-items:center;justify-content:center;color:var(--warm);font-size:22px}
@@ -155,9 +157,10 @@ main{max-width:980px;margin:0 auto;padding:var(--section-pad);width:100%;flex:1}
 .icon-btn{background:none;border:none;color:var(--muted);padding:3px;display:flex;transition:color .2s}
 .icon-btn:hover{color:var(--red)}
 
-.mood-board{min-height:300px;background:var(--bone);padding:20px;display:flex;flex-wrap:wrap;gap:10px;margin-bottom:20px;position:relative;border:2px dashed var(--warm)}
+/* ── MOOD BOARD ── */
+.mood-board{min-height:300px;background:var(--bone);padding:20px;display:flex;flex-wrap:wrap;gap:10px;margin-bottom:20px;border:2px dashed var(--warm)}
 .mood-board.empty-board{align-items:center;justify-content:center}
-.mood-tile{position:relative;overflow:hidden;border:1px solid var(--bone);background:var(--cream)}
+.mood-tile{position:relative;overflow:hidden;border:1px solid var(--bone)}
 .mood-tile img{display:block;width:100%;height:100%;object-fit:cover}
 .mood-tile.size-sm{width:130px;height:130px}
 .mood-tile.size-md{width:200px;height:150px}
@@ -168,6 +171,7 @@ main{max-width:980px;margin:0 auto;padding:var(--section-pad);width:100%;flex:1}
 .palette-swatch{width:32px;height:32px;border:2px solid transparent;transition:border-color .2s;cursor:pointer}
 .palette-swatch:hover{border-color:var(--ink)}
 
+/* ── RECIPES ── */
 .recipe-grid{columns:2 240px;gap:14px;margin-top:16px}
 .recipe-card{break-inside:avoid;margin-bottom:14px;background:var(--cream);border:1px solid var(--bone);overflow:hidden}
 .recipe-img{width:100%;max-height:200px;object-fit:cover;display:block;cursor:pointer}
@@ -176,23 +180,35 @@ main{max-width:980px;margin:0 auto;padding:var(--section-pad);width:100%;flex:1}
 .recipe-title{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600;color:var(--ink);margin-bottom:6px}
 .recipe-text{font-size:13px;color:var(--muted);line-height:1.6;white-space:pre-wrap}
 
+/* ── UTILS ── */
+.field-label{display:block;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:5px;font-weight:600}
+.field-input{width:100%;border:none;border-bottom:1px solid var(--warm);padding:9px 2px;color:var(--ink);font-size:15px;outline:none;margin-bottom:18px;border-radius:0;transition:border-color .2s}
+.field-input:focus{border-bottom-color:var(--ink)}
+textarea.field-input{resize:vertical;min-height:80px;border:1px solid var(--warm);padding:9px}
+select.field-input{appearance:none}
+.btn-solid{background:var(--ink);border:none;color:var(--cream);font-family:'Cormorant Garamond',serif;font-size:13px;letter-spacing:.14em;text-transform:uppercase;padding:13px 28px;width:100%;transition:opacity .2s}
+.btn-solid:hover{opacity:.82}
+.btn-solid.sm{padding:9px 20px;width:auto;font-size:12px}
+.btn-solid.green{background:var(--green)}
+.btn-ghost{background:transparent;border:1px solid rgba(28,20,10,.22);color:var(--muted);font-family:'Cormorant Garamond',serif;font-size:11px;letter-spacing:.14em;text-transform:uppercase;padding:7px 16px;transition:all .2s}
+.btn-ghost:hover{background:rgba(28,20,10,.08);border-color:var(--ink);color:var(--ink)}
+.btn-ghost.danger{border-color:var(--red);color:var(--red)}
+.btn-ghost.danger:hover{background:rgba(168,32,32,.08)}
+.tag-pill{background:transparent;border:1px solid rgba(28,20,10,.18);color:var(--muted);font-family:'Cormorant Garamond',serif;font-size:10px;letter-spacing:.14em;text-transform:uppercase;padding:4px 12px;transition:all .2s}
+.tag-pill:hover,.tag-pill.active{background:rgba(28,20,10,.08);border-color:var(--ink);color:var(--ink)}
+.tag-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px}
 .empty{font-size:15px;color:var(--muted);font-style:italic;padding:48px 0;text-align:center}
 .empty-icon{font-size:36px;margin-bottom:10px;opacity:.4}
 .flex-between{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
 .flex-center{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.mb8{margin-bottom:8px}.mb14{margin-bottom:14px}.mb20{margin-bottom:20px}
+.mb14{margin-bottom:14px}
 .divider{border:none;border-top:1px solid var(--bone);margin:20px 0}
-.tag-pill{background:transparent;border:1px solid rgba(28,20,10,.18);color:var(--muted);font-family:'Cormorant Garamond',serif;font-size:10px;letter-spacing:.14em;text-transform:uppercase;padding:4px 12px;transition:all .2s}
-.tag-pill:hover,.tag-pill.active{background:rgba(28,20,10,.08);border-color:var(--ink);color:var(--ink)}
-.tag-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px}
 
 @media(max-width:520px){
   .brand-name{font-size:26px}
   .nav-btn{padding:11px 10px;font-size:10px}
   .photo-grid,.recipe-grid{columns:1}
   .modal-box{padding:22px 18px}
-  .mood-tile.size-md{width:140px;height:110px}
-  .mood-tile.size-lg{width:180px;height:140px}
 }
 </style>
 </head>
@@ -201,6 +217,24 @@ main{max-width:980px;margin:0 auto;padding:var(--section-pad);width:100%;flex:1}
 <input type="file" id="file-input" accept="image/*"/>
 <input type="file" id="file-input-camera" accept="image/*" capture="environment"/>
 
+<!-- SIDE PANEL -->
+<div id="panel-overlay" onclick="closeSidePanel()"></div>
+<div id="side-panel">
+  <div class="panel-head">
+    <div class="panel-title">All Photos</div>
+    <button class="panel-close" onclick="closeSidePanel()">×</button>
+  </div>
+  <div class="panel-filter-row" id="panel-filters">
+    <button class="panel-filter active" onclick="setPanelFilter('all')">All</button>
+    <button class="panel-filter" onclick="setPanelFilter('liked')">♥ Liked</button>
+    <button class="panel-filter" onclick="setPanelFilter('home')">Home</button>
+    <button class="panel-filter" onclick="setPanelFilter('wedding')">Wedding</button>
+    <button class="panel-filter" onclick="setPanelFilter('honeymoon')">Honeymoon</button>
+  </div>
+  <div class="panel-body" id="panel-body"></div>
+</div>
+
+<!-- AUTH -->
 <div id="auth-screen">
   <div class="auth-deco">M</div>
   <div class="auth-box">
@@ -218,20 +252,27 @@ main{max-width:980px;margin:0 auto;padding:var(--section-pad);width:100%;flex:1}
   </div>
 </div>
 
+<!-- APP -->
 <div id="app">
   <header>
     <div class="header-stripe"></div>
     <div class="header-inner">
       <div class="header-top">
-        <span class="header-user" id="header-username"></span>
+        <button class="header-btn panel-toggle" onclick="openSidePanel()" title="All Photos">
+          <div class="panel-badge" id="panel-badge"></div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+          Photos
+        </button>
         <div class="header-brand">
           <div class="brand-name">MAISON</div>
           <div class="brand-sub">Home &amp; Wedding Journal</div>
         </div>
-        <button class="header-settings" onclick="openSettings()">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
-          Settings
-        </button>
+        <div class="header-right">
+          <button class="header-btn" onclick="openSettings()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+            Settings
+          </button>
+        </div>
       </div>
       <nav>
         <button class="nav-btn active" data-section="home" onclick="showSection('home')">Our Home</button>
@@ -241,8 +282,16 @@ main{max-width:980px;margin:0 auto;padding:var(--section-pad);width:100%;flex:1}
       </nav>
     </div>
   </header>
+
   <main id="main-content"></main>
+
   <div id="camera-dock">
+    <div class="cam-wrap">
+      <button class="cam-btn photos" onclick="openSidePanel()" title="All photos">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      </button>
+      <div class="cam-label">All Photos</div>
+    </div>
     <div class="cam-wrap">
       <button class="cam-btn" onclick="triggerCapture()">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
@@ -251,7 +300,7 @@ main{max-width:980px;margin:0 auto;padding:var(--section-pad);width:100%;flex:1}
     </div>
     <div class="cam-wrap">
       <button class="cam-btn mood" onclick="openMoodBoard()">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
       </button>
       <div class="cam-label">Mood Board</div>
     </div>
@@ -265,6 +314,7 @@ main{max-width:980px;margin:0 auto;padding:var(--section-pad);width:100%;flex:1}
 <script>
 // ── STATE ──
 let currentUser=null,currentSection='home',capturedDataURL=null;
+let panelFilter='all';
 
 function getStore(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch(e){return d;}}
 function setStore(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
@@ -272,34 +322,25 @@ function userData(k,d){return getStore(`maison_${currentUser}_${k}`,d);}
 function saveData(k,v){setStore(`maison_${currentUser}_${k}`,v);}
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
 
-// ── AUTH (Google) ──
+// ── GOOGLE AUTH ──
 function initGoogle(){
-  google.accounts.id.initialize({
-    client_id:'643043876163-9evtski9p2oqs4s1pg0nn4g1tnqdeiv8.apps.googleusercontent.com',
-    callback:handleGoogleLogin,
-    auto_select:false
-  });
-  google.accounts.id.renderButton(
-    document.getElementById('g_signin_btn'),
-    {theme:'outline',size:'large',text:'sign_in_with',shape:'rectangular',width:260}
-  );
+  google.accounts.id.initialize({client_id:'643043876163-9evtski9p2oqs4s1pg0nn4g1tnqdeiv8.apps.googleusercontent.com',callback:handleGoogleLogin,auto_select:false});
+  google.accounts.id.renderButton(document.getElementById('g_signin_btn'),{theme:'outline',size:'large',text:'sign_in_with',shape:'rectangular',width:260});
 }
-function parseJwt(token){
-  try{const b=token.split('.')[1];return JSON.parse(atob(b.replace(/-/g,'+').replace(/_/g,'/')));}catch(e){return null;}
-}
+function parseJwt(token){try{const b=token.split('.')[1];return JSON.parse(atob(b.replace(/-/g,'+').replace(/_/g,'/')));}catch(e){return null;}}
 function handleGoogleLogin(response){
   const payload=parseJwt(response.credential);
-  if(!payload){document.getElementById('auth-err').textContent='Sign-in failed. Please try again.';document.getElementById('auth-err').style.display='block';return;}
+  if(!payload){document.getElementById('auth-err').textContent='Sign-in failed.';document.getElementById('auth-err').style.display='block';return;}
   currentUser=payload.sub;
-  const displayName=payload.name||payload.email||'User';
   document.getElementById('auth-screen').style.display='none';
   document.getElementById('app').classList.add('visible');
-  document.getElementById('header-username').textContent=displayName;
+  document.getElementById('header-username') && (document.getElementById('header-username').textContent=payload.name||'');
   showSection('home');
+  updatePanelBadge();
 }
 window.addEventListener('load',()=>{
   if(typeof google!=='undefined'&&google.accounts)initGoogle();
-  else document.querySelector('script[src*="gsi"]').addEventListener('load',initGoogle);
+  else{const s=document.querySelector('script[src*="gsi"]');if(s)s.addEventListener('load',initGoogle);}
 });
 
 // ── NAV ──
@@ -317,6 +358,124 @@ function showSection(s){
 function openModal(html){document.getElementById('modal-box').innerHTML=html;document.getElementById('modal').style.display='flex';}
 function closeModal(){document.getElementById('modal').style.display='none';document.getElementById('modal-box').innerHTML='';}
 
+// ── SIDE PANEL ──
+function openSidePanel(){
+  renderSidePanel();
+  document.getElementById('side-panel').classList.add('open');
+  document.getElementById('panel-overlay').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeSidePanel(){
+  document.getElementById('side-panel').classList.remove('open');
+  document.getElementById('panel-overlay').classList.remove('open');
+  document.body.style.overflow='';
+}
+function setPanelFilter(f){
+  panelFilter=f;
+  document.querySelectorAll('.panel-filter').forEach(b=>b.classList.toggle('active',b.textContent.toLowerCase().includes(f==='all'?'all':f==='liked'?'♥':f)));
+  renderSidePanel();
+}
+
+function getAllPhotos(){
+  // returns array of {photo, type, contextId, label, sectionKey}
+  const all=[];
+  const home=userData('home',{rooms:[]});
+  home.rooms.forEach(r=>{
+    (r.photos||[]).forEach(p=>all.push({photo:p,type:'home_room',contextId:r.id,label:r.name,sectionKey:'home'}));
+  });
+  const w=userData('wedding',{inspo:[]});
+  (w.inspo||[]).forEach(p=>all.push({photo:p,type:'wedding',contextId:'wedding',label:'Wedding',sectionKey:'wedding'}));
+  const h=userData('honeymoon',{rooms:[],inspo:[]});
+  (h.inspo||[]).forEach(p=>all.push({photo:p,type:'honeymoon_inspo',contextId:'honeymoon',label:'Honeymoon',sectionKey:'honeymoon'}));
+  h.rooms.forEach(r=>{
+    (r.photos||[]).forEach(p=>all.push({photo:p,type:'honeymoon_room',contextId:r.id,label:r.name,sectionKey:'honeymoon'}));
+  });
+  return all;
+}
+
+function renderSidePanel(){
+  let all=getAllPhotos();
+
+  // filter
+  if(panelFilter==='liked') all=all.filter(e=>e.photo.liked);
+  else if(panelFilter==='home') all=all.filter(e=>e.sectionKey==='home');
+  else if(panelFilter==='wedding') all=all.filter(e=>e.sectionKey==='wedding');
+  else if(panelFilter==='honeymoon') all=all.filter(e=>e.sectionKey==='honeymoon');
+
+  const liked=all.filter(e=>e.photo.liked);
+  const rest=all.filter(e=>!e.photo.liked);
+
+  const body=document.getElementById('panel-body');
+  if(!all.length){body.innerHTML=`<div class="panel-empty">No photos yet.<br/>Use the capture button to add some.</div>`;return;}
+
+  let html='';
+
+  if(liked.length&&panelFilter!=='liked'){
+    html+=`<div class="panel-pinned-label"><span>♥</span> Favourites</div>`;
+    html+=`<div class="panel-grid">${liked.map(e=>panelPhotoCard(e)).join('')}</div>`;
+  }
+
+  if(rest.length){
+    if(liked.length&&panelFilter!=='liked') html+=`<div class="panel-section-label" style="margin-top:18px">All Photos</div>`;
+    // group rest by label
+    const groups={};
+    rest.forEach(e=>{if(!groups[e.label])groups[e.label]=[];groups[e.label].push(e);});
+    Object.entries(groups).forEach(([label,items])=>{
+      if(panelFilter==='all'||panelFilter==='liked') html+=`<div class="panel-section-label">${label}</div>`;
+      html+=`<div class="panel-grid">${items.map(e=>panelPhotoCard(e)).join('')}</div>`;
+    });
+  }
+
+  if(panelFilter==='liked'&&liked.length){
+    const groups={};
+    liked.forEach(e=>{if(!groups[e.label])groups[e.label]=[];groups[e.label].push(e);});
+    html='';
+    Object.entries(groups).forEach(([label,items])=>{
+      html+=`<div class="panel-section-label">${label}</div><div class="panel-grid">${items.map(e=>panelPhotoCard(e)).join('')}</div>`;
+    });
+  }
+
+  body.innerHTML=html;
+}
+
+function panelPhotoCard(e){
+  const p=e.photo;
+  return`<div class="panel-photo" id="pp_${p.id}">
+    <img src="${p.img}" loading="lazy" onclick="navigateToPhoto('${e.type}','${e.contextId}','${e.sectionKey}')"/>
+    ${p.liked?'<div class="panel-photo-liked"></div>':''}
+    <button class="panel-photo-like${p.liked?' on':''}" onclick="panelToggleLike('${p.id}','${e.type}','${e.contextId}')" title="${p.liked?'Unlike':'Like'}">♥</button>
+    <div class="panel-photo-dest">${e.label}</div>
+  </div>`;
+}
+
+function panelToggleLike(photoId,type,contextId){
+  const arr=getPhotosArray(type,contextId);
+  const p=arr.find(p=>p.id===photoId);
+  if(p){p.liked=!p.liked;savePhotosArray(type,contextId,arr);}
+  renderSidePanel();
+  updatePanelBadge();
+  // also refresh main if visible
+  showSection(currentSection);
+}
+
+function navigateToPhoto(type,contextId,sectionKey){
+  closeSidePanel();
+  if(sectionKey==='home'){activeRoomId=contextId;showSection('home');}
+  else if(sectionKey==='wedding'){weddingTab='inspo';showSection('wedding');}
+  else if(sectionKey==='honeymoon'){
+    if(type==='honeymoon_room')activeHoneymoonRoomId=contextId;
+    honeymoonTab=type==='honeymoon_room'?'rooms':'inspo';
+    showSection('honeymoon');
+  }
+}
+
+function updatePanelBadge(){
+  if(!currentUser)return;
+  const liked=getAllPhotos().filter(e=>e.photo.liked).length;
+  const badge=document.getElementById('panel-badge');
+  if(badge){badge.textContent=liked;badge.classList.toggle('show',liked>0);}
+}
+
 // ── CAPTURE ──
 function triggerCapture(){
   const home=userData('home',{rooms:[]});
@@ -324,12 +483,7 @@ function triggerCapture(){
   openModal(`
     <div class="modal-head"><div class="modal-title">Add Photo</div><button class="modal-close" onclick="closeModal()">×</button></div>
     <label class="field-label">Save To</label>
-    <select id="cap-dest" class="field-input">
-      ${roomOpts}
-      <option value="wedding">Wedding Inspiration</option>
-      <option value="honeymoon">Honeymoon Inspiration</option>
-      <option value="recipes">Recipe</option>
-    </select>
+    <select id="cap-dest" class="field-input">${roomOpts}<option value="wedding">Wedding Inspiration</option><option value="honeymoon">Honeymoon Inspiration</option><option value="recipes">Recipe</option></select>
     <div class="modal-row" style="margin-top:4px">
       <button class="btn-solid sm green" onclick="pickFile('camera')">📷 Take Photo</button>
       <button class="btn-solid sm" onclick="pickFile('gallery')">🖼 From Gallery</button>
@@ -352,16 +506,7 @@ function triggerCapture(){
 }
 function pickFile(source){
   const fi=source==='camera'?document.getElementById('file-input-camera'):document.getElementById('file-input');
-  fi.onchange=e=>{
-    const file=e.target.files[0];if(!file)return;
-    const reader=new FileReader();
-    reader.onload=ev=>{
-      capturedDataURL=ev.target.result;
-      const pw=document.getElementById('cap-preview-wrap');
-      if(pw){pw.style.display='block';document.getElementById('cap-preview').src=capturedDataURL;}
-    };
-    reader.readAsDataURL(file);fi.value='';
-  };fi.click();
+  fi.onchange=e=>{const file=e.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=ev=>{capturedDataURL=ev.target.result;const pw=document.getElementById('cap-preview-wrap');if(pw){pw.style.display='block';document.getElementById('cap-preview').src=capturedDataURL;}};reader.readAsDataURL(file);fi.value='';};fi.click();
 }
 function saveCapture(){
   if(!capturedDataURL){alert('Please select a photo first.');return;}
@@ -371,31 +516,18 @@ function saveCapture(){
   const price=parseFloat(document.getElementById('cap-price').value)||0;
   const name=document.getElementById('cap-name').value.trim();
   const photo={id:uid(),img:capturedDataURL,note,link,price,name,date:Date.now(),liked:false};
-  if(dest.startsWith('home_')){
-    const roomId=dest.replace('home_','');const home=userData('home',{rooms:[]});
-    const room=home.rooms.find(r=>r.id===roomId);
-    if(room){room.photos=room.photos||[];room.photos.push(photo);saveData('home',home);}
-  } else if(dest==='wedding'){
-    const w=userData('wedding',{inspo:[]});w.inspo.push(photo);saveData('wedding',w);
-  } else if(dest==='honeymoon'){
-    const h=userData('honeymoon',{rooms:[],inspo:[],budget:0});
-    if(!h.inspo)h.inspo=[];h.inspo.push(photo);saveData('honeymoon',h);
-  } else if(dest==='recipes'){
-    const r=userData('recipes',{items:[]});
-    r.items.push({id:uid(),img:capturedDataURL,title:name||'New Recipe',tags:[],text:note,date:Date.now()});
-    saveData('recipes',r);
-  }
-  capturedDataURL=null;closeModal();showSection(currentSection);
+  if(dest.startsWith('home_')){const roomId=dest.replace('home_','');const home=userData('home',{rooms:[]});const room=home.rooms.find(r=>r.id===roomId);if(room){room.photos=room.photos||[];room.photos.push(photo);saveData('home',home);}}
+  else if(dest==='wedding'){const w=userData('wedding',{inspo:[]});w.inspo.push(photo);saveData('wedding',w);}
+  else if(dest==='honeymoon'){const h=userData('honeymoon',{rooms:[],inspo:[],budget:0});if(!h.inspo)h.inspo=[];h.inspo.push(photo);saveData('honeymoon',h);}
+  else if(dest==='recipes'){const r=userData('recipes',{items:[]});r.items.push({id:uid(),img:capturedDataURL,title:name||'New Recipe',tags:[],text:note,date:Date.now()});saveData('recipes',r);}
+  capturedDataURL=null;closeModal();showSection(currentSection);updatePanelBadge();
 }
 
 // ── HOME ──
 let activeRoomId=null;
 function renderHome(main){
   const home=userData('home',{rooms:[]});
-  if(!home.rooms.length){
-    main.innerHTML=`<div class="section-rule"><div><div class="section-title">Our Home</div><div class="section-sub">Add rooms to start planning your space.</div></div><button class="btn-solid sm" onclick="openAddRoom()">+ Add Room</button></div><div class="empty"><div class="empty-icon">🏠</div>No rooms yet. Add your first room to begin.</div>`;
-    return;
-  }
+  if(!home.rooms.length){main.innerHTML=`<div class="section-rule"><div><div class="section-title">Our Home</div><div class="section-sub">Add rooms to start planning your space.</div></div><button class="btn-solid sm" onclick="openAddRoom()">+ Add Room</button></div><div class="empty"><div class="empty-icon">🏠</div>No rooms yet.</div>`;return;}
   if(!activeRoomId||!home.rooms.find(r=>r.id===activeRoomId))activeRoomId=home.rooms[0].id;
   const room=home.rooms.find(r=>r.id===activeRoomId);
   const photos=room.photos||[];const items=room.items||[];
@@ -406,15 +538,11 @@ function renderHome(main){
   main.innerHTML=`
     <div class="section-rule"><div><div class="section-title">Our Home</div><div class="section-sub">Track every room, budget &amp; piece of furniture.</div></div><button class="btn-solid sm" onclick="openAddRoom()">+ Room</button></div>
     <div class="room-tabs-row">${tabs}</div>
-    <div class="budget-block">
-      <div class="budget-row"><div><div class="budget-label">${room.name} Budget</div><div class="budget-amount${over?' over':''}">£${spent.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})} <span style="font-size:14px;color:var(--muted)">/ £${(budget||0).toLocaleString()}</span></div></div><button class="btn-ghost" onclick="editRoomBudget('${room.id}')">Edit Budget</button></div>
-      <div class="bar-track"><div class="bar-fill${over?' over':''}" style="width:${pct}%"></div></div>
-      <div class="bar-note${over?' over':''}">${over?'Over budget':'Remaining: £'+(budget-spent).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}</div>
-    </div>
+    <div class="budget-block"><div class="budget-row"><div><div class="budget-label">${room.name} Budget</div><div class="budget-amount${over?' over':''}">£${spent.toLocaleString(undefined,{minimumFractionDigits:2})} <span style="font-size:14px;color:var(--muted)">/ £${(budget||0).toLocaleString()}</span></div></div><button class="btn-ghost" onclick="editRoomBudget('${room.id}')">Edit Budget</button></div><div class="bar-track"><div class="bar-fill${over?' over':''}" style="width:${pct}%"></div></div><div class="bar-note${over?' over':''}">${over?'Over budget':'Remaining: £'+(budget-spent).toLocaleString(undefined,{minimumFractionDigits:2})}</div></div>
     <div class="flex-between mb14"><div style="font-family:'Cormorant Garamond',serif;font-size:16px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)">Furniture &amp; Items</div><div class="flex-center"><button class="btn-ghost" onclick="openAddItem('${room.id}')">+ Add Item</button><button class="btn-ghost danger" onclick="deleteRoom('${room.id}')">Delete Room</button></div></div>
-    <div id="room-items">${renderItemList(items,room.id)}</div>
+    ${renderItemList(items,room.id)}
     <div class="flex-between mb14" style="margin-top:22px"><div style="font-family:'Cormorant Garamond',serif;font-size:16px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)">Photos</div></div>
-    <div id="room-photos">${renderPhotoGrid(photos,'home_room',room.id)}</div>`;
+    ${renderPhotoGrid(photos,'home_room',room.id)}`;
 }
 function renderItemList(items,roomId){
   if(!items.length)return`<div class="empty" style="padding:20px 0;font-size:13px">No items yet.</div>`;
@@ -422,45 +550,20 @@ function renderItemList(items,roomId){
 }
 function renderPhotoGrid(photos,type,contextId){
   if(!photos||!photos.length)return`<div class="empty" style="padding:20px 0;font-size:13px">No photos yet.</div>`;
-  return`<div class="photo-grid">${photos.map(p=>`<div class="photo-card">${p.liked?'<div class="liked-dot"></div>':''}<img src="${p.img}" loading="lazy" onclick="viewPhoto('${p.id}','${type}','${contextId}')"/><div class="photo-card-actions"><button class="img-btn${p.liked?' liked':' default'}" onclick="toggleLike('${p.id}','${type}','${contextId}')">♥</button><button class="img-btn del" onclick="deletePhoto('${p.id}','${type}','${contextId}')">✕</button></div>${p.note?`<div class="photo-note">${p.note}</div>`:''}${p.link?`<a class="photo-link" href="${p.link}" target="_blank" rel="noopener">🔗 ${p.link}</a>`:''}${p.price?`<div class="photo-price">£${p.price.toLocaleString(undefined,{minimumFractionDigits:2})}</div>`:''}</div>`).join('')}</div>`;
+  const sorted=[...photos].sort((a,b)=>(b.liked?1:0)-(a.liked?1:0));
+  return`<div class="photo-grid">${sorted.map(p=>`<div class="photo-card">${p.liked?'<div class="liked-dot"></div>':''}<img src="${p.img}" loading="lazy" onclick="viewPhoto('${p.id}','${type}','${contextId}')"/><div class="photo-card-actions"><button class="img-btn${p.liked?' liked':' default'}" onclick="toggleLike('${p.id}','${type}','${contextId}')">♥</button><button class="img-btn del" onclick="deletePhoto('${p.id}','${type}','${contextId}')">✕</button></div>${p.note?`<div class="photo-note">${p.note}</div>`:''}${p.link?`<a class="photo-link" href="${p.link}" target="_blank" rel="noopener">🔗 ${p.link}</a>`:''}${p.price?`<div class="photo-price">£${p.price.toLocaleString(undefined,{minimumFractionDigits:2})}</div>`:''}</div>`).join('')}</div>`;
 }
 function setActiveRoom(id){activeRoomId=id;showSection('home');}
 function openAddRoom(){openModal(`<div class="modal-head"><div class="modal-title">Add Room</div><button class="modal-close" onclick="closeModal()">×</button></div><label class="field-label">Room Name</label><input id="new-room-name" class="field-input" placeholder="e.g. Living Room…"/><label class="field-label">Budget (optional)</label><input id="new-room-budget" class="field-input" type="number" placeholder="0.00" min="0" step="0.01"/><div class="modal-row"><button class="btn-solid sm" onclick="saveRoom()">Create Room</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);}
-function saveRoom(){
-  const name=document.getElementById('new-room-name').value.trim();if(!name)return;
-  const budget=parseFloat(document.getElementById('new-room-budget').value)||0;
-  const home=userData('home',{rooms:[]});const id=uid();
-  home.rooms.push({id,name,budget,photos:[],items:[]});saveData('home',home);activeRoomId=id;closeModal();showSection('home');
-}
-function editRoomBudget(roomId){
-  const home=userData('home',{rooms:[]});const room=home.rooms.find(r=>r.id===roomId);
-  openModal(`<div class="modal-head"><div class="modal-title">Edit Budget</div><button class="modal-close" onclick="closeModal()">×</button></div><label class="field-label">${room.name} Budget</label><input id="edit-budget" class="field-input" type="number" value="${room.budget||0}" min="0" step="0.01"/><div class="modal-row"><button class="btn-solid sm" onclick="saveRoomBudget('${roomId}')">Save</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);
-}
-function saveRoomBudget(id){
-  const home=userData('home',{rooms:[]});const room=home.rooms.find(r=>r.id===id);
-  if(room){room.budget=parseFloat(document.getElementById('edit-budget').value)||0;saveData('home',home);}
-  closeModal();showSection('home');
-}
-function deleteRoom(roomId){
-  if(!confirm('Delete this room and all its photos?'))return;
-  const home=userData('home',{rooms:[]});home.rooms=home.rooms.filter(r=>r.id!==roomId);
-  activeRoomId=home.rooms.length?home.rooms[0].id:null;saveData('home',home);showSection('home');
-}
-function openAddItem(roomId){
-  openModal(`<div class="modal-head"><div class="modal-title">Add Item</div><button class="modal-close" onclick="closeModal()">×</button></div><label class="field-label">Item Name</label><input id="item-name" class="field-input" placeholder="e.g. IKEA Kallax"/><label class="field-label">Store</label><input id="item-store" class="field-input" placeholder="e.g. IKEA…"/><label class="field-label">Link</label><input id="item-link" class="field-input" type="url" placeholder="https://…"/><label class="field-label">Price</label><input id="item-price" class="field-input" type="number" placeholder="0.00" min="0" step="0.01"/><label class="field-label">Photo (optional)</label><button class="btn-ghost" onclick="pickItemPhoto()">Choose Photo</button><img id="item-img-preview" style="display:none;max-height:120px;margin-top:8px"/><input type="file" id="item-file" accept="image/*" style="display:none"/><div class="modal-row" style="margin-top:14px"><button class="btn-solid sm" onclick="saveItem('${roomId}')">Add to Room</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);
-}
+function saveRoom(){const name=document.getElementById('new-room-name').value.trim();if(!name)return;const budget=parseFloat(document.getElementById('new-room-budget').value)||0;const home=userData('home',{rooms:[]});const id=uid();home.rooms.push({id,name,budget,photos:[],items:[]});saveData('home',home);activeRoomId=id;closeModal();showSection('home');}
+function editRoomBudget(roomId){const home=userData('home',{rooms:[]});const room=home.rooms.find(r=>r.id===roomId);openModal(`<div class="modal-head"><div class="modal-title">Edit Budget</div><button class="modal-close" onclick="closeModal()">×</button></div><label class="field-label">${room.name}</label><input id="edit-budget" class="field-input" type="number" value="${room.budget||0}" min="0" step="0.01"/><div class="modal-row"><button class="btn-solid sm" onclick="saveRoomBudget('${roomId}')">Save</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);}
+function saveRoomBudget(id){const home=userData('home',{rooms:[]});const room=home.rooms.find(r=>r.id===id);if(room){room.budget=parseFloat(document.getElementById('edit-budget').value)||0;saveData('home',home);}closeModal();showSection('home');}
+function deleteRoom(roomId){if(!confirm('Delete this room and all its photos?'))return;const home=userData('home',{rooms:[]});home.rooms=home.rooms.filter(r=>r.id!==roomId);activeRoomId=home.rooms.length?home.rooms[0].id:null;saveData('home',home);showSection('home');}
+function openAddItem(roomId){openModal(`<div class="modal-head"><div class="modal-title">Add Item</div><button class="modal-close" onclick="closeModal()">×</button></div><label class="field-label">Item Name</label><input id="item-name" class="field-input" placeholder="e.g. IKEA Kallax"/><label class="field-label">Store</label><input id="item-store" class="field-input" placeholder="e.g. IKEA…"/><label class="field-label">Link</label><input id="item-link" class="field-input" type="url" placeholder="https://…"/><label class="field-label">Price</label><input id="item-price" class="field-input" type="number" placeholder="0.00" min="0" step="0.01"/><label class="field-label">Photo (optional)</label><button class="btn-ghost" onclick="pickItemPhoto()">Choose Photo</button><img id="item-img-preview" style="display:none;max-height:120px;margin-top:8px"/><input type="file" id="item-file" accept="image/*" style="display:none"/><div class="modal-row" style="margin-top:14px"><button class="btn-solid sm" onclick="saveItem('${roomId}')">Add to Room</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);}
 let itemImgData=null;
 function pickItemPhoto(){itemImgData=null;const fi=document.getElementById('item-file');fi.onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{itemImgData=ev.target.result;const p=document.getElementById('item-img-preview');p.src=itemImgData;p.style.display='block';};r.readAsDataURL(f);};fi.click();}
-function saveItem(roomId){
-  const name=document.getElementById('item-name').value.trim();if(!name)return;
-  const home=userData('home',{rooms:[]});const room=home.rooms.find(r=>r.id===roomId);if(!room)return;
-  room.items=room.items||[];room.items.push({id:uid(),name,store:document.getElementById('item-store').value.trim(),link:document.getElementById('item-link').value.trim(),price:parseFloat(document.getElementById('item-price').value)||0,img:itemImgData||null});
-  itemImgData=null;saveData('home',home);closeModal();showSection('home');
-}
-function deleteItem(roomId,itemId){
-  const home=userData('home',{rooms:[]});const room=home.rooms.find(r=>r.id===roomId);
-  if(room){room.items=(room.items||[]).filter(i=>i.id!==itemId);saveData('home',home);}showSection('home');
-}
+function saveItem(roomId){const name=document.getElementById('item-name').value.trim();if(!name)return;const home=userData('home',{rooms:[]});const room=home.rooms.find(r=>r.id===roomId);if(!room)return;room.items=room.items||[];room.items.push({id:uid(),name,store:document.getElementById('item-store').value.trim(),link:document.getElementById('item-link').value.trim(),price:parseFloat(document.getElementById('item-price').value)||0,img:itemImgData||null});itemImgData=null;saveData('home',home);closeModal();showSection('home');}
+function deleteItem(roomId,itemId){const home=userData('home',{rooms:[]});const room=home.rooms.find(r=>r.id===roomId);if(room){room.items=(room.items||[]).filter(i=>i.id!==itemId);saveData('home',home);}showSection('home');}
 
 // ── PHOTO HELPERS ──
 function getPhotosArray(type,contextId){
@@ -476,12 +579,9 @@ function savePhotosArray(type,contextId,arr){
   else if(type==='honeymoon_room'){const h=userData('honeymoon',{rooms:[]});const room=h.rooms.find(r=>r.id===contextId);if(room){room.photos=arr;saveData('honeymoon',h);}}
   else if(type==='honeymoon_inspo'){const h=userData('honeymoon',{rooms:[],inspo:[]});h.inspo=arr;saveData('honeymoon',h);}
 }
-function toggleLike(photoId,type,contextId){const arr=getPhotosArray(type,contextId);const p=arr.find(p=>p.id===photoId);if(p)p.liked=!p.liked;savePhotosArray(type,contextId,arr);showSection(currentSection);}
-function deletePhoto(photoId,type,contextId){if(!confirm('Remove this photo?'))return;savePhotosArray(type,contextId,getPhotosArray(type,contextId).filter(p=>p.id!==photoId));showSection(currentSection);}
-function viewPhoto(photoId,type,contextId){
-  const p=getPhotosArray(type,contextId).find(p=>p.id===photoId);if(!p)return;
-  openModal(`<div class="modal-head"><div class="modal-title">${p.note||'Photo'}</div><button class="modal-close" onclick="closeModal()">×</button></div><img src="${p.img}" style="width:100%;max-height:360px;object-fit:contain;border:1px solid var(--bone);margin-bottom:12px"/>${p.note?`<p style="font-size:15px;line-height:1.6;margin-bottom:10px">${p.note}</p>`:''}${p.link?`<a href="${p.link}" target="_blank" rel="noopener" style="font-size:13px;color:var(--muted);word-break:break-all">🔗 ${p.link}</a>`:''}${p.price?`<div style="font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--green);margin-top:8px">£${p.price.toLocaleString(undefined,{minimumFractionDigits:2})}</div>`:''}`);
-}
+function toggleLike(photoId,type,contextId){const arr=getPhotosArray(type,contextId);const p=arr.find(p=>p.id===photoId);if(p)p.liked=!p.liked;savePhotosArray(type,contextId,arr);showSection(currentSection);updatePanelBadge();}
+function deletePhoto(photoId,type,contextId){if(!confirm('Remove this photo?'))return;savePhotosArray(type,contextId,getPhotosArray(type,contextId).filter(p=>p.id!==photoId));showSection(currentSection);updatePanelBadge();}
+function viewPhoto(photoId,type,contextId){const p=getPhotosArray(type,contextId).find(p=>p.id===photoId);if(!p)return;openModal(`<div class="modal-head"><div class="modal-title">${p.note||'Photo'}</div><button class="modal-close" onclick="closeModal()">×</button></div><img src="${p.img}" style="width:100%;max-height:360px;object-fit:contain;border:1px solid var(--bone);margin-bottom:12px"/>${p.note?`<p style="font-size:15px;line-height:1.6;margin-bottom:10px">${p.note}</p>`:''}${p.link?`<a href="${p.link}" target="_blank" rel="noopener" style="font-size:13px;color:var(--muted);word-break:break-all">🔗 ${p.link}</a>`:''}${p.price?`<div style="font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--green);margin-top:8px">£${p.price.toLocaleString(undefined,{minimumFractionDigits:2})}</div>`:''}`);  }
 
 // ── WEDDING ──
 let weddingTab='inspo';
@@ -495,12 +595,7 @@ function renderWedding(main){
   main.innerHTML=`<div class="section-rule"><div><div class="section-title">Wedding</div><div class="section-sub">Gather inspiration &amp; build your vision.</div></div></div><div class="room-tabs-row">${tabs}</div>${content}`;
 }
 function setWeddingTab(t){weddingTab=t;showSection('wedding');}
-function saveWeddingDetails(){
-  const w=userData('wedding',{inspo:[]});
-  w.wdate=document.getElementById('w-date').value;w.venue=document.getElementById('w-venue').value.trim();
-  w.theme=document.getElementById('w-theme').value.trim();w.notes=document.getElementById('w-notes').value.trim();
-  saveData('wedding',w);alert('Details saved!');
-}
+function saveWeddingDetails(){const w=userData('wedding',{inspo:[]});w.wdate=document.getElementById('w-date').value;w.venue=document.getElementById('w-venue').value.trim();w.theme=document.getElementById('w-theme').value.trim();w.notes=document.getElementById('w-notes').value.trim();saveData('wedding',w);alert('Details saved!');}
 
 // ── HONEYMOON ──
 let activeHoneymoonRoomId=null,honeymoonTab='inspo';
@@ -511,7 +606,7 @@ function renderHoneymoon(main){
   const pct=budget>0?Math.min(spent/budget*100,100):0;const over=budget>0&&spent>budget;
   const tabs=['inspo','rooms','budget'].map(t=>`<button class="room-tab${honeymoonTab===t?' active':''}" onclick="setHoneymoonTab('${t}')">${t==='inspo'?'Inspiration':t==='rooms'?'Destinations':'Budget'}</button>`).join('');
   let content='';
-  if(honeymoonTab==='inspo')content=`<div class="flex-between mb14"><div style="font-family:'Cormorant Garamond',serif;font-size:16px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)">Inspiration</div></div>${renderPhotoGrid(inspo,'honeymoon_inspo','honeymoon')}`;
+  if(honeymoonTab==='inspo')content=`${renderPhotoGrid(inspo,'honeymoon_inspo','honeymoon')}`;
   else if(honeymoonTab==='rooms'){
     let inner='';
     if(!h.rooms.length)inner=`<div class="empty"><div class="empty-icon">✈️</div>Add your first destination.</div>`;
@@ -520,7 +615,7 @@ function renderHoneymoon(main){
       const room=h.rooms.find(r=>r.id===activeHoneymoonRoomId);
       const rSpent=(room.items||[]).reduce((s,i)=>s+(i.price||0),0)+(room.photos||[]).reduce((s,p)=>s+(p.price||0),0);
       const rPct=room.budget>0?Math.min(rSpent/room.budget*100,100):0;const rOver=room.budget>0&&rSpent>room.budget;
-      inner=`<div class="room-tabs-row">${h.rooms.map(r=>`<button class="room-tab${r.id===activeHoneymoonRoomId?' active':''}" onclick="setActiveHoneymoonRoom('${r.id}')">${r.name}</button>`).join('')}</div><div class="budget-block"><div class="budget-row"><div><div class="budget-label">${room.name} Budget</div><div class="budget-amount${rOver?' over':''}">£${rSpent.toLocaleString(undefined,{minimumFractionDigits:2})} / £${(room.budget||0).toLocaleString()}</div></div><button class="btn-ghost" onclick="editHoneymoonRoomBudget('${room.id}')">Edit</button></div><div class="bar-track"><div class="bar-fill${rOver?' over':''}" style="width:${rPct}%"></div></div><div class="bar-note${rOver?' over':''}">${rOver?'Over budget':'Remaining: £'+(room.budget-rSpent).toLocaleString(undefined,{minimumFractionDigits:2})}</div></div><div class="flex-between mb14"><div style="font-family:'Cormorant Garamond',serif;font-size:15px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">Bookings</div><button class="btn-ghost" onclick="openAddHoneymoonItem('${room.id}')">+ Add</button></div>${renderItemList(room.items||[],room.id)}<div style="margin-top:18px">${renderPhotoGrid(room.photos||[],'honeymoon_room',room.id)}</div>`;
+      inner=`<div class="room-tabs-row">${h.rooms.map(r=>`<button class="room-tab${r.id===activeHoneymoonRoomId?' active':''}" onclick="setActiveHoneymoonRoom('${r.id}')">${r.name}</button>`).join('')}</div><div class="budget-block"><div class="budget-row"><div><div class="budget-label">${room.name}</div><div class="budget-amount${rOver?' over':''}">£${rSpent.toLocaleString(undefined,{minimumFractionDigits:2})} / £${(room.budget||0).toLocaleString()}</div></div><button class="btn-ghost" onclick="editHoneymoonRoomBudget('${room.id}')">Edit</button></div><div class="bar-track"><div class="bar-fill${rOver?' over':''}" style="width:${rPct}%"></div></div><div class="bar-note${rOver?' over':''}">${rOver?'Over budget':'Remaining: £'+(room.budget-rSpent).toLocaleString(undefined,{minimumFractionDigits:2})}</div></div><div class="flex-between mb14"><div style="font-family:'Cormorant Garamond',serif;font-size:15px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">Bookings</div><button class="btn-ghost" onclick="openAddHoneymoonItem('${room.id}')">+ Add</button></div>${renderItemList(room.items||[],room.id)}<div style="margin-top:18px">${renderPhotoGrid(room.photos||[],'honeymoon_room',room.id)}</div>`;
     }
     content=`<div class="flex-between mb14"><div></div><div class="flex-center"><button class="btn-solid sm" onclick="openAddHoneymoonRoom()">+ Destination</button>${h.rooms.length?`<button class="btn-ghost danger" onclick="deleteHoneymoonRoom('${activeHoneymoonRoomId}')">Delete</button>`:''}</div></div>`+inner;
   } else {
@@ -560,22 +655,19 @@ function deleteRecipe(id){if(!confirm('Delete this recipe?'))return;const r=user
 function renderMoodBoardSection(context){
   const boards=userData(`moodboards_${context}`,[]);
   if(!boards.length)return`<div class="empty"><div class="empty-icon">🎨</div>No mood boards yet.</div><div style="text-align:center;margin-top:16px"><button class="btn-solid sm" onclick="createMoodBoard('${context}')">Create Mood Board</button></div>`;
-  return`<div class="flex-between mb14"><div></div><button class="btn-solid sm" onclick="createMoodBoard('${context}')">+ New Board</button></div>${boards.map((board,bi)=>`<div style="margin-bottom:32px"><div class="flex-between mb14"><div style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:700">${board.title||'Untitled'}</div><div class="flex-center"><button class="btn-ghost" onclick="openEditBoard('${context}',${bi})">Edit</button><button class="btn-ghost danger" onclick="deleteMoodBoard('${context}',${bi})">Delete</button></div></div>${board.palette&&board.palette.length?`<div class="mood-palette">${board.palette.map(c=>`<div class="palette-swatch" style="background:${c}"></div>`).join('')}</div>`:''}<div class="mood-board${!board.tiles||!board.tiles.length?' empty-board':''}">${!board.tiles||!board.tiles.length?'<span style="color:var(--muted);font-style:italic;font-size:14px">Empty board. Edit to add images.</span>':board.tiles.map(tile=>`<div class="mood-tile size-${tile.size||'md'}"><img src="${tile.img}" loading="lazy"/>${tile.note?`<div class="tile-note">${tile.note}</div>`:''}</div>`).join('')}</div>${board.notes?`<div style="font-size:13px;color:var(--muted);margin-top:10px;font-style:italic">${board.notes}</div>`:''}</div>`).join('')}`;
+  return`<div class="flex-between mb14"><div></div><button class="btn-solid sm" onclick="createMoodBoard('${context}')">+ New Board</button></div>${boards.map((board,bi)=>`<div style="margin-bottom:32px"><div class="flex-between mb14"><div style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:700">${board.title||'Untitled'}</div><div class="flex-center"><button class="btn-ghost" onclick="openEditBoard('${context}',${bi})">Edit</button><button class="btn-ghost danger" onclick="deleteMoodBoard('${context}',${bi})">Delete</button></div></div>${board.palette&&board.palette.length?`<div class="mood-palette">${board.palette.map(c=>`<div class="palette-swatch" style="background:${c}"></div>`).join('')}</div>`:''}<div class="mood-board${!board.tiles||!board.tiles.length?' empty-board':''}">${!board.tiles||!board.tiles.length?'<span style="color:var(--muted);font-style:italic;font-size:14px">Empty. Edit to add images.</span>':board.tiles.map(tile=>`<div class="mood-tile size-${tile.size||'md'}"><img src="${tile.img}" loading="lazy"/>${tile.note?`<div class="tile-note">${tile.note}</div>`:''}</div>`).join('')}</div>${board.notes?`<div style="font-size:13px;color:var(--muted);margin-top:10px;font-style:italic">${board.notes}</div>`:''}</div>`).join('')}`;
 }
 function openMoodBoard(){openModal(`<div class="modal-head"><div class="modal-title">Create Mood Board</div><button class="modal-close" onclick="closeModal()">×</button></div><p style="font-size:14px;color:var(--muted);margin-bottom:18px;font-style:italic">Which section?</p><div style="display:flex;flex-direction:column;gap:10px"><button class="btn-ghost" onclick="closeModal();createMoodBoard('wedding');setWeddingTab('moodboard');showSection('wedding')">Wedding</button><button class="btn-ghost" onclick="closeModal();createMoodBoard('home');showSection('home')">Our Home</button><button class="btn-ghost" onclick="closeModal();createMoodBoard('honeymoon');showSection('honeymoon')">Honeymoon</button></div>`);}
 function createMoodBoard(context){openModal(`<div class="modal-head"><div class="modal-title">New Mood Board</div><button class="modal-close" onclick="closeModal()">×</button></div><label class="field-label">Board Title</label><input id="mb-title" class="field-input" placeholder="e.g. Romantic Garden…"/><label class="field-label">Palette Colours (hex, comma separated)</label><input id="mb-palette" class="field-input" placeholder="#f7e9d7, #c9b89a"/><label class="field-label">Notes / Mood</label><textarea id="mb-notes" class="field-input" rows="3" placeholder="Describe the vibe…"></textarea><div class="modal-row"><button class="btn-solid sm" onclick="saveMoodBoard('${context}')">Create</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);}
 function saveMoodBoard(context){const title=document.getElementById('mb-title').value.trim()||'New Board';const palette=document.getElementById('mb-palette').value.split(',').map(s=>s.trim()).filter(s=>s.startsWith('#'));const notes=document.getElementById('mb-notes').value.trim();const boards=userData(`moodboards_${context}`,[]);boards.push({id:uid(),title,palette,notes,tiles:[]});saveData(`moodboards_${context}`,boards);closeModal();if(context==='wedding'){setWeddingTab('moodboard');showSection('wedding');}else showSection(currentSection);}
-function openEditBoard(context,boardIndex){
-  const boards=userData(`moodboards_${context}`,[]);const board=boards[boardIndex];
-  openModal(`<div class="modal-head"><div class="modal-title">Edit: ${board.title}</div><button class="modal-close" onclick="closeModal()">×</button></div><input type="file" id="mb-file" accept="image/*" multiple style="display:none"/><button class="btn-ghost mb14" onclick="pickMoodBoardImages(${boardIndex},'${context}')">+ Add Images</button><div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px">${(board.tiles||[]).map((tile,ti)=>`<div style="position:relative;width:80px;height:80px;overflow:hidden;border:1px solid var(--bone)"><img src="${tile.img}" style="width:100%;height:100%;object-fit:cover"/><button onclick="removeTile(${boardIndex},'${context}',${ti})" style="position:absolute;top:2px;right:2px;background:rgba(168,32,32,.85);border:none;color:#fff;width:18px;height:18px;font-size:11px;cursor:pointer">×</button></div>`).join('')}</div><label class="field-label">Title</label><input id="mb-edit-title" class="field-input" value="${board.title||''}"/><label class="field-label">Palette (hex, comma separated)</label><input id="mb-edit-palette" class="field-input" value="${(board.palette||[]).join(', ')}"/><label class="field-label">Notes</label><textarea id="mb-edit-notes" class="field-input" rows="3">${board.notes||''}</textarea><div class="modal-row"><button class="btn-solid sm" onclick="updateMoodBoard('${context}',${boardIndex})">Save</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);
-}
+function openEditBoard(context,boardIndex){const boards=userData(`moodboards_${context}`,[]);const board=boards[boardIndex];openModal(`<div class="modal-head"><div class="modal-title">Edit: ${board.title}</div><button class="modal-close" onclick="closeModal()">×</button></div><input type="file" id="mb-file" accept="image/*" multiple style="display:none"/><button class="btn-ghost mb14" onclick="pickMoodBoardImages(${boardIndex},'${context}')">+ Add Images</button><div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px">${(board.tiles||[]).map((tile,ti)=>`<div style="position:relative;width:80px;height:80px;overflow:hidden;border:1px solid var(--bone)"><img src="${tile.img}" style="width:100%;height:100%;object-fit:cover"/><button onclick="removeTile(${boardIndex},'${context}',${ti})" style="position:absolute;top:2px;right:2px;background:rgba(168,32,32,.85);border:none;color:#fff;width:18px;height:18px;font-size:11px;cursor:pointer">×</button></div>`).join('')}</div><label class="field-label">Title</label><input id="mb-edit-title" class="field-input" value="${board.title||''}"/><label class="field-label">Palette</label><input id="mb-edit-palette" class="field-input" value="${(board.palette||[]).join(', ')}"/><label class="field-label">Notes</label><textarea id="mb-edit-notes" class="field-input" rows="3">${board.notes||''}</textarea><div class="modal-row"><button class="btn-solid sm" onclick="updateMoodBoard('${context}',${boardIndex})">Save</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);}
 function pickMoodBoardImages(boardIndex,context){const fi=document.getElementById('mb-file');fi.onchange=e=>{Array.from(e.target.files).forEach(file=>{const r=new FileReader();r.onload=ev=>{const boards=userData(`moodboards_${context}`,[]);boards[boardIndex].tiles=boards[boardIndex].tiles||[];boards[boardIndex].tiles.push({id:uid(),img:ev.target.result,note:'',size:'md'});saveData(`moodboards_${context}`,boards);openEditBoard(context,boardIndex);};r.readAsDataURL(file);});fi.value='';};fi.click();}
 function removeTile(boardIndex,context,tileIndex){const boards=userData(`moodboards_${context}`,[]);boards[boardIndex].tiles.splice(tileIndex,1);saveData(`moodboards_${context}`,boards);openEditBoard(context,boardIndex);}
 function updateMoodBoard(context,boardIndex){const boards=userData(`moodboards_${context}`,[]);const board=boards[boardIndex];board.title=document.getElementById('mb-edit-title').value.trim()||'Board';board.palette=document.getElementById('mb-edit-palette').value.split(',').map(s=>s.trim()).filter(s=>s.startsWith('#'));board.notes=document.getElementById('mb-edit-notes').value.trim();saveData(`moodboards_${context}`,boards);closeModal();if(context==='wedding'){setWeddingTab('moodboard');showSection('wedding');}else showSection(currentSection);}
 function deleteMoodBoard(context,boardIndex){if(!confirm('Delete this mood board?'))return;const boards=userData(`moodboards_${context}`,[]);boards.splice(boardIndex,1);saveData(`moodboards_${context}`,boards);if(context==='wedding'){setWeddingTab('moodboard');showSection('wedding');}else showSection(currentSection);}
 
 // ── SETTINGS ──
-function openSettings(){openModal(`<div class="modal-head"><div class="modal-title">Settings</div><button class="modal-close" onclick="closeModal()">×</button></div><div style="margin-bottom:20px"><div class="field-label" style="margin-bottom:8px">Account</div><div style="font-size:15px;margin-bottom:16px">Signed in with Google</div><button class="btn-ghost" onclick="signOut()">Sign Out</button></div><hr class="divider"/><div><div class="field-label" style="margin-bottom:8px">Data</div><p style="font-size:13px;color:var(--muted);font-style:italic;margin-bottom:12px">All data is stored locally in this browser.</p><button class="btn-ghost danger" onclick="clearData()">Clear All My Data</button></div>`);}
+function openSettings(){openModal(`<div class="modal-head"><div class="modal-title">Settings</div><button class="modal-close" onclick="closeModal()">×</button></div><div style="margin-bottom:20px"><div class="field-label" style="margin-bottom:8px">Account</div><div style="font-size:15px;margin-bottom:16px">Signed in with Google</div><button class="btn-ghost" onclick="signOut()">Sign Out</button></div><hr class="divider"/><div><div class="field-label" style="margin-bottom:8px">Data</div><p style="font-size:13px;color:var(--muted);font-style:italic;margin-bottom:12px">All data stored locally in this browser.</p><button class="btn-ghost danger" onclick="clearData()">Clear All My Data</button></div>`);}
 function signOut(){currentUser=null;capturedDataURL=null;activeRoomId=null;document.getElementById('app').classList.remove('visible');document.getElementById('auth-screen').style.display='flex';google.accounts.id.disableAutoSelect();closeModal();}
 function clearData(){if(!confirm('Permanently delete all your data?'))return;Object.keys(localStorage).filter(k=>k.startsWith(`maison_${currentUser}_`)).forEach(k=>localStorage.removeItem(k));closeModal();alert('Data cleared.');showSection('home');}
 </script>
