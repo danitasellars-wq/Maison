@@ -5,12 +5,12 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="theme-color" content="#f7f3ed"/>
-<title>MAISON — Home & Wedding Journal</title>
+<title>MAISON</title>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet"/>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-:root{--ink:#1c140a;--cream:#f7f3ed;--bone:#ede4d5;--warm:#c9b89a;--muted:#8a7a68;--red:#a82020;--green:#2a5f3f;--gold:#b8962e;--section-pad:28px 20px 160px;}
+:root{--ink:#1c140a;--cream:#f7f3ed;--bone:#ede4d5;--warm:#c9b89a;--muted:#8a7a68;--red:#a82020;--green:#2a5f3f;--gold:#b8962e;--teal:#2a7070;--section-pad:28px 20px 160px;}
 body{font-family:'EB Garamond',serif;background:var(--cream);color:var(--ink);min-height:100vh;overflow-x:hidden}
 ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:var(--warm);border-radius:2px}
 input,textarea,select{font-family:'EB Garamond',serif;font-size:16px;background:transparent}
@@ -19,11 +19,11 @@ button{font-family:'Cormorant Garamond',serif;cursor:pointer;touch-action:manipu
 a{color:var(--ink)}img{display:block;max-width:100%}select{cursor:pointer}
 body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");opacity:.35;}
 
-/* ── AUTH ── */
-#auth-screen{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;background:var(--cream);position:relative;overflow:hidden;}
-#auth-screen::before,#auth-screen::after{content:'';position:absolute;left:0;right:0;height:4px;background:repeating-linear-gradient(90deg,var(--ink) 0,var(--ink) 35px,transparent 35px,transparent 70px);}
+/* AUTH */
+#auth-screen{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;background:var(--cream);position:relative;overflow:hidden}
+#auth-screen::before,#auth-screen::after{content:'';position:absolute;left:0;right:0;height:4px;background:repeating-linear-gradient(90deg,var(--ink) 0,var(--ink) 35px,transparent 35px,transparent 70px)}
 #auth-screen::before{top:0}#auth-screen::after{bottom:0}
-.auth-deco{position:absolute;font-family:'Cormorant Garamond',serif;font-size:220px;font-weight:700;color:var(--bone);letter-spacing:-.04em;line-height:1;pointer-events:none;user-select:none;top:50%;left:50%;transform:translate(-50%,-50%);white-space:nowrap}
+.auth-deco{position:absolute;font-family:'Cormorant Garamond',serif;font-size:220px;font-weight:700;color:var(--bone);letter-spacing:-.04em;pointer-events:none;user-select:none;top:50%;left:50%;transform:translate(-50%,-50%);white-space:nowrap}
 .auth-box{max-width:380px;width:100%;position:relative;z-index:1}
 .masthead{text-align:center;margin-bottom:48px}
 .masthead-sub{font-size:10px;letter-spacing:.5em;text-transform:uppercase;color:var(--warm);font-family:'Cormorant Garamond',serif;margin-bottom:14px}
@@ -33,18 +33,18 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;b
 .auth-note{text-align:center;font-size:12px;color:var(--muted);margin-top:18px;font-style:italic;line-height:1.6}
 .err-msg{color:var(--red);font-size:13px;margin-bottom:12px;font-style:italic}
 
-/* ── SIDE PANEL ── */
+/* SIDE PANEL */
 #panel-overlay{position:fixed;inset:0;background:rgba(28,20,10,.45);z-index:400;display:none;backdrop-filter:blur(4px)}
 #panel-overlay.open{display:block}
 #side-panel{position:fixed;top:0;left:0;bottom:0;width:300px;max-width:90vw;background:var(--cream);z-index:401;transform:translateX(-100%);transition:transform .3s cubic-bezier(.4,0,.2,1);overflow-y:auto;display:flex;flex-direction:column;border-right:1px solid var(--bone)}
 #side-panel.open{transform:translateX(0)}
 .panel-head{padding:20px 18px 14px;border-bottom:3px solid var(--ink);display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:var(--cream);z-index:1}
 .panel-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700;letter-spacing:-.01em;text-transform:uppercase}
-.panel-close{background:none;border:none;font-size:22px;color:var(--muted);line-height:1;font-family:serif}
-.panel-close:hover{color:var(--ink)}
-.panel-filter-row{display:flex;gap:6px;padding:12px 18px;border-bottom:1px solid var(--bone);flex-wrap:wrap}
-.panel-filter{background:none;border:1px solid rgba(28,20,10,.18);color:var(--muted);font-family:'Cormorant Garamond',serif;font-size:10px;letter-spacing:.12em;text-transform:uppercase;padding:4px 10px;transition:all .2s}
+.panel-close{background:none;border:none;font-size:22px;color:var(--muted);font-family:serif}
+.panel-filter-row{display:flex;gap:5px;padding:10px 14px;border-bottom:1px solid var(--bone);flex-wrap:wrap}
+.panel-filter{background:none;border:1px solid rgba(28,20,10,.18);color:var(--muted);font-family:'Cormorant Garamond',serif;font-size:9px;letter-spacing:.12em;text-transform:uppercase;padding:3px 8px;transition:all .2s}
 .panel-filter.active{background:var(--ink);border-color:var(--ink);color:var(--cream)}
+.panel-filter.arch-filter.active{background:var(--muted);border-color:var(--muted)}
 .panel-body{padding:14px 18px 80px;flex:1}
 .panel-section-label{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);font-family:'Cormorant Garamond',serif;margin:16px 0 8px;font-weight:600}
 .panel-section-label:first-child{margin-top:0}
@@ -52,50 +52,51 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;b
 .panel-photo{position:relative;overflow:hidden;border:1px solid var(--bone);background:var(--bone);aspect-ratio:1;cursor:pointer;transition:box-shadow .2s}
 .panel-photo:hover{box-shadow:0 3px 14px rgba(28,20,10,.14)}
 .panel-photo img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s}
-.panel-photo:hover img{transform:scale(1.06)}
+.panel-photo:hover img{transform:scale(1.05)}
 .panel-photo-liked{position:absolute;top:5px;left:5px;width:6px;height:6px;border-radius:50%;background:var(--red)}
 .panel-photo-like{position:absolute;top:5px;right:5px;background:rgba(247,243,237,.88);border:none;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:13px;opacity:0;transition:opacity .2s;color:var(--muted)}
-.panel-photo:hover .panel-photo-like{opacity:1}
-.panel-photo-like.on{opacity:1;color:var(--red);background:rgba(168,32,32,.12)}
+.panel-photo:hover .panel-photo-like,.panel-photo-like.on{opacity:1}
+.panel-photo-like.on{color:var(--red)}
+.panel-photo-move{position:absolute;bottom:5px;right:5px;background:rgba(247,243,237,.9);border:none;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:12px;opacity:0;transition:opacity .2s;cursor:pointer;color:var(--ink)}
+.panel-photo:hover .panel-photo-move{opacity:1}
 .panel-photo-dest{position:absolute;bottom:0;left:0;right:0;background:rgba(28,20,10,.6);color:var(--cream);font-size:9px;letter-spacing:.1em;text-transform:uppercase;font-family:'Cormorant Garamond',serif;padding:4px 6px;transform:translateY(100%);transition:transform .2s}
 .panel-photo:hover .panel-photo-dest{transform:translateY(0)}
-.panel-empty{font-size:13px;color:var(--muted);font-style:italic;text-align:center;padding:32px 0}
+.panel-photo-arch-actions{position:absolute;top:5px;right:5px;display:flex;flex-direction:column;gap:3px}
+.arch-btn{border:none;color:white;padding:3px 6px;font-size:10px;cursor:pointer;font-family:'Cormorant Garamond',serif}
 .panel-pinned-label{display:flex;align-items:center;gap:6px;font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--red);font-family:'Cormorant Garamond',serif;margin:0 0 8px;font-weight:600}
+.panel-empty{font-size:13px;color:var(--muted);font-style:italic;text-align:center;padding:32px 0}
 
-/* ── APP SHELL ── */
+/* APP */
 #app{display:none;min-height:100vh;flex-direction:column}
 #app.visible{display:flex}
 header{position:sticky;top:0;z-index:200;background:rgba(247,243,237,.97);backdrop-filter:blur(12px);border-bottom:1px solid var(--bone)}
 .header-stripe{height:3px;background:repeating-linear-gradient(90deg,var(--ink) 0,var(--ink) 30px,transparent 30px,transparent 60px)}
 .header-inner{max-width:980px;margin:0 auto;padding:0 20px}
 .header-top{display:flex;align-items:center;justify-content:space-between;padding:12px 0 8px}
-.header-user{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--muted);font-family:'Cormorant Garamond',serif}
 .header-brand{text-align:center}
 .brand-name{font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:700;letter-spacing:-.025em;color:var(--ink);line-height:1}
 .brand-sub{font-size:8px;letter-spacing:.55em;text-transform:uppercase;color:var(--warm);font-family:'Cormorant Garamond',serif}
-.header-right{display:flex;align-items:center;gap:12px}
-.header-btn{background:none;border:none;color:var(--muted);display:flex;align-items:center;gap:5px;font-family:'Cormorant Garamond',serif;font-size:10px;letter-spacing:.2em;text-transform:uppercase;transition:color .2s}
+.header-btn{background:none;border:none;color:var(--muted);display:flex;align-items:center;gap:5px;font-family:'Cormorant Garamond',serif;font-size:10px;letter-spacing:.2em;text-transform:uppercase;transition:color .2s;position:relative}
 .header-btn:hover{color:var(--ink)}
-.panel-toggle{position:relative}
-.panel-badge{position:absolute;top:-4px;right:-4px;background:var(--red);color:#fff;width:14px;height:14px;border-radius:50%;font-size:8px;display:flex;align-items:center;justify-content:center;font-family:sans-serif;display:none}
+.panel-badge{position:absolute;top:-4px;right:-4px;background:var(--red);color:#fff;width:14px;height:14px;border-radius:50%;font-size:8px;display:none;align-items:center;justify-content:center;font-family:sans-serif}
 .panel-badge.show{display:flex}
-nav{display:flex;justify-content:center;border-top:1px solid var(--bone);overflow-x:auto;gap:0}
-.nav-btn{background:none;border:none;border-bottom:2px solid transparent;padding:11px 20px;font-family:'Cormorant Garamond',serif;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:-1px;white-space:nowrap;transition:color .2s}
+nav{display:flex;justify-content:center;border-top:1px solid var(--bone);overflow-x:auto;gap:0;-webkit-overflow-scrolling:touch}
+.nav-btn{background:none;border:none;border-bottom:2px solid transparent;padding:11px 16px;font-family:'Cormorant Garamond',serif;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:-1px;white-space:nowrap;transition:color .2s}
 .nav-btn.active{border-bottom-color:var(--ink);color:var(--ink)}
 main{max-width:980px;margin:0 auto;padding:var(--section-pad);width:100%;flex:1}
 
-/* ── CAMERA DOCK ── */
-#camera-dock{position:fixed;bottom:0;left:0;right:0;z-index:150;background:rgba(247,243,237,.96);backdrop-filter:blur(16px);border-top:1px solid var(--bone);display:flex;justify-content:center;padding:14px 0 calc(20px + env(safe-area-inset-bottom));gap:20px}
+/* CAMERA DOCK */
+#camera-dock{position:fixed;bottom:0;left:0;right:0;z-index:150;background:rgba(247,243,237,.96);backdrop-filter:blur(16px);border-top:1px solid var(--bone);display:flex;justify-content:center;padding:14px 0 calc(20px + env(safe-area-inset-bottom));gap:18px}
 .cam-wrap{display:flex;flex-direction:column;align-items:center;gap:5px}
-.cam-btn{width:58px;height:58px;border-radius:50%;background:var(--ink);border:3px solid var(--cream);outline:1px solid var(--ink);display:flex;align-items:center;justify-content:center;color:var(--cream);box-shadow:0 4px 20px rgba(28,20,10,.22);transition:transform .2s,box-shadow .2s;touch-action:manipulation}
+.cam-btn{width:54px;height:54px;border-radius:50%;background:var(--ink);border:3px solid var(--cream);outline:1px solid var(--ink);display:flex;align-items:center;justify-content:center;color:var(--cream);box-shadow:0 4px 20px rgba(28,20,10,.22);transition:transform .2s,box-shadow .2s;touch-action:manipulation}
 .cam-btn:active{transform:scale(.96)}
-.cam-btn:hover{transform:scale(1.07);box-shadow:0 6px 28px rgba(28,20,10,.3)}
+.cam-btn:hover{transform:scale(1.07)}
 .cam-btn.mood{background:var(--gold)}
 .cam-btn.photos{background:var(--green)}
 .cam-label{font-size:8px;letter-spacing:.3em;text-transform:uppercase;color:var(--muted);font-family:'Cormorant Garamond',serif}
-#file-input,#file-input-camera{display:none}
+#file-input,#file-input-camera,#fp-file-input,#rm-tile-input{display:none}
 
-/* ── MODAL ── */
+/* MODAL */
 .modal-overlay{position:fixed;inset:0;background:rgba(28,20,10,.52);backdrop-filter:blur(8px);z-index:500;display:flex;align-items:center;justify-content:center;padding:16px}
 .modal-box{background:var(--cream);max-width:540px;width:100%;max-height:92vh;overflow-y:auto;padding:32px 36px;animation:modalIn .22s ease;border-top:3px solid var(--ink)}
 @keyframes modalIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
@@ -106,15 +107,47 @@ main{max-width:980px;margin:0 auto;padding:var(--section-pad);width:100%;flex:1}
 .modal-preview{width:100%;max-height:240px;object-fit:cover;margin-bottom:16px;border:1px solid var(--bone)}
 .modal-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
 
-/* ── SECTION ── */
+/* SECTION */
 .section-rule{border-top:3px solid var(--ink);padding-top:18px;margin-bottom:26px;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:12px}
 .section-title{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:700;color:var(--ink);text-transform:uppercase;letter-spacing:-.01em}
 .section-sub{font-family:'EB Garamond',serif;font-size:13px;color:var(--muted);font-style:italic;margin-top:4px}
-.room-tabs-row{display:flex;border-bottom:1px solid var(--bone);margin-bottom:22px;overflow-x:auto;gap:0}
-.room-tab{background:none;border:none;border-bottom:2px solid transparent;padding:10px 18px;font-family:'Cormorant Garamond',serif;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);white-space:nowrap;margin-bottom:-1px;transition:color .2s}
+.room-tabs-row{display:flex;border-bottom:1px solid var(--bone);margin-bottom:22px;overflow-x:auto;gap:0;-webkit-overflow-scrolling:touch}
+.room-tab{background:none;border:none;border-bottom:2px solid transparent;padding:10px 16px;font-family:'Cormorant Garamond',serif;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);white-space:nowrap;margin-bottom:-1px;transition:color .2s;position:relative}
 .room-tab.active{border-bottom-color:var(--ink);color:var(--ink)}
+.room-tab.drag-over{border-bottom-color:var(--gold)!important;color:var(--gold)!important}
+.room-tab[draggable="true"]{cursor:grab;user-select:none}
+.drag-handle{font-size:9px;color:var(--warm);margin-right:4px;letter-spacing:-.1em}
 
-/* ── BUDGET ── */
+/* HOME VIEW & ROOM SUB-TABS */
+.home-view-tabs{display:flex;border-bottom:1px solid var(--bone);margin-bottom:22px}
+.home-view-tab{background:none;border:none;border-bottom:2px solid transparent;padding:10px 22px;font-family:'Cormorant Garamond',serif;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:-1px;transition:color .2s}
+.home-view-tab.active{border-bottom-color:var(--ink);color:var(--ink)}
+.room-sub-tabs{display:flex;border-bottom:1px solid var(--bone);margin-bottom:20px}
+.room-sub-tab{background:none;border:none;border-bottom:2px solid transparent;padding:9px 16px;font-family:'Cormorant Garamond',serif;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:-1px;transition:color .2s}
+.room-sub-tab.active{border-bottom-color:var(--gold);color:var(--ink)}
+
+/* FLOOR PLAN */
+.fp-container{position:relative;width:100%;cursor:crosshair;user-select:none;border:1px solid var(--bone);overflow:hidden;background:var(--bone)}
+.fp-img{width:100%;display:block;pointer-events:none}
+.fp-marker{position:absolute;width:30px;height:30px;border-radius:50%;background:var(--ink);border:2px solid var(--cream);box-shadow:0 2px 10px rgba(28,20,10,.35);transform:translate(-50%,-50%);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--cream);font-family:'Cormorant Garamond',serif;font-size:12px;font-weight:700;transition:transform .2s,background .2s;z-index:5}
+.fp-marker:hover{transform:translate(-50%,-50%) scale(1.2);background:var(--gold)}
+.fp-label{position:absolute;top:calc(100% + 5px);left:50%;transform:translateX(-50%);background:var(--ink);color:var(--cream);font-size:9px;letter-spacing:.1em;text-transform:uppercase;font-family:'Cormorant Garamond',serif;padding:3px 8px;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .2s}
+.fp-marker:hover .fp-label{opacity:1}
+.fp-del{position:absolute;top:-5px;right:-5px;width:15px;height:15px;border-radius:50%;background:var(--red);border:none;color:white;font-size:9px;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .2s;cursor:pointer}
+.fp-marker:hover .fp-del{opacity:1}
+
+/* MOOD BOARD SWATCHES */
+.mb-swatch-wrap{position:relative;display:inline-flex;flex-direction:column;align-items:center}
+.mb-swatch{width:52px;height:52px;border:1px solid rgba(28,20,10,.1);cursor:pointer;transition:transform .2s}
+.mb-swatch:hover{transform:scale(1.06)}
+.mb-swatch-del{position:absolute;top:-5px;right:-5px;background:var(--red);border:none;color:white;width:15px;height:15px;border-radius:50%;font-size:9px;cursor:pointer;opacity:0;transition:opacity .2s;display:flex;align-items:center;justify-content:center}
+.mb-swatch-wrap:hover .mb-swatch-del{opacity:1}
+.mb-swatch-label{font-size:9px;color:var(--muted);text-align:center;margin-top:3px;font-family:'Cormorant Garamond',serif;max-width:52px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.color-picker-input{width:100%;height:48px;border:1px solid var(--bone);cursor:pointer;margin-bottom:14px;padding:2px}
+.ral-row{display:flex;gap:8px;align-items:flex-start;margin-bottom:6px}
+.ral-preview-box{width:44px;height:44px;border:1px solid var(--bone);flex-shrink:0;transition:background .2s}
+
+/* BUDGET */
 .budget-block{background:var(--bone);padding:18px 22px;margin-bottom:22px;border-left:3px solid var(--ink)}
 .budget-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px}
 .budget-label{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);font-family:'Cormorant Garamond',serif;font-weight:600}
@@ -126,25 +159,27 @@ main{max-width:980px;margin:0 auto;padding:var(--section-pad);width:100%;flex:1}
 .bar-note{font-family:'Cormorant Garamond',serif;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
 .bar-note.over{color:var(--red)}
 
-/* ── PHOTO GRID ── */
+/* PHOTO GRID */
 .photo-grid{columns:2 180px;gap:12px;margin-top:16px}
 .photo-card{break-inside:avoid;margin-bottom:12px;position:relative;overflow:hidden;background:var(--bone);border:1px solid var(--bone);transition:box-shadow .2s}
 .photo-card:hover{box-shadow:0 4px 20px rgba(28,20,10,.12)}
 .photo-card img{width:100%;display:block;transition:transform .5s;cursor:pointer}
 .photo-card:hover img{transform:scale(1.04)}
-.photo-card-actions{position:absolute;top:7px;right:7px;display:flex;flex-direction:column;gap:5px;opacity:0;transition:opacity .2s}
+.photo-card-actions{position:absolute;top:7px;right:7px;display:flex;flex-direction:column;gap:4px;opacity:0;transition:opacity .2s}
 .photo-card:hover .photo-card-actions{opacity:1}
-.img-btn{width:28px;height:28px;border:none;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);transition:all .2s}
+.img-btn{width:26px;height:26px;border:none;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);transition:all .2s;cursor:pointer}
 .img-btn.default{background:rgba(247,243,237,.9);color:var(--muted)}
 .img-btn.liked{background:rgba(168,32,32,.88);color:var(--cream)}
 .img-btn.del{background:rgba(168,32,32,.88);color:var(--cream)}
+.img-btn.arch{background:rgba(247,243,237,.88);color:var(--muted)}
+.img-btn.arch:hover{background:rgba(28,20,10,.7);color:var(--cream)}
 .photo-note{padding:10px 12px 12px;font-size:13px;color:var(--ink);line-height:1.55;background:var(--cream);border-top:1px solid var(--bone)}
 .photo-link{display:block;padding:6px 12px;font-size:11px;color:var(--muted);font-family:'Cormorant Garamond',serif;letter-spacing:.1em;background:var(--bone);border-top:1px solid rgba(28,20,10,.07);text-decoration:none;text-overflow:ellipsis;overflow:hidden;white-space:nowrap}
 .photo-link:hover{color:var(--ink)}
 .photo-price{padding:4px 12px 10px;font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--green)}
 .liked-dot{position:absolute;top:7px;left:7px;width:8px;height:8px;border-radius:50%;background:var(--red);box-shadow:0 0 0 2px rgba(247,243,237,.8)}
 
-/* ── ITEMS ── */
+/* ITEMS */
 .item-row{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid var(--bone)}
 .item-thumb{width:52px;height:52px;object-fit:cover;flex-shrink:0;border:1px solid var(--bone)}
 .item-thumb-ph{width:52px;height:52px;background:var(--bone);flex-shrink:0;display:flex;align-items:center;justify-content:center;color:var(--warm);font-size:22px}
@@ -156,8 +191,9 @@ main{max-width:980px;margin:0 auto;padding:var(--section-pad);width:100%;flex:1}
 .item-price{font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--ink);flex-shrink:0;white-space:nowrap}
 .icon-btn{background:none;border:none;color:var(--muted);padding:3px;display:flex;transition:color .2s}
 .icon-btn:hover{color:var(--red)}
+.cat-badge{font-size:9px;letter-spacing:.1em;text-transform:uppercase;font-family:'Cormorant Garamond',serif;padding:2px 7px;border:1px solid var(--bone);color:var(--muted);margin-bottom:3px;display:inline-block}
 
-/* ── MOOD BOARD ── */
+/* MOOD BOARD */
 .mood-board{min-height:300px;background:var(--bone);padding:20px;display:flex;flex-wrap:wrap;gap:10px;margin-bottom:20px;border:2px dashed var(--warm)}
 .mood-board.empty-board{align-items:center;justify-content:center}
 .mood-tile{position:relative;overflow:hidden;border:1px solid var(--bone)}
@@ -168,10 +204,10 @@ main{max-width:980px;margin:0 auto;padding:var(--section-pad);width:100%;flex:1}
 .mood-tile .tile-note{position:absolute;bottom:0;left:0;right:0;background:rgba(28,20,10,.6);color:var(--cream);font-size:11px;padding:5px 7px;transform:translateY(100%);transition:transform .2s}
 .mood-tile:hover .tile-note{transform:translateY(0)}
 .mood-palette{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
-.palette-swatch{width:32px;height:32px;border:2px solid transparent;transition:border-color .2s;cursor:pointer}
+.palette-swatch{width:32px;height:32px;border:2px solid transparent;transition:border-color .2s}
 .palette-swatch:hover{border-color:var(--ink)}
 
-/* ── RECIPES ── */
+/* RECIPES */
 .recipe-grid{columns:2 240px;gap:14px;margin-top:16px}
 .recipe-card{break-inside:avoid;margin-bottom:14px;background:var(--cream);border:1px solid var(--bone);overflow:hidden}
 .recipe-img{width:100%;max-height:200px;object-fit:cover;display:block;cursor:pointer}
@@ -180,7 +216,7 @@ main{max-width:980px;margin:0 auto;padding:var(--section-pad);width:100%;flex:1}
 .recipe-title{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600;color:var(--ink);margin-bottom:6px}
 .recipe-text{font-size:13px;color:var(--muted);line-height:1.6;white-space:pre-wrap}
 
-/* ── UTILS ── */
+/* UTILS */
 .field-label{display:block;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:5px;font-weight:600}
 .field-input{width:100%;border:none;border-bottom:1px solid var(--warm);padding:9px 2px;color:var(--ink);font-size:15px;outline:none;margin-bottom:18px;border-radius:0;transition:border-color .2s}
 .field-input:focus{border-bottom-color:var(--ink)}
@@ -190,6 +226,7 @@ select.field-input{appearance:none}
 .btn-solid:hover{opacity:.82}
 .btn-solid.sm{padding:9px 20px;width:auto;font-size:12px}
 .btn-solid.green{background:var(--green)}
+.btn-solid.teal{background:var(--teal)}
 .btn-ghost{background:transparent;border:1px solid rgba(28,20,10,.22);color:var(--muted);font-family:'Cormorant Garamond',serif;font-size:11px;letter-spacing:.14em;text-transform:uppercase;padding:7px 16px;transition:all .2s}
 .btn-ghost:hover{background:rgba(28,20,10,.08);border-color:var(--ink);color:var(--ink)}
 .btn-ghost.danger{border-color:var(--red);color:var(--red)}
@@ -203,33 +240,27 @@ select.field-input{appearance:none}
 .flex-center{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .mb14{margin-bottom:14px}
 .divider{border:none;border-top:1px solid var(--bone);margin:20px 0}
-
-@media(max-width:520px){
-  .brand-name{font-size:26px}
-  .nav-btn{padding:11px 10px;font-size:10px}
-  .photo-grid,.recipe-grid{columns:1}
-  .modal-box{padding:22px 18px}
-}
+@media(max-width:520px){.brand-name{font-size:26px}.nav-btn{padding:11px 8px;font-size:10px;letter-spacing:.12em}.photo-grid,.recipe-grid{columns:1}.modal-box{padding:22px 18px}}
 </style>
 </head>
 <body>
-
 <input type="file" id="file-input" accept="image/*"/>
 <input type="file" id="file-input-camera" accept="image/*" capture="environment"/>
+<input type="file" id="fp-file-input" accept="image/*"/>
+<input type="file" id="rm-tile-input" accept="image/*" multiple/>
 
 <!-- SIDE PANEL -->
 <div id="panel-overlay" onclick="closeSidePanel()"></div>
 <div id="side-panel">
-  <div class="panel-head">
-    <div class="panel-title">All Photos</div>
-    <button class="panel-close" onclick="closeSidePanel()">×</button>
-  </div>
-  <div class="panel-filter-row" id="panel-filters">
+  <div class="panel-head"><div class="panel-title">All Photos</div><button class="panel-close" onclick="closeSidePanel()">×</button></div>
+  <div class="panel-filter-row">
     <button class="panel-filter active" onclick="setPanelFilter('all')">All</button>
     <button class="panel-filter" onclick="setPanelFilter('liked')">♥ Liked</button>
     <button class="panel-filter" onclick="setPanelFilter('home')">Home</button>
     <button class="panel-filter" onclick="setPanelFilter('wedding')">Wedding</button>
     <button class="panel-filter" onclick="setPanelFilter('honeymoon')">Honeymoon</button>
+    <button class="panel-filter" onclick="setPanelFilter('dayout')">Days Out</button>
+    <button class="panel-filter arch-filter" onclick="setPanelFilter('archived')">Archived</button>
   </div>
   <div class="panel-body" id="panel-body"></div>
 </div>
@@ -258,36 +289,30 @@ select.field-input{appearance:none}
     <div class="header-stripe"></div>
     <div class="header-inner">
       <div class="header-top">
-        <button class="header-btn panel-toggle" onclick="openSidePanel()" title="All Photos">
+        <button class="header-btn" onclick="openSidePanel()">
           <div class="panel-badge" id="panel-badge"></div>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
           Photos
         </button>
-        <div class="header-brand">
-          <div class="brand-name">MAISON</div>
-          <div class="brand-sub">Home &amp; Wedding Journal</div>
-        </div>
-        <div class="header-right">
-          <button class="header-btn" onclick="openSettings()">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
-            Settings
-          </button>
-        </div>
+        <div class="header-brand"><div class="brand-name">MAISON</div><div class="brand-sub">Home &amp; Wedding Journal</div></div>
+        <button class="header-btn" onclick="openSettings()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+          Settings
+        </button>
       </div>
       <nav>
         <button class="nav-btn active" data-section="home" onclick="showSection('home')">Our Home</button>
         <button class="nav-btn" data-section="wedding" onclick="showSection('wedding')">Wedding</button>
         <button class="nav-btn" data-section="honeymoon" onclick="showSection('honeymoon')">Honeymoon</button>
+        <button class="nav-btn" data-section="dayout" onclick="showSection('dayout')">Days Out</button>
         <button class="nav-btn" data-section="recipes" onclick="showSection('recipes')">Recipes</button>
       </nav>
     </div>
   </header>
-
   <main id="main-content"></main>
-
   <div id="camera-dock">
     <div class="cam-wrap">
-      <button class="cam-btn photos" onclick="openSidePanel()" title="All photos">
+      <button class="cam-btn photos" onclick="openSidePanel()">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
       </button>
       <div class="cam-label">All Photos</div>
@@ -312,9 +337,63 @@ select.field-input{appearance:none}
 </div>
 
 <script>
+// ── RAL COLOURS ──
+const RAL={
+  '1000':'#CCC58F','1001':'#D0A86B','1002':'#D9A521','1003':'#F9A800','1004':'#E49E00','1005':'#CB8C00',
+  '2000':'#E75B12','2001':'#BE4E20','2002':'#C53D16','2003':'#F47023',
+  '3000':'#AB2524','3001':'#A52019','3002':'#A52019','3003':'#8E1B1C','3005':'#5B1A20','3007':'#3A1C22',
+  '3009':'#744231','3011':'#7B2B2B','3013':'#963434','3015':'#E8AFAB','3016':'#B54B3A','3018':'#C6304A',
+  '3020':'#BB1F25','3022':'#D2614A','3027':'#B52444',
+  '4001':'#8A4F7D','4002':'#8E2C48','4003':'#D15B8F','4005':'#7A5AA0','4007':'#4A1348','4009':'#A68BA0',
+  '5000':'#264E6E','5001':'#1A4E6A','5002':'#2B3480','5003':'#224568','5005':'#1A4B80','5007':'#3B6186',
+  '5010':'#0E4C8C','5011':'#1F3148','5012':'#3882C4','5015':'#1876B4','5017':'#064A8C','5018':'#3B9DB3',
+  '5021':'#007B8C','5024':'#7093AC',
+  '6000':'#3B6E52','6001':'#2E6444','6002':'#3C6944','6005':'#1F4D34','6010':'#3B6B3B','6011':'#587B4A',
+  '6016':'#1B6E3F','6017':'#4E813B','6018':'#5C9140','6019':'#C5DBB8','6024':'#3B8547','6027':'#82C8B8',
+  '6029':'#228B45','6032':'#237A4B','6037':'#2A8240',
+  '7000':'#7E8B93','7001':'#8A9598','7002':'#888070','7003':'#817B6E','7004':'#9B9C9B','7005':'#6A6E6A',
+  '7015':'#535B63','7016':'#3D4549','7021':'#252B2F','7030':'#939185','7031':'#5B6A75','7032':'#B5B0A0',
+  '7035':'#C5CBCF','7037':'#7D8589','7038':'#B0B4B5','7039':'#6F7172','7040':'#9EA4AA','7042':'#8F9695',
+  '7043':'#4B5457','7044':'#B9B7A8','7045':'#919599','7047':'#D0D0CF',
+  '8000':'#89693E','8001':'#9E6025','8002':'#7B4429','8003':'#7A4728','8004':'#874B35','8007':'#6F4925',
+  '8008':'#6D4D2A','8011':'#542F1E','8012':'#6D3026','8014':'#4B3421','8015':'#5D2A1F','8016':'#4C2820',
+  '8017':'#442320','8019':'#362B27','8022':'#1A1213','8023':'#9E5E25','8024':'#79471D','8025':'#6E4D2C',
+  '8028':'#4E3A27',
+  '9001':'#F4EBD4','9002':'#E5E0D4','9003':'#ECECE8','9004':'#2B2B2C','9005':'#0A0A0A','9006':'#A9ABAC',
+  '9007':'#898A8D','9010':'#F7F6EF','9011':'#1C1C1E','9016':'#F7F7F4','9017':'#282826','9018':'#D4D7D4'
+};
+const RAL_NAMES={
+  '1000':'Beige Green','1001':'Beige','1002':'Sand Yellow','1003':'Signal Yellow','1004':'Golden Yellow','1005':'Honey Yellow',
+  '2000':'Yellow Orange','2001':'Red Orange','2002':'Vermilion','2003':'Pastel Orange',
+  '3000':'Flame Red','3001':'Signal Red','3002':'Carmine Red','3003':'Ruby Red','3005':'Wine Red','3007':'Black Red',
+  '3009':'Oxide Red','3011':'Brown Red','3013':'Tomato Red','3015':'Light Pink','3016':'Coral Red','3018':'Strawberry Red',
+  '3020':'Traffic Red','3022':'Salmon Pink','3027':'Raspberry Red',
+  '4001':'Red Lilac','4002':'Red Violet','4003':'Heather Violet','4005':'Blue Lilac','4007':'Purple Violet','4009':'Pastel Violet',
+  '5000':'Violet Blue','5001':'Green Blue','5002':'Ultramarine Blue','5003':'Sapphire Blue','5005':'Signal Blue',
+  '5007':'Brilliant Blue','5010':'Gentian Blue','5011':'Steel Blue','5012':'Light Blue','5015':'Sky Blue',
+  '5017':'Traffic Blue','5018':'Turquoise Blue','5021':'Water Blue','5024':'Pastel Blue',
+  '6000':'Patina Green','6001':'Emerald Green','6002':'Leaf Green','6005':'Moss Green','6010':'Grass Green',
+  '6011':'Reseda Green','6016':'Turquoise Green','6017':'Yellow Olive','6018':'Yellow Green','6019':'White Green',
+  '6024':'Traffic Green','6027':'Light Green','6029':'Mint Green','6032':'Signal Green','6037':'Pure Green',
+  '7000':'Squirrel Grey','7001':'Silver Grey','7002':'Olive Grey','7003':'Moss Grey','7004':'Signal Grey',
+  '7005':'Mouse Grey','7015':'Slate Grey','7016':'Anthracite Grey','7021':'Black Grey','7030':'Stone Grey',
+  '7031':'Blue Grey','7032':'Pebble Grey','7035':'Light Grey','7037':'Dusty Grey','7038':'Agate Grey',
+  '7039':'Quartz Grey','7040':'Window Grey','7042':'Traffic Grey A','7043':'Traffic Grey B',
+  '7044':'Silk Grey','7045':'Telegrey 1','7047':'Telegrey 4',
+  '8000':'Green Brown','8001':'Ochre Brown','8002':'Signal Brown','8003':'Clay Brown','8004':'Copper Brown',
+  '8007':'Fawn Brown','8008':'Olive Brown','8011':'Nut Brown','8012':'Red Brown','8014':'Sepia Brown',
+  '8015':'Chestnut Brown','8016':'Mahogany Brown','8017':'Chocolate Brown','8019':'Grey Brown','8022':'Black Brown',
+  '8023':'Orange Brown','8024':'Beige Brown','8025':'Pale Brown','8028':'Terra Brown',
+  '9001':'Cream','9002':'Grey White','9003':'Signal White','9004':'Signal Black','9005':'Jet Black',
+  '9006':'White Aluminium','9007':'Grey Aluminium','9010':'Pure White','9011':'Graphite Black',
+  '9016':'Traffic White','9017':'Traffic Black','9018':'Papyrus White'
+};
+
 // ── STATE ──
 let currentUser=null,currentSection='home',capturedDataURL=null;
-let panelFilter='all';
+let panelFilter='all',homeView='rooms',activeRoomTab='overview';
+let activeDayOutId=null,dragRoomIdx=null;
+let currentUserEmail=null,currentUserName='User';
 
 function getStore(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch(e){return d;}}
 function setStore(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
@@ -327,30 +406,31 @@ function initGoogle(){
   google.accounts.id.initialize({client_id:'643043876163-9evtski9p2oqs4s1pg0nn4g1tnqdeiv8.apps.googleusercontent.com',callback:handleGoogleLogin,auto_select:false});
   google.accounts.id.renderButton(document.getElementById('g_signin_btn'),{theme:'outline',size:'large',text:'sign_in_with',shape:'rectangular',width:260});
 }
-function parseJwt(token){try{const b=token.split('.')[1];return JSON.parse(atob(b.replace(/-/g,'+').replace(/_/g,'/')));}catch(e){return null;}}
+function parseJwt(t){try{return JSON.parse(atob(t.split('.')[1].replace(/-/g,'+').replace(/_/g,'/')));}catch(e){return null;}}
 function handleGoogleLogin(response){
-  const payload=parseJwt(response.credential);
-  if(!payload){document.getElementById('auth-err').textContent='Sign-in failed.';document.getElementById('auth-err').style.display='block';return;}
-  currentUser=payload.sub;
+  const p=parseJwt(response.credential);if(!p)return;
+  currentUser=p.sub;currentUserEmail=p.email||null;currentUserName=p.name||p.email||'User';
   document.getElementById('auth-screen').style.display='none';
   document.getElementById('app').classList.add('visible');
-  document.getElementById('header-username') && (document.getElementById('header-username').textContent=payload.name||'');
-  showSection('home');
-  updatePanelBadge();
+  setupFileInputs();showSection('home');updatePanelBadge();
 }
-window.addEventListener('load',()=>{
-  if(typeof google!=='undefined'&&google.accounts)initGoogle();
-  else{const s=document.querySelector('script[src*="gsi"]');if(s)s.addEventListener('load',initGoogle);}
-});
+window.addEventListener('load',()=>{if(typeof google!=='undefined'&&google.accounts)initGoogle();else{const s=document.querySelector('script[src*="gsi"]');if(s)s.addEventListener('load',initGoogle);}});
+
+function setupFileInputs(){
+  document.getElementById('fp-file-input').onchange=function(e){
+    const f=e.target.files[0];if(!f)return;
+    const r=new FileReader();r.onload=ev=>{const fp=userData('floorplan',{img:null,markers:[]});fp.img=ev.target.result;saveData('floorplan',fp);showSection('home');};r.readAsDataURL(f);this.value='';
+  };
+}
 
 // ── NAV ──
 function showSection(s){
-  currentSection=s;
-  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.section===s));
+  currentSection=s;document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.section===s));
   const main=document.getElementById('main-content');
   if(s==='home')renderHome(main);
   else if(s==='wedding')renderWedding(main);
   else if(s==='honeymoon')renderHoneymoon(main);
+  else if(s==='dayout')renderDayOut(main);
   else if(s==='recipes')renderRecipes(main);
 }
 
@@ -359,211 +439,95 @@ function openModal(html){document.getElementById('modal-box').innerHTML=html;doc
 function closeModal(){document.getElementById('modal').style.display='none';document.getElementById('modal-box').innerHTML='';}
 
 // ── SIDE PANEL ──
-function openSidePanel(){
-  renderSidePanel();
-  document.getElementById('side-panel').classList.add('open');
-  document.getElementById('panel-overlay').classList.add('open');
-  document.body.style.overflow='hidden';
-}
-function closeSidePanel(){
-  document.getElementById('side-panel').classList.remove('open');
-  document.getElementById('panel-overlay').classList.remove('open');
-  document.body.style.overflow='';
-}
+function openSidePanel(){renderSidePanel();document.getElementById('side-panel').classList.add('open');document.getElementById('panel-overlay').classList.add('open');document.body.style.overflow='hidden';}
+function closeSidePanel(){document.getElementById('side-panel').classList.remove('open');document.getElementById('panel-overlay').classList.remove('open');document.body.style.overflow='';}
 function setPanelFilter(f){
   panelFilter=f;
-  document.querySelectorAll('.panel-filter').forEach(b=>b.classList.toggle('active',b.textContent.toLowerCase().includes(f==='all'?'all':f==='liked'?'♥':f)));
+  document.querySelectorAll('.panel-filter').forEach(b=>{
+    const t=b.textContent.trim().toLowerCase();
+    const match=(f==='all'&&t==='all')||(f==='liked'&&t.includes('liked'))||(f==='archived'&&t==='archived')||(f===t);
+    b.classList.toggle('active',match);
+  });
   renderSidePanel();
 }
-
-function getAllPhotos(){
-  // returns array of {photo, type, contextId, label, sectionKey}
+function getAllPhotos(archivedOnly=false){
   const all=[];
   const home=userData('home',{rooms:[]});
-  home.rooms.forEach(r=>{
-    (r.photos||[]).forEach(p=>all.push({photo:p,type:'home_room',contextId:r.id,label:r.name,sectionKey:'home'}));
-  });
+  home.rooms.forEach(r=>(r.photos||[]).filter(p=>archivedOnly?p.archived===true:!p.archived).forEach(p=>all.push({photo:p,type:'home_room',contextId:r.id,label:r.name,sectionKey:'home'})));
   const w=userData('wedding',{inspo:[]});
-  (w.inspo||[]).forEach(p=>all.push({photo:p,type:'wedding',contextId:'wedding',label:'Wedding',sectionKey:'wedding'}));
+  (w.inspo||[]).filter(p=>archivedOnly?p.archived===true:!p.archived).forEach(p=>all.push({photo:p,type:'wedding',contextId:'wedding',label:'Wedding',sectionKey:'wedding'}));
   const h=userData('honeymoon',{rooms:[],inspo:[]});
-  (h.inspo||[]).forEach(p=>all.push({photo:p,type:'honeymoon_inspo',contextId:'honeymoon',label:'Honeymoon',sectionKey:'honeymoon'}));
-  h.rooms.forEach(r=>{
-    (r.photos||[]).forEach(p=>all.push({photo:p,type:'honeymoon_room',contextId:r.id,label:r.name,sectionKey:'honeymoon'}));
-  });
+  (h.inspo||[]).filter(p=>archivedOnly?p.archived===true:!p.archived).forEach(p=>all.push({photo:p,type:'honeymoon_inspo',contextId:'honeymoon',label:'Honeymoon',sectionKey:'honeymoon'}));
+  h.rooms.forEach(r=>(r.photos||[]).filter(p=>archivedOnly?p.archived===true:!p.archived).forEach(p=>all.push({photo:p,type:'honeymoon_room',contextId:r.id,label:r.name,sectionKey:'honeymoon'})));
+  const d=userData('dayout',{plans:[]});
+  d.plans.forEach(pl=>(pl.photos||[]).filter(p=>archivedOnly?p.archived===true:!p.archived).forEach(p=>all.push({photo:p,type:'dayout_plan',contextId:pl.id,label:pl.name,sectionKey:'dayout'})));
   return all;
 }
-
 function renderSidePanel(){
-  let all=getAllPhotos();
-
-  // filter
-  if(panelFilter==='liked') all=all.filter(e=>e.photo.liked);
-  else if(panelFilter==='home') all=all.filter(e=>e.sectionKey==='home');
-  else if(panelFilter==='wedding') all=all.filter(e=>e.sectionKey==='wedding');
-  else if(panelFilter==='honeymoon') all=all.filter(e=>e.sectionKey==='honeymoon');
-
-  const liked=all.filter(e=>e.photo.liked);
-  const rest=all.filter(e=>!e.photo.liked);
-
+  const isArchived=panelFilter==='archived';
+  let all=getAllPhotos(isArchived);
+  if(panelFilter==='liked')all=all.filter(e=>e.photo.liked);
+  else if(panelFilter==='home')all=all.filter(e=>e.sectionKey==='home');
+  else if(panelFilter==='wedding')all=all.filter(e=>e.sectionKey==='wedding');
+  else if(panelFilter==='honeymoon')all=all.filter(e=>e.sectionKey==='honeymoon');
+  else if(panelFilter==='dayout')all=all.filter(e=>e.sectionKey==='dayout');
   const body=document.getElementById('panel-body');
-  if(!all.length){body.innerHTML=`<div class="panel-empty">No photos yet.<br/>Use the capture button to add some.</div>`;return;}
-
-  let html='';
-
-  if(liked.length&&panelFilter!=='liked'){
-    html+=`<div class="panel-pinned-label"><span>♥</span> Favourites</div>`;
-    html+=`<div class="panel-grid">${liked.map(e=>panelPhotoCard(e)).join('')}</div>`;
+  if(!all.length){body.innerHTML=`<div class="panel-empty">${isArchived?'No archived photos.':'No photos yet.'}</div>`;return;}
+  if(isArchived){
+    const groups={};all.forEach(e=>{if(!groups[e.label])groups[e.label]=[];groups[e.label].push(e);});
+    body.innerHTML=Object.entries(groups).map(([l,items])=>`<div class="panel-section-label">${l}</div><div class="panel-grid">${items.map(e=>panelPhotoCard(e,true)).join('')}</div>`).join('');return;
   }
-
+  const liked=all.filter(e=>e.photo.liked),rest=all.filter(e=>!e.photo.liked);
+  let html='';
+  if(liked.length&&panelFilter!=='liked')html+=`<div class="panel-pinned-label"><span>♥</span> Favourites</div><div class="panel-grid">${liked.map(e=>panelPhotoCard(e)).join('')}</div>`;
   if(rest.length){
-    if(liked.length&&panelFilter!=='liked') html+=`<div class="panel-section-label" style="margin-top:18px">All Photos</div>`;
-    // group rest by label
-    const groups={};
-    rest.forEach(e=>{if(!groups[e.label])groups[e.label]=[];groups[e.label].push(e);});
-    Object.entries(groups).forEach(([label,items])=>{
-      if(panelFilter==='all'||panelFilter==='liked') html+=`<div class="panel-section-label">${label}</div>`;
+    if(liked.length&&panelFilter!=='liked')html+=`<div class="panel-section-label" style="margin-top:18px">All Photos</div>`;
+    const groups={};rest.forEach(e=>{if(!groups[e.label])groups[e.label]=[];groups[e.label].push(e);});
+    Object.entries(groups).forEach(([l,items])=>{
+      if(['all','liked'].includes(panelFilter))html+=`<div class="panel-section-label">${l}</div>`;
       html+=`<div class="panel-grid">${items.map(e=>panelPhotoCard(e)).join('')}</div>`;
     });
   }
-
-  if(panelFilter==='liked'&&liked.length){
-    const groups={};
-    liked.forEach(e=>{if(!groups[e.label])groups[e.label]=[];groups[e.label].push(e);});
-    html='';
-    Object.entries(groups).forEach(([label,items])=>{
-      html+=`<div class="panel-section-label">${label}</div><div class="panel-grid">${items.map(e=>panelPhotoCard(e)).join('')}</div>`;
-    });
-  }
-
+  if(panelFilter==='liked'&&liked.length){const groups={};liked.forEach(e=>{if(!groups[e.label])groups[e.label]=[];groups[e.label].push(e);});html=Object.entries(groups).map(([l,items])=>`<div class="panel-section-label">${l}</div><div class="panel-grid">${items.map(e=>panelPhotoCard(e)).join('')}</div>`).join('');}
   body.innerHTML=html;
 }
-
-function panelPhotoCard(e){
+function panelPhotoCard(e,isArchived=false){
   const p=e.photo;
-  return`<div class="panel-photo" id="pp_${p.id}">
-    <img src="${p.img}" loading="lazy" onclick="navigateToPhoto('${e.type}','${e.contextId}','${e.sectionKey}')"/>
-    ${p.liked?'<div class="panel-photo-liked"></div>':''}
-    <button class="panel-photo-like${p.liked?' on':''}" onclick="panelToggleLike('${p.id}','${e.type}','${e.contextId}')" title="${p.liked?'Unlike':'Like'}">♥</button>
-    <div class="panel-photo-dest">${e.label}</div>
-  </div>`;
+  if(isArchived)return`<div class="panel-photo"><img src="${p.img}" loading="lazy"/><div class="panel-photo-dest" style="transform:none">${e.label}</div><div class="panel-photo-arch-actions"><button class="arch-btn" style="background:rgba(42,95,63,.85)" onclick="restorePhoto('${p.id}','${e.type}','${e.contextId}')">↩ Restore</button><button class="arch-btn" style="background:rgba(168,32,32,.85)" onclick="deleteFromPanel('${p.id}','${e.type}','${e.contextId}')">✕ Delete</button></div></div>`;
+  return`<div class="panel-photo"><img src="${p.img}" loading="lazy" onclick="navigateToPhoto('${e.type}','${e.contextId}','${e.sectionKey}')"/>${p.liked?'<div class="panel-photo-liked"></div>':''}<button class="panel-photo-like${p.liked?' on':''}" onclick="panelToggleLike('${p.id}','${e.type}','${e.contextId}')">♥</button><button class="panel-photo-move" onclick="openAssignPhoto('${p.id}','${e.type}','${e.contextId}')">↗</button><div class="panel-photo-dest">${e.label}</div></div>`;
 }
-
-function panelToggleLike(photoId,type,contextId){
-  const arr=getPhotosArray(type,contextId);
-  const p=arr.find(p=>p.id===photoId);
-  if(p){p.liked=!p.liked;savePhotosArray(type,contextId,arr);}
-  renderSidePanel();
-  updatePanelBadge();
-  // also refresh main if visible
-  showSection(currentSection);
+function panelToggleLike(photoId,type,contextId){const arr=getPhotosArray(type,contextId);const p=arr.find(p=>p.id===photoId);if(p){p.liked=!p.liked;savePhotosArray(type,contextId,arr);}renderSidePanel();updatePanelBadge();showSection(currentSection);}
+function restorePhoto(photoId,type,contextId){const arr=getPhotosArray(type,contextId);const p=arr.find(p=>p.id===photoId);if(p){p.archived=false;savePhotosArray(type,contextId,arr);}renderSidePanel();updatePanelBadge();showSection(currentSection);}
+function deleteFromPanel(photoId,type,contextId){if(!confirm('Permanently delete?'))return;savePhotosArray(type,contextId,getPhotosArray(type,contextId).filter(p=>p.id!==photoId));renderSidePanel();updatePanelBadge();}
+function openAssignPhoto(photoId,fromType,fromContextId){
+  const home=userData('home',{rooms:[]});const h=userData('honeymoon',{rooms:[]});const d=userData('dayout',{plans:[]});
+  const dests=[
+    ...home.rooms.map(r=>({label:`${r.name} (Home)`,type:'home_room',contextId:r.id})),
+    {label:'Wedding Inspiration',type:'wedding',contextId:'wedding'},
+    {label:'Honeymoon Inspiration',type:'honeymoon_inspo',contextId:'honeymoon'},
+    ...h.rooms.map(r=>({label:`${r.name} (Honeymoon)`,type:'honeymoon_room',contextId:r.id})),
+    ...d.plans.map(pl=>({label:`${pl.name} (Day Out)`,type:'dayout_plan',contextId:pl.id}))
+  ].filter(dest=>!(dest.type===fromType&&dest.contextId===fromContextId));
+  if(!dests.length){alert('No other destinations available.');return;}
+  openModal(`<div class="modal-head"><div class="modal-title">Move Photo To</div><button class="modal-close" onclick="closeModal()">×</button></div><div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">${dests.map(dest=>`<button class="btn-ghost" style="text-align:left" onclick="doMovePhoto('${photoId}','${fromType}','${fromContextId}','${dest.type}','${dest.contextId}')">${dest.label}</button>`).join('')}</div>`);
 }
-
+function doMovePhoto(photoId,fromType,fromContextId,toType,toContextId){
+  const fromArr=getPhotosArray(fromType,fromContextId);const photo=fromArr.find(p=>p.id===photoId);if(!photo){closeModal();return;}
+  savePhotosArray(fromType,fromContextId,fromArr.filter(p=>p.id!==photoId));
+  const toArr=getPhotosArray(toType,toContextId);toArr.push(photo);savePhotosArray(toType,toContextId,toArr);
+  closeModal();renderSidePanel();showSection(currentSection);updatePanelBadge();
+}
 function navigateToPhoto(type,contextId,sectionKey){
   closeSidePanel();
-  if(sectionKey==='home'){activeRoomId=contextId;showSection('home');}
+  if(sectionKey==='home'){activeRoomId=contextId;homeView='rooms';activeRoomTab='photos';showSection('home');}
   else if(sectionKey==='wedding'){weddingTab='inspo';showSection('wedding');}
-  else if(sectionKey==='honeymoon'){
-    if(type==='honeymoon_room')activeHoneymoonRoomId=contextId;
-    honeymoonTab=type==='honeymoon_room'?'rooms':'inspo';
-    showSection('honeymoon');
-  }
+  else if(sectionKey==='honeymoon'){if(type==='honeymoon_room')activeHoneymoonRoomId=contextId;honeymoonTab=type==='honeymoon_room'?'rooms':'inspo';showSection('honeymoon');}
+  else if(sectionKey==='dayout'){activeDayOutId=contextId;showSection('dayout');}
 }
-
 function updatePanelBadge(){
-  if(!currentUser)return;
-  const liked=getAllPhotos().filter(e=>e.photo.liked).length;
-  const badge=document.getElementById('panel-badge');
-  if(badge){badge.textContent=liked;badge.classList.toggle('show',liked>0);}
+  if(!currentUser)return;const liked=getAllPhotos(false).filter(e=>e.photo.liked).length;
+  const badge=document.getElementById('panel-badge');if(badge){badge.textContent=liked;badge.classList.toggle('show',liked>0);}
 }
-
-// ── CAPTURE ──
-function triggerCapture(){
-  const home=userData('home',{rooms:[]});
-  let roomOpts=home.rooms.map(r=>`<option value="home_${r.id}">${r.name} (Room)</option>`).join('');
-  openModal(`
-    <div class="modal-head"><div class="modal-title">Add Photo</div><button class="modal-close" onclick="closeModal()">×</button></div>
-    <label class="field-label">Save To</label>
-    <select id="cap-dest" class="field-input">${roomOpts}<option value="wedding">Wedding Inspiration</option><option value="honeymoon">Honeymoon Inspiration</option><option value="recipes">Recipe</option></select>
-    <div class="modal-row" style="margin-top:4px">
-      <button class="btn-solid sm green" onclick="pickFile('camera')">📷 Take Photo</button>
-      <button class="btn-solid sm" onclick="pickFile('gallery')">🖼 From Gallery</button>
-    </div>
-    <div id="cap-preview-wrap" style="margin-top:14px;display:none">
-      <img id="cap-preview" class="modal-preview"/>
-      <label class="field-label">Note / Caption</label>
-      <textarea id="cap-note" class="field-input" placeholder="Add a note…" rows="3"></textarea>
-      <label class="field-label">Link (optional)</label>
-      <input id="cap-link" class="field-input" placeholder="https://…" type="url"/>
-      <label class="field-label">Price — £ (optional)</label>
-      <input id="cap-price" class="field-input" placeholder="0.00" type="number" min="0" step="0.01"/>
-      <label class="field-label">Item / Vendor Name (optional)</label>
-      <input id="cap-name" class="field-input" placeholder="e.g. IKEA Kallax"/>
-      <div class="modal-row" style="margin-top:8px">
-        <button class="btn-solid sm" onclick="saveCapture()">Save to Journal</button>
-        <button class="btn-ghost" onclick="closeModal()">Cancel</button>
-      </div>
-    </div>`);
-}
-function pickFile(source){
-  const fi=source==='camera'?document.getElementById('file-input-camera'):document.getElementById('file-input');
-  fi.onchange=e=>{const file=e.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=ev=>{capturedDataURL=ev.target.result;const pw=document.getElementById('cap-preview-wrap');if(pw){pw.style.display='block';document.getElementById('cap-preview').src=capturedDataURL;}};reader.readAsDataURL(file);fi.value='';};fi.click();
-}
-function saveCapture(){
-  if(!capturedDataURL){alert('Please select a photo first.');return;}
-  const dest=document.getElementById('cap-dest').value;
-  const note=document.getElementById('cap-note').value.trim();
-  const link=document.getElementById('cap-link').value.trim();
-  const price=parseFloat(document.getElementById('cap-price').value)||0;
-  const name=document.getElementById('cap-name').value.trim();
-  const photo={id:uid(),img:capturedDataURL,note,link,price,name,date:Date.now(),liked:false};
-  if(dest.startsWith('home_')){const roomId=dest.replace('home_','');const home=userData('home',{rooms:[]});const room=home.rooms.find(r=>r.id===roomId);if(room){room.photos=room.photos||[];room.photos.push(photo);saveData('home',home);}}
-  else if(dest==='wedding'){const w=userData('wedding',{inspo:[]});w.inspo.push(photo);saveData('wedding',w);}
-  else if(dest==='honeymoon'){const h=userData('honeymoon',{rooms:[],inspo:[],budget:0});if(!h.inspo)h.inspo=[];h.inspo.push(photo);saveData('honeymoon',h);}
-  else if(dest==='recipes'){const r=userData('recipes',{items:[]});r.items.push({id:uid(),img:capturedDataURL,title:name||'New Recipe',tags:[],text:note,date:Date.now()});saveData('recipes',r);}
-  capturedDataURL=null;closeModal();showSection(currentSection);updatePanelBadge();
-}
-
-// ── HOME ──
-let activeRoomId=null;
-function renderHome(main){
-  const home=userData('home',{rooms:[]});
-  if(!home.rooms.length){main.innerHTML=`<div class="section-rule"><div><div class="section-title">Our Home</div><div class="section-sub">Add rooms to start planning your space.</div></div><button class="btn-solid sm" onclick="openAddRoom()">+ Add Room</button></div><div class="empty"><div class="empty-icon">🏠</div>No rooms yet.</div>`;return;}
-  if(!activeRoomId||!home.rooms.find(r=>r.id===activeRoomId))activeRoomId=home.rooms[0].id;
-  const room=home.rooms.find(r=>r.id===activeRoomId);
-  const photos=room.photos||[];const items=room.items||[];
-  const budget=room.budget||0;
-  const spent=items.reduce((s,it)=>s+(it.price||0),0)+photos.reduce((s,p)=>s+(p.price||0),0);
-  const pct=budget>0?Math.min(spent/budget*100,100):0;const over=budget>0&&spent>budget;
-  const tabs=home.rooms.map(r=>`<button class="room-tab${r.id===activeRoomId?' active':''}" onclick="setActiveRoom('${r.id}')">${r.name}</button>`).join('');
-  main.innerHTML=`
-    <div class="section-rule"><div><div class="section-title">Our Home</div><div class="section-sub">Track every room, budget &amp; piece of furniture.</div></div><button class="btn-solid sm" onclick="openAddRoom()">+ Room</button></div>
-    <div class="room-tabs-row">${tabs}</div>
-    <div class="budget-block"><div class="budget-row"><div><div class="budget-label">${room.name} Budget</div><div class="budget-amount${over?' over':''}">£${spent.toLocaleString(undefined,{minimumFractionDigits:2})} <span style="font-size:14px;color:var(--muted)">/ £${(budget||0).toLocaleString()}</span></div></div><button class="btn-ghost" onclick="editRoomBudget('${room.id}')">Edit Budget</button></div><div class="bar-track"><div class="bar-fill${over?' over':''}" style="width:${pct}%"></div></div><div class="bar-note${over?' over':''}">${over?'Over budget':'Remaining: £'+(budget-spent).toLocaleString(undefined,{minimumFractionDigits:2})}</div></div>
-    <div class="flex-between mb14"><div style="font-family:'Cormorant Garamond',serif;font-size:16px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)">Furniture &amp; Items</div><div class="flex-center"><button class="btn-ghost" onclick="openAddItem('${room.id}')">+ Add Item</button><button class="btn-ghost danger" onclick="deleteRoom('${room.id}')">Delete Room</button></div></div>
-    ${renderItemList(items,room.id)}
-    <div class="flex-between mb14" style="margin-top:22px"><div style="font-family:'Cormorant Garamond',serif;font-size:16px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)">Photos</div></div>
-    ${renderPhotoGrid(photos,'home_room',room.id)}`;
-}
-function renderItemList(items,roomId){
-  if(!items.length)return`<div class="empty" style="padding:20px 0;font-size:13px">No items yet.</div>`;
-  return items.map(it=>`<div class="item-row">${it.img?`<img class="item-thumb" src="${it.img}"/>`:`<div class="item-thumb-ph">🛋</div>`}<div class="item-body"><div class="item-name">${it.name||'Item'}</div>${it.store?`<div class="item-store">${it.store}</div>`:''}${it.link?`<a class="item-link" href="${it.link}" target="_blank" rel="noopener">${it.link}</a>`:''}</div>${it.price?`<div class="item-price">£${it.price.toLocaleString(undefined,{minimumFractionDigits:2})}</div>`:''}<button class="icon-btn" onclick="deleteItem('${roomId}','${it.id}')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg></button></div>`).join('');
-}
-function renderPhotoGrid(photos,type,contextId){
-  if(!photos||!photos.length)return`<div class="empty" style="padding:20px 0;font-size:13px">No photos yet.</div>`;
-  const sorted=[...photos].sort((a,b)=>(b.liked?1:0)-(a.liked?1:0));
-  return`<div class="photo-grid">${sorted.map(p=>`<div class="photo-card">${p.liked?'<div class="liked-dot"></div>':''}<img src="${p.img}" loading="lazy" onclick="viewPhoto('${p.id}','${type}','${contextId}')"/><div class="photo-card-actions"><button class="img-btn${p.liked?' liked':' default'}" onclick="toggleLike('${p.id}','${type}','${contextId}')">♥</button><button class="img-btn del" onclick="deletePhoto('${p.id}','${type}','${contextId}')">✕</button></div>${p.note?`<div class="photo-note">${p.note}</div>`:''}${p.link?`<a class="photo-link" href="${p.link}" target="_blank" rel="noopener">🔗 ${p.link}</a>`:''}${p.price?`<div class="photo-price">£${p.price.toLocaleString(undefined,{minimumFractionDigits:2})}</div>`:''}</div>`).join('')}</div>`;
-}
-function setActiveRoom(id){activeRoomId=id;showSection('home');}
-function openAddRoom(){openModal(`<div class="modal-head"><div class="modal-title">Add Room</div><button class="modal-close" onclick="closeModal()">×</button></div><label class="field-label">Room Name</label><input id="new-room-name" class="field-input" placeholder="e.g. Living Room…"/><label class="field-label">Budget (optional)</label><input id="new-room-budget" class="field-input" type="number" placeholder="0.00" min="0" step="0.01"/><div class="modal-row"><button class="btn-solid sm" onclick="saveRoom()">Create Room</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);}
-function saveRoom(){const name=document.getElementById('new-room-name').value.trim();if(!name)return;const budget=parseFloat(document.getElementById('new-room-budget').value)||0;const home=userData('home',{rooms:[]});const id=uid();home.rooms.push({id,name,budget,photos:[],items:[]});saveData('home',home);activeRoomId=id;closeModal();showSection('home');}
-function editRoomBudget(roomId){const home=userData('home',{rooms:[]});const room=home.rooms.find(r=>r.id===roomId);openModal(`<div class="modal-head"><div class="modal-title">Edit Budget</div><button class="modal-close" onclick="closeModal()">×</button></div><label class="field-label">${room.name}</label><input id="edit-budget" class="field-input" type="number" value="${room.budget||0}" min="0" step="0.01"/><div class="modal-row"><button class="btn-solid sm" onclick="saveRoomBudget('${roomId}')">Save</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);}
-function saveRoomBudget(id){const home=userData('home',{rooms:[]});const room=home.rooms.find(r=>r.id===id);if(room){room.budget=parseFloat(document.getElementById('edit-budget').value)||0;saveData('home',home);}closeModal();showSection('home');}
-function deleteRoom(roomId){if(!confirm('Delete this room and all its photos?'))return;const home=userData('home',{rooms:[]});home.rooms=home.rooms.filter(r=>r.id!==roomId);activeRoomId=home.rooms.length?home.rooms[0].id:null;saveData('home',home);showSection('home');}
-function openAddItem(roomId){openModal(`<div class="modal-head"><div class="modal-title">Add Item</div><button class="modal-close" onclick="closeModal()">×</button></div><label class="field-label">Item Name</label><input id="item-name" class="field-input" placeholder="e.g. IKEA Kallax"/><label class="field-label">Store</label><input id="item-store" class="field-input" placeholder="e.g. IKEA…"/><label class="field-label">Link</label><input id="item-link" class="field-input" type="url" placeholder="https://…"/><label class="field-label">Price</label><input id="item-price" class="field-input" type="number" placeholder="0.00" min="0" step="0.01"/><label class="field-label">Photo (optional)</label><button class="btn-ghost" onclick="pickItemPhoto()">Choose Photo</button><img id="item-img-preview" style="display:none;max-height:120px;margin-top:8px"/><input type="file" id="item-file" accept="image/*" style="display:none"/><div class="modal-row" style="margin-top:14px"><button class="btn-solid sm" onclick="saveItem('${roomId}')">Add to Room</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);}
-let itemImgData=null;
-function pickItemPhoto(){itemImgData=null;const fi=document.getElementById('item-file');fi.onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{itemImgData=ev.target.result;const p=document.getElementById('item-img-preview');p.src=itemImgData;p.style.display='block';};r.readAsDataURL(f);};fi.click();}
-function saveItem(roomId){const name=document.getElementById('item-name').value.trim();if(!name)return;const home=userData('home',{rooms:[]});const room=home.rooms.find(r=>r.id===roomId);if(!room)return;room.items=room.items||[];room.items.push({id:uid(),name,store:document.getElementById('item-store').value.trim(),link:document.getElementById('item-link').value.trim(),price:parseFloat(document.getElementById('item-price').value)||0,img:itemImgData||null});itemImgData=null;saveData('home',home);closeModal();showSection('home');}
-function deleteItem(roomId,itemId){const home=userData('home',{rooms:[]});const room=home.rooms.find(r=>r.id===roomId);if(room){room.items=(room.items||[]).filter(i=>i.id!==itemId);saveData('home',home);}showSection('home');}
 
 // ── PHOTO HELPERS ──
 function getPhotosArray(type,contextId){
@@ -571,6 +535,7 @@ function getPhotosArray(type,contextId){
   if(type==='wedding'){const w=userData('wedding',{inspo:[]});return w.inspo=w.inspo||[];}
   if(type==='honeymoon_room'){const h=userData('honeymoon',{rooms:[]});const room=h.rooms.find(r=>r.id===contextId);return room?(room.photos=room.photos||[],room.photos):[];}
   if(type==='honeymoon_inspo'){const h=userData('honeymoon',{rooms:[],inspo:[]});return h.inspo=h.inspo||[];}
+  if(type==='dayout_plan'){const d=userData('dayout',{plans:[]});const pl=d.plans.find(p=>p.id===contextId);return pl?(pl.photos=pl.photos||[],pl.photos):[];}
   return[];
 }
 function savePhotosArray(type,contextId,arr){
@@ -578,10 +543,236 @@ function savePhotosArray(type,contextId,arr){
   else if(type==='wedding'){const w=userData('wedding',{inspo:[]});w.inspo=arr;saveData('wedding',w);}
   else if(type==='honeymoon_room'){const h=userData('honeymoon',{rooms:[]});const room=h.rooms.find(r=>r.id===contextId);if(room){room.photos=arr;saveData('honeymoon',h);}}
   else if(type==='honeymoon_inspo'){const h=userData('honeymoon',{rooms:[],inspo:[]});h.inspo=arr;saveData('honeymoon',h);}
+  else if(type==='dayout_plan'){const d=userData('dayout',{plans:[]});const pl=d.plans.find(p=>p.id===contextId);if(pl){pl.photos=arr;saveData('dayout',d);}}
 }
 function toggleLike(photoId,type,contextId){const arr=getPhotosArray(type,contextId);const p=arr.find(p=>p.id===photoId);if(p)p.liked=!p.liked;savePhotosArray(type,contextId,arr);showSection(currentSection);updatePanelBadge();}
-function deletePhoto(photoId,type,contextId){if(!confirm('Remove this photo?'))return;savePhotosArray(type,contextId,getPhotosArray(type,contextId).filter(p=>p.id!==photoId));showSection(currentSection);updatePanelBadge();}
-function viewPhoto(photoId,type,contextId){const p=getPhotosArray(type,contextId).find(p=>p.id===photoId);if(!p)return;openModal(`<div class="modal-head"><div class="modal-title">${p.note||'Photo'}</div><button class="modal-close" onclick="closeModal()">×</button></div><img src="${p.img}" style="width:100%;max-height:360px;object-fit:contain;border:1px solid var(--bone);margin-bottom:12px"/>${p.note?`<p style="font-size:15px;line-height:1.6;margin-bottom:10px">${p.note}</p>`:''}${p.link?`<a href="${p.link}" target="_blank" rel="noopener" style="font-size:13px;color:var(--muted);word-break:break-all">🔗 ${p.link}</a>`:''}${p.price?`<div style="font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--green);margin-top:8px">£${p.price.toLocaleString(undefined,{minimumFractionDigits:2})}</div>`:''}`);  }
+function archivePhoto(photoId,type,contextId){const arr=getPhotosArray(type,contextId);const p=arr.find(p=>p.id===photoId);if(p){p.archived=true;savePhotosArray(type,contextId,arr);}showSection(currentSection);updatePanelBadge();}
+function deletePhoto(photoId,type,contextId){if(!confirm('Permanently delete this photo?'))return;savePhotosArray(type,contextId,getPhotosArray(type,contextId).filter(p=>p.id!==photoId));showSection(currentSection);updatePanelBadge();}
+function viewPhoto(photoId,type,contextId){const p=getPhotosArray(type,contextId).find(p=>p.id===photoId);if(!p)return;openModal(`<div class="modal-head"><div class="modal-title">${p.note||'Photo'}</div><button class="modal-close" onclick="closeModal()">×</button></div><img src="${p.img}" style="width:100%;max-height:360px;object-fit:contain;border:1px solid var(--bone);margin-bottom:12px"/>${p.note?`<p style="font-size:15px;line-height:1.6;margin-bottom:10px">${p.note}</p>`:''}${p.link?`<a href="${p.link}" target="_blank" rel="noopener" style="font-size:13px;color:var(--muted);word-break:break-all">🔗 ${p.link}</a>`:''}${p.price?`<div style="font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--green);margin-top:8px">£${p.price.toLocaleString(undefined,{minimumFractionDigits:2})}</div>`:''}`); }
+
+function renderPhotoGrid(photos,type,contextId){
+  const visible=(photos||[]).filter(p=>!p.archived);
+  if(!visible.length)return`<div class="empty" style="padding:20px 0;font-size:13px">No photos yet.</div>`;
+  const sorted=[...visible].sort((a,b)=>(b.liked?1:0)-(a.liked?1:0));
+  return`<div class="photo-grid">${sorted.map(p=>`<div class="photo-card">${p.liked?'<div class="liked-dot"></div>':''}<img src="${p.img}" loading="lazy" onclick="viewPhoto('${p.id}','${type}','${contextId}')"/><div class="photo-card-actions"><button class="img-btn${p.liked?' liked':' default'}" onclick="toggleLike('${p.id}','${type}','${contextId}')">♥</button><button class="img-btn arch" onclick="archivePhoto('${p.id}','${type}','${contextId}')" title="Archive"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 8v13H3V8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg></button><button class="img-btn del" onclick="deletePhoto('${p.id}','${type}','${contextId}')">✕</button></div>${p.note?`<div class="photo-note">${p.note}</div>`:''}${p.link?`<a class="photo-link" href="${p.link}" target="_blank" rel="noopener">🔗 ${p.link}</a>`:''}${p.price?`<div class="photo-price">£${p.price.toLocaleString(undefined,{minimumFractionDigits:2})}</div>`:''}</div>`).join('')}</div>`;
+}
+
+// ── CAPTURE ──
+function triggerCapture(){
+  const home=userData('home',{rooms:[]});const d=userData('dayout',{plans:[]});
+  const roomOpts=home.rooms.map(r=>`<option value="home_${r.id}">${r.name} (Room)</option>`).join('');
+  const dayOpts=d.plans.map(pl=>`<option value="dayout_${pl.id}">${pl.name} (Day Out)</option>`).join('');
+  openModal(`<div class="modal-head"><div class="modal-title">Add Photo</div><button class="modal-close" onclick="closeModal()">×</button></div>
+    <label class="field-label">Save To</label>
+    <select id="cap-dest" class="field-input">${roomOpts}<option value="wedding">Wedding Inspiration</option><option value="honeymoon">Honeymoon Inspiration</option>${dayOpts}<option value="recipes">Recipe</option></select>
+    <div class="modal-row" style="margin-top:4px">
+      <button class="btn-solid sm green" onclick="pickFile('camera')">📷 Take Photo</button>
+      <button class="btn-solid sm" onclick="pickFile('gallery')">🖼 From Gallery</button>
+    </div>
+    <div id="cap-preview-wrap" style="margin-top:14px;display:none">
+      <img id="cap-preview" class="modal-preview"/>
+      <label class="field-label">Note / Caption</label><textarea id="cap-note" class="field-input" placeholder="Add a note…" rows="3"></textarea>
+      <label class="field-label">Link (optional)</label><input id="cap-link" class="field-input" placeholder="https://…" type="url"/>
+      <label class="field-label">Price — £ (optional)</label><input id="cap-price" class="field-input" placeholder="0.00" type="number" min="0" step="0.01"/>
+      <label class="field-label">Name (optional)</label><input id="cap-name" class="field-input" placeholder="e.g. IKEA Kallax"/>
+      <div class="modal-row" style="margin-top:8px">
+        <button class="btn-solid sm" onclick="saveCapture()">Save to Journal</button>
+        <button class="btn-ghost" onclick="closeModal()">Cancel</button>
+      </div>
+    </div>`);
+}
+function pickFile(src){const fi=src==='camera'?document.getElementById('file-input-camera'):document.getElementById('file-input');fi.onchange=e=>{const file=e.target.files[0];if(!file)return;const r=new FileReader();r.onload=ev=>{capturedDataURL=ev.target.result;const pw=document.getElementById('cap-preview-wrap');if(pw){pw.style.display='block';document.getElementById('cap-preview').src=capturedDataURL;}};r.readAsDataURL(file);fi.value='';};fi.click();}
+function saveCapture(){
+  if(!capturedDataURL){alert('Please select a photo first.');return;}
+  const dest=document.getElementById('cap-dest').value;
+  const note=document.getElementById('cap-note').value.trim(),link=document.getElementById('cap-link').value.trim();
+  const price=parseFloat(document.getElementById('cap-price').value)||0,name=document.getElementById('cap-name').value.trim();
+  const photo={id:uid(),img:capturedDataURL,note,link,price,name,date:Date.now(),liked:false,archived:false};
+  if(dest.startsWith('home_')){const home=userData('home',{rooms:[]});const room=home.rooms.find(r=>r.id===dest.replace('home_',''));if(room){room.photos=room.photos||[];room.photos.push(photo);saveData('home',home);}}
+  else if(dest==='wedding'){const w=userData('wedding',{inspo:[]});w.inspo.push(photo);saveData('wedding',w);}
+  else if(dest==='honeymoon'){const h=userData('honeymoon',{rooms:[],inspo:[],budget:0});if(!h.inspo)h.inspo=[];h.inspo.push(photo);saveData('honeymoon',h);}
+  else if(dest.startsWith('dayout_')){const d=userData('dayout',{plans:[]});const pl=d.plans.find(p=>p.id===dest.replace('dayout_',''));if(pl){pl.photos=pl.photos||[];pl.photos.push(photo);saveData('dayout',d);}}
+  else if(dest==='recipes'){const r=userData('recipes',{items:[]});r.items.push({id:uid(),img:capturedDataURL,title:name||'New Recipe',tags:[],text:note,date:Date.now()});saveData('recipes',r);}
+  capturedDataURL=null;closeModal();showSection(currentSection);updatePanelBadge();
+}
+
+// ── DRAG ROOMS ──
+function dragRoomStart(e,idx){dragRoomIdx=idx;e.dataTransfer.effectAllowed='move';setTimeout(()=>e.target.style.opacity='.45',0);}
+function dragRoomOver(e,idx){e.preventDefault();document.querySelectorAll('.room-tab[draggable]').forEach(t=>t.classList.remove('drag-over'));if(idx!==dragRoomIdx)e.currentTarget.classList.add('drag-over');}
+function dragRoomLeave(e){e.currentTarget.classList.remove('drag-over');}
+function dropRoom(e,idx,section='home'){
+  e.preventDefault();if(dragRoomIdx===null||dragRoomIdx===idx)return;
+  if(section==='home'){const home=userData('home',{rooms:[]});const[m]=home.rooms.splice(dragRoomIdx,1);home.rooms.splice(idx,0,m);saveData('home',home);}
+  else if(section==='dayout'){const d=userData('dayout',{plans:[]});const[m]=d.plans.splice(dragRoomIdx,1);d.plans.splice(idx,0,m);saveData('dayout',d);}
+  dragRoomIdx=null;document.querySelectorAll('.room-tab[draggable]').forEach(t=>{t.classList.remove('drag-over');t.style.opacity='1';});showSection(section);
+}
+function dragRoomEnd(e){e.target.style.opacity='1';document.querySelectorAll('.room-tab[draggable]').forEach(t=>t.classList.remove('drag-over'));dragRoomIdx=null;}
+
+// ── HOME ──
+let activeRoomId=null;
+function setHomeView(v){homeView=v;showSection('home');}
+function setRoomTab(t){activeRoomTab=t;showSection('home');}
+function setActiveRoom(id){if(id!==activeRoomId)activeRoomTab='overview';activeRoomId=id;showSection('home');}
+
+function renderHome(main){
+  const home=userData('home',{rooms:[]});
+  const viewToggle=`<div class="home-view-tabs"><button class="home-view-tab${homeView==='rooms'?' active':''}" onclick="setHomeView('rooms')">Rooms</button><button class="home-view-tab${homeView==='floorplan'?' active':''}" onclick="setHomeView('floorplan')">Floor Plan</button></div>`;
+  if(homeView==='floorplan'){main.innerHTML=`<div class="section-rule"><div><div class="section-title">Our Home</div><div class="section-sub">Visualise your space.</div></div></div>${viewToggle}${renderFloorPlanView()}`;return;}
+  if(!home.rooms.length){main.innerHTML=`<div class="section-rule"><div><div class="section-title">Our Home</div><div class="section-sub">Add rooms to start planning.</div></div><button class="btn-solid sm" onclick="openAddRoom()">+ Add Room</button></div>${viewToggle}<div class="empty"><div class="empty-icon">🏠</div>No rooms yet.</div>`;return;}
+  if(!activeRoomId||!home.rooms.find(r=>r.id===activeRoomId))activeRoomId=home.rooms[0].id;
+  const room=home.rooms.find(r=>r.id===activeRoomId);
+  const tabs=home.rooms.map((r,i)=>`<button class="room-tab${r.id===activeRoomId?' active':''}" draggable="true" ondragstart="dragRoomStart(event,${i})" ondragover="dragRoomOver(event,${i})" ondragleave="dragRoomLeave(event)" ondrop="dropRoom(event,${i},'home')" ondragend="dragRoomEnd(event)" onclick="setActiveRoom('${r.id}')"><span class="drag-handle">⋮⋮</span>${r.name}</button>`).join('');
+  const subTabs=['overview','photos','moodboard'].map(t=>`<button class="room-sub-tab${activeRoomTab===t?' active':''}" onclick="setRoomTab('${t}')">${t==='overview'?'Overview':t==='photos'?'Photos':'Mood Board'}</button>`).join('');
+  let content='';
+  if(activeRoomTab==='overview'){
+    const photos=room.photos||[],items=room.items||[];
+    const budget=room.budget||0,spent=items.reduce((s,it)=>s+(it.price||0),0)+photos.filter(p=>!p.archived).reduce((s,p)=>s+(p.price||0),0);
+    const pct=budget>0?Math.min(spent/budget*100,100):0,over=budget>0&&spent>budget;
+    content=`<div class="budget-block"><div class="budget-row"><div><div class="budget-label">${room.name} Budget</div><div class="budget-amount${over?' over':''}">£${spent.toLocaleString(undefined,{minimumFractionDigits:2})} <span style="font-size:14px;color:var(--muted)">/ £${(budget||0).toLocaleString()}</span></div></div><button class="btn-ghost" onclick="editRoomBudget('${room.id}')">Edit</button></div><div class="bar-track"><div class="bar-fill${over?' over':''}" style="width:${pct}%"></div></div><div class="bar-note${over?' over':''}">${over?'Over budget':'Remaining: £'+(budget-spent).toLocaleString(undefined,{minimumFractionDigits:2})}</div></div>
+      <div class="flex-between mb14"><div style="font-family:'Cormorant Garamond',serif;font-size:16px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)">Furniture &amp; Items</div><div class="flex-center"><button class="btn-ghost" onclick="openAddItem('${room.id}')">+ Add Item</button><button class="btn-ghost danger" onclick="deleteRoom('${room.id}')">Delete Room</button></div></div>
+      ${renderItemList(items,room.id)}`;
+  } else if(activeRoomTab==='photos'){
+    content=renderPhotoGrid(room.photos||[],'home_room',room.id);
+  } else {
+    content=renderRoomMoodboard(room);
+  }
+  main.innerHTML=`<div class="section-rule"><div><div class="section-title">Our Home</div><div class="section-sub">Track every room, budget &amp; piece of furniture.</div></div><button class="btn-solid sm" onclick="openAddRoom()">+ Room</button></div>${viewToggle}<div class="room-tabs-row">${tabs}</div><div class="room-sub-tabs">${subTabs}</div>${content}`;
+}
+
+function renderItemList(items,roomId){
+  if(!items.length)return`<div class="empty" style="padding:20px 0;font-size:13px">No items yet.</div>`;
+  return items.map(it=>`<div class="item-row">${it.img?`<img class="item-thumb" src="${it.img}"/>`:`<div class="item-thumb-ph">🛋</div>`}<div class="item-body"><div class="item-name">${it.name||'Item'}</div>${it.store?`<div class="item-store">${it.store}</div>`:''}${it.link?`<a class="item-link" href="${it.link}" target="_blank" rel="noopener">${it.link}</a>`:''}</div>${it.price?`<div class="item-price">£${it.price.toLocaleString(undefined,{minimumFractionDigits:2})}</div>`:''}<button class="icon-btn" onclick="deleteItem('${roomId}','${it.id}')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg></button></div>`).join('');
+}
+
+// ── ROOM MOOD BOARD ──
+function renderRoomMoodboard(room){
+  const mb=room.moodboard||{colors:[],tiles:[],notes:''};
+  const swatches=mb.colors.length?mb.colors.map((c,i)=>`<div class="mb-swatch-wrap"><div class="mb-swatch" style="background:${c.hex}" title="${c.ral?'RAL '+c.ral:''}"></div><button class="mb-swatch-del" onclick="removeRoomColor('${room.id}',${i})">×</button><div class="mb-swatch-label">${c.ral?'RAL '+c.ral:c.name||''}</div></div>`).join(''):`<p style="font-size:13px;color:var(--muted);font-style:italic">No colours yet.</p>`;
+  const tiles=mb.tiles&&mb.tiles.length?mb.tiles.map((tile,ti)=>`<div style="position:relative;overflow:hidden;border:1px solid var(--bone);display:inline-block;vertical-align:top"><img src="${tile.img}" style="width:${tile.size==='sm'?120:tile.size==='lg'?250:180}px;height:${tile.size==='sm'?90:tile.size==='lg'?180:130}px;object-fit:cover;display:block"/><button onclick="removeRoomMoodTile('${room.id}',${ti})" style="position:absolute;top:3px;right:3px;background:rgba(168,32,32,.85);border:none;color:#fff;width:18px;height:18px;font-size:11px;cursor:pointer">×</button></div>`).join(''):`<p style="font-size:13px;color:var(--muted);font-style:italic">No images yet.</p>`;
+  return`<div style="margin-bottom:20px">
+    <div class="flex-between mb14"><div style="font-family:'Cormorant Garamond',serif;font-size:16px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)">Colour Palette</div><button class="btn-ghost" onclick="openAddColor('${room.id}')">+ Add Colour</button></div>
+    <div style="display:flex;flex-wrap:wrap;gap:12px;margin-bottom:20px">${swatches}</div>
+    <div class="flex-between mb14"><div style="font-family:'Cormorant Garamond',serif;font-size:16px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)">Inspiration Images</div><button class="btn-ghost" onclick="openAddRoomMoodTile('${room.id}')">+ Add Image</button></div>
+    <div style="display:flex;flex-wrap:wrap;gap:10px">${tiles}</div>
+    ${mb.notes?`<div style="margin-top:14px;font-size:13px;color:var(--muted);font-style:italic">${mb.notes}</div>`:''}
+  </div>`;
+}
+
+function openAddColor(roomId){
+  const dropperBtn=typeof EyeDropper!=='undefined'?`<button class="btn-ghost" style="margin-bottom:14px;width:100%" onclick="useDropper('${roomId}')">🎯 Pick Colour from Screen</button>`:`<p style="font-size:11px;color:var(--muted);margin-bottom:14px;font-style:italic">Screen colour picker available in Chrome/Edge.</p>`;
+  openModal(`<div class="modal-head"><div class="modal-title">Add Colour</div><button class="modal-close" onclick="closeModal()">×</button></div>
+    <label class="field-label">Colour Picker</label>
+    <input id="color-picker" type="color" value="#c9b89a" class="color-picker-input"/>
+    ${dropperBtn}
+    <label class="field-label">Or Enter RAL Number</label>
+    <div class="ral-row mb14">
+      <input id="ral-input" class="field-input" placeholder="e.g. 9010" style="margin-bottom:0" oninput="previewRal(this.value)"/>
+      <div id="ral-preview" class="ral-preview-box"></div>
+    </div>
+    <div id="ral-name" style="font-size:12px;color:var(--muted);margin-bottom:14px;font-style:italic;margin-top:-12px"></div>
+    <label class="field-label">Colour Name (optional)</label>
+    <input id="color-name" class="field-input" placeholder="e.g. Cornish Cream…"/>
+    <div class="modal-row">
+      <button class="btn-solid sm" onclick="saveColor('${roomId}')">Add Colour</button>
+      <button class="btn-ghost" onclick="closeModal()">Cancel</button>
+    </div>`);
+}
+
+function previewRal(val){
+  const clean=val.trim().replace(/^RAL\s*/i,'');
+  const hex=RAL[clean],name=RAL_NAMES[clean]||'';
+  const preview=document.getElementById('ral-preview'),nameEl=document.getElementById('ral-name');
+  if(preview)preview.style.background=hex||'transparent';
+  if(nameEl)nameEl.textContent=hex?`RAL ${clean} — ${name}`:clean.length>=4?'RAL number not found':'';
+}
+
+function saveColor(roomId){
+  const ralRaw=(document.getElementById('ral-input')?.value||'').trim().replace(/^RAL\s*/i,'');
+  const pickerVal=document.getElementById('color-picker')?.value||'#808080';
+  const nameVal=(document.getElementById('color-name')?.value||'').trim();
+  let hex,ral=null,name=nameVal;
+  if(ralRaw&&RAL[ralRaw]){hex=RAL[ralRaw];ral=ralRaw;if(!name)name=RAL_NAMES[ralRaw]||'';}
+  else hex=pickerVal;
+  const home=userData('home',{rooms:[]});const room=home.rooms.find(r=>r.id===roomId);if(!room)return;
+  room.moodboard=room.moodboard||{colors:[],tiles:[],notes:''};
+  room.moodboard.colors.push({id:uid(),hex,ral,name});
+  saveData('home',home);closeModal();showSection('home');
+}
+
+function removeRoomColor(roomId,idx){
+  const home=userData('home',{rooms:[]});const room=home.rooms.find(r=>r.id===roomId);
+  if(room&&room.moodboard){room.moodboard.colors.splice(idx,1);saveData('home',home);}showSection('home');
+}
+
+async function useDropper(roomId){
+  try{const dropper=new EyeDropper();const result=await dropper.open();const picker=document.getElementById('color-picker');if(picker)picker.value=result.sRGBHex;}catch(e){}
+}
+
+function openAddRoomMoodTile(roomId){
+  const fi=document.getElementById('rm-tile-input');
+  fi.onchange=e=>{
+    Array.from(e.target.files).forEach(file=>{const r=new FileReader();r.onload=ev=>{const home=userData('home',{rooms:[]});const room=home.rooms.find(r=>r.id===roomId);if(!room)return;room.moodboard=room.moodboard||{colors:[],tiles:[],notes:''};room.moodboard.tiles=room.moodboard.tiles||[];room.moodboard.tiles.push({id:uid(),img:ev.target.result,size:'md'});saveData('home',home);showSection('home');};r.readAsDataURL(file);});fi.value='';
+  };fi.click();
+}
+
+function removeRoomMoodTile(roomId,idx){const home=userData('home',{rooms:[]});const room=home.rooms.find(r=>r.id===roomId);if(room&&room.moodboard){room.moodboard.tiles.splice(idx,1);saveData('home',home);}showSection('home');}
+
+// ── FLOOR PLAN ──
+function renderFloorPlanView(){
+  const fp=userData('floorplan',{img:null,markers:[]});
+  if(!fp.img)return`<div style="text-align:center;padding:48px 20px"><div style="font-size:48px;opacity:.3;margin-bottom:16px">🏠</div><p style="font-size:15px;color:var(--muted);font-style:italic;margin-bottom:20px">Upload a floor plan image to get started</p><button class="btn-solid sm" onclick="document.getElementById('fp-file-input').click()">Upload Floor Plan</button><p style="font-size:11px;color:var(--muted);margin-top:12px;font-style:italic">Supports JPG and PNG</p></div>`;
+  return`<div class="flex-between mb14"><p style="font-size:12px;color:var(--muted);font-style:italic">Tap an empty area to pin a room</p><div class="flex-center"><button class="btn-ghost" onclick="document.getElementById('fp-file-input').click()">Replace</button><button class="btn-ghost danger" onclick="clearFloorPlan()">Remove</button></div></div>
+  <div class="fp-container" onclick="floorPlanClick(event)"><img src="${fp.img}" class="fp-img"/>${fp.markers.map(m=>`<div class="fp-marker" style="left:${m.x}%;top:${m.y}%" onclick="event.stopPropagation();navigateFromMarker('${m.roomId}')">${m.label.charAt(0).toUpperCase()}<div class="fp-label">${m.label}</div><button class="fp-del" onclick="event.stopPropagation();deleteMarker('${m.id}')">×</button></div>`).join('')}</div>`;
+}
+function floorPlanClick(e){if(e.target.closest('.fp-marker'))return;const rect=e.currentTarget.getBoundingClientRect();const x=((e.clientX-rect.left)/rect.width*100).toFixed(1);const y=((e.clientY-rect.top)/rect.height*100).toFixed(1);openAddMarkerModal(parseFloat(x),parseFloat(y));}
+function openAddMarkerModal(x,y){const home=userData('home',{rooms:[]});if(!home.rooms.length){alert('Add some rooms first.');return;}openModal(`<div class="modal-head"><div class="modal-title">Pin a Room</div><button class="modal-close" onclick="closeModal()">×</button></div><label class="field-label">Select Room</label><select id="marker-room" class="field-input">${home.rooms.map(r=>`<option value="${r.id}">${r.name}</option>`).join('')}</select><div class="modal-row"><button class="btn-solid sm" onclick="saveMarker(${x},${y})">Add Pin</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);}
+function saveMarker(x,y){const roomId=document.getElementById('marker-room').value;const home=userData('home',{rooms:[]});const room=home.rooms.find(r=>r.id===roomId);if(!room)return;const fp=userData('floorplan',{img:null,markers:[]});fp.markers.push({id:uid(),x,y,roomId,label:room.name});saveData('floorplan',fp);closeModal();showSection('home');}
+function deleteMarker(markerId){const fp=userData('floorplan',{img:null,markers:[]});fp.markers=fp.markers.filter(m=>m.id!==markerId);saveData('floorplan',fp);showSection('home');}
+function navigateFromMarker(roomId){activeRoomId=roomId;homeView='rooms';activeRoomTab='overview';showSection('home');}
+function clearFloorPlan(){if(!confirm('Remove the floor plan?'))return;saveData('floorplan',{img:null,markers:[]});showSection('home');}
+
+// ── HOME CRUD ──
+function openAddRoom(){openModal(`<div class="modal-head"><div class="modal-title">Add Room</div><button class="modal-close" onclick="closeModal()">×</button></div><label class="field-label">Room Name</label><input id="new-room-name" class="field-input" placeholder="e.g. Living Room…"/><label class="field-label">Budget (optional)</label><input id="new-room-budget" class="field-input" type="number" placeholder="0.00" min="0" step="0.01"/><div class="modal-row"><button class="btn-solid sm" onclick="saveRoom()">Create Room</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);}
+function saveRoom(){const name=document.getElementById('new-room-name').value.trim();if(!name)return;const budget=parseFloat(document.getElementById('new-room-budget').value)||0;const home=userData('home',{rooms:[]});const id=uid();home.rooms.push({id,name,budget,photos:[],items:[],moodboard:{colors:[],tiles:[],notes:''}});saveData('home',home);activeRoomId=id;activeRoomTab='overview';closeModal();showSection('home');}
+function editRoomBudget(roomId){const home=userData('home',{rooms:[]});const room=home.rooms.find(r=>r.id===roomId);openModal(`<div class="modal-head"><div class="modal-title">Edit Budget</div><button class="modal-close" onclick="closeModal()">×</button></div><label class="field-label">${room.name}</label><input id="edit-budget" class="field-input" type="number" value="${room.budget||0}" min="0" step="0.01"/><div class="modal-row"><button class="btn-solid sm" onclick="saveRoomBudget('${roomId}')">Save</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);}
+function saveRoomBudget(id){const home=userData('home',{rooms:[]});const room=home.rooms.find(r=>r.id===id);if(room){room.budget=parseFloat(document.getElementById('edit-budget').value)||0;saveData('home',home);}closeModal();showSection('home');}
+function deleteRoom(roomId){if(!confirm('Delete this room and all its content?'))return;const home=userData('home',{rooms:[]});home.rooms=home.rooms.filter(r=>r.id!==roomId);activeRoomId=home.rooms.length?home.rooms[0].id:null;saveData('home',home);showSection('home');}
+function openAddItem(roomId){openModal(`<div class="modal-head"><div class="modal-title">Add Item</div><button class="modal-close" onclick="closeModal()">×</button></div><label class="field-label">Item Name</label><input id="item-name" class="field-input" placeholder="e.g. IKEA Kallax"/><label class="field-label">Store</label><input id="item-store" class="field-input" placeholder="e.g. IKEA…"/><label class="field-label">Link</label><input id="item-link" class="field-input" type="url" placeholder="https://…"/><label class="field-label">Price</label><input id="item-price" class="field-input" type="number" placeholder="0.00" min="0" step="0.01"/><label class="field-label">Photo (optional)</label><button class="btn-ghost" onclick="pickItemPhoto()">Choose Photo</button><img id="item-img-preview" style="display:none;max-height:120px;margin-top:8px"/><input type="file" id="item-file" accept="image/*" style="display:none"/><div class="modal-row" style="margin-top:14px"><button class="btn-solid sm" onclick="saveItem('${roomId}')">Add to Room</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);}
+let itemImgData=null;
+function pickItemPhoto(){itemImgData=null;const fi=document.getElementById('item-file');fi.onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{itemImgData=ev.target.result;const p=document.getElementById('item-img-preview');p.src=itemImgData;p.style.display='block';};r.readAsDataURL(f);};fi.click();}
+function saveItem(roomId){const name=document.getElementById('item-name').value.trim();if(!name)return;const home=userData('home',{rooms:[]});const room=home.rooms.find(r=>r.id===roomId);if(!room)return;room.items=room.items||[];room.items.push({id:uid(),name,store:document.getElementById('item-store').value.trim(),link:document.getElementById('item-link').value.trim(),price:parseFloat(document.getElementById('item-price').value)||0,img:itemImgData||null});itemImgData=null;saveData('home',home);closeModal();showSection('home');}
+function deleteItem(roomId,itemId){const home=userData('home',{rooms:[]});const room=home.rooms.find(r=>r.id===roomId);if(room){room.items=(room.items||[]).filter(i=>i.id!==itemId);saveData('home',home);}showSection('home');}
+
+// ── DAYS OUT ──
+function renderDayOut(main){
+  const d=userData('dayout',{plans:[]});
+  if(!d.plans.length){main.innerHTML=`<div class="section-rule"><div><div class="section-title">Days Out</div><div class="section-sub">Plan trips, days out &amp; adventures.</div></div><button class="btn-solid sm teal" onclick="openAddDayOutPlan()">+ Add Plan</button></div><div class="empty"><div class="empty-icon">🗺️</div>No plans yet. Add your first day out!</div>`;return;}
+  if(!activeDayOutId||!d.plans.find(p=>p.id===activeDayOutId))activeDayOutId=d.plans[0].id;
+  const plan=d.plans.find(p=>p.id===activeDayOutId);
+  const photos=plan.photos||[],items=plan.items||[];
+  const budget=plan.budget||0,spent=items.reduce((s,it)=>s+(it.price||0),0)+photos.filter(p=>!p.archived).reduce((s,p)=>s+(p.price||0),0);
+  const pct=budget>0?Math.min(spent/budget*100,100):0,over=budget>0&&spent>budget;
+  const tabs=d.plans.map((p,i)=>`<button class="room-tab${p.id===activeDayOutId?' active':''}" draggable="true" ondragstart="dragRoomStart(event,${i})" ondragover="dragRoomOver(event,${i})" ondragleave="dragRoomLeave(event)" ondrop="dropRoom(event,${i},'dayout')" ondragend="dragRoomEnd(event)" onclick="setActiveDayOut('${p.id}')"><span class="drag-handle">⋮⋮</span>${p.name}</button>`).join('');
+  const catIcons={'Travel':'🚗','Food & Drink':'🍽️','Activity':'🎭','Shopping':'🛍️','Other':'📌'};
+  const itemsHtml=items.length?items.map(it=>`<div class="item-row"><div class="item-thumb-ph">${catIcons[it.cat]||'📌'}</div><div class="item-body"><span class="cat-badge">${it.cat||'Other'}</span><div class="item-name">${it.name}</div>${it.link?`<a class="item-link" href="${it.link}" target="_blank" rel="noopener">${it.link}</a>`:''}</div>${it.price?`<div class="item-price">£${it.price.toLocaleString(undefined,{minimumFractionDigits:2})}</div>`:''}<button class="icon-btn" onclick="deleteDayOutItem('${plan.id}','${it.id}')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg></button></div>`).join(''):`<div class="empty" style="padding:20px 0;font-size:13px">No activities yet.</div>`;
+  main.innerHTML=`<div class="section-rule"><div><div class="section-title">Days Out</div><div class="section-sub">Plan trips, days out &amp; adventures.</div></div><button class="btn-solid sm teal" onclick="openAddDayOutPlan()">+ Add Plan</button></div>
+    <div class="room-tabs-row">${tabs}</div>
+    ${plan.date||plan.location?`<div style="font-size:13px;color:var(--muted);margin-bottom:16px;font-style:italic">${plan.date?`📅 ${new Date(plan.date+'T00:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})}`:''} ${plan.location?`📍 ${plan.location}`:''}</div>`:''}
+    <div class="budget-block"><div class="budget-row"><div><div class="budget-label">${plan.name} Budget</div><div class="budget-amount${over?' over':''}">£${spent.toLocaleString(undefined,{minimumFractionDigits:2})} <span style="font-size:14px;color:var(--muted)">/ £${budget.toLocaleString()}</span></div></div><div class="flex-center"><button class="btn-ghost" onclick="editDayOutBudget('${plan.id}')">Edit Budget</button><button class="btn-ghost danger" onclick="deleteDayOutPlan('${plan.id}')">Delete</button></div></div><div class="bar-track"><div class="bar-fill${over?' over':''}" style="width:${pct}%"></div></div><div class="bar-note${over?' over':''}">${over?'Over budget':'Remaining: £'+(budget-spent).toLocaleString(undefined,{minimumFractionDigits:2})}</div></div>
+    <div class="flex-between mb14"><div style="font-family:'Cormorant Garamond',serif;font-size:16px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)">Activities &amp; Bookings</div><button class="btn-ghost" onclick="openAddDayOutItem('${plan.id}')">+ Add</button></div>
+    ${itemsHtml}
+    <div class="flex-between mb14" style="margin-top:22px"><div style="font-family:'Cormorant Garamond',serif;font-size:16px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)">Photos</div></div>
+    ${renderPhotoGrid(photos,'dayout_plan',plan.id)}`;
+}
+function setActiveDayOut(id){activeDayOutId=id;showSection('dayout');}
+function openAddDayOutPlan(){openModal(`<div class="modal-head"><div class="modal-title">New Day Out</div><button class="modal-close" onclick="closeModal()">×</button></div><label class="field-label">Name</label><input id="do-name" class="field-input" placeholder="e.g. Cornwall Weekend, Tate Modern…"/><label class="field-label">Date (optional)</label><input id="do-date" class="field-input" type="date"/><label class="field-label">Location (optional)</label><input id="do-location" class="field-input" placeholder="e.g. London, Cornwall…"/><label class="field-label">Budget (optional)</label><input id="do-budget" class="field-input" type="number" placeholder="0.00" min="0" step="0.01"/><div class="modal-row"><button class="btn-solid sm teal" onclick="saveDayOutPlan()">Create Plan</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);}
+function saveDayOutPlan(){const name=document.getElementById('do-name').value.trim();if(!name)return;const d=userData('dayout',{plans:[]});const id=uid();d.plans.push({id,name,date:document.getElementById('do-date').value,location:document.getElementById('do-location').value.trim(),budget:parseFloat(document.getElementById('do-budget').value)||0,photos:[],items:[]});saveData('dayout',d);activeDayOutId=id;closeModal();showSection('dayout');}
+function deleteDayOutPlan(planId){if(!confirm('Delete this day out plan?'))return;const d=userData('dayout',{plans:[]});d.plans=d.plans.filter(p=>p.id!==planId);activeDayOutId=d.plans.length?d.plans[0].id:null;saveData('dayout',d);showSection('dayout');}
+function editDayOutBudget(planId){const d=userData('dayout',{plans:[]});const pl=d.plans.find(p=>p.id===planId);openModal(`<div class="modal-head"><div class="modal-title">Edit Budget</div><button class="modal-close" onclick="closeModal()">×</button></div><label class="field-label">${pl.name}</label><input id="edit-budget" class="field-input" type="number" value="${pl.budget||0}" min="0" step="0.01"/><div class="modal-row"><button class="btn-solid sm" onclick="saveDayOutBudget('${planId}')">Save</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);}
+function saveDayOutBudget(planId){const d=userData('dayout',{plans:[]});const pl=d.plans.find(p=>p.id===planId);if(pl){pl.budget=parseFloat(document.getElementById('edit-budget').value)||0;saveData('dayout',d);}closeModal();showSection('dayout');}
+function openAddDayOutItem(planId){openModal(`<div class="modal-head"><div class="modal-title">Add Activity / Booking</div><button class="modal-close" onclick="closeModal()">×</button></div><label class="field-label">Name</label><input id="doi-name" class="field-input" placeholder="e.g. Lunch at The Seafood Bar…"/><label class="field-label">Category</label><select id="doi-cat" class="field-input"><option>Travel</option><option>Food & Drink</option><option>Activity</option><option>Shopping</option><option>Other</option></select><label class="field-label">Link</label><input id="doi-link" class="field-input" type="url" placeholder="https://…"/><label class="field-label">Price</label><input id="doi-price" class="field-input" type="number" placeholder="0.00" min="0" step="0.01"/><div class="modal-row"><button class="btn-solid sm teal" onclick="saveDayOutItem('${planId}')">Add</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);}
+function saveDayOutItem(planId){const name=document.getElementById('doi-name').value.trim();if(!name)return;const d=userData('dayout',{plans:[]});const pl=d.plans.find(p=>p.id===planId);if(!pl)return;pl.items=pl.items||[];pl.items.push({id:uid(),name,cat:document.getElementById('doi-cat').value,link:document.getElementById('doi-link').value.trim(),price:parseFloat(document.getElementById('doi-price').value)||0});saveData('dayout',d);closeModal();showSection('dayout');}
+function deleteDayOutItem(planId,itemId){const d=userData('dayout',{plans:[]});const pl=d.plans.find(p=>p.id===planId);if(pl){pl.items=(pl.items||[]).filter(i=>i.id!==itemId);saveData('dayout',d);}showSection('dayout');}
 
 // ── WEDDING ──
 let weddingTab='inspo';
@@ -601,12 +792,12 @@ function saveWeddingDetails(){const w=userData('wedding',{inspo:[]});w.wdate=doc
 let activeHoneymoonRoomId=null,honeymoonTab='inspo';
 function renderHoneymoon(main){
   const h=userData('honeymoon',{rooms:[],inspo:[],budget:0});
-  const inspo=h.inspo||[];const budget=h.budget||0;
+  const inspo=h.inspo||[],budget=h.budget||0;
   const spent=h.rooms.flatMap(r=>r.items||[]).reduce((s,i)=>s+(i.price||0),0)+inspo.reduce((s,p)=>s+(p.price||0),0);
-  const pct=budget>0?Math.min(spent/budget*100,100):0;const over=budget>0&&spent>budget;
+  const pct=budget>0?Math.min(spent/budget*100,100):0,over=budget>0&&spent>budget;
   const tabs=['inspo','rooms','budget'].map(t=>`<button class="room-tab${honeymoonTab===t?' active':''}" onclick="setHoneymoonTab('${t}')">${t==='inspo'?'Inspiration':t==='rooms'?'Destinations':'Budget'}</button>`).join('');
   let content='';
-  if(honeymoonTab==='inspo')content=`${renderPhotoGrid(inspo,'honeymoon_inspo','honeymoon')}`;
+  if(honeymoonTab==='inspo')content=renderPhotoGrid(inspo,'honeymoon_inspo','honeymoon');
   else if(honeymoonTab==='rooms'){
     let inner='';
     if(!h.rooms.length)inner=`<div class="empty"><div class="empty-icon">✈️</div>Add your first destination.</div>`;
@@ -614,8 +805,11 @@ function renderHoneymoon(main){
       if(!activeHoneymoonRoomId||!h.rooms.find(r=>r.id===activeHoneymoonRoomId))activeHoneymoonRoomId=h.rooms[0].id;
       const room=h.rooms.find(r=>r.id===activeHoneymoonRoomId);
       const rSpent=(room.items||[]).reduce((s,i)=>s+(i.price||0),0)+(room.photos||[]).reduce((s,p)=>s+(p.price||0),0);
-      const rPct=room.budget>0?Math.min(rSpent/room.budget*100,100):0;const rOver=room.budget>0&&rSpent>room.budget;
-      inner=`<div class="room-tabs-row">${h.rooms.map(r=>`<button class="room-tab${r.id===activeHoneymoonRoomId?' active':''}" onclick="setActiveHoneymoonRoom('${r.id}')">${r.name}</button>`).join('')}</div><div class="budget-block"><div class="budget-row"><div><div class="budget-label">${room.name}</div><div class="budget-amount${rOver?' over':''}">£${rSpent.toLocaleString(undefined,{minimumFractionDigits:2})} / £${(room.budget||0).toLocaleString()}</div></div><button class="btn-ghost" onclick="editHoneymoonRoomBudget('${room.id}')">Edit</button></div><div class="bar-track"><div class="bar-fill${rOver?' over':''}" style="width:${rPct}%"></div></div><div class="bar-note${rOver?' over':''}">${rOver?'Over budget':'Remaining: £'+(room.budget-rSpent).toLocaleString(undefined,{minimumFractionDigits:2})}</div></div><div class="flex-between mb14"><div style="font-family:'Cormorant Garamond',serif;font-size:15px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">Bookings</div><button class="btn-ghost" onclick="openAddHoneymoonItem('${room.id}')">+ Add</button></div>${renderItemList(room.items||[],room.id)}<div style="margin-top:18px">${renderPhotoGrid(room.photos||[],'honeymoon_room',room.id)}</div>`;
+      const rPct=room.budget>0?Math.min(rSpent/room.budget*100,100):0,rOver=room.budget>0&&rSpent>room.budget;
+      inner=`<div class="room-tabs-row">${h.rooms.map(r=>`<button class="room-tab${r.id===activeHoneymoonRoomId?' active':''}" onclick="setActiveHoneymoonRoom('${r.id}')">${r.name}</button>`).join('')}</div>
+        <div class="budget-block"><div class="budget-row"><div><div class="budget-label">${room.name}</div><div class="budget-amount${rOver?' over':''}">£${rSpent.toLocaleString(undefined,{minimumFractionDigits:2})} / £${(room.budget||0).toLocaleString()}</div></div><button class="btn-ghost" onclick="editHoneymoonRoomBudget('${room.id}')">Edit</button></div><div class="bar-track"><div class="bar-fill${rOver?' over':''}" style="width:${rPct}%"></div></div><div class="bar-note${rOver?' over':''}">${rOver?'Over budget':'Remaining: £'+(room.budget-rSpent).toLocaleString(undefined,{minimumFractionDigits:2})}</div></div>
+        <div class="flex-between mb14"><div style="font-family:'Cormorant Garamond',serif;font-size:15px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">Bookings</div><button class="btn-ghost" onclick="openAddHoneymoonItem('${room.id}')">+ Add</button></div>
+        ${renderItemList(room.items||[],room.id)}<div style="margin-top:18px">${renderPhotoGrid(room.photos||[],'honeymoon_room',room.id)}</div>`;
     }
     content=`<div class="flex-between mb14"><div></div><div class="flex-center"><button class="btn-solid sm" onclick="openAddHoneymoonRoom()">+ Destination</button>${h.rooms.length?`<button class="btn-ghost danger" onclick="deleteHoneymoonRoom('${activeHoneymoonRoomId}')">Delete</button>`:''}</div></div>`+inner;
   } else {
@@ -638,9 +832,7 @@ function saveHoneymoonItem(roomId){const name=document.getElementById('hitem-nam
 // ── RECIPES ──
 let recipeFilter='All';
 function renderRecipes(main){
-  const r=userData('recipes',{items:[]});
-  const allTags=['All',...new Set(r.items.flatMap(i=>i.tags||[]))];
-  const filtered=recipeFilter==='All'?r.items:r.items.filter(i=>(i.tags||[]).includes(recipeFilter));
+  const r=userData('recipes',{items:[]});const allTags=['All',...new Set(r.items.flatMap(i=>i.tags||[]))];const filtered=recipeFilter==='All'?r.items:r.items.filter(i=>(i.tags||[]).includes(recipeFilter));
   main.innerHTML=`<div class="section-rule"><div><div class="section-title">Recipes</div><div class="section-sub">Save photos, notes &amp; full recipes.</div></div><button class="btn-solid sm" onclick="openAddRecipe()">+ Add Recipe</button></div><div class="tag-row">${allTags.map(t=>`<button class="tag-pill${recipeFilter===t?' active':''}" onclick="setRecipeFilter('${t}')">${t}</button>`).join('')}</div>${filtered.length?`<div class="recipe-grid">${filtered.map(item=>`<div class="recipe-card">${item.img?`<img class="recipe-img" src="${item.img}" loading="lazy" onclick="viewRecipe('${item.id}')"/>`:''}<div class="recipe-body">${(item.tags||[]).map(t=>`<span class="recipe-tag">${t}</span>`).join('')}<div class="recipe-title">${item.title}</div>${item.text?`<div class="recipe-text">${item.text.slice(0,180)}${item.text.length>180?'…':''}</div>`:''}<div class="flex-center" style="margin-top:10px"><button class="btn-ghost" style="font-size:10px;padding:4px 12px" onclick="viewRecipe('${item.id}')">View</button><button class="btn-ghost danger" style="font-size:10px;padding:4px 12px" onclick="deleteRecipe('${item.id}')">Delete</button></div></div></div>`).join('')}</div>`:`<div class="empty"><div class="empty-icon">🍽</div>No recipes yet.</div>`}`;
 }
 function setRecipeFilter(f){recipeFilter=f;showSection('recipes');}
@@ -651,7 +843,7 @@ function saveRecipe(){const title=document.getElementById('rec-title').value.tri
 function viewRecipe(id){const item=userData('recipes',{items:[]}).items.find(i=>i.id===id);if(!item)return;openModal(`<div class="modal-head"><div class="modal-title">${item.title}</div><button class="modal-close" onclick="closeModal()">×</button></div>${item.img?`<img src="${item.img}" class="modal-preview"/>`:''}<div style="margin-top:12px;font-size:15px;line-height:1.75;white-space:pre-wrap">${item.text||''}</div><div class="modal-row" style="margin-top:16px"><button class="btn-ghost danger" onclick="deleteRecipe('${id}');closeModal()">Delete</button></div>`);}
 function deleteRecipe(id){if(!confirm('Delete this recipe?'))return;const r=userData('recipes',{items:[]});r.items=r.items.filter(i=>i.id!==id);saveData('recipes',r);showSection('recipes');}
 
-// ── MOOD BOARD ──
+// ── MOOD BOARD (global) ──
 function renderMoodBoardSection(context){
   const boards=userData(`moodboards_${context}`,[]);
   if(!boards.length)return`<div class="empty"><div class="empty-icon">🎨</div>No mood boards yet.</div><div style="text-align:center;margin-top:16px"><button class="btn-solid sm" onclick="createMoodBoard('${context}')">Create Mood Board</button></div>`;
@@ -666,8 +858,51 @@ function removeTile(boardIndex,context,tileIndex){const boards=userData(`moodboa
 function updateMoodBoard(context,boardIndex){const boards=userData(`moodboards_${context}`,[]);const board=boards[boardIndex];board.title=document.getElementById('mb-edit-title').value.trim()||'Board';board.palette=document.getElementById('mb-edit-palette').value.split(',').map(s=>s.trim()).filter(s=>s.startsWith('#'));board.notes=document.getElementById('mb-edit-notes').value.trim();saveData(`moodboards_${context}`,boards);closeModal();if(context==='wedding'){setWeddingTab('moodboard');showSection('wedding');}else showSection(currentSection);}
 function deleteMoodBoard(context,boardIndex){if(!confirm('Delete this mood board?'))return;const boards=userData(`moodboards_${context}`,[]);boards.splice(boardIndex,1);saveData(`moodboards_${context}`,boards);if(context==='wedding'){setWeddingTab('moodboard');showSection('wedding');}else showSection(currentSection);}
 
+// ── FEEDBACK ──
+function openFeedback(){
+  openModal(`<div class="modal-head"><div class="modal-title">Send Feedback</div><button class="modal-close" onclick="closeModal()">×</button></div>
+    <label class="field-label">Your Feedback</label>
+    <textarea id="feedback-text" class="field-input" rows="5" placeholder="Suggestions, bugs, ideas…"></textarea>
+    <div class="modal-row" style="margin-top:8px">
+      ${currentUserEmail?`<button class="btn-solid sm" onclick="emailFeedback()">📧 Email to Myself</button>`:''}
+      <button class="btn-ghost" onclick="copyFeedback()">📋 Copy to Clipboard</button>
+    </div>
+    <p style="font-size:11px;color:var(--muted);margin-top:12px;font-style:italic">${currentUserEmail?`Will open your email app addressed to ${currentUserEmail}.`:'Copies your feedback to the clipboard.'}</p>`);
+}
+function emailFeedback(){
+  const text=document.getElementById('feedback-text').value.trim();if(!text)return;
+  const subject=encodeURIComponent('MAISON App Feedback');
+  const body=encodeURIComponent(`MAISON Feedback\n${'─'.repeat(30)}\n\n${text}\n\nSent from MAISON — ${new Date().toLocaleDateString('en-GB')}`);
+  window.open(`mailto:${currentUserEmail}?subject=${subject}&body=${body}`);closeModal();
+}
+function copyFeedback(){
+  const text=document.getElementById('feedback-text').value.trim();if(!text)return;
+  const full=`MAISON Feedback\n${'─'.repeat(30)}\n\n${text}\n\nSent from MAISON — ${new Date().toLocaleDateString('en-GB')}`;
+  navigator.clipboard.writeText(full).then(()=>{alert('Copied to clipboard!');closeModal();}).catch(()=>{const el=document.createElement('textarea');el.value=full;document.body.appendChild(el);el.select();document.execCommand('copy');document.body.removeChild(el);alert('Copied!');closeModal();});
+}
+
 // ── SETTINGS ──
-function openSettings(){openModal(`<div class="modal-head"><div class="modal-title">Settings</div><button class="modal-close" onclick="closeModal()">×</button></div><div style="margin-bottom:20px"><div class="field-label" style="margin-bottom:8px">Account</div><div style="font-size:15px;margin-bottom:16px">Signed in with Google</div><button class="btn-ghost" onclick="signOut()">Sign Out</button></div><hr class="divider"/><div><div class="field-label" style="margin-bottom:8px">Data</div><p style="font-size:13px;color:var(--muted);font-style:italic;margin-bottom:12px">All data stored locally in this browser.</p><button class="btn-ghost danger" onclick="clearData()">Clear All My Data</button></div>`);}
+function openSettings(){
+  openModal(`<div class="modal-head"><div class="modal-title">Settings</div><button class="modal-close" onclick="closeModal()">×</button></div>
+    <div style="margin-bottom:20px">
+      <div class="field-label" style="margin-bottom:8px">Account</div>
+      <div style="font-size:15px;margin-bottom:4px">${currentUserName}</div>
+      ${currentUserEmail?`<div style="font-size:12px;color:var(--muted);margin-bottom:16px;font-style:italic">${currentUserEmail}</div>`:''}
+      <button class="btn-ghost" onclick="signOut()">Sign Out</button>
+    </div>
+    <hr class="divider"/>
+    <div style="margin-bottom:20px">
+      <div class="field-label" style="margin-bottom:8px">Feedback</div>
+      <p style="font-size:13px;color:var(--muted);font-style:italic;margin-bottom:12px">Share ideas, report bugs, or suggest features.</p>
+      <button class="btn-ghost" onclick="closeModal();openFeedback()">✉️ Send Feedback</button>
+    </div>
+    <hr class="divider"/>
+    <div>
+      <div class="field-label" style="margin-bottom:8px">Data</div>
+      <p style="font-size:13px;color:var(--muted);font-style:italic;margin-bottom:12px">All data stored locally in this browser.</p>
+      <button class="btn-ghost danger" onclick="clearData()">Clear All My Data</button>
+    </div>`);
+}
 function signOut(){currentUser=null;capturedDataURL=null;activeRoomId=null;document.getElementById('app').classList.remove('visible');document.getElementById('auth-screen').style.display='flex';google.accounts.id.disableAutoSelect();closeModal();}
 function clearData(){if(!confirm('Permanently delete all your data?'))return;Object.keys(localStorage).filter(k=>k.startsWith(`maison_${currentUser}_`)).forEach(k=>localStorage.removeItem(k));closeModal();alert('Data cleared.');showSection('home');}
 </script>
