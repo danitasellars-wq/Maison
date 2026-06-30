@@ -216,6 +216,35 @@ main{max-width:980px;margin:0 auto;padding:var(--section-pad);width:100%;flex:1}
 .recipe-title{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600;color:var(--ink);margin-bottom:6px}
 .recipe-text{font-size:13px;color:var(--muted);line-height:1.6;white-space:pre-wrap}
 
+/* MUSIC */
+.song-row{display:flex;align-items:flex-start;gap:12px;padding:11px 0;border-bottom:1px solid var(--bone)}
+.song-num{font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--warm);min-width:26px;text-align:right;flex-shrink:0;padding-top:2px}
+.song-body{flex:1;min-width:0}
+.song-title{font-size:15px;color:var(--ink);margin-bottom:2px}
+.song-artist{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-family:'Cormorant Garamond',serif}
+.song-note{font-size:12px;color:var(--muted);font-style:italic;margin-top:3px}
+.song-link-btn{display:inline-flex;align-items:center;gap:4px;background:none;border:1px solid var(--bone);color:var(--muted);font-family:'Cormorant Garamond',serif;font-size:10px;letter-spacing:.12em;text-transform:uppercase;padding:5px 10px;text-decoration:none;transition:all .2s;flex-shrink:0;align-self:center;white-space:nowrap}
+.song-link-btn:hover{background:var(--ink);color:var(--cream);border-color:var(--ink)}
+
+/* PANEL TABS */
+.panel-mode-tabs{display:flex;border-bottom:1px solid var(--bone)}
+.panel-mode-tab{flex:1;background:none;border:none;border-bottom:2px solid transparent;padding:10px 0;font-family:'Cormorant Garamond',serif;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:-1px;transition:all .2s;cursor:pointer}
+.panel-mode-tab.active{border-bottom-color:var(--ink);color:var(--ink)}
+
+/* LINK ITEMS */
+.link-item{padding:12px 0;border-bottom:1px solid var(--bone);display:flex;align-items:flex-start;gap:10px}
+.link-item-icon{font-size:18px;flex-shrink:0;margin-top:1px}
+.link-item-body{flex:1;min-width:0}
+.link-item-title{font-size:14px;color:var(--ink);margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.link-item-url{font-size:11px;color:var(--muted);text-decoration:none;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.link-item-url:hover{color:var(--ink)}
+.link-item-label{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--warm);font-family:'Cormorant Garamond',serif;margin-top:3px}
+
+/* NOTES BUTTON */
+.notes-btn{background:none;border:1px solid var(--bone);color:var(--muted);font-family:'Cormorant Garamond',serif;font-size:10px;letter-spacing:.14em;text-transform:uppercase;padding:5px 11px;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:5px;vertical-align:middle}
+.notes-btn:hover,.notes-btn.has-notes{border-color:var(--gold);color:var(--gold)}
+.photo-card.pressing img{transform:scale(.97);opacity:.75;transition:none}
+
 /* UTILS */
 .field-label{display:block;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:5px;font-weight:600}
 .field-input{width:100%;border:none;border-bottom:1px solid var(--warm);padding:9px 2px;color:var(--ink);font-size:15px;outline:none;margin-bottom:18px;border-radius:0;transition:border-color .2s}
@@ -252,13 +281,15 @@ select.field-input{appearance:none}
 <!-- SIDE PANEL -->
 <div id="panel-overlay" onclick="closeSidePanel()"></div>
 <div id="side-panel">
-  <div class="panel-head"><div class="panel-title">All Photos</div><button class="panel-close" onclick="closeSidePanel()">×</button></div>
-  <div class="panel-filter-row">
+  <div class="panel-head"><div class="panel-title">Gallery</div><button class="panel-close" onclick="closeSidePanel()">×</button></div>
+  <div class="panel-mode-tabs"><button class="panel-mode-tab active" id="pmt-photos" onclick="setPanelMode('photos')">Photos</button><button class="panel-mode-tab" id="pmt-links" onclick="setPanelMode('links')">Links</button></div>
+  <div class="panel-filter-row" id="panel-filter-row">
     <button class="panel-filter active" onclick="setPanelFilter('all')">All</button>
     <button class="panel-filter" onclick="setPanelFilter('liked')">♥ Liked</button>
     <button class="panel-filter" onclick="setPanelFilter('home')">Home</button>
     <button class="panel-filter" onclick="setPanelFilter('wedding')">Wedding</button>
     <button class="panel-filter" onclick="setPanelFilter('honeymoon')">Honeymoon</button>
+    <button class="panel-filter" onclick="setPanelFilter('recipes')">Recipes</button>
     <button class="panel-filter" onclick="setPanelFilter('dayout')">Days Out</button>
     <button class="panel-filter arch-filter" onclick="setPanelFilter('archived')">Archived</button>
   </div>
@@ -306,6 +337,7 @@ select.field-input{appearance:none}
         <button class="nav-btn" data-section="honeymoon" onclick="showSection('honeymoon')">Honeymoon</button>
         <button class="nav-btn" data-section="dayout" onclick="showSection('dayout')">Days Out</button>
         <button class="nav-btn" data-section="recipes" onclick="showSection('recipes')">Recipes</button>
+        <button class="nav-btn" data-section="music" onclick="showSection('music')">Music</button>
       </nav>
     </div>
   </header>
@@ -391,9 +423,10 @@ const RAL_NAMES={
 
 // ── STATE ──
 let currentUser=null,currentSection='home',capturedDataURL=null;
-let panelFilter='all',homeView='rooms',activeRoomTab='overview';
-let activeDayOutId=null,dragRoomIdx=null;
+let panelFilter='all',panelMode='photos',homeView='rooms',activeRoomTab='overview';
+let activeDayOutId=null,dragRoomIdx=null,activeMusicPlaylistId=null;
 let currentUserEmail=null,currentUserName='User';
+let _lpTimer=null,_lpFired=false;
 
 function getStore(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch(e){return d;}}
 function setStore(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
@@ -432,6 +465,7 @@ function showSection(s){
   else if(s==='honeymoon')renderHoneymoon(main);
   else if(s==='dayout')renderDayOut(main);
   else if(s==='recipes')renderRecipes(main);
+  else if(s==='music')renderMusic(main);
 }
 
 // ── MODAL ──
@@ -445,7 +479,7 @@ function setPanelFilter(f){
   panelFilter=f;
   document.querySelectorAll('.panel-filter').forEach(b=>{
     const t=b.textContent.trim().toLowerCase();
-    const match=(f==='all'&&t==='all')||(f==='liked'&&t.includes('liked'))||(f==='archived'&&t==='archived')||(f===t);
+    const match=(f==='all'&&t==='all')||(f==='liked'&&t.includes('liked'))||(f==='archived'&&t==='archived')||(f==='recipes'&&t==='recipes')||(f==='dayout'&&t==='days out')||(f===t);
     b.classList.toggle('active',match);
   });
   renderSidePanel();
@@ -461,9 +495,12 @@ function getAllPhotos(archivedOnly=false){
   h.rooms.forEach(r=>(r.photos||[]).filter(p=>archivedOnly?p.archived===true:!p.archived).forEach(p=>all.push({photo:p,type:'honeymoon_room',contextId:r.id,label:r.name,sectionKey:'honeymoon'})));
   const d=userData('dayout',{plans:[]});
   d.plans.forEach(pl=>(pl.photos||[]).filter(p=>archivedOnly?p.archived===true:!p.archived).forEach(p=>all.push({photo:p,type:'dayout_plan',contextId:pl.id,label:pl.name,sectionKey:'dayout'})));
+  const rec=userData('recipes',{items:[]});
+  rec.items.forEach(item=>(item.photos||[]).filter(p=>archivedOnly?p.archived===true:!p.archived).forEach(p=>all.push({photo:p,type:'recipe_photo',contextId:item.id,label:item.title||'Recipe',sectionKey:'recipes'})));
   return all;
 }
 function renderSidePanel(){
+  if(panelMode==='links'){renderSidePanelLinks();return;}
   const isArchived=panelFilter==='archived';
   let all=getAllPhotos(isArchived);
   if(panelFilter==='liked')all=all.filter(e=>e.photo.liked);
@@ -471,6 +508,7 @@ function renderSidePanel(){
   else if(panelFilter==='wedding')all=all.filter(e=>e.sectionKey==='wedding');
   else if(panelFilter==='honeymoon')all=all.filter(e=>e.sectionKey==='honeymoon');
   else if(panelFilter==='dayout')all=all.filter(e=>e.sectionKey==='dayout');
+  else if(panelFilter==='recipes')all=all.filter(e=>e.sectionKey==='recipes');
   const body=document.getElementById('panel-body');
   if(!all.length){body.innerHTML=`<div class="panel-empty">${isArchived?'No archived photos.':'No photos yet.'}</div>`;return;}
   if(isArchived){
@@ -523,10 +561,66 @@ function navigateToPhoto(type,contextId,sectionKey){
   else if(sectionKey==='wedding'){weddingTab='inspo';showSection('wedding');}
   else if(sectionKey==='honeymoon'){if(type==='honeymoon_room')activeHoneymoonRoomId=contextId;honeymoonTab=type==='honeymoon_room'?'rooms':'inspo';showSection('honeymoon');}
   else if(sectionKey==='dayout'){activeDayOutId=contextId;showSection('dayout');}
+  else if(sectionKey==='recipes'){closeSidePanel();showSection('recipes');}
 }
 function updatePanelBadge(){
   if(!currentUser)return;const liked=getAllPhotos(false).filter(e=>e.photo.liked).length;
   const badge=document.getElementById('panel-badge');if(badge){badge.textContent=liked;badge.classList.toggle('show',liked>0);}
+}
+
+// ── PANEL MODE / LINKS ──
+function setPanelMode(m){
+  panelMode=m;
+  document.querySelectorAll('.panel-mode-tab').forEach(b=>b.classList.toggle('active',b.id===`pmt-${m}`));
+  const pfr=document.getElementById('panel-filter-row');
+  if(pfr)pfr.style.display=m==='photos'?'flex':'none';
+  renderSidePanel();
+}
+function getAllLinks(){
+  const all=[];
+  const home=userData('home',{rooms:[]});
+  home.rooms.forEach(r=>{
+    (r.photos||[]).filter(p=>p.link&&!p.archived).forEach(p=>all.push({title:p.note||p.name||'Photo Link',url:p.link,label:r.name,icon:'🏠'}));
+    (r.items||[]).filter(i=>i.link).forEach(i=>all.push({title:i.name||'Item',url:i.link,label:r.name,icon:'🛋️'}));
+  });
+  const w=userData('wedding',{inspo:[]});
+  (w.inspo||[]).filter(p=>p.link&&!p.archived).forEach(p=>all.push({title:p.note||'Wedding Link',url:p.link,label:'Wedding',icon:'💍'}));
+  const h=userData('honeymoon',{rooms:[],inspo:[]});
+  (h.inspo||[]).filter(p=>p.link&&!p.archived).forEach(p=>all.push({title:p.note||'Honeymoon Link',url:p.link,label:'Honeymoon',icon:'✈️'}));
+  h.rooms.forEach(r=>{
+    (r.photos||[]).filter(p=>p.link&&!p.archived).forEach(p=>all.push({title:p.note||'Link',url:p.link,label:r.name,icon:'✈️'}));
+    (r.items||[]).filter(i=>i.link).forEach(i=>all.push({title:i.name||'Booking',url:i.link,label:r.name,icon:'🏨'}));
+  });
+  const d=userData('dayout',{plans:[]});
+  d.plans.forEach(pl=>{
+    (pl.photos||[]).filter(p=>p.link&&!p.archived).forEach(p=>all.push({title:p.note||'Link',url:p.link,label:pl.name,icon:'🗺️'}));
+    (pl.items||[]).filter(i=>i.link).forEach(i=>all.push({title:i.name||'Activity',url:i.link,label:pl.name,icon:'🎭'}));
+  });
+  const music=userData('music',{playlists:[]});
+  music.playlists.forEach(pl=>(pl.songs||[]).filter(s=>s.link).forEach(s=>all.push({title:s.title||'Song',url:s.link,label:`${pl.name}${s.artist?' — '+s.artist:''}`,icon:'🎵'})));
+  const saved=userData('saved_links',[]);
+  saved.forEach(l=>all.push({...l,icon:l.icon||'🔗',_saved:true}));
+  return all;
+}
+function renderSidePanelLinks(){
+  const body=document.getElementById('panel-body');
+  const links=getAllLinks();
+  const addBtn=`<div style="padding:10px 0 6px;text-align:right"><button class="btn-ghost" onclick="openAddSavedLink()" style="font-size:10px;padding:5px 12px">+ Add Link</button></div>`;
+  if(!links.length){body.innerHTML=`<div class="panel-empty">No saved links yet.<br/><br/><span style="font-size:11px;color:var(--warm);font-style:italic">Links from photos, items &amp; songs appear here.</span><br/><br/><button class="btn-ghost" onclick="openAddSavedLink()" style="margin-top:8px">+ Add Link</button></div>`;return;}
+  body.innerHTML=addBtn+links.map(l=>`<div class="link-item"><div class="link-item-icon">${l.icon}</div><div class="link-item-body"><div class="link-item-title">${l.title}</div><a class="link-item-url" href="${l.url}" target="_blank" rel="noopener">${l.url}</a><div class="link-item-label">${l.label}</div></div></div>`).join('');
+}
+function openAddSavedLink(){
+  openModal(`<div class="modal-head"><div class="modal-title">Add Link</div><button class="modal-close" onclick="closeModal()">×</button></div>
+    <label class="field-label">Title</label><input id="sl-title" class="field-input" placeholder="e.g. Kitchen Inspo…"/>
+    <label class="field-label">URL</label><input id="sl-url" class="field-input" type="url" placeholder="https://…"/>
+    <label class="field-label">Label / Source</label><input id="sl-label" class="field-input" placeholder="e.g. Pinterest, Houzz…"/>
+    <div class="modal-row"><button class="btn-solid sm" onclick="saveLink()">Save Link</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);
+}
+function saveLink(){
+  const url=(document.getElementById('sl-url').value||'').trim();if(!url)return;
+  const saved=userData('saved_links',[]);
+  saved.push({id:uid(),title:document.getElementById('sl-title').value.trim()||url,url,label:document.getElementById('sl-label').value.trim(),icon:'🔗',date:Date.now()});
+  saveData('saved_links',saved);closeModal();renderSidePanelLinks();
 }
 
 // ── PHOTO HELPERS ──
@@ -536,6 +630,7 @@ function getPhotosArray(type,contextId){
   if(type==='honeymoon_room'){const h=userData('honeymoon',{rooms:[]});const room=h.rooms.find(r=>r.id===contextId);return room?(room.photos=room.photos||[],room.photos):[];}
   if(type==='honeymoon_inspo'){const h=userData('honeymoon',{rooms:[],inspo:[]});return h.inspo=h.inspo||[];}
   if(type==='dayout_plan'){const d=userData('dayout',{plans:[]});const pl=d.plans.find(p=>p.id===contextId);return pl?(pl.photos=pl.photos||[],pl.photos):[];}
+  if(type==='recipe_photo'){const rec=userData('recipes',{items:[]});const item=rec.items.find(i=>i.id===contextId);return item?(item.photos=item.photos||[],item.photos):[];}
   return[];
 }
 function savePhotosArray(type,contextId,arr){
@@ -544,7 +639,18 @@ function savePhotosArray(type,contextId,arr){
   else if(type==='honeymoon_room'){const h=userData('honeymoon',{rooms:[]});const room=h.rooms.find(r=>r.id===contextId);if(room){room.photos=arr;saveData('honeymoon',h);}}
   else if(type==='honeymoon_inspo'){const h=userData('honeymoon',{rooms:[],inspo:[]});h.inspo=arr;saveData('honeymoon',h);}
   else if(type==='dayout_plan'){const d=userData('dayout',{plans:[]});const pl=d.plans.find(p=>p.id===contextId);if(pl){pl.photos=arr;saveData('dayout',d);}}
+  else if(type==='recipe_photo'){const rec=userData('recipes',{items:[]});const item=rec.items.find(i=>i.id===contextId);if(item){item.photos=arr;saveData('recipes',rec);}}
 }
+function startLongPress(event,photoId,type,contextId){
+  _lpFired=false;
+  _lpTimer=setTimeout(()=>{
+    _lpFired=true;
+    const card=event.target.closest('.photo-card');
+    if(card){card.classList.add('pressing');setTimeout(()=>card.classList.remove('pressing'),400);}
+    openAssignPhoto(photoId,type,contextId);
+  },600);
+}
+function cancelLongPress(){if(_lpTimer){clearTimeout(_lpTimer);_lpTimer=null;}}
 function toggleLike(photoId,type,contextId){const arr=getPhotosArray(type,contextId);const p=arr.find(p=>p.id===photoId);if(p)p.liked=!p.liked;savePhotosArray(type,contextId,arr);showSection(currentSection);updatePanelBadge();}
 function archivePhoto(photoId,type,contextId){const arr=getPhotosArray(type,contextId);const p=arr.find(p=>p.id===photoId);if(p){p.archived=true;savePhotosArray(type,contextId,arr);}showSection(currentSection);updatePanelBadge();}
 function deletePhoto(photoId,type,contextId){if(!confirm('Permanently delete this photo?'))return;savePhotosArray(type,contextId,getPhotosArray(type,contextId).filter(p=>p.id!==photoId));showSection(currentSection);updatePanelBadge();}
@@ -554,17 +660,18 @@ function renderPhotoGrid(photos,type,contextId){
   const visible=(photos||[]).filter(p=>!p.archived);
   if(!visible.length)return`<div class="empty" style="padding:20px 0;font-size:13px">No photos yet.</div>`;
   const sorted=[...visible].sort((a,b)=>(b.liked?1:0)-(a.liked?1:0));
-  return`<div class="photo-grid">${sorted.map(p=>`<div class="photo-card">${p.liked?'<div class="liked-dot"></div>':''}<img src="${p.img}" loading="lazy" onclick="viewPhoto('${p.id}','${type}','${contextId}')"/><div class="photo-card-actions"><button class="img-btn${p.liked?' liked':' default'}" onclick="toggleLike('${p.id}','${type}','${contextId}')">♥</button><button class="img-btn arch" onclick="archivePhoto('${p.id}','${type}','${contextId}')" title="Archive"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 8v13H3V8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg></button><button class="img-btn del" onclick="deletePhoto('${p.id}','${type}','${contextId}')">✕</button></div>${p.note?`<div class="photo-note">${p.note}</div>`:''}${p.link?`<a class="photo-link" href="${p.link}" target="_blank" rel="noopener">🔗 ${p.link}</a>`:''}${p.price?`<div class="photo-price">£${p.price.toLocaleString(undefined,{minimumFractionDigits:2})}</div>`:''}</div>`).join('')}</div>`;
+  return`<div class="photo-grid">${sorted.map(p=>`<div class="photo-card">${p.liked?'<div class="liked-dot"></div>':''}<img src="${p.img}" loading="lazy" onclick="if(!_lpFired)viewPhoto('${p.id}','${type}','${contextId}')" onmousedown="startLongPress(event,'${p.id}','${type}','${contextId}')" onmouseup="cancelLongPress()" onmouseleave="cancelLongPress()" ontouchstart="startLongPress(event,'${p.id}','${type}','${contextId}')" ontouchend="cancelLongPress()" ontouchmove="cancelLongPress()"/><div class="photo-card-actions"><button class="img-btn${p.liked?' liked':' default'}" onclick="toggleLike('${p.id}','${type}','${contextId}')">♥</button><button class="img-btn arch" onclick="archivePhoto('${p.id}','${type}','${contextId}')" title="Archive"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 8v13H3V8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg></button><button class="img-btn del" onclick="deletePhoto('${p.id}','${type}','${contextId}')">✕</button></div>${p.note?`<div class="photo-note">${p.note}</div>`:''}${p.link?`<a class="photo-link" href="${p.link}" target="_blank" rel="noopener">🔗 ${p.link}</a>`:''}${p.price?`<div class="photo-price">£${p.price.toLocaleString(undefined,{minimumFractionDigits:2})}</div>`:''}</div>`).join('')}</div>`;
 }
 
 // ── CAPTURE ──
 function triggerCapture(){
-  const home=userData('home',{rooms:[]});const d=userData('dayout',{plans:[]});
+  const home=userData('home',{rooms:[]});const d=userData('dayout',{plans:[]});const rec=userData('recipes',{items:[]});
   const roomOpts=home.rooms.map(r=>`<option value="home_${r.id}">${r.name} (Room)</option>`).join('');
   const dayOpts=d.plans.map(pl=>`<option value="dayout_${pl.id}">${pl.name} (Day Out)</option>`).join('');
+  const recOpts=rec.items.length?rec.items.map(ri=>`<option value="recipe_${ri.id}">📸 Add to: ${ri.title||'Recipe'}</option>`).join(''):'';
   openModal(`<div class="modal-head"><div class="modal-title">Add Photo</div><button class="modal-close" onclick="closeModal()">×</button></div>
     <label class="field-label">Save To</label>
-    <select id="cap-dest" class="field-input">${roomOpts}<option value="wedding">Wedding Inspiration</option><option value="honeymoon">Honeymoon Inspiration</option>${dayOpts}<option value="recipes">Recipe</option></select>
+    <select id="cap-dest" class="field-input">${roomOpts}<option value="wedding">Wedding Inspiration</option><option value="honeymoon">Honeymoon Inspiration</option>${dayOpts}<option value="recipes_new">🆕 New Recipe</option>${recOpts}</select>
     <div class="modal-row" style="margin-top:4px">
       <button class="btn-solid sm green" onclick="pickFile('camera')">📷 Take Photo</button>
       <button class="btn-solid sm" onclick="pickFile('gallery')">🖼 From Gallery</button>
@@ -592,9 +699,23 @@ function saveCapture(){
   else if(dest==='wedding'){const w=userData('wedding',{inspo:[]});w.inspo.push(photo);saveData('wedding',w);}
   else if(dest==='honeymoon'){const h=userData('honeymoon',{rooms:[],inspo:[],budget:0});if(!h.inspo)h.inspo=[];h.inspo.push(photo);saveData('honeymoon',h);}
   else if(dest.startsWith('dayout_')){const d=userData('dayout',{plans:[]});const pl=d.plans.find(p=>p.id===dest.replace('dayout_',''));if(pl){pl.photos=pl.photos||[];pl.photos.push(photo);saveData('dayout',d);}}
-  else if(dest==='recipes'){const r=userData('recipes',{items:[]});r.items.push({id:uid(),img:capturedDataURL,title:name||'New Recipe',tags:[],text:note,date:Date.now()});saveData('recipes',r);}
+  else if(dest==='recipes_new'||dest==='recipes'){const r=userData('recipes',{items:[]});r.items.push({id:uid(),img:capturedDataURL,title:name||'New Recipe',tags:[],text:note,date:Date.now(),photos:[]});saveData('recipes',r);}
+  else if(dest.startsWith('recipe_')){const recId=dest.replace('recipe_','');const r=userData('recipes',{items:[]});const ri=r.items.find(i=>i.id===recId);if(ri){ri.photos=ri.photos||[];ri.photos.push({id:uid(),img:capturedDataURL,note,date:Date.now(),liked:false,archived:false});saveData('recipes',r);}}
   capturedDataURL=null;closeModal();showSection(currentSection);updatePanelBadge();
 }
+
+// ── QUICK NOTES ──
+function quickNotesBtn(section){
+  const hasNotes=!!(userData(`notes_${section}`,''));
+  return`<button class="notes-btn${hasNotes?' has-notes':''}" onclick="openQuickNotes('${section}')">📝 Notes</button>`;
+}
+function openQuickNotes(section){
+  const notes=userData(`notes_${section}`,'');
+  const label={home:'Home Notes',wedding:'Wedding Notes',honeymoon:'Honeymoon Notes',recipes:'Recipe Notes',music:'Music Notes'}[section]||'Notes';
+  openModal(`<div class="modal-head"><div class="modal-title">${label}</div><button class="modal-close" onclick="closeModal()">×</button></div><textarea id="qnotes-text" class="field-input" rows="10" placeholder="Jot anything down…" style="min-height:200px">${notes}</textarea><div class="modal-row" style="margin-top:8px"><button class="btn-solid sm" onclick="saveQuickNotes('${section}')">Save Notes</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);
+  setTimeout(()=>{const el=document.getElementById('qnotes-text');if(el){el.selectionStart=el.selectionEnd=el.value.length;el.focus();}},50);
+}
+function saveQuickNotes(section){saveData(`notes_${section}`,document.getElementById('qnotes-text').value);closeModal();showSection(currentSection);}
 
 // ── DRAG ROOMS ──
 function dragRoomStart(e,idx){dragRoomIdx=idx;e.dataTransfer.effectAllowed='move';setTimeout(()=>e.target.style.opacity='.45',0);}
@@ -617,8 +738,8 @@ function setActiveRoom(id){if(id!==activeRoomId)activeRoomTab='overview';activeR
 function renderHome(main){
   const home=userData('home',{rooms:[]});
   const viewToggle=`<div class="home-view-tabs"><button class="home-view-tab${homeView==='rooms'?' active':''}" onclick="setHomeView('rooms')">Rooms</button><button class="home-view-tab${homeView==='floorplan'?' active':''}" onclick="setHomeView('floorplan')">Floor Plan</button></div>`;
-  if(homeView==='floorplan'){main.innerHTML=`<div class="section-rule"><div><div class="section-title">Our Home</div><div class="section-sub">Visualise your space.</div></div></div>${viewToggle}${renderFloorPlanView()}`;return;}
-  if(!home.rooms.length){main.innerHTML=`<div class="section-rule"><div><div class="section-title">Our Home</div><div class="section-sub">Add rooms to start planning.</div></div><button class="btn-solid sm" onclick="openAddRoom()">+ Add Room</button></div>${viewToggle}<div class="empty"><div class="empty-icon">🏠</div>No rooms yet.</div>`;return;}
+  if(homeView==='floorplan'){main.innerHTML=`<div class="section-rule"><div><div class="section-title">Our Home</div><div class="section-sub">Visualise your space.</div></div>${quickNotesBtn('home')}</div>${viewToggle}${renderFloorPlanView()}`;return;}
+  if(!home.rooms.length){main.innerHTML=`<div class="section-rule"><div><div class="section-title">Our Home</div><div class="section-sub">Add rooms to start planning.</div></div><div class="flex-center">${quickNotesBtn('home')}<button class="btn-solid sm" onclick="openAddRoom()">+ Add Room</button></div></div>${viewToggle}<div class="empty"><div class="empty-icon">🏠</div>No rooms yet.</div>`;return;}
   if(!activeRoomId||!home.rooms.find(r=>r.id===activeRoomId))activeRoomId=home.rooms[0].id;
   const room=home.rooms.find(r=>r.id===activeRoomId);
   const tabs=home.rooms.map((r,i)=>`<button class="room-tab${r.id===activeRoomId?' active':''}" draggable="true" ondragstart="dragRoomStart(event,${i})" ondragover="dragRoomOver(event,${i})" ondragleave="dragRoomLeave(event)" ondrop="dropRoom(event,${i},'home')" ondragend="dragRoomEnd(event)" onclick="setActiveRoom('${r.id}')"><span class="drag-handle">⋮⋮</span>${r.name}</button>`).join('');
@@ -636,7 +757,7 @@ function renderHome(main){
   } else {
     content=renderRoomMoodboard(room);
   }
-  main.innerHTML=`<div class="section-rule"><div><div class="section-title">Our Home</div><div class="section-sub">Track every room, budget &amp; piece of furniture.</div></div><button class="btn-solid sm" onclick="openAddRoom()">+ Room</button></div>${viewToggle}<div class="room-tabs-row">${tabs}</div><div class="room-sub-tabs">${subTabs}</div>${content}`;
+  main.innerHTML=`<div class="section-rule"><div><div class="section-title">Our Home</div><div class="section-sub">Track every room, budget &amp; piece of furniture.</div></div><div class="flex-center">${quickNotesBtn('home')}<button class="btn-solid sm" onclick="openAddRoom()">+ Room</button></div></div>${viewToggle}<div class="room-tabs-row">${tabs}</div><div class="room-sub-tabs">${subTabs}</div>${content}`;
 }
 
 function renderItemList(items,roomId){
@@ -783,7 +904,7 @@ function renderWedding(main){
   if(weddingTab==='inspo')content=`<div class="flex-between mb14"><div style="font-family:'Cormorant Garamond',serif;font-size:16px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)">Inspiration Gallery</div></div>${renderPhotoGrid(w.inspo||[],'wedding','wedding')}`;
   else if(weddingTab==='moodboard')content=renderMoodBoardSection('wedding');
   else content=`<label class="field-label">Wedding Date</label><input id="w-date" class="field-input" type="date" value="${w.wdate||''}"/><label class="field-label">Venue</label><input id="w-venue" class="field-input" placeholder="The Grand Hotel…" value="${w.venue||''}"/><label class="field-label">Theme / Aesthetic</label><input id="w-theme" class="field-input" placeholder="Garden romance…" value="${w.theme||''}"/><label class="field-label">Notes</label><textarea id="w-notes" class="field-input" rows="4">${w.notes||''}</textarea><button class="btn-solid sm" onclick="saveWeddingDetails()">Save Details</button>`;
-  main.innerHTML=`<div class="section-rule"><div><div class="section-title">Wedding</div><div class="section-sub">Gather inspiration &amp; build your vision.</div></div></div><div class="room-tabs-row">${tabs}</div>${content}`;
+  main.innerHTML=`<div class="section-rule"><div><div class="section-title">Wedding</div><div class="section-sub">Gather inspiration &amp; build your vision.</div></div>${quickNotesBtn('wedding')}</div><div class="room-tabs-row">${tabs}</div>${content}`;
 }
 function setWeddingTab(t){weddingTab=t;showSection('wedding');}
 function saveWeddingDetails(){const w=userData('wedding',{inspo:[]});w.wdate=document.getElementById('w-date').value;w.venue=document.getElementById('w-venue').value.trim();w.theme=document.getElementById('w-theme').value.trim();w.notes=document.getElementById('w-notes').value.trim();saveData('wedding',w);alert('Details saved!');}
@@ -815,7 +936,7 @@ function renderHoneymoon(main){
   } else {
     content=`<div class="budget-block"><div class="budget-row"><div><div class="budget-label">Total Budget</div><div class="budget-amount${over?' over':''}">£${spent.toLocaleString(undefined,{minimumFractionDigits:2})} / £${budget.toLocaleString()}</div></div><button class="btn-ghost" onclick="editOverallHoneymoonBudget()">Edit</button></div><div class="bar-track"><div class="bar-fill${over?' over':''}" style="width:${pct}%"></div></div><div class="bar-note${over?' over':''}">${over?'Over budget':'Remaining: £'+(budget-spent).toLocaleString(undefined,{minimumFractionDigits:2})}</div></div><div style="margin-top:18px">${h.rooms.map(r=>{const rs=(r.items||[]).reduce((s,i)=>s+(i.price||0),0);return`<div class="item-row"><div class="item-body"><div class="item-name">${r.name}</div><div class="item-store">Budget: £${(r.budget||0).toLocaleString()}</div></div><div class="item-price">£${rs.toLocaleString(undefined,{minimumFractionDigits:2})}</div></div>`;}).join('')}</div>`;
   }
-  main.innerHTML=`<div class="section-rule"><div><div class="section-title">Honeymoon</div><div class="section-sub">Plan your perfect getaway.</div></div></div><div class="room-tabs-row">${tabs}</div>${content}`;
+  main.innerHTML=`<div class="section-rule"><div><div class="section-title">Honeymoon</div><div class="section-sub">Plan your perfect getaway.</div></div>${quickNotesBtn('honeymoon')}</div><div class="room-tabs-row">${tabs}</div>${content}`;
 }
 function setHoneymoonTab(t){honeymoonTab=t;showSection('honeymoon');}
 function setActiveHoneymoonRoom(id){activeHoneymoonRoomId=id;showSection('honeymoon');}
@@ -833,14 +954,24 @@ function saveHoneymoonItem(roomId){const name=document.getElementById('hitem-nam
 let recipeFilter='All';
 function renderRecipes(main){
   const r=userData('recipes',{items:[]});const allTags=['All',...new Set(r.items.flatMap(i=>i.tags||[]))];const filtered=recipeFilter==='All'?r.items:r.items.filter(i=>(i.tags||[]).includes(recipeFilter));
-  main.innerHTML=`<div class="section-rule"><div><div class="section-title">Recipes</div><div class="section-sub">Save photos, notes &amp; full recipes.</div></div><button class="btn-solid sm" onclick="openAddRecipe()">+ Add Recipe</button></div><div class="tag-row">${allTags.map(t=>`<button class="tag-pill${recipeFilter===t?' active':''}" onclick="setRecipeFilter('${t}')">${t}</button>`).join('')}</div>${filtered.length?`<div class="recipe-grid">${filtered.map(item=>`<div class="recipe-card">${item.img?`<img class="recipe-img" src="${item.img}" loading="lazy" onclick="viewRecipe('${item.id}')"/>`:''}<div class="recipe-body">${(item.tags||[]).map(t=>`<span class="recipe-tag">${t}</span>`).join('')}<div class="recipe-title">${item.title}</div>${item.text?`<div class="recipe-text">${item.text.slice(0,180)}${item.text.length>180?'…':''}</div>`:''}<div class="flex-center" style="margin-top:10px"><button class="btn-ghost" style="font-size:10px;padding:4px 12px" onclick="viewRecipe('${item.id}')">View</button><button class="btn-ghost danger" style="font-size:10px;padding:4px 12px" onclick="deleteRecipe('${item.id}')">Delete</button></div></div></div>`).join('')}</div>`:`<div class="empty"><div class="empty-icon">🍽</div>No recipes yet.</div>`}`;
+  main.innerHTML=`<div class="section-rule"><div><div class="section-title">Recipes</div><div class="section-sub">Save photos, notes &amp; full recipes.</div></div><div class="flex-center">${quickNotesBtn('recipes')}<button class="btn-solid sm" onclick="openAddRecipe()">+ Add Recipe</button></div></div><div class="tag-row">${allTags.map(t=>`<button class="tag-pill${recipeFilter===t?' active':''}" onclick="setRecipeFilter('${t}')">${t}</button>`).join('')}</div>${filtered.length?`<div class="recipe-grid">${filtered.map(item=>`<div class="recipe-card">${item.img?`<img class="recipe-img" src="${item.img}" loading="lazy" onclick="viewRecipe('${item.id}')"/>`:''}<div class="recipe-body">${(item.tags||[]).map(t=>`<span class="recipe-tag">${t}</span>`).join('')}<div class="recipe-title">${item.title}</div>${item.text?`<div class="recipe-text">${item.text.slice(0,180)}${item.text.length>180?'…':''}</div>`:''}<div class="flex-center" style="margin-top:10px"><button class="btn-ghost" style="font-size:10px;padding:4px 12px" onclick="viewRecipe('${item.id}')">View</button><button class="btn-ghost danger" style="font-size:10px;padding:4px 12px" onclick="deleteRecipe('${item.id}')">Delete</button></div></div></div>`).join('')}</div>`:`<div class="empty"><div class="empty-icon">🍽</div>No recipes yet.</div>`}`;
 }
 function setRecipeFilter(f){recipeFilter=f;showSection('recipes');}
 function openAddRecipe(){openModal(`<div class="modal-head"><div class="modal-title">Add Recipe</div><button class="modal-close" onclick="closeModal()">×</button></div><label class="field-label">Recipe Name</label><input id="rec-title" class="field-input" placeholder="e.g. Roast Chicken…"/><label class="field-label">Tags (comma separated)</label><input id="rec-tags" class="field-input" placeholder="Dinner, Italian…"/><label class="field-label">Recipe / Notes</label><textarea id="rec-text" class="field-input" rows="6" placeholder="Ingredients and method…"></textarea><label class="field-label">Photo (optional)</label><button class="btn-ghost" onclick="pickRecipePhoto()">Choose Photo</button><img id="rec-img-preview" style="display:none;max-height:140px;margin-top:8px"/><input type="file" id="rec-file" accept="image/*" style="display:none"/><div class="modal-row" style="margin-top:14px"><button class="btn-solid sm" onclick="saveRecipe()">Save Recipe</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);}
 let recipeImgData=null;
 function pickRecipePhoto(){recipeImgData=null;const fi=document.getElementById('rec-file');fi.onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{recipeImgData=ev.target.result;const p=document.getElementById('rec-img-preview');p.src=recipeImgData;p.style.display='block';};r.readAsDataURL(f);};fi.click();}
 function saveRecipe(){const title=document.getElementById('rec-title').value.trim();if(!title)return;const tags=document.getElementById('rec-tags').value.split(',').map(t=>t.trim()).filter(Boolean);const text=document.getElementById('rec-text').value.trim();const r=userData('recipes',{items:[]});r.items.push({id:uid(),title,tags,text,img:recipeImgData||null,date:Date.now()});recipeImgData=null;saveData('recipes',r);closeModal();showSection('recipes');}
-function viewRecipe(id){const item=userData('recipes',{items:[]}).items.find(i=>i.id===id);if(!item)return;openModal(`<div class="modal-head"><div class="modal-title">${item.title}</div><button class="modal-close" onclick="closeModal()">×</button></div>${item.img?`<img src="${item.img}" class="modal-preview"/>`:''}<div style="margin-top:12px;font-size:15px;line-height:1.75;white-space:pre-wrap">${item.text||''}</div><div class="modal-row" style="margin-top:16px"><button class="btn-ghost danger" onclick="deleteRecipe('${id}');closeModal()">Delete</button></div>`);}
+function viewRecipe(id){
+  const item=userData('recipes',{items:[]}).items.find(i=>i.id===id);if(!item)return;
+  const extraPhotos=item.photos||[];
+  const photosHtml=extraPhotos.length?`<div style="margin-top:16px"><div style="font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);font-family:'Cormorant Garamond',serif;margin-bottom:8px">Extra Photos</div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:6px">${extraPhotos.map((p,i)=>`<div style="position:relative;aspect-ratio:1;overflow:hidden;background:var(--bone);border:1px solid var(--bone)"><img src="${p.img}" style="width:100%;height:100%;object-fit:cover;display:block"/><button onclick="deleteRecipePhoto('${id}',${i})" style="position:absolute;top:3px;right:3px;background:rgba(168,32,32,.85);border:none;color:#fff;width:18px;height:18px;font-size:10px;cursor:pointer;line-height:1">×</button></div>`).join('')}</div></div>`:'';
+  openModal(`<div class="modal-head"><div class="modal-title">${item.title}</div><button class="modal-close" onclick="closeModal()">×</button></div>${item.img?`<img src="${item.img}" class="modal-preview"/>`:''}${item.text?`<div style="margin-top:12px;font-size:15px;line-height:1.75;white-space:pre-wrap">${item.text}</div>`:''}<input type="file" id="rec-extra-photo" accept="image/*" style="display:none"/>${photosHtml}<div class="modal-row" style="margin-top:16px"><button class="btn-ghost" onclick="addPhotoToRecipe('${id}')">📷 Add Photo</button><button class="btn-ghost danger" onclick="deleteRecipe('${id}');closeModal()">Delete</button></div>`);
+}
+function addPhotoToRecipe(recipeId){
+  const fi=document.getElementById('rec-extra-photo');if(!fi)return;
+  fi.onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{const rec=userData('recipes',{items:[]});const item=rec.items.find(i=>i.id===recipeId);if(!item)return;item.photos=item.photos||[];item.photos.push({id:uid(),img:ev.target.result,date:Date.now(),liked:false,archived:false});saveData('recipes',rec);viewRecipe(recipeId);};r.readAsDataURL(f);fi.value='';};fi.click();
+}
+function deleteRecipePhoto(recipeId,idx){const rec=userData('recipes',{items:[]});const item=rec.items.find(i=>i.id===recipeId);if(item&&item.photos){item.photos.splice(idx,1);saveData('recipes',rec);}viewRecipe(recipeId);}
 function deleteRecipe(id){if(!confirm('Delete this recipe?'))return;const r=userData('recipes',{items:[]});r.items=r.items.filter(i=>i.id!==id);saveData('recipes',r);showSection('recipes');}
 
 // ── MOOD BOARD (global) ──
@@ -857,6 +988,85 @@ function pickMoodBoardImages(boardIndex,context){const fi=document.getElementByI
 function removeTile(boardIndex,context,tileIndex){const boards=userData(`moodboards_${context}`,[]);boards[boardIndex].tiles.splice(tileIndex,1);saveData(`moodboards_${context}`,boards);openEditBoard(context,boardIndex);}
 function updateMoodBoard(context,boardIndex){const boards=userData(`moodboards_${context}`,[]);const board=boards[boardIndex];board.title=document.getElementById('mb-edit-title').value.trim()||'Board';board.palette=document.getElementById('mb-edit-palette').value.split(',').map(s=>s.trim()).filter(s=>s.startsWith('#'));board.notes=document.getElementById('mb-edit-notes').value.trim();saveData(`moodboards_${context}`,boards);closeModal();if(context==='wedding'){setWeddingTab('moodboard');showSection('wedding');}else showSection(currentSection);}
 function deleteMoodBoard(context,boardIndex){if(!confirm('Delete this mood board?'))return;const boards=userData(`moodboards_${context}`,[]);boards.splice(boardIndex,1);saveData(`moodboards_${context}`,boards);if(context==='wedding'){setWeddingTab('moodboard');showSection('wedding');}else showSection(currentSection);}
+
+// ── MUSIC ──
+function renderMusic(main){
+  const m=userData('music',{playlists:[]});
+  if(!m.playlists.length){
+    main.innerHTML=`<div class="section-rule"><div><div class="section-title">Music</div><div class="section-sub">Your favourite songs &amp; playlists.</div></div><div class="flex-center">${quickNotesBtn('music')}<button class="btn-solid sm" onclick="openAddPlaylist()">+ Playlist</button></div></div><div class="empty"><div class="empty-icon">🎵</div>No playlists yet. Create your first one!</div>`;
+    return;
+  }
+  if(!activeMusicPlaylistId||!m.playlists.find(p=>p.id===activeMusicPlaylistId))activeMusicPlaylistId=m.playlists[0].id;
+  const pl=m.playlists.find(p=>p.id===activeMusicPlaylistId);
+  const tabs=m.playlists.map(p=>`<button class="room-tab${p.id===activeMusicPlaylistId?' active':''}" onclick="setActiveMusicPlaylist('${p.id}')">${p.name}</button>`).join('');
+  const songs=pl.songs||[];
+  const songsHtml=songs.length?songs.map((s,i)=>`<div class="song-row">
+    <div class="song-num">${i+1}</div>
+    <div class="song-body">
+      <div class="song-title">${s.title}</div>
+      ${s.artist?`<div class="song-artist">${s.artist}</div>`:''}
+      ${s.note?`<div class="song-note">${s.note}</div>`:''}
+    </div>
+    ${s.link?`<a href="${s.link}" target="_blank" rel="noopener" class="song-link-btn">▶ Play</a>`:''}
+    <button class="icon-btn" title="Delete" onclick="deleteSong('${pl.id}','${s.id}')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg></button>
+  </div>`).join(''):`<div class="empty" style="padding:20px 0;font-size:13px">No songs yet — add your first!</div>`;
+  main.innerHTML=`<div class="section-rule"><div><div class="section-title">Music</div><div class="section-sub">Your favourite songs &amp; playlists.</div></div><div class="flex-center">${quickNotesBtn('music')}<button class="btn-solid sm" onclick="openAddPlaylist()">+ Playlist</button></div></div>
+    <div class="room-tabs-row">${tabs}</div>
+    <div class="flex-between mb14" style="padding-top:16px">
+      <div style="font-family:'Cormorant Garamond',serif;font-size:16px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">${pl.name} <span style="font-size:12px;font-weight:400;letter-spacing:.04em">${songs.length} song${songs.length!==1?'s':''}</span></div>
+      <div class="flex-center">
+        <button class="btn-ghost" onclick="openAddSong('${pl.id}')">+ Add Song</button>
+        <button class="btn-ghost danger" onclick="deletePlaylist('${pl.id}')">Delete</button>
+      </div>
+    </div>
+    ${pl.description?`<p style="font-size:13px;color:var(--muted);font-style:italic;margin-bottom:14px">${pl.description}</p>`:''}
+    ${songsHtml}`;
+}
+function setActiveMusicPlaylist(id){activeMusicPlaylistId=id;showSection('music');}
+function openAddPlaylist(){
+  openModal(`<div class="modal-head"><div class="modal-title">New Playlist</div><button class="modal-close" onclick="closeModal()">×</button></div>
+    <label class="field-label">Playlist Name</label>
+    <input id="pl-name" class="field-input" placeholder="e.g. Favourites, Wedding Morning…"/>
+    <label class="field-label">Description (optional)</label>
+    <input id="pl-desc" class="field-input" placeholder="A note about this playlist…"/>
+    <div class="modal-row"><button class="btn-solid sm" onclick="savePlaylist()">Create</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);
+}
+function savePlaylist(){
+  const name=(document.getElementById('pl-name').value||'').trim();if(!name)return;
+  const m=userData('music',{playlists:[]});const id=uid();
+  m.playlists.push({id,name,description:(document.getElementById('pl-desc').value||'').trim(),songs:[]});
+  saveData('music',m);activeMusicPlaylistId=id;closeModal();showSection('music');
+}
+function deletePlaylist(id){
+  if(!confirm('Delete this playlist and all its songs?'))return;
+  const m=userData('music',{playlists:[]});
+  m.playlists=m.playlists.filter(p=>p.id!==id);
+  activeMusicPlaylistId=m.playlists.length?m.playlists[0].id:null;
+  saveData('music',m);showSection('music');
+}
+function openAddSong(playlistId){
+  openModal(`<div class="modal-head"><div class="modal-title">Add Song</div><button class="modal-close" onclick="closeModal()">×</button></div>
+    <label class="field-label">Song Title</label>
+    <input id="song-title" class="field-input" placeholder="e.g. Fly Me to the Moon…"/>
+    <label class="field-label">Artist</label>
+    <input id="song-artist" class="field-input" placeholder="e.g. Frank Sinatra…"/>
+    <label class="field-label">Link (Spotify / YouTube / Apple Music)</label>
+    <input id="song-link" class="field-input" type="url" placeholder="https://…"/>
+    <label class="field-label">Note (optional)</label>
+    <input id="song-note" class="field-input" placeholder="Why you love it…"/>
+    <div class="modal-row"><button class="btn-solid sm" onclick="saveSong('${playlistId}')">Add to Playlist</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);
+}
+function saveSong(playlistId){
+  const title=(document.getElementById('song-title').value||'').trim();if(!title)return;
+  const m=userData('music',{playlists:[]});const pl=m.playlists.find(p=>p.id===playlistId);if(!pl)return;
+  pl.songs=pl.songs||[];
+  pl.songs.push({id:uid(),title,artist:(document.getElementById('song-artist').value||'').trim(),link:(document.getElementById('song-link').value||'').trim(),note:(document.getElementById('song-note').value||'').trim(),date:Date.now()});
+  saveData('music',m);closeModal();showSection('music');
+}
+function deleteSong(playlistId,songId){
+  const m=userData('music',{playlists:[]});const pl=m.playlists.find(p=>p.id===playlistId);
+  if(pl){pl.songs=(pl.songs||[]).filter(s=>s.id!==songId);saveData('music',m);}showSection('music');
+}
 
 // ── FEEDBACK ──
 function openFeedback(){
