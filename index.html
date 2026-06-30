@@ -270,6 +270,22 @@ select.field-input{appearance:none}
 .mb14{margin-bottom:14px}
 .divider{border:none;border-top:1px solid var(--bone);margin:20px 0}
 @media(max-width:520px){.brand-name{font-size:26px}.nav-btn{padding:11px 8px;font-size:10px;letter-spacing:.12em}.photo-grid,.recipe-grid{columns:1}.modal-box{padding:22px 18px}}
+
+/* DASHBOARD */
+#app.dashboard-mode header nav{display:none}
+.dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:28px}
+@media(max-width:480px){.dash-grid{grid-template-columns:1fr 1fr;gap:10px}}
+.dash-card{background:var(--bone);border-top:3px solid var(--ink);padding:16px 14px 14px;cursor:pointer;transition:box-shadow .2s;display:block;border-bottom:1px solid rgba(28,20,10,.07);border-left:1px solid rgba(28,20,10,.07);border-right:1px solid rgba(28,20,10,.07)}
+.dash-card:hover{box-shadow:0 4px 20px rgba(28,20,10,.13)}
+.dash-card:active{opacity:.82}
+.dash-card-icon{font-size:26px;margin-bottom:10px;display:block;opacity:.85}
+.dash-card-name{font-family:'Cormorant Garamond',serif;font-size:15px;font-weight:700;color:var(--ink);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px}
+.dash-card-sub{font-size:12px;color:var(--muted);font-style:italic}
+.dash-card-empty{font-size:11px;color:var(--warm);letter-spacing:.06em}
+.dash-recent-row{padding:10px 0;border-bottom:1px solid var(--bone);display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.dash-recent-label{font-size:14px;color:var(--ink)}
+.dash-recent-meta{font-size:10px;color:var(--muted);font-family:'Cormorant Garamond',serif;letter-spacing:.06em;margin-top:2px}
+.dash-recent-tag{font-size:9px;color:var(--warm);letter-spacing:.12em;text-transform:uppercase;font-family:'Cormorant Garamond',serif;white-space:nowrap;flex-shrink:0;margin-top:2px}
 </style>
 </head>
 <body>
@@ -325,7 +341,7 @@ select.field-input{appearance:none}
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
           Photos
         </button>
-        <div class="header-brand"><div class="brand-name">MAISON</div><div class="brand-sub">Home &amp; Wedding Journal</div></div>
+        <div class="header-brand" onclick="showSection('dashboard')" style="cursor:pointer"><div class="brand-name">MAISON</div><div class="brand-sub">Home &amp; Wedding Journal</div></div>
         <button class="header-btn" onclick="openSettings()">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
           Settings
@@ -445,7 +461,7 @@ function handleGoogleLogin(response){
   currentUser=p.sub;currentUserEmail=p.email||null;currentUserName=p.name||p.email||'User';
   document.getElementById('auth-screen').style.display='none';
   document.getElementById('app').classList.add('visible');
-  setupFileInputs();showSection('home');updatePanelBadge();
+  setupFileInputs();showSection('dashboard');updatePanelBadge();
 }
 window.addEventListener('load',()=>{if(typeof google!=='undefined'&&google.accounts)initGoogle();else{const s=document.querySelector('script[src*="gsi"]');if(s)s.addEventListener('load',initGoogle);}});
 
@@ -458,9 +474,12 @@ function setupFileInputs(){
 
 // ── NAV ──
 function showSection(s){
-  currentSection=s;document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.section===s));
+  currentSection=s;
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.section===s));
+  document.getElementById('app').classList.toggle('dashboard-mode',s==='dashboard');
   const main=document.getElementById('main-content');
-  if(s==='home')renderHome(main);
+  if(s==='dashboard')renderDashboard(main);
+  else if(s==='home')renderHome(main);
   else if(s==='wedding')renderWedding(main);
   else if(s==='honeymoon')renderHoneymoon(main);
   else if(s==='dayout')renderDayOut(main);
@@ -989,6 +1008,61 @@ function removeTile(boardIndex,context,tileIndex){const boards=userData(`moodboa
 function updateMoodBoard(context,boardIndex){const boards=userData(`moodboards_${context}`,[]);const board=boards[boardIndex];board.title=document.getElementById('mb-edit-title').value.trim()||'Board';board.palette=document.getElementById('mb-edit-palette').value.split(',').map(s=>s.trim()).filter(s=>s.startsWith('#'));board.notes=document.getElementById('mb-edit-notes').value.trim();saveData(`moodboards_${context}`,boards);closeModal();if(context==='wedding'){setWeddingTab('moodboard');showSection('wedding');}else showSection(currentSection);}
 function deleteMoodBoard(context,boardIndex){if(!confirm('Delete this mood board?'))return;const boards=userData(`moodboards_${context}`,[]);boards.splice(boardIndex,1);saveData(`moodboards_${context}`,boards);if(context==='wedding'){setWeddingTab('moodboard');showSection('wedding');}else showSection(currentSection);}
 
+// ── DASHBOARD ──
+function timeAgo(ts){
+  if(!ts)return'';
+  const diff=Date.now()-ts,mins=Math.floor(diff/60000);
+  if(mins<2)return'Just now';
+  if(mins<60)return`${mins}m ago`;
+  const hrs=Math.floor(mins/60);
+  if(hrs<24)return`${hrs}h ago`;
+  const days=Math.floor(hrs/24);
+  if(days<7)return`${days} day${days!==1?'s':''} ago`;
+  return new Date(ts).toLocaleDateString('en-GB',{day:'numeric',month:'short'});
+}
+function renderDashboard(main){
+  const home=userData('home',{rooms:[]});
+  const w=userData('wedding',{inspo:[]});
+  const h=userData('honeymoon',{rooms:[],inspo:[],budget:0});
+  const d=userData('dayout',{plans:[]});
+  const rec=userData('recipes',{items:[]});
+  const music=userData('music',{playlists:[]});
+
+  const homeSpent=home.rooms.reduce((s,r)=>s+(r.items||[]).reduce((a,i)=>a+(i.price||0),0)+(r.photos||[]).filter(p=>!p.archived).reduce((a,p)=>a+(p.price||0),0),0);
+  const wPhotos=(w.inspo||[]).filter(p=>!p.archived).length;
+  const songCount=music.playlists.reduce((s,p)=>s+(p.songs||[]).length,0);
+
+  const cards=[
+    {icon:'🏠',color:'var(--ink)',   name:'Our Home',   sub:home.rooms.length?`${home.rooms.length} room${home.rooms.length!==1?'s':''}${homeSpent?` · £${homeSpent.toLocaleString(undefined,{minimumFractionDigits:2})}`:''}`:null, empty:'No rooms yet',section:'home'},
+    {icon:'💍',color:'var(--red)',   name:'Wedding',    sub:wPhotos?`${wPhotos} photo${wPhotos!==1?'s':''} saved`:null, empty:'Add inspiration',section:'wedding'},
+    {icon:'✈️',color:'var(--teal)',  name:'Honeymoon',  sub:h.rooms.length?`${h.rooms.length} destination${h.rooms.length!==1?'s':''}`:null, empty:'Plan your trip',section:'honeymoon'},
+    {icon:'🗺️',color:'var(--teal)',  name:'Days Out',   sub:d.plans.length?`${d.plans.length} plan${d.plans.length!==1?'s':''}`:null, empty:'Add a day out',section:'dayout'},
+    {icon:'🍽️',color:'var(--green)', name:'Recipes',    sub:rec.items.length?`${rec.items.length} recipe${rec.items.length!==1?'s':''} saved`:null, empty:'Save your first',section:'recipes'},
+    {icon:'🎵',color:'var(--gold)',  name:'Music',      sub:music.playlists.length?`${music.playlists.length} playlist${music.playlists.length!==1?'s':''}${songCount?` · ${songCount} song${songCount!==1?'s':''}`:''}`:'', empty:'Create a playlist',section:'music'},
+  ];
+
+  const recent=[];
+  home.rooms.forEach(r=>(r.photos||[]).filter(p=>p.date&&!p.archived).forEach(p=>recent.push({label:p.note||'Home photo',tag:r.name,date:p.date,section:'home'})));
+  (w.inspo||[]).filter(p=>p.date&&!p.archived).forEach(p=>recent.push({label:p.note||'Wedding photo',tag:'Wedding',date:p.date,section:'wedding'}));
+  (h.inspo||[]).filter(p=>p.date&&!p.archived).forEach(p=>recent.push({label:p.note||'Honeymoon photo',tag:'Honeymoon',date:p.date,section:'honeymoon'}));
+  rec.items.forEach(i=>recent.push({label:i.title||'Recipe',tag:'Recipes',date:i.date||0,section:'recipes'}));
+  music.playlists.forEach(pl=>(pl.songs||[]).forEach(s=>recent.push({label:s.title,tag:pl.name,date:s.date||0,section:'music'})));
+  recent.sort((a,b)=>b.date-a.date);
+  const top=recent.slice(0,4);
+
+  const recentHtml=top.length?top.map(r=>`<div class="dash-recent-row" onclick="showSection('${r.section}')" style="cursor:pointer"><div><div class="dash-recent-label">${r.label}</div><div class="dash-recent-meta">${timeAgo(r.date)}</div></div><div class="dash-recent-tag">${r.tag}</div></div>`).join(''):`<div style="font-size:13px;color:var(--muted);font-style:italic;padding:16px 0">Nothing added yet — tap a section to get started.</div>`;
+
+  const firstName=currentUserName?currentUserName.split(' ')[0]:'';
+  main.innerHTML=`<div style="max-width:600px">
+    <div style="margin-bottom:26px">
+      <div style="font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--warm);font-family:'Cormorant Garamond',serif;margin-bottom:6px">Welcome back${firstName?', '+firstName:''}</div>
+      <div style="font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:700;color:var(--ink);letter-spacing:-.01em;line-height:1">Your Journal</div>
+    </div>
+    <div class="dash-grid">${cards.map(c=>`<div class="dash-card" style="border-top-color:${c.color}" onclick="showSection('${c.section}')"><div class="dash-card-icon">${c.icon}</div><div class="dash-card-name">${c.name}</div>${c.sub?`<div class="dash-card-sub">${c.sub}</div>`:`<div class="dash-card-empty">${c.empty}</div>`}</div>`).join('')}</div>
+    ${top.length?`<div style="font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);font-family:'Cormorant Garamond',serif;margin-bottom:2px">Recently Added</div>${recentHtml}`:''}
+  </div>`;
+}
+
 // ── MUSIC ──
 function renderMusic(main){
   const m=userData('music',{playlists:[]});
@@ -1114,7 +1188,7 @@ function openSettings(){
     </div>`);
 }
 function signOut(){currentUser=null;capturedDataURL=null;activeRoomId=null;document.getElementById('app').classList.remove('visible');document.getElementById('auth-screen').style.display='flex';google.accounts.id.disableAutoSelect();closeModal();}
-function clearData(){if(!confirm('Permanently delete all your data?'))return;Object.keys(localStorage).filter(k=>k.startsWith(`maison_${currentUser}_`)).forEach(k=>localStorage.removeItem(k));closeModal();alert('Data cleared.');showSection('home');}
+function clearData(){if(!confirm('Permanently delete all your data?'))return;Object.keys(localStorage).filter(k=>k.startsWith(`maison_${currentUser}_`)).forEach(k=>localStorage.removeItem(k));closeModal();alert('Data cleared.');showSection('dashboard');}
 </script>
 </body>
 </html>
