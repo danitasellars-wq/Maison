@@ -451,7 +451,7 @@ let _wpTemp=null;
 function getStore(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch(e){return d;}}
 function setStore(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
 function userData(k,d){return getStore(`maison_${currentUser}_${k}`,d);}
-function saveData(k,v){setStore(`maison_${currentUser}_${k}`,v);scheduleDriveSync();}
+function saveData(k,v){setStore(`maison_${currentUser}_${k}`,v);try{localStorage.setItem(`maison_${currentUser}_lastwrite`,String(Date.now()));}catch(e){}scheduleDriveSync();}
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
 
 // ── GOOGLE AUTH ──
@@ -467,9 +467,10 @@ function handleGoogleLogin(response){
   document.getElementById('auth-screen').style.display='none';
   document.getElementById('app').classList.add('visible');
   setupFileInputs();showSection('dashboard');updatePanelBadge();
-  initDriveSync();
+  driveBoot();
 }
 window.addEventListener('load',()=>{
+  checkDriveRedirect();
   try{
     const sess=JSON.parse(localStorage.getItem('maison_sess')||'null');
     if(sess&&sess.exp>Date.now()&&sess.sub){
@@ -477,9 +478,7 @@ window.addEventListener('load',()=>{
       document.getElementById('auth-screen').style.display='none';
       document.getElementById('app').classList.add('visible');
       setupFileInputs();showSection('dashboard');updatePanelBadge();
-      const tryDrive=()=>{if(window.google&&google.accounts&&google.accounts.oauth2)initDriveSync();};
-      if(window.google&&google.accounts&&google.accounts.oauth2)tryDrive();
-      else{const s=document.querySelector('script[src*="gsi"]');if(s)s.addEventListener('load',tryDrive);}
+      driveBoot();
       return;
     }
   }catch(e){}
@@ -487,71 +486,116 @@ window.addEventListener('load',()=>{
   else{const s=document.querySelector('script[src*="gsi"]');if(s)s.addEventListener('load',initGoogle);}
 });
 
-// ── DRIVE SYNC ──
-function initDriveSync(){
-  if(!window.google||!google.accounts||!google.accounts.oauth2)return;
-  google.accounts.oauth2.initTokenClient({
-    client_id:'643043876163-9evtski9p2oqs4s1pg0nn4g1tnqdeiv8.apps.googleusercontent.com',
-    scope:'https://www.googleapis.com/auth/drive.appdata',
-    callback:(tok)=>{
-      if(tok.error)return;
-      driveAccessToken=tok.access_token;
-      loadFromDrive();
-    }
-  }).requestAccessToken({prompt:'none'});
+// ── DRIVE SYNC (redirect flow — no popups) ──
+const DRIVE_CLIENT_ID='643043876163-9evtski9p2oqs4s1pg0nn4g1tnqdeiv8.apps.googleusercontent.com';
+const DRIVE_SCOPE='https://www.googleapis.com/auth/drive.appdata';
+let lastSyncAt=null,lastSyncError=null;
+
+// On page load: pick up the access token Google sent back in the URL hash
+function checkDriveRedirect(){
+  if(!location.hash)return;
+  const h=new URLSearchParams(location.hash.slice(1));
+  if(h.get('state')!=='maison_drive')return;
+  const err=h.get('error');
+  if(err){
+    sessionStorage.setItem('maison_drive_err',err);
+  }else if(h.get('access_token')){
+    const exp=Date.now()+(parseInt(h.get('expires_in')||'3600',10)-60)*1000;
+    localStorage.setItem('maison_drive_tok',JSON.stringify({tok:h.get('access_token'),exp}));
+    sessionStorage.removeItem('maison_drive_err');
+    sessionStorage.removeItem('maison_drive_tried');
+  }
+  history.replaceState(null,'',location.pathname+location.search);
 }
-function requestDriveAccess(){
-  if(!window.google||!google.accounts||!google.accounts.oauth2)return;
-  google.accounts.oauth2.initTokenClient({
-    client_id:'643043876163-9evtski9p2oqs4s1pg0nn4g1tnqdeiv8.apps.googleusercontent.com',
-    scope:'https://www.googleapis.com/auth/drive.appdata',
-    callback:async(tok)=>{
-      if(tok.error){console.warn('Drive consent:',tok.error);return;}
-      driveAccessToken=tok.access_token;
-      await loadFromDrive();
-      await syncToDrive();
-      openSettings();
-    }
-  }).requestAccessToken();
+function getDriveToken(){try{const t=JSON.parse(localStorage.getItem('maison_drive_tok')||'null');if(t&&t.exp>Date.now())return t.tok;}catch(e){}return null;}
+function driveAuthRedirect(interactive){
+  const p=new URLSearchParams({client_id:DRIVE_CLIENT_ID,redirect_uri:location.origin+location.pathname,response_type:'token',scope:DRIVE_SCOPE,state:'maison_drive',include_granted_scopes:'true'});
+  if(currentUserEmail)p.set('login_hint',currentUserEmail);
+  if(!interactive)p.set('prompt','none');
+  location.href='https://accounts.google.com/o/oauth2/v2/auth?'+p.toString();
+}
+function driveBoot(){
+  driveAccessToken=getDriveToken();
+  if(driveAccessToken){
+    localStorage.setItem(`maison_drive_on_${currentUser}`,'1');
+    driveSyncNow(false);
+    return;
+  }
+  // Sync was on before but token expired — reconnect silently, once per session
+  if(localStorage.getItem(`maison_drive_on_${currentUser}`)&&!sessionStorage.getItem('maison_drive_tried')){
+    sessionStorage.setItem('maison_drive_tried','1');
+    driveAuthRedirect(false);
+  }
+}
+function driveTokenInvalid(){localStorage.removeItem('maison_drive_tok');driveAccessToken=null;}
+function enableDriveSync(){sessionStorage.removeItem('maison_drive_err');lastSyncError=null;driveAuthRedirect(true);}
+function disableDriveSync(){driveTokenInvalid();localStorage.removeItem(`maison_drive_on_${currentUser}`);if(driveSyncTimer){clearTimeout(driveSyncTimer);driveSyncTimer=null;}closeModal();openSettings();}
+async function driveFetch(url,opts){
+  const res=await fetch(url,opts);
+  if(res.status===401){driveTokenInvalid();throw new Error('Google sign-in expired — tap Reconnect Sync in Settings');}
+  if(res.status===403){let msg='';try{const j=await res.json();msg=(j.error&&j.error.message)||'';}catch(e){}throw new Error(msg||'Google Drive refused the request (403). Check the Drive API is enabled in Google Cloud Console.');}
+  if(!res.ok)throw new Error('Drive error '+res.status);
+  return res;
+}
+async function driveSyncNow(manual){
+  if(!driveAccessToken||!currentUser)return;
+  try{
+    const verdict=await loadFromDrive();
+    if(verdict!=='applied'&&verdict!=='insync')await syncToDrive();
+    lastSyncAt=Date.now();lastSyncError=null;
+    if(manual){closeModal();alert('Synced successfully ✓');openSettings();}
+  }catch(e){
+    lastSyncError=(e&&e.message)?e.message:String(e);
+    if(manual)alert('Sync failed: '+lastSyncError);
+  }
 }
 async function loadFromDrive(){
-  if(!driveAccessToken)return;
-  try{
-    const res=await fetch('https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&q=name%3D%27maison_data.json%27&fields=files(id)',{headers:{Authorization:'Bearer '+driveAccessToken}});
-    const list=await res.json();
-    const file=(list.files||[])[0];
-    if(!file)return;
-    driveFileId=file.id;
-    const dr=await fetch(`https://www.googleapis.com/drive/v3/files/${file.id}?alt=media`,{headers:{Authorization:'Bearer '+driveAccessToken}});
-    const payload=await dr.json();
-    if(payload&&payload.keys){
-      Object.entries(payload.keys).forEach(([k,v])=>localStorage.setItem(k,JSON.stringify(v)));
-      showSection(currentSection);updatePanelBadge();
-    }
-  }catch(e){console.warn('Drive load:',e);}
+  if(!driveAccessToken)return 'noauth';
+  const auth={headers:{Authorization:'Bearer '+driveAccessToken}};
+  const res=await driveFetch('https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&q=name%3D%27maison_data.json%27&fields=files(id)',auth);
+  const list=await res.json();
+  const file=(list.files||[])[0];
+  if(!file){driveFileId=null;return 'nofile';}
+  driveFileId=file.id;
+  const dr=await driveFetch(`https://www.googleapis.com/drive/v3/files/${file.id}?alt=media`,auth);
+  const payload=await dr.json();
+  if(!payload||!payload.keys)return 'nofile';
+  const lwKey=`maison_${currentUser}_lastwrite`;
+  const localAt=parseInt(localStorage.getItem(lwKey)||'0',10);
+  const driveAt=payload.at||0;
+  if(driveAt>localAt){
+    // Drive copy is newer — replace local data with it
+    Object.keys(localStorage).filter(k=>k.startsWith(`maison_${currentUser}_`)).forEach(k=>localStorage.removeItem(k));
+    Object.entries(payload.keys).forEach(([k,v])=>{try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}});
+    localStorage.setItem(lwKey,String(driveAt));
+    showSection(currentSection);updatePanelBadge();
+    return 'applied';
+  }
+  return driveAt===localAt?'insync':'localnewer';
 }
 function scheduleDriveSync(){
   if(!driveAccessToken)return;
   if(driveSyncTimer)clearTimeout(driveSyncTimer);
-  driveSyncTimer=setTimeout(syncToDrive,2500);
+  driveSyncTimer=setTimeout(()=>{syncToDrive().then(()=>{lastSyncAt=Date.now();lastSyncError=null;}).catch(e=>{lastSyncError=(e&&e.message)||String(e);});},2500);
 }
 async function syncToDrive(){
   if(!driveAccessToken||!currentUser)return;
-  try{
-    const keys={};
-    Object.keys(localStorage).filter(k=>k.startsWith(`maison_${currentUser}_`)).forEach(k=>{try{keys[k]=JSON.parse(localStorage.getItem(k));}catch(e){}});
-    const body=JSON.stringify({keys,at:Date.now()});
-    if(driveFileId){
-      await fetch(`https://www.googleapis.com/upload/drive/v3/files/${driveFileId}?uploadType=media`,{method:'PATCH',headers:{Authorization:'Bearer '+driveAccessToken,'Content-Type':'application/json'},body});
-    }else{
-      const form=new FormData();
-      form.append('metadata',new Blob([JSON.stringify({name:'maison_data.json',parents:['appDataFolder']})],{type:'application/json'}));
-      form.append('file',new Blob([body],{type:'application/json'}));
-      const cr=await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart',{method:'POST',headers:{Authorization:'Bearer '+driveAccessToken},body:form});
-      const created=await cr.json();
-      if(created.id)driveFileId=created.id;
-    }
-  }catch(e){console.warn('Drive sync:',e);}
+  const keys={};
+  const lwKey=`maison_${currentUser}_lastwrite`;
+  Object.keys(localStorage).filter(k=>k.startsWith(`maison_${currentUser}_`)&&k!==lwKey).forEach(k=>{try{keys[k]=JSON.parse(localStorage.getItem(k));}catch(e){}});
+  const at=Date.now();
+  const body=JSON.stringify({keys,at});
+  if(driveFileId){
+    await driveFetch(`https://www.googleapis.com/upload/drive/v3/files/${driveFileId}?uploadType=media`,{method:'PATCH',headers:{Authorization:'Bearer '+driveAccessToken,'Content-Type':'application/json'},body});
+  }else{
+    const form=new FormData();
+    form.append('metadata',new Blob([JSON.stringify({name:'maison_data.json',parents:['appDataFolder']})],{type:'application/json'}));
+    form.append('file',new Blob([body],{type:'application/json'}));
+    const cr=await driveFetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart',{method:'POST',headers:{Authorization:'Bearer '+driveAccessToken},body:form});
+    const created=await cr.json();
+    if(created.id)driveFileId=created.id;
+  }
+  localStorage.setItem(lwKey,String(at));
 }
 
 function setupFileInputs(){
@@ -1349,11 +1393,13 @@ function openSettings(){
     <hr class="divider"/>
     <div style="margin-bottom:20px">
       <div class="field-label" style="margin-bottom:8px">Cloud Sync</div>
-      ${driveAccessToken
-        ? `<p style="font-size:13px;color:var(--green);font-style:italic;margin-bottom:12px">✓ Syncing across your devices</p>`
-        : `<p style="font-size:13px;color:var(--muted);font-style:italic;margin-bottom:12px">Sync your data across all your devices via Google Drive.</p>
-           <button class="btn-ghost" onclick="closeModal();requestDriveAccess()">☁ Enable Cross-Device Sync</button>`
-      }
+      ${(()=>{
+        const err=lastSyncError||sessionStorage.getItem('maison_drive_err');
+        const errHtml=err?`<p style="font-size:12px;color:var(--red);font-style:italic;margin-top:10px">${err==='access_denied'?'Google blocked access — in Google Cloud Console open OAuth consent screen, then either add your email as a Test User or publish the app.':err}</p>`:'';
+        if(driveAccessToken)return`<p style="font-size:13px;color:var(--green);font-style:italic;margin-bottom:12px">✓ Sync is on${lastSyncAt?` — last synced ${timeAgo(lastSyncAt)}`:''}</p><div class="modal-row"><button class="btn-ghost" onclick="driveSyncNow(true)">Sync Now</button><button class="btn-ghost danger" onclick="disableDriveSync()">Turn Off</button></div>${errHtml}`;
+        if(localStorage.getItem(`maison_drive_on_${currentUser}`))return`<p style="font-size:13px;color:var(--muted);font-style:italic;margin-bottom:12px">Sync needs to reconnect to Google.</p><button class="btn-ghost" onclick="enableDriveSync()">Reconnect Sync</button>${errHtml}`;
+        return`<p style="font-size:13px;color:var(--muted);font-style:italic;margin-bottom:12px">Back up and sync your data across devices via Google Drive.</p><button class="btn-ghost" onclick="enableDriveSync()">Enable Cross-Device Sync</button>${errHtml}`;
+      })()}
     </div>
     <hr class="divider"/>
     <div>
@@ -1361,7 +1407,7 @@ function openSettings(){
       <button class="btn-ghost danger" onclick="clearData()">Clear All My Data</button>
     </div>`);
 }
-function signOut(){localStorage.removeItem('maison_sess');currentUser=null;capturedDataURL=null;activeRoomId=null;driveAccessToken=null;driveFileId=null;if(driveSyncTimer){clearTimeout(driveSyncTimer);driveSyncTimer=null;}document.getElementById('app').classList.remove('visible');document.getElementById('auth-screen').style.display='flex';google.accounts.id.disableAutoSelect();closeModal();}
+function signOut(){localStorage.removeItem('maison_sess');localStorage.removeItem('maison_drive_tok');currentUser=null;capturedDataURL=null;activeRoomId=null;driveAccessToken=null;driveFileId=null;if(driveSyncTimer){clearTimeout(driveSyncTimer);driveSyncTimer=null;}document.getElementById('app').classList.remove('visible');document.getElementById('auth-screen').style.display='flex';google.accounts.id.disableAutoSelect();closeModal();}
 function clearData(){if(!confirm('Permanently delete all your data?'))return;Object.keys(localStorage).filter(k=>k.startsWith(`maison_${currentUser}_`)).forEach(k=>localStorage.removeItem(k));if(driveAccessToken&&driveFileId){fetch(`https://www.googleapis.com/drive/v3/files/${driveFileId}`,{method:'DELETE',headers:{Authorization:'Bearer '+driveAccessToken}});driveFileId=null;}closeModal();alert('Data cleared.');showSection('dashboard');}
 </script>
 </body>
