@@ -276,13 +276,14 @@ select.field-input{appearance:none}
 #app.dashboard-mode header nav{display:none}
 .dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:28px}
 @media(max-width:480px){.dash-grid{grid-template-columns:1fr 1fr;gap:10px}}
-.dash-card{background:var(--bone);border-top:3px solid var(--ink);padding:16px 14px 14px;cursor:pointer;transition:box-shadow .2s;display:block;border-bottom:1px solid rgba(28,20,10,.07);border-left:1px solid rgba(28,20,10,.07);border-right:1px solid rgba(28,20,10,.07)}
-.dash-card:hover{box-shadow:0 4px 20px rgba(28,20,10,.13)}
+.dash-card{background:var(--cream);border:1px solid var(--bone);border-top:2px solid var(--ink);padding:20px 16px 18px;cursor:pointer;transition:all .22s;position:relative}
+.dash-card:hover{background:var(--bone);box-shadow:0 4px 20px rgba(28,20,10,.1)}
 .dash-card:active{opacity:.82}
-.dash-card-icon{font-size:26px;margin-bottom:10px;display:block;opacity:.85}
-.dash-card-name{font-family:'Cormorant Garamond',serif;font-size:15px;font-weight:700;color:var(--ink);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px}
-.dash-card-sub{font-size:12px;color:var(--muted);font-style:italic}
-.dash-card-empty{font-size:11px;color:var(--warm);letter-spacing:.06em}
+.dash-card-num{font-family:'Cormorant Garamond',serif;font-size:10px;letter-spacing:.18em;font-weight:600;margin-bottom:14px;opacity:.75}
+.dash-card-name{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:700;color:var(--ink);text-transform:uppercase;letter-spacing:.04em;line-height:1;margin-bottom:7px}
+.dash-card-sub{font-size:11px;color:var(--muted);font-style:italic;font-family:'EB Garamond',serif}
+.dash-card-empty{font-size:11px;color:var(--warm);font-style:italic;font-family:'EB Garamond',serif}
+#app.has-wallpaper{background:rgba(247,243,237,.87)}
 .dash-recent-row{padding:10px 0;border-bottom:1px solid var(--bone);display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
 .dash-recent-label{font-size:14px;color:var(--ink)}
 .dash-recent-meta{font-size:10px;color:var(--muted);font-family:'Cormorant Garamond',serif;letter-spacing:.06em;margin-top:2px}
@@ -445,6 +446,7 @@ let activeDayOutId=null,dragRoomIdx=null,activeMusicPlaylistId=null;
 let currentUserEmail=null,currentUserName='User';
 let _lpTimer=null,_lpFired=false;
 let driveAccessToken=null,driveFileId=null,driveSyncTimer=null;
+let _wpTemp=null;
 
 function getStore(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch(e){return d;}}
 function setStore(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
@@ -564,6 +566,7 @@ function showSection(s){
   currentSection=s;
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.section===s));
   document.getElementById('app').classList.toggle('dashboard-mode',s==='dashboard');
+  applyWallpaper();
   const main=document.getElementById('main-content');
   if(s==='dashboard')renderDashboard(main);
   else if(s==='home')renderHome(main);
@@ -1120,12 +1123,12 @@ function renderDashboard(main){
   const songCount=music.playlists.reduce((s,p)=>s+(p.songs||[]).length,0);
 
   const cards=[
-    {icon:'🏠',color:'var(--ink)',   name:'Our Home',   sub:home.rooms.length?`${home.rooms.length} room${home.rooms.length!==1?'s':''}${homeSpent?` · £${homeSpent.toLocaleString(undefined,{minimumFractionDigits:2})}`:''}`:null, empty:'No rooms yet',section:'home'},
-    {icon:'💍',color:'var(--red)',   name:'Wedding',    sub:wPhotos?`${wPhotos} photo${wPhotos!==1?'s':''} saved`:null, empty:'Add inspiration',section:'wedding'},
-    {icon:'✈️',color:'var(--teal)',  name:'Honeymoon',  sub:h.rooms.length?`${h.rooms.length} destination${h.rooms.length!==1?'s':''}`:null, empty:'Plan your trip',section:'honeymoon'},
-    {icon:'🗺️',color:'var(--teal)',  name:'Days Out',   sub:d.plans.length?`${d.plans.length} plan${d.plans.length!==1?'s':''}`:null, empty:'Add a day out',section:'dayout'},
-    {icon:'🍽️',color:'var(--green)', name:'Recipes',    sub:rec.items.length?`${rec.items.length} recipe${rec.items.length!==1?'s':''} saved`:null, empty:'Save your first',section:'recipes'},
-    {icon:'🎵',color:'var(--gold)',  name:'Music',      sub:music.playlists.length?`${music.playlists.length} playlist${music.playlists.length!==1?'s':''}${songCount?` · ${songCount} song${songCount!==1?'s':''}`:''}`:'', empty:'Create a playlist',section:'music'},
+    {color:'var(--ink)',   name:'Our Home',   sub:home.rooms.length?`${home.rooms.length} room${home.rooms.length!==1?'s':''}${homeSpent?` · £${homeSpent.toLocaleString(undefined,{minimumFractionDigits:2})}`:''}`:null, empty:'No rooms yet',section:'home'},
+    {color:'var(--red)',   name:'Wedding',    sub:wPhotos?`${wPhotos} photo${wPhotos!==1?'s':''} saved`:null, empty:'Add inspiration',section:'wedding'},
+    {color:'var(--teal)',  name:'Honeymoon',  sub:h.rooms.length?`${h.rooms.length} destination${h.rooms.length!==1?'s':''}`:null, empty:'Plan your trip',section:'honeymoon'},
+    {color:'var(--teal)',  name:'Days Out',   sub:d.plans.length?`${d.plans.length} plan${d.plans.length!==1?'s':''}`:null, empty:'Add a day out',section:'dayout'},
+    {color:'var(--green)', name:'Recipes',    sub:rec.items.length?`${rec.items.length} recipe${rec.items.length!==1?'s':''} saved`:null, empty:'Save your first',section:'recipes'},
+    {color:'var(--gold)',  name:'Music',      sub:music.playlists.length?`${music.playlists.length} playlist${music.playlists.length!==1?'s':''}${songCount?` · ${songCount} song${songCount!==1?'s':''}`:''}`:'', empty:'Create a playlist',section:'music'},
   ];
 
   const recent=[];
@@ -1141,11 +1144,10 @@ function renderDashboard(main){
 
   const firstName=currentUserName?currentUserName.split(' ')[0]:'';
   main.innerHTML=`<div style="max-width:600px">
-    <div style="margin-bottom:26px">
-      <div style="font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--warm);font-family:'Cormorant Garamond',serif;margin-bottom:6px">Welcome back${firstName?', '+firstName:''}</div>
-      <div style="font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:700;color:var(--ink);letter-spacing:-.01em;line-height:1">Your Journal</div>
+    <div style="margin-bottom:28px;padding-bottom:16px;border-bottom:1px solid var(--bone)">
+      <div style="font-size:9px;letter-spacing:.45em;text-transform:uppercase;color:var(--warm);font-family:'Cormorant Garamond',serif">Welcome back${firstName?', '+firstName:''}</div>
     </div>
-    <div class="dash-grid">${cards.map(c=>`<div class="dash-card" style="border-top-color:${c.color}" onclick="showSection('${c.section}')"><div class="dash-card-icon">${c.icon}</div><div class="dash-card-name">${c.name}</div>${c.sub?`<div class="dash-card-sub">${c.sub}</div>`:`<div class="dash-card-empty">${c.empty}</div>`}</div>`).join('')}</div>
+    <div class="dash-grid">${cards.map((c,i)=>`<div class="dash-card" style="border-top-color:${c.color}" onclick="showSection('${c.section}')"><div class="dash-card-num" style="color:${c.color}">${String(i+1).padStart(2,'0')}</div><div class="dash-card-name">${c.name}</div>${c.sub?`<div class="dash-card-sub">${c.sub}</div>`:`<div class="dash-card-empty">${c.empty}</div>`}</div>`).join('')}</div>
     ${top.length?`<div style="font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);font-family:'Cormorant Garamond',serif;margin-bottom:2px">Recently Added</div>${recentHtml}`:''}
   </div>`;
 }
@@ -1229,6 +1231,77 @@ function deleteSong(playlistId,songId){
   if(pl){pl.songs=(pl.songs||[]).filter(s=>s.id!==songId);saveData('music',m);}showSection('music');
 }
 
+// ── WALLPAPER ──
+function applyWallpaper(){
+  const wp=userData('wallpaper',null);
+  const pages=wp&&wp.pages||{};
+  const active=wp&&wp.img&&(pages.all||pages[currentSection]);
+  if(active){
+    document.body.style.backgroundImage=`url(${wp.img})`;
+    document.body.style.backgroundSize='cover';
+    document.body.style.backgroundPosition='center';
+    document.body.style.backgroundAttachment='fixed';
+    document.getElementById('app').classList.add('has-wallpaper');
+  }else{
+    document.body.style.backgroundImage='';
+    document.getElementById('app').classList.remove('has-wallpaper');
+  }
+}
+function openWallpaperSettings(){
+  const wp=userData('wallpaper',null);
+  const pages=wp&&wp.pages||{};
+  const sects=[['dashboard','Dashboard'],['home','Our Home'],['wedding','Wedding'],['honeymoon','Honeymoon'],['dayout','Days Out'],['recipes','Recipes'],['music','Music']];
+  openModal(`<div class="modal-head"><div class="modal-title">Wallpaper</div><button class="modal-close" onclick="closeModal()">×</button></div>
+    <div id="wp-preview-wrap" style="margin-bottom:14px">${wp&&wp.img?`<img id="wp-preview" src="${wp.img}" style="width:100%;height:130px;object-fit:cover;display:block;border:1px solid var(--bone)"/>`:`<div style="height:80px;border:1px dashed var(--warm);display:flex;align-items:center;justify-content:center;color:var(--muted);font-style:italic;font-size:13px">No wallpaper set</div>`}</div>
+    <input type="file" id="wp-file" accept="image/*" style="display:none" onchange="previewWallpaper(this)"/>
+    <div class="modal-row" style="margin-bottom:18px">
+      <button id="wp-upload-btn" class="btn-ghost" onclick="document.getElementById('wp-file').click()">Upload Photo</button>
+      ${wp&&wp.img?`<button class="btn-ghost danger" onclick="removeWallpaper()">Remove</button>`:''}
+    </div>
+    <hr class="divider"/>
+    <div class="field-label" style="margin-bottom:10px">Apply to</div>
+    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:22px">
+      <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-family:'EB Garamond',serif;font-size:15px">
+        <input type="checkbox" id="wp-all" ${pages.all?'checked':''} onchange="document.querySelectorAll('.wp-sect').forEach(c=>c.checked=this.checked)"/>
+        All pages
+      </label>
+      <div style="width:1px;height:1px;border-top:1px solid var(--bone);margin:2px 0 2px 24px"></div>
+      ${sects.map(([s,label])=>`<label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-family:'EB Garamond',serif;font-size:14px;padding-left:20px;color:var(--muted)"><input type="checkbox" class="wp-sect" id="wp-${s}" ${pages.all||pages[s]?'checked':''}/>${label}</label>`).join('')}
+    </div>
+    <button class="btn-solid" onclick="saveWallpaper()">Save</button>`);
+}
+function previewWallpaper(input){
+  const f=input.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=ev=>{
+    _wpTemp=ev.target.result;
+    const wrap=document.getElementById('wp-preview-wrap');
+    if(wrap)wrap.innerHTML=`<img id="wp-preview" src="${_wpTemp}" style="width:100%;height:130px;object-fit:cover;display:block;border:1px solid var(--bone)"/>`;
+    const btn=document.getElementById('wp-upload-btn');if(btn)btn.textContent='Change Photo';
+  };
+  r.readAsDataURL(f);
+}
+function saveWallpaper(){
+  const existing=userData('wallpaper',null)||{};
+  if(_wpTemp){existing.img=_wpTemp;_wpTemp=null;}
+  const sects=['dashboard','home','wedding','honeymoon','dayout','recipes','music'];
+  const allChk=document.getElementById('wp-all');
+  const pages={all:allChk?allChk.checked:false};
+  sects.forEach(s=>{const el=document.getElementById('wp-'+s);pages[s]=el?el.checked:false;});
+  existing.pages=pages;
+  saveData('wallpaper',existing);
+  closeModal();
+  applyWallpaper();
+}
+function removeWallpaper(){
+  _wpTemp=null;
+  saveData('wallpaper',null);
+  document.body.style.backgroundImage='';
+  document.getElementById('app').classList.remove('has-wallpaper');
+  closeModal();
+  openSettings();
+}
+
 // ── FEEDBACK ──
 function openFeedback(){
   openModal(`<div class="modal-head"><div class="modal-title">Send Feedback</div><button class="modal-close" onclick="closeModal()">×</button></div>
@@ -1260,6 +1333,12 @@ function openSettings(){
       <div style="font-size:15px;margin-bottom:4px">${currentUserName}</div>
       ${currentUserEmail?`<div style="font-size:12px;color:var(--muted);margin-bottom:16px;font-style:italic">${currentUserEmail}</div>`:''}
       <button class="btn-ghost" onclick="signOut()">Sign Out</button>
+    </div>
+    <hr class="divider"/>
+    <div style="margin-bottom:20px">
+      <div class="field-label" style="margin-bottom:8px">Wallpaper</div>
+      <p style="font-size:13px;color:var(--muted);font-style:italic;margin-bottom:12px">${(()=>{const wp=userData('wallpaper',null);return wp&&wp.img?'Custom wallpaper set.':'Upload a photo as your background.';})()}</p>
+      <button class="btn-ghost" onclick="closeModal();openWallpaperSettings()">Customise Wallpaper</button>
     </div>
     <hr class="divider"/>
     <div style="margin-bottom:20px">
