@@ -443,11 +443,12 @@ let panelFilter='all',panelMode='photos',homeView='rooms',activeRoomTab='overvie
 let activeDayOutId=null,dragRoomIdx=null,activeMusicPlaylistId=null;
 let currentUserEmail=null,currentUserName='User';
 let _lpTimer=null,_lpFired=false;
+let driveAccessToken=null,driveFileId=null,driveSyncTimer=null;
 
 function getStore(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch(e){return d;}}
 function setStore(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
 function userData(k,d){return getStore(`maison_${currentUser}_${k}`,d);}
-function saveData(k,v){setStore(`maison_${currentUser}_${k}`,v);}
+function saveData(k,v){setStore(`maison_${currentUser}_${k}`,v);scheduleDriveSync();}
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
 
 // ── GOOGLE AUTH ──
@@ -462,8 +463,63 @@ function handleGoogleLogin(response){
   document.getElementById('auth-screen').style.display='none';
   document.getElementById('app').classList.add('visible');
   setupFileInputs();showSection('dashboard');updatePanelBadge();
+  initDriveSync();
 }
 window.addEventListener('load',()=>{if(typeof google!=='undefined'&&google.accounts)initGoogle();else{const s=document.querySelector('script[src*="gsi"]');if(s)s.addEventListener('load',initGoogle);}});
+
+// ── DRIVE SYNC ──
+function initDriveSync(){
+  if(!window.google||!google.accounts||!google.accounts.oauth2)return;
+  const client=google.accounts.oauth2.initTokenClient({
+    client_id:'643043876163-9evtski9p2oqs4s1pg0nn4g1tnqdeiv8.apps.googleusercontent.com',
+    scope:'https://www.googleapis.com/auth/drive.appdata',
+    callback:(tok)=>{
+      if(tok.error){console.warn('Drive auth:',tok.error);return;}
+      driveAccessToken=tok.access_token;
+      loadFromDrive();
+    }
+  });
+  client.requestAccessToken({prompt:''});
+}
+async function loadFromDrive(){
+  if(!driveAccessToken)return;
+  try{
+    const res=await fetch('https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&q=name%3D%27maison_data.json%27&fields=files(id)',{headers:{Authorization:'Bearer '+driveAccessToken}});
+    const list=await res.json();
+    const file=(list.files||[])[0];
+    if(!file)return;
+    driveFileId=file.id;
+    const dr=await fetch(`https://www.googleapis.com/drive/v3/files/${file.id}?alt=media`,{headers:{Authorization:'Bearer '+driveAccessToken}});
+    const payload=await dr.json();
+    if(payload&&payload.keys){
+      Object.entries(payload.keys).forEach(([k,v])=>localStorage.setItem(k,JSON.stringify(v)));
+      showSection(currentSection);updatePanelBadge();
+    }
+  }catch(e){console.warn('Drive load:',e);}
+}
+function scheduleDriveSync(){
+  if(!driveAccessToken)return;
+  if(driveSyncTimer)clearTimeout(driveSyncTimer);
+  driveSyncTimer=setTimeout(syncToDrive,2500);
+}
+async function syncToDrive(){
+  if(!driveAccessToken||!currentUser)return;
+  try{
+    const keys={};
+    Object.keys(localStorage).filter(k=>k.startsWith(`maison_${currentUser}_`)).forEach(k=>{try{keys[k]=JSON.parse(localStorage.getItem(k));}catch(e){}});
+    const body=JSON.stringify({keys,at:Date.now()});
+    if(driveFileId){
+      await fetch(`https://www.googleapis.com/upload/drive/v3/files/${driveFileId}?uploadType=media`,{method:'PATCH',headers:{Authorization:'Bearer '+driveAccessToken,'Content-Type':'application/json'},body});
+    }else{
+      const form=new FormData();
+      form.append('metadata',new Blob([JSON.stringify({name:'maison_data.json',parents:['appDataFolder']})],{type:'application/json'}));
+      form.append('file',new Blob([body],{type:'application/json'}));
+      const cr=await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart',{method:'POST',headers:{Authorization:'Bearer '+driveAccessToken},body:form});
+      const created=await cr.json();
+      if(created.id)driveFileId=created.id;
+    }
+  }catch(e){console.warn('Drive sync:',e);}
+}
 
 function setupFileInputs(){
   document.getElementById('fp-file-input').onchange=function(e){
@@ -1183,12 +1239,12 @@ function openSettings(){
     <hr class="divider"/>
     <div>
       <div class="field-label" style="margin-bottom:8px">Data</div>
-      <p style="font-size:13px;color:var(--muted);font-style:italic;margin-bottom:12px">All data stored locally in this browser.</p>
+      <p style="font-size:13px;color:var(--muted);font-style:italic;margin-bottom:12px">Data syncs automatically across your devices via Google Drive.</p>
       <button class="btn-ghost danger" onclick="clearData()">Clear All My Data</button>
     </div>`);
 }
-function signOut(){currentUser=null;capturedDataURL=null;activeRoomId=null;document.getElementById('app').classList.remove('visible');document.getElementById('auth-screen').style.display='flex';google.accounts.id.disableAutoSelect();closeModal();}
-function clearData(){if(!confirm('Permanently delete all your data?'))return;Object.keys(localStorage).filter(k=>k.startsWith(`maison_${currentUser}_`)).forEach(k=>localStorage.removeItem(k));closeModal();alert('Data cleared.');showSection('dashboard');}
+function signOut(){currentUser=null;capturedDataURL=null;activeRoomId=null;driveAccessToken=null;driveFileId=null;if(driveSyncTimer){clearTimeout(driveSyncTimer);driveSyncTimer=null;}document.getElementById('app').classList.remove('visible');document.getElementById('auth-screen').style.display='flex';google.accounts.id.disableAutoSelect();closeModal();}
+function clearData(){if(!confirm('Permanently delete all your data?'))return;Object.keys(localStorage).filter(k=>k.startsWith(`maison_${currentUser}_`)).forEach(k=>localStorage.removeItem(k));if(driveAccessToken&&driveFileId){fetch(`https://www.googleapis.com/drive/v3/files/${driveFileId}`,{method:'DELETE',headers:{Authorization:'Bearer '+driveAccessToken}});driveFileId=null;}closeModal();alert('Data cleared.');showSection('dashboard');}
 </script>
 </body>
 </html>
