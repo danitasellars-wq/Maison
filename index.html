@@ -66,11 +66,6 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;b
 .panel-pinned-label{display:flex;align-items:center;gap:6px;font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--red);font-family:'Cormorant Garamond',serif;margin:0 0 8px;font-weight:600}
 .panel-empty{font-size:13px;color:var(--muted);font-style:italic;text-align:center;padding:32px 0}
 
-/* SYNC BANNER */
-#sync-banner{display:none;align-items:center;justify-content:center;gap:12px;background:var(--ink);color:var(--cream);padding:10px 20px;font-family:'Cormorant Garamond',serif;font-size:11px;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;border:none;width:100%;text-align:center}
-#sync-banner.show{display:flex}
-#sync-banner:hover{background:#2d2218}
-#sync-banner-close{background:none;border:none;color:rgba(247,243,237,.6);font-size:16px;line-height:1;cursor:pointer;padding:0 0 0 8px;font-family:serif}
 
 /* APP */
 #app{display:none;min-height:100vh;flex-direction:column}
@@ -363,7 +358,6 @@ select.field-input{appearance:none}
       </nav>
     </div>
   </header>
-  <button id="sync-banner" onclick="requestDriveAccess()">☁ Enable cross-device sync — tap to allow Google Drive access<span id="sync-banner-close" onclick="event.stopPropagation();document.getElementById('sync-banner').classList.remove('show')">×</span></button>
   <main id="main-content"></main>
   <div id="camera-dock">
     <div class="cam-wrap">
@@ -498,13 +492,8 @@ function initDriveSync(){
     client_id:'643043876163-9evtski9p2oqs4s1pg0nn4g1tnqdeiv8.apps.googleusercontent.com',
     scope:'https://www.googleapis.com/auth/drive.appdata',
     callback:(tok)=>{
-      if(tok.error){
-        // Silent attempt failed — show banner so user can tap to grant
-        const b=document.getElementById('sync-banner');if(b)b.classList.add('show');
-        return;
-      }
+      if(tok.error)return;
       driveAccessToken=tok.access_token;
-      const b=document.getElementById('sync-banner');if(b)b.classList.remove('show');
       loadFromDrive();
     }
   }).requestAccessToken({prompt:'none'});
@@ -517,8 +506,8 @@ function requestDriveAccess(){
     callback:(tok)=>{
       if(tok.error){console.warn('Drive consent:',tok.error);return;}
       driveAccessToken=tok.access_token;
-      const b=document.getElementById('sync-banner');if(b)b.classList.remove('show');
       loadFromDrive();
+      openSettings();
     }
   }).requestAccessToken();
 }
@@ -1278,9 +1267,17 @@ function openSettings(){
       <button class="btn-ghost" onclick="closeModal();openFeedback()">✉️ Send Feedback</button>
     </div>
     <hr class="divider"/>
+    <div style="margin-bottom:20px">
+      <div class="field-label" style="margin-bottom:8px">Cloud Sync</div>
+      ${driveAccessToken
+        ? `<p style="font-size:13px;color:var(--green);font-style:italic;margin-bottom:12px">✓ Syncing across your devices</p>`
+        : `<p style="font-size:13px;color:var(--muted);font-style:italic;margin-bottom:12px">Sync your data across all your devices via Google Drive.</p>
+           <button class="btn-ghost" onclick="closeModal();requestDriveAccess()">☁ Enable Cross-Device Sync</button>`
+      }
+    </div>
+    <hr class="divider"/>
     <div>
       <div class="field-label" style="margin-bottom:8px">Data</div>
-      <p style="font-size:13px;color:var(--muted);font-style:italic;margin-bottom:12px">Data syncs automatically across your devices via Google Drive.</p>
       <button class="btn-ghost danger" onclick="clearData()">Clear All My Data</button>
     </div>`);
 }
