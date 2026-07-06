@@ -453,19 +453,36 @@ function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2
 
 // ── GOOGLE AUTH ──
 function initGoogle(){
-  google.accounts.id.initialize({client_id:'643043876163-9evtski9p2oqs4s1pg0nn4g1tnqdeiv8.apps.googleusercontent.com',callback:handleGoogleLogin,auto_select:false});
+  google.accounts.id.initialize({client_id:'643043876163-9evtski9p2oqs4s1pg0nn4g1tnqdeiv8.apps.googleusercontent.com',callback:handleGoogleLogin,auto_select:true});
   google.accounts.id.renderButton(document.getElementById('g_signin_btn'),{theme:'outline',size:'large',text:'sign_in_with',shape:'rectangular',width:260});
 }
 function parseJwt(t){try{return JSON.parse(atob(t.split('.')[1].replace(/-/g,'+').replace(/_/g,'/')));}catch(e){return null;}}
 function handleGoogleLogin(response){
   const p=parseJwt(response.credential);if(!p)return;
   currentUser=p.sub;currentUserEmail=p.email||null;currentUserName=p.name||p.email||'User';
+  localStorage.setItem('maison_sess',JSON.stringify({sub:p.sub,email:p.email||null,name:p.name||p.email||'User',exp:Date.now()+7*24*60*60*1000}));
   document.getElementById('auth-screen').style.display='none';
   document.getElementById('app').classList.add('visible');
   setupFileInputs();showSection('dashboard');updatePanelBadge();
   initDriveSync();
 }
-window.addEventListener('load',()=>{if(typeof google!=='undefined'&&google.accounts)initGoogle();else{const s=document.querySelector('script[src*="gsi"]');if(s)s.addEventListener('load',initGoogle);}});
+window.addEventListener('load',()=>{
+  try{
+    const sess=JSON.parse(localStorage.getItem('maison_sess')||'null');
+    if(sess&&sess.exp>Date.now()&&sess.sub){
+      currentUser=sess.sub;currentUserEmail=sess.email||null;currentUserName=sess.name||'User';
+      document.getElementById('auth-screen').style.display='none';
+      document.getElementById('app').classList.add('visible');
+      setupFileInputs();showSection('dashboard');updatePanelBadge();
+      const tryDrive=()=>{if(window.google&&google.accounts&&google.accounts.oauth2)initDriveSync();};
+      if(window.google&&google.accounts&&google.accounts.oauth2)tryDrive();
+      else{const s=document.querySelector('script[src*="gsi"]');if(s)s.addEventListener('load',tryDrive);}
+      return;
+    }
+  }catch(e){}
+  if(typeof google!=='undefined'&&google.accounts)initGoogle();
+  else{const s=document.querySelector('script[src*="gsi"]');if(s)s.addEventListener('load',initGoogle);}
+});
 
 // ── DRIVE SYNC ──
 function initDriveSync(){
@@ -479,7 +496,7 @@ function initDriveSync(){
       loadFromDrive();
     }
   });
-  client.requestAccessToken({prompt:''});
+  client.requestAccessToken();
 }
 async function loadFromDrive(){
   if(!driveAccessToken)return;
@@ -1243,7 +1260,7 @@ function openSettings(){
       <button class="btn-ghost danger" onclick="clearData()">Clear All My Data</button>
     </div>`);
 }
-function signOut(){currentUser=null;capturedDataURL=null;activeRoomId=null;driveAccessToken=null;driveFileId=null;if(driveSyncTimer){clearTimeout(driveSyncTimer);driveSyncTimer=null;}document.getElementById('app').classList.remove('visible');document.getElementById('auth-screen').style.display='flex';google.accounts.id.disableAutoSelect();closeModal();}
+function signOut(){localStorage.removeItem('maison_sess');currentUser=null;capturedDataURL=null;activeRoomId=null;driveAccessToken=null;driveFileId=null;if(driveSyncTimer){clearTimeout(driveSyncTimer);driveSyncTimer=null;}document.getElementById('app').classList.remove('visible');document.getElementById('auth-screen').style.display='flex';google.accounts.id.disableAutoSelect();closeModal();}
 function clearData(){if(!confirm('Permanently delete all your data?'))return;Object.keys(localStorage).filter(k=>k.startsWith(`maison_${currentUser}_`)).forEach(k=>localStorage.removeItem(k));if(driveAccessToken&&driveFileId){fetch(`https://www.googleapis.com/drive/v3/files/${driveFileId}`,{method:'DELETE',headers:{Authorization:'Bearer '+driveAccessToken}});driveFileId=null;}closeModal();alert('Data cleared.');showSection('dashboard');}
 </script>
 </body>
