@@ -503,10 +503,11 @@ function requestDriveAccess(){
   google.accounts.oauth2.initTokenClient({
     client_id:'643043876163-9evtski9p2oqs4s1pg0nn4g1tnqdeiv8.apps.googleusercontent.com',
     scope:'https://www.googleapis.com/auth/drive.appdata',
-    callback:(tok)=>{
+    callback:async(tok)=>{
       if(tok.error){console.warn('Drive consent:',tok.error);return;}
       driveAccessToken=tok.access_token;
-      loadFromDrive();
+      await loadFromDrive();
+      await syncToDrive();
       openSettings();
     }
   }).requestAccessToken();
