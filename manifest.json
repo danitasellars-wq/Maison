@@ -1,0 +1,13 @@
+{
+  "name": "MAISON",
+  "short_name": "MAISON",
+  "description": "Home & Wedding Journal",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#f7f3ed",
+  "theme_color": "#f7f3ed",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "maskable" }
+  ]
+}

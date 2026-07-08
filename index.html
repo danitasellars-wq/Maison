@@ -4,8 +4,10 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="default"/>
 <meta name="theme-color" content="#f7f3ed"/>
 <title>MAISON</title>
+<link rel="manifest" href="manifest.json"/>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet"/>
 <style>
@@ -447,11 +449,13 @@ let currentUserEmail=null,currentUserName='User';
 let _lpTimer=null,_lpFired=false;
 let driveAccessToken=null,driveFileId=null,driveSyncTimer=null;
 let _wpTemp=null;
+let bkPickStack=null,bkBackupTimer=null,lastBkBackupAt=null,lastBkBackupError=null;
 
 function getStore(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch(e){return d;}}
 function setStore(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
 function userData(k,d){return getStore(`maison_${currentUser}_${k}`,d);}
-function saveData(k,v){setStore(`maison_${currentUser}_${k}`,v);try{localStorage.setItem(`maison_${currentUser}_lastwrite`,String(Date.now()));}catch(e){}scheduleDriveSync();}
+function saveData(k,v){setStore(`maison_${currentUser}_${k}`,v);try{localStorage.setItem(`maison_${currentUser}_lastwrite`,String(Date.now()));}catch(e){}scheduleDriveSync();scheduleBkBackup();}
+function escHtml(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
 
 // ── GOOGLE AUTH ──
@@ -471,6 +475,7 @@ function handleGoogleLogin(response){
 }
 window.addEventListener('load',()=>{
   checkDriveRedirect();
+  checkBkDriveRedirect();
   try{
     const sess=JSON.parse(localStorage.getItem('maison_sess')||'null');
     if(sess&&sess.exp>Date.now()&&sess.sub){
@@ -596,6 +601,118 @@ async function syncToDrive(){
     if(created.id)driveFileId=created.id;
   }
   localStorage.setItem(lwKey,String(at));
+}
+
+// ── GOOGLE DRIVE BACKUP (visible folder, separate from the invisible sync above) ──
+const BACKUP_DRIVE_SCOPE='https://www.googleapis.com/auth/drive';
+const BACKUP_FILENAME='maison-backup.json';
+function getBkToken(){try{const t=JSON.parse(localStorage.getItem('maison_bkdrive_tok')||'null');if(t&&t.exp>Date.now())return t.tok;}catch(e){}return null;}
+function hasBkToken(){return !!getBkToken();}
+function bkTokenInvalid(){localStorage.removeItem('maison_bkdrive_tok');}
+function bkDriveAuthRedirect(){
+  const p=new URLSearchParams({client_id:DRIVE_CLIENT_ID,redirect_uri:location.origin+location.pathname,response_type:'token',scope:BACKUP_DRIVE_SCOPE,state:'maison_bkdrive',include_granted_scopes:'true',prompt:'consent'});
+  if(currentUserEmail)p.set('login_hint',currentUserEmail);
+  location.href='https://accounts.google.com/o/oauth2/v2/auth?'+p.toString();
+}
+function checkBkDriveRedirect(){
+  if(!location.hash)return;
+  const h=new URLSearchParams(location.hash.slice(1));
+  if(h.get('state')!=='maison_bkdrive')return;
+  const err=h.get('error');
+  if(err){alert('Google Drive connection failed: '+err);}
+  else if(h.get('access_token')){
+    const exp=Date.now()+(parseInt(h.get('expires_in')||'3600',10)-60)*1000;
+    localStorage.setItem('maison_bkdrive_tok',JSON.stringify({tok:h.get('access_token'),exp}));
+  }
+  history.replaceState(null,'',location.pathname+location.search);
+}
+function bkDisconnect(){
+  if(!confirm('Disconnect Google Drive backup? The folder you already backed up to keeps its file, but it will stop updating.'))return;
+  bkTokenInvalid();
+  const gd=userData('gdrive_backup',{});
+  saveData('gdrive_backup',Object.assign({},gd,{enabled:false,folderId:null,folderName:null}));
+  closeModal();openSettings();
+}
+async function bkFetch(url,opts){
+  const res=await fetch(url,opts);
+  if(res.status===401){bkTokenInvalid();throw new Error('Google sign-in expired — reconnect in Settings.');}
+  if(!res.ok)throw new Error('Drive error '+res.status);
+  return res;
+}
+async function openBkFolderPicker(){
+  const token=getBkToken();
+  if(!token){alert('Connect Google Drive first.');return;}
+  bkPickStack=[{id:'root',name:'My Drive'}];
+  await renderBkPicker();
+}
+async function renderBkPicker(){
+  const token=getBkToken();
+  if(!token){closeModal();alert('Your Google Drive connection expired — reconnect in Settings.');return;}
+  const cur=bkPickStack[bkPickStack.length-1];
+  const q=encodeURIComponent(`'${cur.id}' in parents and mimeType='application/vnd.google-apps.folder' and trashed=false`);
+  let items=[];
+  try{
+    const r=await bkFetch(`https://www.googleapis.com/drive/v3/files?q=${q}&fields=files(id,name)&pageSize=200&orderBy=name`,{headers:{Authorization:'Bearer '+token}});
+    const j=await r.json();
+    items=j.files||[];
+  }catch(e){
+    openModal(`<div class="modal-head"><div class="modal-title">Google Drive</div><button class="modal-close" onclick="closeModal()">×</button></div><p style="color:var(--red);font-size:13px">Could not list your Drive folders: ${escHtml(e.message)}</p>`);
+    return;
+  }
+  const crumb=bkPickStack.map((s,i)=>`<button class="btn-ghost" style="padding:2px 8px;font-size:11px" onclick="bkPickStack=bkPickStack.slice(0,${i+1});renderBkPicker()">${escHtml(s.name)}</button>`).join(' / ');
+  const rows=items.map(it=>`<div class="link-item" style="cursor:pointer" onclick='bkPickStack=bkPickStack.concat([{id:"${it.id}",name:${JSON.stringify(it.name)}}]);renderBkPicker()'><div class="link-item-title">${escHtml(it.name)}</div></div>`).join('')||`<div class="empty" style="padding:16px 0;font-size:13px">No folders here.</div>`;
+  openModal(`<div class="modal-head"><div class="modal-title">Choose a Google Drive Folder</div><button class="modal-close" onclick="closeModal()">×</button></div>
+    <div style="margin-bottom:10px;font-size:12px">${crumb}</div>
+    <div style="max-height:320px;overflow-y:auto;border-top:1px solid var(--bone)">${rows}</div>
+    <div class="modal-row" style="margin-top:14px">
+      <button class="btn-solid sm" onclick='chooseBkFolder("${cur.id}",${JSON.stringify(cur.name)})'>Save Backups Here</button>
+      <button class="btn-ghost" onclick="closeModal()">Cancel</button>
+    </div>`);
+}
+function chooseBkFolder(id,name){
+  const gd=userData('gdrive_backup',{});
+  saveData('gdrive_backup',Object.assign({},gd,{enabled:true,folderId:id,folderName:name}));
+  closeModal();openSettings();
+  bkBackupNow(false);
+}
+function toggleBkBackup(){
+  const gd=Object.assign({},userData('gdrive_backup',{}));gd.enabled=!gd.enabled;
+  saveData('gdrive_backup',gd);openSettings();
+  if(gd.enabled)bkBackupNow(false);
+}
+async function bkBackupNow(manual){
+  const gd=userData('gdrive_backup',{});
+  if(!gd.enabled||!gd.folderId)return;
+  const token=getBkToken();
+  if(!token){if(manual)alert('Reconnect Google Drive backup in Settings.');return;}
+  const keys={};
+  Object.keys(localStorage).filter(k=>k.startsWith(`maison_${currentUser}_`)).forEach(k=>{try{keys[k]=JSON.parse(localStorage.getItem(k));}catch(e){}});
+  const body=JSON.stringify({v:1,keys,exported:Date.now()});
+  try{
+    const auth={headers:{Authorization:'Bearer '+token}};
+    const q=encodeURIComponent(`'${gd.folderId}' in parents and name='${BACKUP_FILENAME}' and trashed=false`);
+    const lr=await bkFetch(`https://www.googleapis.com/drive/v3/files?q=${q}&fields=files(id)`,auth);
+    const lj=await lr.json();
+    const existing=(lj.files||[])[0];
+    if(existing){
+      await bkFetch(`https://www.googleapis.com/upload/drive/v3/files/${existing.id}?uploadType=media`,{method:'PATCH',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},body});
+    }else{
+      const form=new FormData();
+      form.append('metadata',new Blob([JSON.stringify({name:BACKUP_FILENAME,parents:[gd.folderId]})],{type:'application/json'}));
+      form.append('file',new Blob([body],{type:'application/json'}));
+      await bkFetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart',{method:'POST',headers:{Authorization:'Bearer '+token},body:form});
+    }
+    lastBkBackupAt=Date.now();lastBkBackupError=null;
+    if(manual){alert('Backed up to Google Drive ✓');openSettings();}
+  }catch(e){
+    lastBkBackupError=e.message;
+    if(manual)alert('Backup failed: '+e.message);
+  }
+}
+function scheduleBkBackup(){
+  const gd=userData('gdrive_backup',{});if(!gd.enabled)return;
+  if(bkBackupTimer)clearTimeout(bkBackupTimer);
+  bkBackupTimer=setTimeout(()=>bkBackupNow(false),4000);
 }
 
 function setupFileInputs(){
@@ -1402,12 +1519,29 @@ function openSettings(){
       })()}
     </div>
     <hr class="divider"/>
+    <div style="margin-bottom:20px">
+      <div class="field-label" style="margin-bottom:8px">Google Drive Backup</div>
+      ${(()=>{
+        const gd=userData('gdrive_backup',{});
+        const bkConnected=hasBkToken();
+        if(!bkConnected)return`<p style="font-size:13px;color:var(--muted);font-style:italic;margin-bottom:12px">Keep a visible backup file in a Google Drive folder you choose — separate from the automatic sync above. Connecting asks for a broader Google Drive permission, so you may see an "unverified app" notice; that's expected for this project and safe to continue through.</p><button class="btn-ghost" onclick="bkDriveAuthRedirect()">Connect Google Drive Backup</button>`;
+        if(!gd.folderId)return`<p style="font-size:13px;color:var(--muted);font-style:italic;margin-bottom:12px">Connected. Choose a folder in your Google Drive to back up into.</p><div class="modal-row"><button class="btn-ghost" onclick="openBkFolderPicker()">Choose Folder</button><button class="btn-ghost danger" onclick="bkDisconnect()">Disconnect</button></div>`;
+        return`<p style="font-size:13px;color:${gd.enabled?'var(--green)':'var(--muted)'};font-style:italic;margin-bottom:12px">Backing up to <b>${escHtml(gd.folderName||'Google Drive')}</b> ${gd.enabled?'— on ✓':'— paused'}${lastBkBackupAt?`<br/>Last backed up ${timeAgo(lastBkBackupAt)}`:''}${lastBkBackupError?`<br/><span style="color:var(--red)">${escHtml(lastBkBackupError)}</span>`:''}</p>
+          <div class="modal-row">
+            <button class="btn-ghost" onclick="bkBackupNow(true)">Back Up Now</button>
+            <button class="btn-ghost" onclick="toggleBkBackup()">${gd.enabled?'Pause':'Resume'}</button>
+            <button class="btn-ghost" onclick="openBkFolderPicker()">Change Folder</button>
+            <button class="btn-ghost danger" onclick="bkDisconnect()">Disconnect</button>
+          </div>`;
+      })()}
+    </div>
+    <hr class="divider"/>
     <div>
       <div class="field-label" style="margin-bottom:8px">Data</div>
       <button class="btn-ghost danger" onclick="clearData()">Clear All My Data</button>
     </div>`);
 }
-function signOut(){localStorage.removeItem('maison_sess');localStorage.removeItem('maison_drive_tok');currentUser=null;capturedDataURL=null;activeRoomId=null;driveAccessToken=null;driveFileId=null;if(driveSyncTimer){clearTimeout(driveSyncTimer);driveSyncTimer=null;}document.getElementById('app').classList.remove('visible');document.getElementById('auth-screen').style.display='flex';google.accounts.id.disableAutoSelect();closeModal();}
+function signOut(){localStorage.removeItem('maison_sess');localStorage.removeItem('maison_drive_tok');localStorage.removeItem('maison_bkdrive_tok');currentUser=null;capturedDataURL=null;activeRoomId=null;driveAccessToken=null;driveFileId=null;if(driveSyncTimer){clearTimeout(driveSyncTimer);driveSyncTimer=null;}if(bkBackupTimer){clearTimeout(bkBackupTimer);bkBackupTimer=null;}document.getElementById('app').classList.remove('visible');document.getElementById('auth-screen').style.display='flex';google.accounts.id.disableAutoSelect();closeModal();}
 function clearData(){if(!confirm('Permanently delete all your data?'))return;Object.keys(localStorage).filter(k=>k.startsWith(`maison_${currentUser}_`)).forEach(k=>localStorage.removeItem(k));if(driveAccessToken&&driveFileId){fetch(`https://www.googleapis.com/drive/v3/files/${driveFileId}`,{method:'DELETE',headers:{Authorization:'Bearer '+driveAccessToken}});driveFileId=null;}closeModal();alert('Data cleared.');showSection('dashboard');}
 </script>
 </body>
