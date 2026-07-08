@@ -218,6 +218,17 @@ main{max-width:980px;margin:0 auto;padding:var(--section-pad);width:100%;flex:1}
 .recipe-tag{display:inline-block;font-size:9px;letter-spacing:.18em;text-transform:uppercase;border:1px solid var(--bone);padding:2px 8px;margin-right:5px;margin-bottom:8px;color:var(--muted);font-family:'Cormorant Garamond',serif}
 .recipe-title{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600;color:var(--ink);margin-bottom:6px}
 .recipe-text{font-size:13px;color:var(--muted);line-height:1.6;white-space:pre-wrap}
+.recipe-section-label{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);font-family:'Cormorant Garamond',serif;font-weight:600;margin-bottom:10px}
+.serving-adjust{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.serving-btn{width:26px;height:26px;border:1px solid var(--bone);background:var(--bone);color:var(--ink);font-size:15px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;font-family:'Cormorant Garamond',serif}
+.serving-btn:hover{background:var(--ink);color:var(--cream);border-color:var(--ink)}
+.serving-count{font-family:'Cormorant Garamond',serif;font-size:13px;letter-spacing:.05em;color:var(--ink);min-width:78px;text-align:center}
+.ingredient-list{list-style:none;padding:0;margin:0}
+.ingredient-list li{font-size:14px;color:var(--ink);padding:7px 0 7px 14px;border-bottom:1px solid var(--bone);position:relative}
+.ingredient-list li::before{content:'';position:absolute;left:0;top:16px;width:4px;height:4px;border-radius:50%;background:var(--warm)}
+.method-list{padding-left:22px;margin:0}
+.method-list li{font-size:14px;line-height:1.7;color:var(--ink);padding:8px 0;border-bottom:1px solid var(--bone)}
+.method-list li::marker{font-family:'Cormorant Garamond',serif;font-weight:700;color:var(--gold)}
 
 /* MUSIC */
 .song-row{display:flex;align-items:flex-start;gap:12px;padding:11px 0;border-bottom:1px solid var(--bone)}
@@ -1224,18 +1235,101 @@ function saveHoneymoonItem(roomId){const name=document.getElementById('hitem-nam
 let recipeFilter='All';
 function renderRecipes(main){
   const r=userData('recipes',{items:[]});const allTags=['All',...new Set(r.items.flatMap(i=>i.tags||[]))];const filtered=recipeFilter==='All'?r.items:r.items.filter(i=>(i.tags||[]).includes(recipeFilter));
-  main.innerHTML=`<div class="section-rule"><div><div class="section-title">Recipes</div><div class="section-sub">Save photos, notes &amp; full recipes.</div></div><div class="flex-center">${quickNotesBtn('recipes')}<button class="btn-solid sm" onclick="openAddRecipe()">+ Add Recipe</button></div></div><div class="tag-row">${allTags.map(t=>`<button class="tag-pill${recipeFilter===t?' active':''}" onclick="setRecipeFilter('${t}')">${t}</button>`).join('')}</div>${filtered.length?`<div class="recipe-grid">${filtered.map(item=>`<div class="recipe-card">${item.img?`<img class="recipe-img" src="${item.img}" loading="lazy" onclick="viewRecipe('${item.id}')"/>`:''}<div class="recipe-body">${(item.tags||[]).map(t=>`<span class="recipe-tag">${t}</span>`).join('')}<div class="recipe-title">${item.title}</div>${item.text?`<div class="recipe-text">${item.text.slice(0,180)}${item.text.length>180?'…':''}</div>`:''}<div class="flex-center" style="margin-top:10px"><button class="btn-ghost" style="font-size:10px;padding:4px 12px" onclick="viewRecipe('${item.id}')">View</button><button class="btn-ghost danger" style="font-size:10px;padding:4px 12px" onclick="deleteRecipe('${item.id}')">Delete</button></div></div></div>`).join('')}</div>`:`<div class="empty"><div class="empty-icon">🍽</div>No recipes yet.</div>`}`;
+  main.innerHTML=`<div class="section-rule"><div><div class="section-title">Recipes</div><div class="section-sub">Save photos, notes &amp; full recipes.</div></div><div class="flex-center">${quickNotesBtn('recipes')}<button class="btn-solid sm" onclick="openAddRecipe()">+ Add Recipe</button></div></div><div class="tag-row">${allTags.map(t=>`<button class="tag-pill${recipeFilter===t?' active':''}" onclick="setRecipeFilter('${t}')">${t}</button>`).join('')}</div>${filtered.length?`<div class="recipe-grid">${filtered.map(item=>{
+    const summary=item.text?`<div class="recipe-text">${escHtml(item.text.slice(0,180))}${item.text.length>180?'…':''}</div>`
+      :((item.ingredients&&item.ingredients.length)?`<div class="recipe-text">${item.ingredients.length} ingredient${item.ingredients.length!==1?'s':''}${item.method&&item.method.length?` · ${item.method.length} step${item.method.length!==1?'s':''}`:''}</div>`:'');
+    return`<div class="recipe-card">${item.img?`<img class="recipe-img" src="${item.img}" loading="lazy" onclick="viewRecipe('${item.id}')"/>`:''}<div class="recipe-body">${(item.tags||[]).map(t=>`<span class="recipe-tag">${escHtml(t)}</span>`).join('')}<div class="recipe-title">${escHtml(item.title)}</div>${summary}<div class="flex-center" style="margin-top:10px"><button class="btn-ghost" style="font-size:10px;padding:4px 12px" onclick="viewRecipe('${item.id}')">View</button><button class="btn-ghost danger" style="font-size:10px;padding:4px 12px" onclick="deleteRecipe('${item.id}')">Delete</button></div></div></div>`;
+  }).join('')}</div>`:`<div class="empty"><div class="empty-icon">🍽</div>No recipes yet.</div>`}`;
 }
 function setRecipeFilter(f){recipeFilter=f;showSection('recipes');}
-function openAddRecipe(){openModal(`<div class="modal-head"><div class="modal-title">Add Recipe</div><button class="modal-close" onclick="closeModal()">×</button></div><label class="field-label">Recipe Name</label><input id="rec-title" class="field-input" placeholder="e.g. Roast Chicken…"/><label class="field-label">Tags (comma separated)</label><input id="rec-tags" class="field-input" placeholder="Dinner, Italian…"/><label class="field-label">Recipe / Notes</label><textarea id="rec-text" class="field-input" rows="6" placeholder="Ingredients and method…"></textarea><label class="field-label">Photo (optional)</label><button class="btn-ghost" onclick="pickRecipePhoto()">Choose Photo</button><img id="rec-img-preview" style="display:none;max-height:140px;margin-top:8px"/><input type="file" id="rec-file" accept="image/*" style="display:none"/><div class="modal-row" style="margin-top:14px"><button class="btn-solid sm" onclick="saveRecipe()">Save Recipe</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);}
+function parseIngredientLines(text){return text.split('\n').map(l=>l.replace(/^\s*[-•*]\s*/,'').trim()).filter(Boolean);}
+function parseMethodLines(text){
+  let lines=text.split('\n').map(l=>l.trim()).filter(Boolean);
+  if(lines.length<=1){
+    const chunks=text.split(/(?=\d+[\.\)]\s)/).map(l=>l.trim()).filter(Boolean);
+    if(chunks.length>1)lines=chunks;
+  }
+  return lines.map(l=>l.replace(/^\s*(\d+[\.\)]|step\s*\d+[:\.]?)\s*/i,'').trim()).filter(Boolean);
+}
+function parseIngredientLine(line){
+  const m=line.match(/^\s*(\d+\s+\d+\/\d+|\d+\/\d+|\d+\.\d+|\d+)\s*(.*)$/);
+  if(!m)return{qty:null,rest:line.trim()};
+  const qtyStr=m[1];let qty;
+  if(qtyStr.includes(' ')){const[whole,frac]=qtyStr.split(' ');const[n,d]=frac.split('/').map(Number);qty=Number(whole)+n/d;}
+  else if(qtyStr.includes('/')){const[n,d]=qtyStr.split('/').map(Number);qty=n/d;}
+  else qty=parseFloat(qtyStr);
+  return{qty,rest:m[2].trim()};
+}
+function formatQty(n){
+  if(n==null)return'';
+  const whole=Math.floor(n),frac=n-whole;
+  const fracMap=[[0.125,'⅛'],[0.166,'⅙'],[0.2,'⅕'],[0.25,'¼'],[0.333,'⅓'],[0.375,'⅜'],[0.4,'⅖'],[0.5,'½'],[0.6,'⅗'],[0.625,'⅝'],[0.666,'⅔'],[0.75,'¾'],[0.8,'⅘'],[0.833,'⅚'],[0.875,'⅞']];
+  let closest=null,closestDiff=0.02;
+  for(const[val,sym]of fracMap){const diff=Math.abs(frac-val);if(diff<closestDiff){closest=sym;closestDiff=diff;}}
+  if(closest)return whole>0?`${whole}${closest}`:closest;
+  return String(Math.round(n*100)/100);
+}
+function openAddRecipe(editId){
+  const r=userData('recipes',{items:[]});
+  const item=editId?r.items.find(i=>i.id===editId):null;
+  recipeImgData=item?(item.img||null):null;
+  openModal(`<div class="modal-head"><div class="modal-title">${item?'Edit Recipe':'Add Recipe'}</div><button class="modal-close" onclick="closeModal()">×</button></div>
+    <label class="field-label">Recipe Name</label><input id="rec-title" class="field-input" placeholder="e.g. Roast Chicken…" value="${item?escHtml(item.title):''}"/>
+    <label class="field-label">Tags (comma separated)</label><input id="rec-tags" class="field-input" placeholder="Dinner, Italian…" value="${item?escHtml((item.tags||[]).join(', ')):''}"/>
+    <label class="field-label">Servings</label><input id="rec-servings" type="number" min="1" class="field-input" style="max-width:100px" value="${item&&item.servings?item.servings:4}"/>
+    <label class="field-label">Ingredients <span style="text-transform:none;letter-spacing:0;font-style:italic;color:var(--muted)">— one per line, e.g. "200g flour"</span></label>
+    <textarea id="rec-ingredients" class="field-input" rows="6" placeholder="200g plain flour&#10;2 eggs&#10;1 tsp vanilla extract">${item?escHtml((item.ingredients||[]).join('\n')):''}</textarea>
+    <label class="field-label">Method <span style="text-transform:none;letter-spacing:0;font-style:italic;color:var(--muted)">— paste instructions, each line becomes a numbered step</span></label>
+    <textarea id="rec-method" class="field-input" rows="8" placeholder="Preheat the oven to 180°C.&#10;Mix the flour and sugar together.">${item?escHtml((item.method||[]).join('\n')):''}</textarea>
+    <label class="field-label">Tips <span style="text-transform:none;letter-spacing:0;font-style:italic;color:var(--muted)">— optional</span></label>
+    <textarea id="rec-tips" class="field-input" rows="3" placeholder="Any variations, storage notes…">${item?escHtml(item.tips||''):''}</textarea>
+    <label class="field-label">Photo (optional)</label><button class="btn-ghost" onclick="pickRecipePhoto()">Choose Photo</button>
+    <img id="rec-img-preview" style="display:${recipeImgData?'block':'none'};max-height:140px;margin-top:8px" ${recipeImgData?`src="${recipeImgData}"`:''}/>
+    <input type="file" id="rec-file" accept="image/*" style="display:none"/>
+    <div class="modal-row" style="margin-top:14px"><button class="btn-solid sm" onclick="saveRecipe(${item?`'${item.id}'`:'null'})">Save Recipe</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);
+}
 let recipeImgData=null;
-function pickRecipePhoto(){recipeImgData=null;const fi=document.getElementById('rec-file');fi.onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{recipeImgData=ev.target.result;const p=document.getElementById('rec-img-preview');p.src=recipeImgData;p.style.display='block';};r.readAsDataURL(f);};fi.click();}
-function saveRecipe(){const title=document.getElementById('rec-title').value.trim();if(!title)return;const tags=document.getElementById('rec-tags').value.split(',').map(t=>t.trim()).filter(Boolean);const text=document.getElementById('rec-text').value.trim();const r=userData('recipes',{items:[]});r.items.push({id:uid(),title,tags,text,img:recipeImgData||null,date:Date.now()});recipeImgData=null;saveData('recipes',r);closeModal();showSection('recipes');}
-function viewRecipe(id){
+function pickRecipePhoto(){const fi=document.getElementById('rec-file');fi.onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{recipeImgData=ev.target.result;const p=document.getElementById('rec-img-preview');p.src=recipeImgData;p.style.display='block';};r.readAsDataURL(f);};fi.click();}
+function saveRecipe(editId){
+  const title=document.getElementById('rec-title').value.trim();if(!title)return;
+  const tags=document.getElementById('rec-tags').value.split(',').map(t=>t.trim()).filter(Boolean);
+  const servings=parseInt(document.getElementById('rec-servings').value,10)||4;
+  const ingredients=parseIngredientLines(document.getElementById('rec-ingredients').value);
+  const method=parseMethodLines(document.getElementById('rec-method').value);
+  const tips=document.getElementById('rec-tips').value.trim();
+  const r=userData('recipes',{items:[]});
+  if(editId){
+    const item=r.items.find(i=>i.id===editId);
+    if(item)Object.assign(item,{title,tags,servings,ingredients,method,tips,img:recipeImgData||null});
+  }else{
+    r.items.push({id:uid(),title,tags,servings,ingredients,method,tips,img:recipeImgData||null,date:Date.now(),photos:[]});
+  }
+  recipeImgData=null;
+  saveData('recipes',r);closeModal();showSection('recipes');
+}
+function viewRecipe(id,overrideServings){
   const item=userData('recipes',{items:[]}).items.find(i=>i.id===id);if(!item)return;
+  const baseServings=item.servings||4;
+  const curServings=overrideServings||baseServings;
+  const multiplier=curServings/baseServings;
+  const ingredients=item.ingredients||[];
+  const method=item.method||[];
+  const hasStructured=ingredients.length||method.length;
+  const ingredientsHtml=ingredients.length?`<div style="margin-top:18px">
+    <div class="recipe-section-label">Ingredients</div>
+    <div class="serving-adjust">
+      <button class="serving-btn" onclick="viewRecipe('${id}',${Math.max(1,curServings-1)})">−</button>
+      <span class="serving-count">${curServings} serving${curServings!==1?'s':''}</span>
+      <button class="serving-btn" onclick="viewRecipe('${id}',${curServings+1})">+</button>
+    </div>
+    <ul class="ingredient-list">${ingredients.map(line=>{const{qty,rest}=parseIngredientLine(line);const display=qty!=null?`${formatQty(qty*multiplier)} ${rest}`:rest;return`<li>${escHtml(display)}</li>`;}).join('')}</ul>
+  </div>`:'';
+  const methodHtml=method.length?`<div style="margin-top:18px"><div class="recipe-section-label">Method</div><ol class="method-list">${method.map(step=>`<li>${escHtml(step)}</li>`).join('')}</ol></div>`:'';
+  const tipsHtml=item.tips?`<div style="margin-top:18px"><div class="recipe-section-label">Tips</div><p style="font-size:14px;line-height:1.7;color:var(--muted);font-style:italic;white-space:pre-wrap">${escHtml(item.tips)}</p></div>`:'';
+  const legacyHtml=(!hasStructured&&item.text)?`<div style="margin-top:12px;font-size:15px;line-height:1.75;white-space:pre-wrap">${escHtml(item.text)}</div>`:'';
   const extraPhotos=item.photos||[];
-  const photosHtml=extraPhotos.length?`<div style="margin-top:16px"><div style="font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);font-family:'Cormorant Garamond',serif;margin-bottom:8px">Extra Photos</div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:6px">${extraPhotos.map((p,i)=>`<div style="position:relative;aspect-ratio:1;overflow:hidden;background:var(--bone);border:1px solid var(--bone)"><img src="${p.img}" style="width:100%;height:100%;object-fit:cover;display:block"/><button onclick="deleteRecipePhoto('${id}',${i})" style="position:absolute;top:3px;right:3px;background:rgba(168,32,32,.85);border:none;color:#fff;width:18px;height:18px;font-size:10px;cursor:pointer;line-height:1">×</button></div>`).join('')}</div></div>`:'';
-  openModal(`<div class="modal-head"><div class="modal-title">${item.title}</div><button class="modal-close" onclick="closeModal()">×</button></div>${item.img?`<img src="${item.img}" class="modal-preview"/>`:''}${item.text?`<div style="margin-top:12px;font-size:15px;line-height:1.75;white-space:pre-wrap">${item.text}</div>`:''}<input type="file" id="rec-extra-photo" accept="image/*" style="display:none"/>${photosHtml}<div class="modal-row" style="margin-top:16px"><button class="btn-ghost" onclick="addPhotoToRecipe('${id}')">📷 Add Photo</button><button class="btn-ghost danger" onclick="deleteRecipe('${id}');closeModal()">Delete</button></div>`);
+  const photosHtml=extraPhotos.length?`<div style="margin-top:16px"><div class="recipe-section-label">Extra Photos</div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:6px">${extraPhotos.map((p,i)=>`<div style="position:relative;aspect-ratio:1;overflow:hidden;background:var(--bone);border:1px solid var(--bone)"><img src="${p.img}" style="width:100%;height:100%;object-fit:cover;display:block"/><button onclick="deleteRecipePhoto('${id}',${i})" style="position:absolute;top:3px;right:3px;background:rgba(168,32,32,.85);border:none;color:#fff;width:18px;height:18px;font-size:10px;cursor:pointer;line-height:1">×</button></div>`).join('')}</div></div>`:'';
+  openModal(`<div class="modal-head"><div class="modal-title">${escHtml(item.title)}</div><button class="modal-close" onclick="closeModal()">×</button></div>${item.img?`<img src="${item.img}" class="modal-preview"/>`:''}${legacyHtml}${ingredientsHtml}${methodHtml}${tipsHtml}<input type="file" id="rec-extra-photo" accept="image/*" style="display:none"/>${photosHtml}<div class="modal-row" style="margin-top:16px"><button class="btn-ghost" onclick="closeModal();openAddRecipe('${id}')">Edit</button><button class="btn-ghost" onclick="addPhotoToRecipe('${id}')">📷 Add Photo</button><button class="btn-ghost danger" onclick="deleteRecipe('${id}');closeModal()">Delete</button></div>`);
 }
 function addPhotoToRecipe(recipeId){
   const fi=document.getElementById('rec-extra-photo');if(!fi)return;
