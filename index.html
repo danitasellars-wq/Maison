@@ -473,6 +473,48 @@ function saveData(k,v){setStore(`maison_${currentUser}_${k}`,v);try{localStorage
 function escHtml(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
 
+// ── PHOTO PROCESSING & LOCAL MEDIA STORE ──
+// Root cause of the old "out of storage" errors: full-res camera photos (often
+// several MB each) were stored as base64 directly in localStorage, which browsers
+// cap at ~5MB regardless of device/Drive space. Now: a small thumbnail (the only
+// thing that still lives in localStorage/JSON as `img`) is generated for display,
+// and the full-res version is stored as a blob in IndexedDB, mirrored to the Drive
+// appDataFolder as an individual file so it still syncs across devices.
+function loadImageFromDataURL(dataURL){return new Promise((resolve,reject)=>{const im=new Image();im.onload=()=>resolve(im);im.onerror=reject;im.src=dataURL;});}
+function scaleDims(w,h,max){if(w>max||h>max){const s=max/Math.max(w,h);return{w:Math.round(w*s),h:Math.round(h*s)};}return{w,h};}
+function drawToCanvas(im,w,h){const c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(im,0,0,w,h);return c;}
+function canvasDataURL(canvas,q){return canvas.toDataURL('image/jpeg',q);}
+function canvasBlob(canvas,q){return new Promise(res=>canvas.toBlob(b=>res(b),'image/jpeg',q));}
+function dataURLtoBlob(dataURL){
+  const[header,data]=dataURL.split(',');const mime=(header.match(/:(.*?);/)||[])[1]||'image/jpeg';
+  const bin=atob(data);const arr=new Uint8Array(bin.length);
+  for(let i=0;i<bin.length;i++)arr[i]=bin.charCodeAt(i);
+  return new Blob([arr],{type:mime});
+}
+async function processPhotoDataURL(dataURL){
+  const im=await loadImageFromDataURL(dataURL);
+  const full=scaleDims(im.naturalWidth,im.naturalHeight,1600);
+  const blob=await canvasBlob(drawToCanvas(im,full.w,full.h),.85)||dataURLtoBlob(dataURL);
+  const th=scaleDims(im.naturalWidth,im.naturalHeight,900);
+  const thumb=canvasDataURL(drawToCanvas(im,th.w,th.h),.72);
+  return{thumb,blob};
+}
+async function compressSingleImage(dataURL,maxDim,quality){
+  try{const im=await loadImageFromDataURL(dataURL);const d=scaleDims(im.naturalWidth,im.naturalHeight,maxDim||1600);return canvasDataURL(drawToCanvas(im,d.w,d.h),quality||.8);}catch(e){return dataURL;}
+}
+const MEDIA_DB_NAME='maison_media',PHOTO_STORE='photos';
+function mediaDB(){
+  return new Promise((resolve,reject)=>{
+    const req=indexedDB.open(MEDIA_DB_NAME,1);
+    req.onupgradeneeded=()=>{if(!req.result.objectStoreNames.contains(PHOTO_STORE))req.result.createObjectStore(PHOTO_STORE);};
+    req.onsuccess=()=>resolve(req.result);
+    req.onerror=()=>reject(req.error);
+  });
+}
+async function idbPutPhoto(id,blob){const db=await mediaDB();return new Promise((resolve,reject)=>{const tx=db.transaction(PHOTO_STORE,'readwrite');tx.objectStore(PHOTO_STORE).put(blob,id);tx.oncomplete=()=>resolve();tx.onerror=()=>reject(tx.error);});}
+async function idbGetPhoto(id){const db=await mediaDB();return new Promise((resolve,reject)=>{const tx=db.transaction(PHOTO_STORE,'readonly');const rq=tx.objectStore(PHOTO_STORE).get(id);rq.onsuccess=()=>resolve(rq.result||null);rq.onerror=()=>reject(rq.error);});}
+async function idbDeletePhoto(id){const db=await mediaDB();return new Promise((resolve,reject)=>{const tx=db.transaction(PHOTO_STORE,'readwrite');tx.objectStore(PHOTO_STORE).delete(id);tx.oncomplete=()=>resolve();tx.onerror=()=>reject(tx.error);});}
+
 // ── GOOGLE AUTH ──
 function initGoogle(){
   google.accounts.id.initialize({client_id:'643043876163-9evtski9p2oqs4s1pg0nn4g1tnqdeiv8.apps.googleusercontent.com',callback:handleGoogleLogin,auto_select:true});
@@ -486,7 +528,8 @@ function handleGoogleLogin(response){
   document.getElementById('auth-screen').style.display='none';
   document.getElementById('app').classList.add('visible');
   setupFileInputs();showSection('dashboard');updatePanelBadge();
-  driveBoot();
+  driveBoot();bkDriveBoot();
+  bootStorageAndMigration();
 }
 window.addEventListener('load',()=>{
   checkDriveRedirect();
@@ -498,7 +541,8 @@ window.addEventListener('load',()=>{
       document.getElementById('auth-screen').style.display='none';
       document.getElementById('app').classList.add('visible');
       setupFileInputs();showSection('dashboard');updatePanelBadge();
-      driveBoot();
+      driveBoot();bkDriveBoot();
+      bootStorageAndMigration();
       return;
     }
   }catch(e){}
@@ -562,6 +606,7 @@ async function driveSyncNow(manual){
   try{
     const verdict=await loadFromDrive();
     if(verdict!=='applied'&&verdict!=='insync')await syncToDrive();
+    await syncPhotoFiles();
     lastSyncAt=Date.now();lastSyncError=null;
     if(manual){closeModal();alert('Synced successfully ✓');openSettings();}
   }catch(e){
@@ -618,15 +663,158 @@ async function syncToDrive(){
   localStorage.setItem(lwKey,String(at));
 }
 
+// ── PHOTO FILE SYNC (full-res photos live as individual files in appDataFolder) ──
+function referencedPhotoIds(){
+  const ids=[];
+  const push=p=>{if(p&&p.id)ids.push(p.id);};
+  const home=userData('home',{rooms:[]});
+  (home.rooms||[]).forEach(r=>{(r.photos||[]).forEach(push);((r.moodboard&&r.moodboard.tiles)||[]).forEach(push);});
+  const w=userData('wedding',{inspo:[]});(w.inspo||[]).forEach(push);
+  const h=userData('honeymoon',{rooms:[],inspo:[]});(h.inspo||[]).forEach(push);(h.rooms||[]).forEach(r=>(r.photos||[]).forEach(push));
+  const d=userData('dayout',{plans:[]});(d.plans||[]).forEach(pl=>(pl.photos||[]).forEach(push));
+  const rec=userData('recipes',{items:[]});rec.items.forEach(it=>{if(it.img&&it.id)ids.push(it.id);(it.photos||[]).forEach(push);});
+  ['wedding','home','honeymoon'].forEach(ctx=>{userData(`moodboards_${ctx}`,[]).forEach(b=>(b.tiles||[]).forEach(push));});
+  return ids;
+}
+function photoFileName(id){return 'mzphoto_'+id+'.jpg';}
+async function listRemotePhotos(){
+  const auth={headers:{Authorization:'Bearer '+driveAccessToken}};
+  const map={};let pageToken='';
+  do{
+    let url=`https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&q=${encodeURIComponent("name contains 'mzphoto_'")}&fields=nextPageToken,files(id,name)&pageSize=1000`;
+    if(pageToken)url+='&pageToken='+encodeURIComponent(pageToken);
+    const j=await(await driveFetch(url,auth)).json();
+    (j.files||[]).forEach(f=>{map[f.name]=f.id;});
+    pageToken=j.nextPageToken||'';
+  }while(pageToken);
+  return map;
+}
+async function uploadAppDataPhoto(id,blob){
+  const form=new FormData();
+  form.append('metadata',new Blob([JSON.stringify({name:photoFileName(id),parents:['appDataFolder']})],{type:'application/json'}));
+  form.append('file',blob,photoFileName(id));
+  await driveFetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart',{method:'POST',headers:{Authorization:'Bearer '+driveAccessToken},body:form});
+}
+let photoSyncRunning=false;
+async function syncPhotoFiles(){
+  if(!driveAccessToken||!currentUser||photoSyncRunning)return;
+  const ids=Array.from(new Set(referencedPhotoIds()));
+  if(!ids.length)return;
+  photoSyncRunning=true;
+  try{
+    const remote=await listRemotePhotos();
+    const auth={headers:{Authorization:'Bearer '+driveAccessToken}};
+    for(const id of ids){
+      const fn=photoFileName(id);
+      if(remote[fn]&&!(await idbGetPhoto(id))){
+        try{const blob=await(await driveFetch(`https://www.googleapis.com/drive/v3/files/${remote[fn]}?alt=media`,auth)).blob();await idbPutPhoto(id,blob);}catch(e){}
+      }
+    }
+    for(const id of ids){
+      if(!remote[photoFileName(id)]){
+        const blob=await idbGetPhoto(id);
+        if(blob){try{await uploadAppDataPhoto(id,blob);}catch(e){}}
+      }
+    }
+  }finally{photoSyncRunning=false;}
+}
+async function ensurePhotoLocal(id){
+  if(!driveAccessToken)return null;
+  try{
+    const auth={headers:{Authorization:'Bearer '+driveAccessToken}};
+    const url=`https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&q=${encodeURIComponent("name='"+photoFileName(id)+"'")}&fields=files(id)`;
+    const f=((await(await driveFetch(url,auth)).json()).files||[])[0];
+    if(!f)return null;
+    const blob=await(await driveFetch(`https://www.googleapis.com/drive/v3/files/${f.id}?alt=media`,auth)).blob();
+    await idbPutPhoto(id,blob);return blob;
+  }catch(e){return null;}
+}
+async function deleteRemotePhoto(id){
+  if(!driveAccessToken)return;
+  try{
+    const auth={headers:{Authorization:'Bearer '+driveAccessToken}};
+    const url=`https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&q=${encodeURIComponent("name='"+photoFileName(id)+"'")}&fields=files(id)`;
+    const f=((await(await driveFetch(url,auth)).json()).files||[])[0];
+    if(f)await driveFetch(`https://www.googleapis.com/drive/v3/files/${f.id}`,{method:'DELETE',headers:{Authorization:'Bearer '+driveAccessToken}});
+  }catch(e){}
+}
+function syncPhotosSoon(){if(driveAccessToken)syncPhotoFiles().catch(()=>{});}
+
+// ── PHOTO MIGRATION (converts old inline base64 photos to thumb + IndexedDB) ──
+async function migratePhotoArray(arr){
+  let changed=false;
+  for(const p of arr){
+    if(p&&p.img&&p.img.length>60000){
+      try{
+        const blob=dataURLtoBlob(p.img);
+        if(!(await idbGetPhoto(p.id)))await idbPutPhoto(p.id,blob);
+        const im=await loadImageFromDataURL(p.img);
+        const th=scaleDims(im.naturalWidth,im.naturalHeight,900);
+        p.img=canvasDataURL(drawToCanvas(im,th.w,th.h),.72);
+        changed=true;
+      }catch(e){}
+    }
+  }
+  return changed;
+}
+async function migrateInlinePhotos(){
+  let changed=false;
+  const home=userData('home',{rooms:[]});
+  for(const r of(home.rooms||[])){
+    if(await migratePhotoArray(r.photos||[]))changed=true;
+    if(r.moodboard&&await migratePhotoArray(r.moodboard.tiles||[]))changed=true;
+  }
+  if(changed)saveData('home',home);
+  const w=userData('wedding',{inspo:[]});
+  if(await migratePhotoArray(w.inspo||[])){saveData('wedding',w);changed=true;}
+  const h=userData('honeymoon',{rooms:[],inspo:[]});
+  let hChanged=await migratePhotoArray(h.inspo||[]);
+  for(const r of(h.rooms||[]))if(await migratePhotoArray(r.photos||[]))hChanged=true;
+  if(hChanged){saveData('honeymoon',h);changed=true;}
+  const d=userData('dayout',{plans:[]});
+  let dChanged=false;
+  for(const pl of(d.plans||[]))if(await migratePhotoArray(pl.photos||[]))dChanged=true;
+  if(dChanged){saveData('dayout',d);changed=true;}
+  const rec=userData('recipes',{items:[]});
+  let recChanged=false;
+  for(const it of rec.items){
+    if(it.img&&it.img.length>60000){
+      try{
+        const blob=dataURLtoBlob(it.img);
+        if(!(await idbGetPhoto(it.id)))await idbPutPhoto(it.id,blob);
+        const im=await loadImageFromDataURL(it.img);
+        const th=scaleDims(im.naturalWidth,im.naturalHeight,900);
+        it.img=canvasDataURL(drawToCanvas(im,th.w,th.h),.72);
+        recChanged=true;
+      }catch(e){}
+    }
+    if(await migratePhotoArray(it.photos||[]))recChanged=true;
+  }
+  if(recChanged){saveData('recipes',rec);changed=true;}
+  for(const ctx of['wedding','home','honeymoon']){
+    const boards=userData(`moodboards_${ctx}`,[]);
+    let bChanged=false;
+    for(const b of boards)if(await migratePhotoArray(b.tiles||[]))bChanged=true;
+    if(bChanged){saveData(`moodboards_${ctx}`,boards);changed=true;}
+  }
+  if(changed)syncPhotosSoon();
+  return changed;
+}
+function bootStorageAndMigration(){
+  if(navigator.storage&&navigator.storage.persist)navigator.storage.persist().catch(()=>{});
+  migrateInlinePhotos().then(changed=>{if(changed)showSection(currentSection);}).catch(()=>{});
+}
+
 // ── GOOGLE DRIVE BACKUP (visible folder, separate from the invisible sync above) ──
 const BACKUP_DRIVE_SCOPE='https://www.googleapis.com/auth/drive';
 const BACKUP_FILENAME='maison-backup.json';
 function getBkToken(){try{const t=JSON.parse(localStorage.getItem('maison_bkdrive_tok')||'null');if(t&&t.exp>Date.now())return t.tok;}catch(e){}return null;}
 function hasBkToken(){return !!getBkToken();}
 function bkTokenInvalid(){localStorage.removeItem('maison_bkdrive_tok');}
-function bkDriveAuthRedirect(){
-  const p=new URLSearchParams({client_id:DRIVE_CLIENT_ID,redirect_uri:location.origin+location.pathname,response_type:'token',scope:BACKUP_DRIVE_SCOPE,state:'maison_bkdrive',include_granted_scopes:'true',prompt:'consent'});
+function bkDriveAuthRedirect(interactive){
+  const p=new URLSearchParams({client_id:DRIVE_CLIENT_ID,redirect_uri:location.origin+location.pathname,response_type:'token',scope:BACKUP_DRIVE_SCOPE,state:'maison_bkdrive',include_granted_scopes:'true'});
   if(currentUserEmail)p.set('login_hint',currentUserEmail);
+  p.set('prompt',interactive?'consent':'none');
   location.href='https://accounts.google.com/o/oauth2/v2/auth?'+p.toString();
 }
 function checkBkDriveRedirect(){
@@ -634,16 +822,28 @@ function checkBkDriveRedirect(){
   const h=new URLSearchParams(location.hash.slice(1));
   if(h.get('state')!=='maison_bkdrive')return;
   const err=h.get('error');
-  if(err){alert('Google Drive connection failed: '+err);}
+  if(err){sessionStorage.setItem('maison_bkdrive_err',err);}
   else if(h.get('access_token')){
     const exp=Date.now()+(parseInt(h.get('expires_in')||'3600',10)-60)*1000;
     localStorage.setItem('maison_bkdrive_tok',JSON.stringify({tok:h.get('access_token'),exp}));
+    sessionStorage.removeItem('maison_bkdrive_err');sessionStorage.removeItem('maison_bkdrive_tried');
   }
   history.replaceState(null,'',location.pathname+location.search);
+}
+function bkDriveBoot(){
+  if(getBkToken()){
+    localStorage.setItem(`maison_bkdrive_on_${currentUser}`,'1');
+    return;
+  }
+  if(localStorage.getItem(`maison_bkdrive_on_${currentUser}`)&&!sessionStorage.getItem('maison_bkdrive_tried')){
+    sessionStorage.setItem('maison_bkdrive_tried','1');
+    bkDriveAuthRedirect(false);
+  }
 }
 function bkDisconnect(){
   if(!confirm('Disconnect Google Drive backup? The folder you already backed up to keeps its file, but it will stop updating.'))return;
   bkTokenInvalid();
+  localStorage.removeItem(`maison_bkdrive_on_${currentUser}`);
   const gd=userData('gdrive_backup',{});
   saveData('gdrive_backup',Object.assign({},gd,{enabled:false,folderId:null,folderName:null}));
   closeModal();openSettings();
@@ -651,6 +851,7 @@ function bkDisconnect(){
 async function bkFetch(url,opts){
   const res=await fetch(url,opts);
   if(res.status===401){bkTokenInvalid();throw new Error('Google sign-in expired — reconnect in Settings.');}
+  if(res.status===403){let msg='';try{const j=await res.json();msg=(j.error&&j.error.message)||'';}catch(e){}throw new Error(msg||'Google Drive refused the request (403).');}
   if(!res.ok)throw new Error('Drive error '+res.status);
   return res;
 }
@@ -733,7 +934,7 @@ function scheduleBkBackup(){
 function setupFileInputs(){
   document.getElementById('fp-file-input').onchange=function(e){
     const f=e.target.files[0];if(!f)return;
-    const r=new FileReader();r.onload=ev=>{const fp=userData('floorplan',{img:null,markers:[]});fp.img=ev.target.result;saveData('floorplan',fp);showSection('home');};r.readAsDataURL(f);this.value='';
+    const r=new FileReader();r.onload=async ev=>{const fp=userData('floorplan',{img:null,markers:[]});fp.img=await compressSingleImage(ev.target.result,1600,.82);saveData('floorplan',fp);showSection('home');};r.readAsDataURL(f);this.value='';
   };
 }
 
@@ -760,11 +961,20 @@ function closeModal(){document.getElementById('modal').style.display='none';docu
 // ── COOK MODE (keeps screen awake) ──
 let wakeLock=null,cookModeOn=false;
 async function toggleCookMode(id,servings){
-  cookModeOn=!cookModeOn;
-  if(cookModeOn){
-    try{if('wakeLock' in navigator)wakeLock=await navigator.wakeLock.request('screen');}catch(e){console.warn('Wake lock failed:',e);}
-  }else if(wakeLock){
-    wakeLock.release().catch(()=>{});wakeLock=null;
+  const turningOn=!cookModeOn;
+  if(turningOn){
+    try{
+      if(!('wakeLock' in navigator))throw new Error("This browser doesn't support keeping the screen awake.");
+      wakeLock=await navigator.wakeLock.request('screen');
+      wakeLock.addEventListener('release',()=>{wakeLock=null;});
+      cookModeOn=true;
+    }catch(e){
+      cookModeOn=false;
+      alert('Could not keep the screen awake: '+(e&&e.message?e.message:e));
+    }
+  }else{
+    cookModeOn=false;
+    if(wakeLock){wakeLock.release().catch(()=>{});wakeLock=null;}
   }
   viewRecipe(id,servings);
 }
@@ -838,7 +1048,7 @@ function panelPhotoCard(e,isArchived=false){
 }
 function panelToggleLike(photoId,type,contextId){const arr=getPhotosArray(type,contextId);const p=arr.find(p=>p.id===photoId);if(p){p.liked=!p.liked;savePhotosArray(type,contextId,arr);}renderSidePanel();updatePanelBadge();showSection(currentSection);}
 function restorePhoto(photoId,type,contextId){const arr=getPhotosArray(type,contextId);const p=arr.find(p=>p.id===photoId);if(p){p.archived=false;savePhotosArray(type,contextId,arr);}renderSidePanel();updatePanelBadge();showSection(currentSection);}
-function deleteFromPanel(photoId,type,contextId){if(!confirm('Permanently delete?'))return;savePhotosArray(type,contextId,getPhotosArray(type,contextId).filter(p=>p.id!==photoId));renderSidePanel();updatePanelBadge();}
+function deleteFromPanel(photoId,type,contextId){if(!confirm('Permanently delete?'))return;savePhotosArray(type,contextId,getPhotosArray(type,contextId).filter(p=>p.id!==photoId));idbDeletePhoto(photoId).catch(()=>{});deleteRemotePhoto(photoId).catch(()=>{});renderSidePanel();updatePanelBadge();}
 function openAssignPhoto(photoId,fromType,fromContextId){
   const home=userData('home',{rooms:[]});const h=userData('honeymoon',{rooms:[]});const d=userData('dayout',{plans:[]});
   const dests=[
@@ -955,7 +1165,7 @@ function startLongPress(event,photoId,type,contextId){
 function cancelLongPress(){if(_lpTimer){clearTimeout(_lpTimer);_lpTimer=null;}}
 function toggleLike(photoId,type,contextId){const arr=getPhotosArray(type,contextId);const p=arr.find(p=>p.id===photoId);if(p)p.liked=!p.liked;savePhotosArray(type,contextId,arr);showSection(currentSection);updatePanelBadge();}
 function archivePhoto(photoId,type,contextId){const arr=getPhotosArray(type,contextId);const p=arr.find(p=>p.id===photoId);if(p){p.archived=true;savePhotosArray(type,contextId,arr);}showSection(currentSection);updatePanelBadge();}
-function deletePhoto(photoId,type,contextId){if(!confirm('Permanently delete this photo?'))return;savePhotosArray(type,contextId,getPhotosArray(type,contextId).filter(p=>p.id!==photoId));showSection(currentSection);updatePanelBadge();}
+function deletePhoto(photoId,type,contextId){if(!confirm('Permanently delete this photo?'))return;savePhotosArray(type,contextId,getPhotosArray(type,contextId).filter(p=>p.id!==photoId));idbDeletePhoto(photoId).catch(()=>{});deleteRemotePhoto(photoId).catch(()=>{});showSection(currentSection);updatePanelBadge();}
 function viewPhoto(photoId,type,contextId){const p=getPhotosArray(type,contextId).find(p=>p.id===photoId);if(!p)return;openModal(`<div class="modal-head"><div class="modal-title">${p.note||'Photo'}</div><button class="modal-close" onclick="closeModal()">×</button></div><img src="${p.img}" style="width:100%;max-height:360px;object-fit:contain;border:1px solid var(--bone);margin-bottom:12px"/>${p.note?`<p style="font-size:15px;line-height:1.6;margin-bottom:10px">${p.note}</p>`:''}${p.link?`<a href="${p.link}" target="_blank" rel="noopener" style="font-size:13px;color:var(--muted);word-break:break-all">🔗 ${p.link}</a>`:''}${p.price?`<div style="font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--green);margin-top:8px">£${p.price.toLocaleString(undefined,{minimumFractionDigits:2})}</div>`:''}`); }
 
 function renderPhotoGrid(photos,type,contextId){
@@ -990,20 +1200,30 @@ function triggerCapture(){
       </div>
     </div>`);
 }
-function pickFile(src){const fi=src==='camera'?document.getElementById('file-input-camera'):document.getElementById('file-input');fi.onchange=e=>{const file=e.target.files[0];if(!file)return;const r=new FileReader();r.onload=ev=>{capturedDataURL=ev.target.result;const pw=document.getElementById('cap-preview-wrap');if(pw){pw.style.display='block';document.getElementById('cap-preview').src=capturedDataURL;}};r.readAsDataURL(file);fi.value='';};fi.click();}
-function saveCapture(){
+let capturedFullBlob=null;
+function pickFile(src){const fi=src==='camera'?document.getElementById('file-input-camera'):document.getElementById('file-input');fi.onchange=e=>{const file=e.target.files[0];if(!file)return;const r=new FileReader();r.onload=async ev=>{
+  const raw=ev.target.result;
+  try{const{thumb,blob}=await processPhotoDataURL(raw);capturedDataURL=thumb;capturedFullBlob=blob;}
+  catch(err){capturedDataURL=raw;capturedFullBlob=null;}
+  const pw=document.getElementById('cap-preview-wrap');if(pw){pw.style.display='block';document.getElementById('cap-preview').src=capturedDataURL;}
+};r.readAsDataURL(file);fi.value='';};fi.click();}
+async function saveCapture(){
   if(!capturedDataURL){alert('Please select a photo first.');return;}
   const dest=document.getElementById('cap-dest').value;
   const note=document.getElementById('cap-note').value.trim(),link=document.getElementById('cap-link').value.trim();
   const price=parseFloat(document.getElementById('cap-price').value)||0,name=document.getElementById('cap-name').value.trim();
+  const blob=capturedFullBlob;
+  let newId=null;
   const photo={id:uid(),img:capturedDataURL,note,link,price,name,date:Date.now(),liked:false,archived:false};
-  if(dest.startsWith('home_')){const home=userData('home',{rooms:[]});const room=home.rooms.find(r=>r.id===dest.replace('home_',''));if(room){room.photos=room.photos||[];room.photos.push(photo);saveData('home',home);}}
-  else if(dest==='wedding'){const w=userData('wedding',{inspo:[]});w.inspo.push(photo);saveData('wedding',w);}
-  else if(dest==='honeymoon'){const h=userData('honeymoon',{rooms:[],inspo:[],budget:0});if(!h.inspo)h.inspo=[];h.inspo.push(photo);saveData('honeymoon',h);}
-  else if(dest.startsWith('dayout_')){const d=userData('dayout',{plans:[]});const pl=d.plans.find(p=>p.id===dest.replace('dayout_',''));if(pl){pl.photos=pl.photos||[];pl.photos.push(photo);saveData('dayout',d);}}
-  else if(dest==='recipes_new'||dest==='recipes'){const r=userData('recipes',{items:[]});r.items.push({id:uid(),img:capturedDataURL,title:name||'New Recipe',tags:[],text:note,date:Date.now(),photos:[]});saveData('recipes',r);}
-  else if(dest.startsWith('recipe_')){const recId=dest.replace('recipe_','');const r=userData('recipes',{items:[]});const ri=r.items.find(i=>i.id===recId);if(ri){ri.photos=ri.photos||[];ri.photos.push({id:uid(),img:capturedDataURL,note,date:Date.now(),liked:false,archived:false});saveData('recipes',r);}}
-  capturedDataURL=null;closeModal();showSection(currentSection);updatePanelBadge();
+  if(dest.startsWith('home_')){const home=userData('home',{rooms:[]});const room=home.rooms.find(r=>r.id===dest.replace('home_',''));if(room){room.photos=room.photos||[];room.photos.push(photo);saveData('home',home);newId=photo.id;}}
+  else if(dest==='wedding'){const w=userData('wedding',{inspo:[]});w.inspo.push(photo);saveData('wedding',w);newId=photo.id;}
+  else if(dest==='honeymoon'){const h=userData('honeymoon',{rooms:[],inspo:[],budget:0});if(!h.inspo)h.inspo=[];h.inspo.push(photo);saveData('honeymoon',h);newId=photo.id;}
+  else if(dest.startsWith('dayout_')){const d=userData('dayout',{plans:[]});const pl=d.plans.find(p=>p.id===dest.replace('dayout_',''));if(pl){pl.photos=pl.photos||[];pl.photos.push(photo);saveData('dayout',d);newId=photo.id;}}
+  else if(dest==='recipes_new'||dest==='recipes'){const r=userData('recipes',{items:[]});const rec={id:uid(),img:capturedDataURL,title:name||'New Recipe',tags:[],text:note,date:Date.now(),photos:[]};r.items.push(rec);saveData('recipes',r);newId=rec.id;}
+  else if(dest.startsWith('recipe_')){const recId=dest.replace('recipe_','');const r=userData('recipes',{items:[]});const ri=r.items.find(i=>i.id===recId);if(ri){const p2={id:uid(),img:capturedDataURL,note,date:Date.now(),liked:false,archived:false};ri.photos=ri.photos||[];ri.photos.push(p2);saveData('recipes',r);newId=p2.id;}}
+  if(blob&&newId)await idbPutPhoto(newId,blob);
+  capturedDataURL=null;capturedFullBlob=null;closeModal();showSection(currentSection);updatePanelBadge();
+  syncPhotosSoon();
 }
 
 // ── QUICK NOTES ──
@@ -1134,11 +1354,26 @@ async function useDropper(roomId){
 function openAddRoomMoodTile(roomId){
   const fi=document.getElementById('rm-tile-input');
   fi.onchange=e=>{
-    Array.from(e.target.files).forEach(file=>{const r=new FileReader();r.onload=ev=>{const home=userData('home',{rooms:[]});const room=home.rooms.find(r=>r.id===roomId);if(!room)return;room.moodboard=room.moodboard||{colors:[],tiles:[],notes:''};room.moodboard.tiles=room.moodboard.tiles||[];room.moodboard.tiles.push({id:uid(),img:ev.target.result,size:'md'});saveData('home',home);showSection('home');};r.readAsDataURL(file);});fi.value='';
+    Array.from(e.target.files).forEach(file=>{const r=new FileReader();r.onload=async ev=>{
+      const id=uid();
+      let thumb=ev.target.result,blob=null;
+      try{const p=await processPhotoDataURL(ev.target.result);thumb=p.thumb;blob=p.blob;}catch(err){}
+      const home=userData('home',{rooms:[]});const room=home.rooms.find(r=>r.id===roomId);if(!room)return;room.moodboard=room.moodboard||{colors:[],tiles:[],notes:''};room.moodboard.tiles=room.moodboard.tiles||[];room.moodboard.tiles.push({id,img:thumb,size:'md'});saveData('home',home);
+      if(blob)await idbPutPhoto(id,blob);
+      syncPhotosSoon();showSection('home');
+    };r.readAsDataURL(file);});fi.value='';
   };fi.click();
 }
 
-function removeRoomMoodTile(roomId,idx){const home=userData('home',{rooms:[]});const room=home.rooms.find(r=>r.id===roomId);if(room&&room.moodboard){room.moodboard.tiles.splice(idx,1);saveData('home',home);}showSection('home');}
+function removeRoomMoodTile(roomId,idx){
+  const home=userData('home',{rooms:[]});const room=home.rooms.find(r=>r.id===roomId);
+  if(room&&room.moodboard){
+    const removed=room.moodboard.tiles[idx];
+    room.moodboard.tiles.splice(idx,1);saveData('home',home);
+    if(removed){idbDeletePhoto(removed.id).catch(()=>{});deleteRemotePhoto(removed.id).catch(()=>{});}
+  }
+  showSection('home');
+}
 
 // ── FLOOR PLAN ──
 function renderFloorPlanView(){
@@ -1309,9 +1544,13 @@ function openAddRecipe(editId){
     <input type="file" id="rec-file" accept="image/*" style="display:none"/>
     <div class="modal-row" style="margin-top:14px"><button class="btn-solid sm" onclick="saveRecipe(${item?`'${item.id}'`:'null'})">Save Recipe</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);
 }
-let recipeImgData=null;
-function pickRecipePhoto(){const fi=document.getElementById('rec-file');fi.onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{recipeImgData=ev.target.result;const p=document.getElementById('rec-img-preview');p.src=recipeImgData;p.style.display='block';};r.readAsDataURL(f);};fi.click();}
-function saveRecipe(editId){
+let recipeImgData=null,recipeFullBlobPending=null;
+function pickRecipePhoto(){const fi=document.getElementById('rec-file');fi.onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=async ev=>{
+  try{const{thumb,blob}=await processPhotoDataURL(ev.target.result);recipeImgData=thumb;recipeFullBlobPending=blob;}
+  catch(err){recipeImgData=ev.target.result;recipeFullBlobPending=null;}
+  const p=document.getElementById('rec-img-preview');if(p){p.src=recipeImgData;p.style.display='block';}
+};r.readAsDataURL(f);};fi.click();}
+async function saveRecipe(editId){
   const title=document.getElementById('rec-title').value.trim();if(!title)return;
   const tags=document.getElementById('rec-tags').value.split(',').map(t=>t.trim()).filter(Boolean);
   const servings=parseInt(document.getElementById('rec-servings').value,10)||4;
@@ -1319,14 +1558,19 @@ function saveRecipe(editId){
   const method=parseMethodLines(document.getElementById('rec-method').value);
   const tips=document.getElementById('rec-tips').value.trim();
   const r=userData('recipes',{items:[]});
+  let finalId=editId;
   if(editId){
     const item=r.items.find(i=>i.id===editId);
     if(item)Object.assign(item,{title,tags,servings,ingredients,method,tips,img:recipeImgData||null});
   }else{
-    r.items.push({id:uid(),title,tags,servings,ingredients,method,tips,img:recipeImgData||null,date:Date.now(),photos:[]});
+    finalId=uid();
+    r.items.push({id:finalId,title,tags,servings,ingredients,method,tips,img:recipeImgData||null,date:Date.now(),photos:[]});
   }
-  recipeImgData=null;
-  saveData('recipes',r);closeModal();showSection('recipes');
+  saveData('recipes',r);
+  if(recipeFullBlobPending&&finalId)await idbPutPhoto(finalId,recipeFullBlobPending);
+  recipeImgData=null;recipeFullBlobPending=null;
+  closeModal();showSection('recipes');
+  syncPhotosSoon();
 }
 function viewRecipe(id,overrideServings){
   const item=userData('recipes',{items:[]}).items.find(i=>i.id===id);if(!item)return;
@@ -1355,10 +1599,31 @@ function viewRecipe(id,overrideServings){
 }
 function addPhotoToRecipe(recipeId){
   const fi=document.getElementById('rec-extra-photo');if(!fi)return;
-  fi.onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{const rec=userData('recipes',{items:[]});const item=rec.items.find(i=>i.id===recipeId);if(!item)return;item.photos=item.photos||[];item.photos.push({id:uid(),img:ev.target.result,date:Date.now(),liked:false,archived:false});saveData('recipes',rec);viewRecipe(recipeId);};r.readAsDataURL(f);fi.value='';};fi.click();
+  fi.onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=async ev=>{
+    const id=uid();
+    let thumb=ev.target.result,blob=null;
+    try{const p=await processPhotoDataURL(ev.target.result);thumb=p.thumb;blob=p.blob;}catch(err){}
+    const rec=userData('recipes',{items:[]});const item=rec.items.find(i=>i.id===recipeId);if(!item)return;
+    item.photos=item.photos||[];item.photos.push({id,img:thumb,date:Date.now(),liked:false,archived:false});saveData('recipes',rec);
+    if(blob)await idbPutPhoto(id,blob);
+    syncPhotosSoon();viewRecipe(recipeId);
+  };r.readAsDataURL(f);fi.value='';};fi.click();
 }
-function deleteRecipePhoto(recipeId,idx){const rec=userData('recipes',{items:[]});const item=rec.items.find(i=>i.id===recipeId);if(item&&item.photos){item.photos.splice(idx,1);saveData('recipes',rec);}viewRecipe(recipeId);}
-function deleteRecipe(id){if(!confirm('Delete this recipe?'))return;const r=userData('recipes',{items:[]});r.items=r.items.filter(i=>i.id!==id);saveData('recipes',r);showSection('recipes');}
+function deleteRecipePhoto(recipeId,idx){
+  const rec=userData('recipes',{items:[]});const item=rec.items.find(i=>i.id===recipeId);
+  if(item&&item.photos){const removed=item.photos[idx];item.photos.splice(idx,1);saveData('recipes',rec);if(removed){idbDeletePhoto(removed.id).catch(()=>{});deleteRemotePhoto(removed.id).catch(()=>{});}}
+  viewRecipe(recipeId);
+}
+function deleteRecipe(id){
+  if(!confirm('Delete this recipe?'))return;
+  const r=userData('recipes',{items:[]});
+  const item=r.items.find(i=>i.id===id);
+  if(item){
+    if(item.img){idbDeletePhoto(item.id).catch(()=>{});deleteRemotePhoto(item.id).catch(()=>{});}
+    (item.photos||[]).forEach(p=>{idbDeletePhoto(p.id).catch(()=>{});deleteRemotePhoto(p.id).catch(()=>{});});
+  }
+  r.items=r.items.filter(i=>i.id!==id);saveData('recipes',r);showSection('recipes');
+}
 
 // ── MOOD BOARD (global) ──
 function renderMoodBoardSection(context){
@@ -1370,10 +1635,28 @@ function openMoodBoard(){openModal(`<div class="modal-head"><div class="modal-ti
 function createMoodBoard(context){openModal(`<div class="modal-head"><div class="modal-title">New Mood Board</div><button class="modal-close" onclick="closeModal()">×</button></div><label class="field-label">Board Title</label><input id="mb-title" class="field-input" placeholder="e.g. Romantic Garden…"/><label class="field-label">Palette Colours (hex, comma separated)</label><input id="mb-palette" class="field-input" placeholder="#f7e9d7, #c9b89a"/><label class="field-label">Notes / Mood</label><textarea id="mb-notes" class="field-input" rows="3" placeholder="Describe the vibe…"></textarea><div class="modal-row"><button class="btn-solid sm" onclick="saveMoodBoard('${context}')">Create</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);}
 function saveMoodBoard(context){const title=document.getElementById('mb-title').value.trim()||'New Board';const palette=document.getElementById('mb-palette').value.split(',').map(s=>s.trim()).filter(s=>s.startsWith('#'));const notes=document.getElementById('mb-notes').value.trim();const boards=userData(`moodboards_${context}`,[]);boards.push({id:uid(),title,palette,notes,tiles:[]});saveData(`moodboards_${context}`,boards);closeModal();if(context==='wedding'){setWeddingTab('moodboard');showSection('wedding');}else showSection(currentSection);}
 function openEditBoard(context,boardIndex){const boards=userData(`moodboards_${context}`,[]);const board=boards[boardIndex];openModal(`<div class="modal-head"><div class="modal-title">Edit: ${board.title}</div><button class="modal-close" onclick="closeModal()">×</button></div><input type="file" id="mb-file" accept="image/*" multiple style="display:none"/><button class="btn-ghost mb14" onclick="pickMoodBoardImages(${boardIndex},'${context}')">+ Add Images</button><div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px">${(board.tiles||[]).map((tile,ti)=>`<div style="position:relative;width:80px;height:80px;overflow:hidden;border:1px solid var(--bone)"><img src="${tile.img}" style="width:100%;height:100%;object-fit:cover"/><button onclick="removeTile(${boardIndex},'${context}',${ti})" style="position:absolute;top:2px;right:2px;background:rgba(168,32,32,.85);border:none;color:#fff;width:18px;height:18px;font-size:11px;cursor:pointer">×</button></div>`).join('')}</div><label class="field-label">Title</label><input id="mb-edit-title" class="field-input" value="${board.title||''}"/><label class="field-label">Palette</label><input id="mb-edit-palette" class="field-input" value="${(board.palette||[]).join(', ')}"/><label class="field-label">Notes</label><textarea id="mb-edit-notes" class="field-input" rows="3">${board.notes||''}</textarea><div class="modal-row"><button class="btn-solid sm" onclick="updateMoodBoard('${context}',${boardIndex})">Save</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);}
-function pickMoodBoardImages(boardIndex,context){const fi=document.getElementById('mb-file');fi.onchange=e=>{Array.from(e.target.files).forEach(file=>{const r=new FileReader();r.onload=ev=>{const boards=userData(`moodboards_${context}`,[]);boards[boardIndex].tiles=boards[boardIndex].tiles||[];boards[boardIndex].tiles.push({id:uid(),img:ev.target.result,note:'',size:'md'});saveData(`moodboards_${context}`,boards);openEditBoard(context,boardIndex);};r.readAsDataURL(file);});fi.value='';};fi.click();}
-function removeTile(boardIndex,context,tileIndex){const boards=userData(`moodboards_${context}`,[]);boards[boardIndex].tiles.splice(tileIndex,1);saveData(`moodboards_${context}`,boards);openEditBoard(context,boardIndex);}
+function pickMoodBoardImages(boardIndex,context){const fi=document.getElementById('mb-file');fi.onchange=e=>{Array.from(e.target.files).forEach(file=>{const r=new FileReader();r.onload=async ev=>{
+  const id=uid();
+  let thumb=ev.target.result,blob=null;
+  try{const p=await processPhotoDataURL(ev.target.result);thumb=p.thumb;blob=p.blob;}catch(err){}
+  const boards=userData(`moodboards_${context}`,[]);boards[boardIndex].tiles=boards[boardIndex].tiles||[];boards[boardIndex].tiles.push({id,img:thumb,note:'',size:'md'});saveData(`moodboards_${context}`,boards);
+  if(blob)await idbPutPhoto(id,blob);
+  syncPhotosSoon();openEditBoard(context,boardIndex);
+};r.readAsDataURL(file);});fi.value='';};fi.click();}
+function removeTile(boardIndex,context,tileIndex){
+  const boards=userData(`moodboards_${context}`,[]);const removed=boards[boardIndex].tiles[tileIndex];
+  boards[boardIndex].tiles.splice(tileIndex,1);saveData(`moodboards_${context}`,boards);
+  if(removed){idbDeletePhoto(removed.id).catch(()=>{});deleteRemotePhoto(removed.id).catch(()=>{});}
+  openEditBoard(context,boardIndex);
+}
 function updateMoodBoard(context,boardIndex){const boards=userData(`moodboards_${context}`,[]);const board=boards[boardIndex];board.title=document.getElementById('mb-edit-title').value.trim()||'Board';board.palette=document.getElementById('mb-edit-palette').value.split(',').map(s=>s.trim()).filter(s=>s.startsWith('#'));board.notes=document.getElementById('mb-edit-notes').value.trim();saveData(`moodboards_${context}`,boards);closeModal();if(context==='wedding'){setWeddingTab('moodboard');showSection('wedding');}else showSection(currentSection);}
-function deleteMoodBoard(context,boardIndex){if(!confirm('Delete this mood board?'))return;const boards=userData(`moodboards_${context}`,[]);boards.splice(boardIndex,1);saveData(`moodboards_${context}`,boards);if(context==='wedding'){setWeddingTab('moodboard');showSection('wedding');}else showSection(currentSection);}
+function deleteMoodBoard(context,boardIndex){
+  if(!confirm('Delete this mood board?'))return;
+  const boards=userData(`moodboards_${context}`,[]);
+  ((boards[boardIndex]&&boards[boardIndex].tiles)||[]).forEach(t=>{idbDeletePhoto(t.id).catch(()=>{});deleteRemotePhoto(t.id).catch(()=>{});});
+  boards.splice(boardIndex,1);saveData(`moodboards_${context}`,boards);
+  if(context==='wedding'){setWeddingTab('moodboard');showSection('wedding');}else showSection(currentSection);
+}
 
 // ── DASHBOARD ──
 function timeAgo(ts){
@@ -1550,8 +1833,8 @@ function openWallpaperSettings(){
 function previewWallpaper(input){
   const f=input.files[0];if(!f)return;
   const r=new FileReader();
-  r.onload=ev=>{
-    _wpTemp=ev.target.result;
+  r.onload=async ev=>{
+    _wpTemp=await compressSingleImage(ev.target.result,1600,.82);
     const wrap=document.getElementById('wp-preview-wrap');
     if(wrap)wrap.innerHTML=`<img id="wp-preview" src="${_wpTemp}" style="width:100%;height:130px;object-fit:cover;display:block;border:1px solid var(--bone)"/>`;
     const btn=document.getElementById('wp-upload-btn');if(btn)btn.textContent='Change Photo';
@@ -1640,7 +1923,8 @@ function openSettings(){
       ${(()=>{
         const gd=userData('gdrive_backup',{});
         const bkConnected=hasBkToken();
-        if(!bkConnected)return`<p style="font-size:13px;color:var(--muted);font-style:italic;margin-bottom:12px">Keep a visible backup file in a Google Drive folder you choose — separate from the automatic sync above. Connecting asks for a broader Google Drive permission, so you may see an "unverified app" notice; that's expected for this project and safe to continue through.</p><button class="btn-ghost" onclick="bkDriveAuthRedirect()">Connect Google Drive Backup</button>`;
+        const bkErr=sessionStorage.getItem('maison_bkdrive_err')||lastBkBackupError;
+        if(!bkConnected)return`<p style="font-size:13px;color:var(--muted);font-style:italic;margin-bottom:12px">Keep a visible backup file in a Google Drive folder you choose — separate from the automatic sync above. Connecting asks for a broader Google Drive permission, so you may see an "unverified app" notice; that's expected for this project and safe to continue through.${gd.folderId?`<br/>Was backing up to <b>${escHtml(gd.folderName||'Google Drive')}</b> — reconnect to resume.`:''}${bkErr?`<br/><span style="color:var(--red)">${escHtml(bkErr)}</span>`:''}</p><div class="modal-row"><button class="btn-ghost" onclick="bkDriveAuthRedirect(true)">${gd.folderId?'Reconnect':'Connect'} Google Drive Backup</button>${gd.folderId?`<button class="btn-ghost danger" onclick="bkDisconnect()">Disconnect</button>`:''}</div>`;
         if(!gd.folderId)return`<p style="font-size:13px;color:var(--muted);font-style:italic;margin-bottom:12px">Connected. Choose a folder in your Google Drive to back up into.</p><div class="modal-row"><button class="btn-ghost" onclick="openBkFolderPicker()">Choose Folder</button><button class="btn-ghost danger" onclick="bkDisconnect()">Disconnect</button></div>`;
         return`<p style="font-size:13px;color:${gd.enabled?'var(--green)':'var(--muted)'};font-style:italic;margin-bottom:12px">Backing up to <b>${escHtml(gd.folderName||'Google Drive')}</b> ${gd.enabled?'— on ✓':'— paused'}${lastBkBackupAt?`<br/>Last backed up ${timeAgo(lastBkBackupAt)}`:''}${lastBkBackupError?`<br/><span style="color:var(--red)">${escHtml(lastBkBackupError)}</span>`:''}</p>
           <div class="modal-row">
@@ -1658,7 +1942,14 @@ function openSettings(){
     </div>`);
 }
 function signOut(){localStorage.removeItem('maison_sess');localStorage.removeItem('maison_drive_tok');localStorage.removeItem('maison_bkdrive_tok');currentUser=null;capturedDataURL=null;activeRoomId=null;driveAccessToken=null;driveFileId=null;if(driveSyncTimer){clearTimeout(driveSyncTimer);driveSyncTimer=null;}if(bkBackupTimer){clearTimeout(bkBackupTimer);bkBackupTimer=null;}document.getElementById('app').classList.remove('visible');document.getElementById('auth-screen').style.display='flex';google.accounts.id.disableAutoSelect();closeModal();}
-function clearData(){if(!confirm('Permanently delete all your data?'))return;Object.keys(localStorage).filter(k=>k.startsWith(`maison_${currentUser}_`)).forEach(k=>localStorage.removeItem(k));if(driveAccessToken&&driveFileId){fetch(`https://www.googleapis.com/drive/v3/files/${driveFileId}`,{method:'DELETE',headers:{Authorization:'Bearer '+driveAccessToken}});driveFileId=null;}closeModal();alert('Data cleared.');showSection('dashboard');}
+function clearData(){
+  if(!confirm('Permanently delete all your data?'))return;
+  const photoIds=referencedPhotoIds();
+  photoIds.forEach(id=>{idbDeletePhoto(id).catch(()=>{});deleteRemotePhoto(id).catch(()=>{});});
+  Object.keys(localStorage).filter(k=>k.startsWith(`maison_${currentUser}_`)).forEach(k=>localStorage.removeItem(k));
+  if(driveAccessToken&&driveFileId){fetch(`https://www.googleapis.com/drive/v3/files/${driveFileId}`,{method:'DELETE',headers:{Authorization:'Bearer '+driveAccessToken}});driveFileId=null;}
+  closeModal();alert('Data cleared.');showSection('dashboard');
+}
 </script>
 </body>
 </html>
