@@ -528,7 +528,7 @@ function handleGoogleLogin(response){
   document.getElementById('auth-screen').style.display='none';
   document.getElementById('app').classList.add('visible');
   setupFileInputs();showSection('dashboard');updatePanelBadge();
-  driveBoot();bkDriveBoot();
+  if(!driveBoot())bkDriveBoot();
   bootStorageAndMigration();
 }
 window.addEventListener('load',()=>{
@@ -541,7 +541,7 @@ window.addEventListener('load',()=>{
       document.getElementById('auth-screen').style.display='none';
       document.getElementById('app').classList.add('visible');
       setupFileInputs();showSection('dashboard');updatePanelBadge();
-      driveBoot();bkDriveBoot();
+      if(!driveBoot())bkDriveBoot();
       bootStorageAndMigration();
       return;
     }
@@ -578,18 +578,22 @@ function driveAuthRedirect(interactive){
   if(!interactive)p.set('prompt','none');
   location.href='https://accounts.google.com/o/oauth2/v2/auth?'+p.toString();
 }
+// Returns true if it navigated away to silently reconnect (so callers must not
+// start another redirect this tick — a second location.href would clobber this one).
 function driveBoot(){
   driveAccessToken=getDriveToken();
   if(driveAccessToken){
     localStorage.setItem(`maison_drive_on_${currentUser}`,'1');
     driveSyncNow(false);
-    return;
+    return false;
   }
   // Sync was on before but token expired — reconnect silently, once per session
   if(localStorage.getItem(`maison_drive_on_${currentUser}`)&&!sessionStorage.getItem('maison_drive_tried')){
     sessionStorage.setItem('maison_drive_tried','1');
     driveAuthRedirect(false);
+    return true;
   }
+  return false;
 }
 function driveTokenInvalid(){localStorage.removeItem('maison_drive_tok');driveAccessToken=null;}
 function enableDriveSync(){sessionStorage.removeItem('maison_drive_err');lastSyncError=null;driveAuthRedirect(true);}
