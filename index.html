@@ -1,1 +1,939 @@
-)
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="default"/>
+<meta name="theme-color" content="#f7f3ed"/>
+<title>MAISON</title>
+<link rel="manifest" href="manifest.json"/>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{--ink:#1c140a;--cream:#f7f3ed;--bone:#ede4d5;--warm:#c9b89a;--muted:#8a7a68;--red:#a82020;--green:#2a5f3f;--gold:#b8962e;--teal:#2a7070;--section-pad:28px 20px 160px;}
+body{font-family:'EB Garamond',serif;background:var(--cream);color:var(--ink);min-height:100vh;overflow-x:hidden}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:var(--warm);border-radius:2px}
+input,textarea,select{font-family:'EB Garamond',serif;font-size:16px;background:transparent}
+input::placeholder,textarea::placeholder{color:#bbb;font-style:italic}
+button{font-family:'Cormorant Garamond',serif;cursor:pointer;touch-action:manipulation}
+a{color:var(--ink)}img{display:block;max-width:100%}select{cursor:pointer}
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");opacity:.35;}
+
+/* AUTH */
+#auth-screen{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;background:var(--cream);position:relative;overflow:hidden}
+#auth-screen::before,#auth-screen::after{content:'';position:absolute;left:0;right:0;height:4px;background:repeating-linear-gradient(90deg,var(--ink) 0,var(--ink) 35px,transparent 35px,transparent 70px)}
+#auth-screen::before{top:0}#auth-screen::after{bottom:0}
+.auth-deco{position:absolute;font-family:'Cormorant Garamond',serif;font-size:220px;font-weight:700;color:var(--bone);letter-spacing:-.04em;pointer-events:none;user-select:none;top:50%;left:50%;transform:translate(-50%,-50%);white-space:nowrap}
+.auth-box{max-width:380px;width:100%;position:relative;z-index:1}
+.masthead{text-align:center;margin-bottom:48px}
+.masthead-sub{font-size:10px;letter-spacing:.5em;text-transform:uppercase;color:var(--warm);font-family:'Cormorant Garamond',serif;margin-bottom:14px}
+.masthead-title{font-family:'Cormorant Garamond',serif;font-size:80px;font-weight:700;color:var(--ink);line-height:.85;letter-spacing:-.02em}
+.masthead-rule{width:48px;height:1px;background:var(--warm);margin:22px auto 12px}
+.masthead-tagline{font-size:11px;letter-spacing:.35em;text-transform:uppercase;color:var(--muted);font-family:'Cormorant Garamond',serif}
+.auth-note{text-align:center;font-size:12px;color:var(--muted);margin-top:18px;font-style:italic;line-height:1.6}
+.err-msg{color:var(--red);font-size:13px;margin-bottom:12px;font-style:italic}
+
+/* SIDE PANEL */
+#panel-overlay{position:fixed;inset:0;background:rgba(28,20,10,.45);z-index:400;display:none;backdrop-filter:blur(4px)}
+#panel-overlay.open{display:block}
+#side-panel{position:fixed;top:0;left:0;bottom:0;width:300px;max-width:90vw;background:var(--cream);z-index:401;transform:translateX(-100%);transition:transform .3s cubic-bezier(.4,0,.2,1);overflow-y:auto;display:flex;flex-direction:column;border-right:1px solid var(--bone)}
+#side-panel.open{transform:translateX(0)}
+.panel-head{padding:20px 18px 14px;border-bottom:3px solid var(--ink);display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:var(--cream);z-index:1}
+.panel-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700;letter-spacing:-.01em;text-transform:uppercase}
+.panel-close{background:none;border:none;font-size:22px;color:var(--muted);font-family:serif}
+.panel-filter-row{display:flex;gap:5px;padding:10px 14px;border-bottom:1px solid var(--bone);flex-wrap:wrap}
+.panel-filter{background:none;border:1px solid rgba(28,20,10,.18);color:var(--muted);font-family:'Cormorant Garamond',serif;font-size:9px;letter-spacing:.12em;text-transform:uppercase;padding:3px 8px;transition:all .2s}
+.panel-filter.active{background:var(--ink);border-color:var(--ink);color:var(--cream)}
+.panel-filter.arch-filter.active{background:var(--muted);border-color:var(--muted)}
+.panel-body{padding:14px 18px 80px;flex:1}
+.panel-section-label{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);font-family:'Cormorant Garamond',serif;margin:16px 0 8px;font-weight:600}
+.panel-section-label:first-child{margin-top:0}
+.panel-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:4px}
+.panel-photo{position:relative;overflow:hidden;border:1px solid var(--bone);background:var(--bone);aspect-ratio:1;cursor:pointer;transition:box-shadow .2s}
+.panel-photo:hover{box-shadow:0 3px 14px rgba(28,20,10,.14)}
+.panel-photo img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s}
+.panel-photo:hover img{transform:scale(1.05)}
+.panel-photo-liked{position:absolute;top:5px;left:5px;width:6px;height:6px;border-radius:50%;background:var(--red)}
+.panel-photo-like{position:absolute;top:5px;right:5px;background:rgba(247,243,237,.88);border:none;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:13px;opacity:0;transition:opacity .2s;color:var(--muted)}
+.panel-photo:hover .panel-photo-like,.panel-photo-like.on{opacity:1}
+.panel-photo-like.on{color:var(--red)}
+.panel-photo-move{position:absolute;bottom:5px;right:5px;background:rgba(247,243,237,.9);border:none;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:12px;opacity:0;transition:opacity .2s;cursor:pointer;color:var(--ink)}
+.panel-photo:hover .panel-photo-move{opacity:1}
+.panel-photo-dest{position:absolute;bottom:0;left:0;right:0;background:rgba(28,20,10,.6);color:var(--cream);font-size:9px;letter-spacing:.1em;text-transform:uppercase;font-family:'Cormorant Garamond',serif;padding:4px 6px;transform:translateY(100%);transition:transform .2s}
+.panel-photo:hover .panel-photo-dest{transform:translateY(0)}
+.panel-photo-arch-actions{position:absolute;top:5px;right:5px;display:flex;flex-direction:column;gap:3px}
+.arch-btn{border:none;color:white;padding:3px 6px;font-size:10px;cursor:pointer;font-family:'Cormorant Garamond',serif}
+.panel-pinned-label{display:flex;align-items:center;gap:6px;font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--red);font-family:'Cormorant Garamond',serif;margin:0 0 8px;font-weight:600}
+.panel-empty{font-size:13px;color:var(--muted);font-style:italic;text-align:center;padding:32px 0}
+
+
+/* APP */
+#app{display:none;min-height:100vh;flex-direction:column}
+#app.visible{display:flex}
+header{position:sticky;top:0;z-index:200;background:rgba(247,243,237,.97);backdrop-filter:blur(12px);border-bottom:1px solid var(--bone)}
+.header-stripe{height:3px;background:repeating-linear-gradient(90deg,var(--ink) 0,var(--ink) 30px,transparent 30px,transparent 60px)}
+.header-inner{max-width:980px;margin:0 auto;padding:0 20px}
+.header-top{display:flex;align-items:center;justify-content:space-between;padding:12px 0 8px}
+.header-brand{text-align:center}
+.brand-name{font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:700;letter-spacing:-.025em;color:var(--ink);line-height:1}
+.brand-sub{font-size:8px;letter-spacing:.55em;text-transform:uppercase;color:var(--warm);font-family:'Cormorant Garamond',serif}
+.header-btn{background:none;border:none;color:var(--muted);display:flex;align-items:center;gap:5px;font-family:'Cormorant Garamond',serif;font-size:10px;letter-spacing:.2em;text-transform:uppercase;transition:color .2s;position:relative}
+.header-btn:hover{color:var(--ink)}
+.panel-badge{position:absolute;top:-4px;right:-4px;background:var(--red);color:#fff;width:14px;height:14px;border-radius:50%;font-size:8px;display:none;align-items:center;justify-content:center;font-family:sans-serif}
+.panel-badge.show{display:flex}
+nav{display:flex;justify-content:center;border-top:1px solid var(--bone);overflow-x:auto;gap:0;-webkit-overflow-scrolling:touch}
+.nav-btn{background:none;border:none;border-bottom:2px solid transparent;padding:11px 16px;font-family:'Cormorant Garamond',serif;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:-1px;white-space:nowrap;transition:color .2s}
+.nav-btn.active{border-bottom-color:var(--ink);color:var(--ink)}
+main{max-width:980px;margin:0 auto;padding:var(--section-pad);width:100%;flex:1}
+
+/* CAMERA DOCK */
+#camera-dock{position:fixed;bottom:0;left:0;right:0;z-index:150;background:rgba(247,243,237,.96);backdrop-filter:blur(16px);border-top:1px solid var(--bone);display:flex;justify-content:center;padding:14px 0 calc(20px + env(safe-area-inset-bottom));gap:18px}
+.cam-wrap{display:flex;flex-direction:column;align-items:center;gap:5px}
+.cam-btn{width:54px;height:54px;border-radius:50%;background:var(--ink);border:3px solid var(--cream);outline:1px solid var(--ink);display:flex;align-items:center;justify-content:center;color:var(--cream);box-shadow:0 4px 20px rgba(28,20,10,.22);transition:transform .2s,box-shadow .2s;touch-action:manipulation}
+.cam-btn:active{transform:scale(.96)}
+.cam-btn:hover{transform:scale(1.07)}
+.cam-btn.mood{background:var(--gold)}
+.cam-btn.photos{background:var(--green)}
+.cam-label{font-size:8px;letter-spacing:.3em;text-transform:uppercase;color:var(--muted);font-family:'Cormorant Garamond',serif}
+#file-input,#file-input-camera,#fp-file-input,#rm-tile-input{display:none}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(28,20,10,.52);backdrop-filter:blur(8px);z-index:500;display:flex;align-items:center;justify-content:center;padding:16px}
+.modal-box{background:var(--cream);max-width:540px;width:100%;max-height:92vh;overflow-y:auto;padding:32px 36px;animation:modalIn .22s ease;border-top:3px solid var(--ink)}
+@keyframes modalIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.modal-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:22px}
+.modal-title{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:700;letter-spacing:.08em;color:var(--ink);text-transform:uppercase}
+.modal-close{background:none;border:none;color:var(--muted);font-size:24px;line-height:1;margin-left:16px;padding:0;font-family:serif}
+.modal-close:hover{color:var(--ink)}
+.modal-preview{width:100%;max-height:240px;object-fit:cover;margin-bottom:16px;border:1px solid var(--bone)}
+.modal-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+
+/* SECTION */
+.section-rule{border-top:3px solid var(--ink);padding-top:18px;margin-bottom:26px;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:12px}
+.section-title{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:700;color:var(--ink);text-transform:uppercase;letter-spacing:-.01em}
+.section-sub{font-family:'EB Garamond',serif;font-size:13px;color:var(--muted);font-style:italic;margin-top:4px}
+.room-tabs-row{display:flex;border-bottom:1px solid var(--bone);margin-bottom:22px;overflow-x:auto;gap:0;-webkit-overflow-scrolling:touch}
+.room-tab{background:none;border:none;border-bottom:2px solid transparent;padding:10px 16px;font-family:'Cormorant Garamond',serif;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);white-space:nowrap;margin-bottom:-1px;transition:color .2s;position:relative}
+.room-tab.active{border-bottom-color:var(--ink);color:var(--ink)}
+.room-tab.drag-over{border-bottom-color:var(--gold)!important;color:var(--gold)!important}
+.room-tab[draggable="true"]{cursor:grab;user-select:none}
+.drag-handle{font-size:9px;color:var(--warm);margin-right:4px;letter-spacing:-.1em}
+
+/* HOME VIEW & ROOM SUB-TABS */
+.home-view-tabs{display:flex;border-bottom:1px solid var(--bone);margin-bottom:22px}
+.home-view-tab{background:none;border:none;border-bottom:2px solid transparent;padding:10px 22px;font-family:'Cormorant Garamond',serif;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:-1px;transition:color .2s}
+.home-view-tab.active{border-bottom-color:var(--ink);color:var(--ink)}
+.room-sub-tabs{display:flex;border-bottom:1px solid var(--bone);margin-bottom:20px}
+.room-sub-tab{background:none;border:none;border-bottom:2px solid transparent;padding:9px 16px;font-family:'Cormorant Garamond',serif;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:-1px;transition:color .2s}
+.room-sub-tab.active{border-bottom-color:var(--gold);color:var(--ink)}
+
+/* FLOOR PLAN */
+.fp-container{position:relative;width:100%;cursor:crosshair;user-select:none;border:1px solid var(--bone);overflow:hidden;background:var(--bone)}
+.fp-img{width:100%;display:block;pointer-events:none}
+.fp-marker{position:absolute;width:30px;height:30px;border-radius:50%;background:var(--ink);border:2px solid var(--cream);box-shadow:0 2px 10px rgba(28,20,10,.35);transform:translate(-50%,-50%);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--cream);font-family:'Cormorant Garamond',serif;font-size:12px;font-weight:700;transition:transform .2s,background .2s;z-index:5}
+.fp-marker:hover{transform:translate(-50%,-50%) scale(1.2);background:var(--gold)}
+.fp-label{position:absolute;top:calc(100% + 5px);left:50%;transform:translateX(-50%);background:var(--ink);color:var(--cream);font-size:9px;letter-spacing:.1em;text-transform:uppercase;font-family:'Cormorant Garamond',serif;padding:3px 8px;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .2s}
+.fp-marker:hover .fp-label{opacity:1}
+.fp-del{position:absolute;top:-5px;right:-5px;width:15px;height:15px;border-radius:50%;background:var(--red);border:none;color:white;font-size:9px;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .2s;cursor:pointer}
+.fp-marker:hover .fp-del{opacity:1}
+
+/* MOOD BOARD SWATCHES */
+.mb-swatch-wrap{position:relative;display:inline-flex;flex-direction:column;align-items:center}
+.mb-swatch{width:52px;height:52px;border:1px solid rgba(28,20,10,.1);cursor:pointer;transition:transform .2s}
+.mb-swatch:hover{transform:scale(1.06)}
+.mb-swatch-del{position:absolute;top:-5px;right:-5px;background:var(--red);border:none;color:white;width:15px;height:15px;border-radius:50%;font-size:9px;cursor:pointer;opacity:0;transition:opacity .2s;display:flex;align-items:center;justify-content:center}
+.mb-swatch-wrap:hover .mb-swatch-del{opacity:1}
+.mb-swatch-label{font-size:9px;color:var(--muted);text-align:center;margin-top:3px;font-family:'Cormorant Garamond',serif;max-width:52px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.color-picker-input{width:100%;height:48px;border:1px solid var(--bone);cursor:pointer;margin-bottom:14px;padding:2px}
+.ral-row{display:flex;gap:8px;align-items:flex-start;margin-bottom:6px}
+.ral-preview-box{width:44px;height:44px;border:1px solid var(--bone);flex-shrink:0;transition:background .2s}
+
+/* BUDGET */
+.budget-block{background:var(--bone);padding:18px 22px;margin-bottom:22px;border-left:3px solid var(--ink)}
+.budget-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px}
+.budget-label{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);font-family:'Cormorant Garamond',serif;font-weight:600}
+.budget-amount{font-family:'Cormorant Garamond',serif;font-size:28px;color:var(--ink)}
+.budget-amount.over{color:var(--red)}
+.bar-track{height:2px;background:rgba(28,20,10,.12);margin-bottom:6px}
+.bar-fill{height:100%;background:var(--ink);transition:width .6s}
+.bar-fill.over{background:var(--red)}
+.bar-note{font-family:'Cormorant Garamond',serif;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.bar-note.over{color:var(--red)}
+
+/* PHOTO GRID */
+.photo-grid{columns:2 180px;gap:12px;margin-top:16px}
+.photo-card{break-inside:avoid;margin-bottom:12px;position:relative;overflow:hidden;background:var(--bone);border:1px solid var(--bone);transition:box-shadow .2s}
+.photo-card:hover{box-shadow:0 4px 20px rgba(28,20,10,.12)}
+.photo-card img{width:100%;display:block;transition:transform .5s;cursor:pointer}
+.photo-card:hover img{transform:scale(1.04)}
+.photo-card-actions{position:absolute;top:7px;right:7px;display:flex;flex-direction:column;gap:4px;opacity:0;transition:opacity .2s}
+.photo-card:hover .photo-card-actions{opacity:1}
+.img-btn{width:26px;height:26px;border:none;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);transition:all .2s;cursor:pointer}
+.img-btn.default{background:rgba(247,243,237,.9);color:var(--muted)}
+.img-btn.liked{background:rgba(168,32,32,.88);color:var(--cream)}
+.img-btn.del{background:rgba(168,32,32,.88);color:var(--cream)}
+.img-btn.arch{background:rgba(247,243,237,.88);color:var(--muted)}
+.img-btn.arch:hover{background:rgba(28,20,10,.7);color:var(--cream)}
+.photo-note{padding:10px 12px 12px;font-size:13px;color:var(--ink);line-height:1.55;background:var(--cream);border-top:1px solid var(--bone)}
+.photo-link{display:block;padding:6px 12px;font-size:11px;color:var(--muted);font-family:'Cormorant Garamond',serif;letter-spacing:.1em;background:var(--bone);border-top:1px solid rgba(28,20,10,.07);text-decoration:none;text-overflow:ellipsis;overflow:hidden;white-space:nowrap}
+.photo-link:hover{color:var(--ink)}
+.photo-price{padding:4px 12px 10px;font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--green)}
+.liked-dot{position:absolute;top:7px;left:7px;width:8px;height:8px;border-radius:50%;background:var(--red);box-shadow:0 0 0 2px rgba(247,243,237,.8)}
+
+/* ITEMS */
+.item-row{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid var(--bone)}
+.item-thumb{width:52px;height:52px;object-fit:cover;flex-shrink:0;border:1px solid var(--bone)}
+.item-thumb-ph{width:52px;height:52px;background:var(--bone);flex-shrink:0;display:flex;align-items:center;justify-content:center;color:var(--warm);font-size:22px}
+.item-body{flex:1;min-width:0}
+.item-name{font-size:15px;color:var(--ink);margin-bottom:2px}
+.item-store{font-size:10px;color:var(--muted);font-family:'Cormorant Garamond',serif;letter-spacing:.12em;text-transform:uppercase;margin-bottom:4px}
+.item-link{font-size:11px;color:var(--muted);text-decoration:underline;word-break:break-all}
+.item-link:hover{color:var(--ink)}
+.item-price{font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--ink);flex-shrink:0;white-space:nowrap}
+.icon-btn{background:none;border:none;color:var(--muted);padding:3px;display:flex;transition:color .2s}
+.icon-btn:hover{color:var(--red)}
+.cat-badge{font-size:9px;letter-spacing:.1em;text-transform:uppercase;font-family:'Cormorant Garamond',serif;padding:2px 7px;border:1px solid var(--bone);color:var(--muted);margin-bottom:3px;display:inline-block}
+
+/* MOOD BOARD */
+.mood-board{min-height:300px;background:var(--bone);padding:20px;display:flex;flex-wrap:wrap;gap:10px;margin-bottom:20px;border:2px dashed var(--warm)}
+.mood-board.empty-board{align-items:center;justify-content:center}
+.mood-tile{position:relative;overflow:hidden;border:1px solid var(--bone)}
+.mood-tile img{display:block;width:100%;height:100%;object-fit:cover}
+.mood-tile.size-sm{width:130px;height:130px}
+.mood-tile.size-md{width:200px;height:150px}
+.mood-tile.size-lg{width:280px;height:200px}
+.mood-tile .tile-note{position:absolute;bottom:0;left:0;right:0;background:rgba(28,20,10,.6);color:var(--cream);font-size:11px;padding:5px 7px;transform:translateY(100%);transition:transform .2s}
+.mood-tile:hover .tile-note{transform:translateY(0)}
+.mood-palette{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.palette-swatch{width:32px;height:32px;border:2px solid transparent;transition:border-color .2s}
+.palette-swatch:hover{border-color:var(--ink)}
+
+/* RECIPES */
+.recipe-grid{columns:2 240px;gap:14px;margin-top:16px}
+.recipe-card{break-inside:avoid;margin-bottom:14px;background:var(--cream);border:1px solid var(--bone);overflow:hidden}
+.recipe-img{width:100%;max-height:200px;object-fit:cover;display:block;cursor:pointer}
+.recipe-body{padding:14px 16px 16px}
+.recipe-tag{display:inline-block;font-size:9px;letter-spacing:.18em;text-transform:uppercase;border:1px solid var(--bone);padding:2px 8px;margin-right:5px;margin-bottom:8px;color:var(--muted);font-family:'Cormorant Garamond',serif}
+.recipe-title{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600;color:var(--ink);margin-bottom:6px}
+.recipe-text{font-size:13px;color:var(--muted);line-height:1.6;white-space:pre-wrap}
+.recipe-section-label{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);font-family:'Cormorant Garamond',serif;font-weight:600;margin-bottom:10px}
+.serving-adjust{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.serving-btn{width:26px;height:26px;border:1px solid var(--bone);background:var(--bone);color:var(--ink);font-size:15px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;font-family:'Cormorant Garamond',serif}
+.serving-btn:hover{background:var(--ink);color:var(--cream);border-color:var(--ink)}
+.serving-count{font-family:'Cormorant Garamond',serif;font-size:13px;letter-spacing:.05em;color:var(--ink);min-width:78px;text-align:center}
+.ingredient-list{list-style:none;padding:0;margin:0}
+.ingredient-list li{font-size:14px;color:var(--ink);padding:7px 0 7px 14px;border-bottom:1px solid var(--bone);position:relative}
+.ingredient-list li::before{content:'';position:absolute;left:0;top:16px;width:4px;height:4px;border-radius:50%;background:var(--warm)}
+.method-list{padding-left:22px;margin:0}
+.method-list li{font-size:14px;line-height:1.7;color:var(--ink);padding:8px 0;border-bottom:1px solid var(--bone)}
+.method-list li::marker{font-family:'Cormorant Garamond',serif;font-weight:700;color:var(--gold)}
+.cook-toggle{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--bone);background:var(--cream);color:var(--muted);font-family:'Cormorant Garamond',serif;font-size:10px;letter-spacing:.16em;text-transform:uppercase;padding:7px 14px;cursor:pointer;transition:all .2s;margin-top:12px}
+.cook-toggle.on{background:var(--ink);color:var(--cream);border-color:var(--ink)}
+.cook-toggle-dot{width:7px;height:7px;border-radius:50%;background:var(--warm);flex-shrink:0}
+.cook-toggle.on .cook-toggle-dot{background:var(--gold)}
+
+        <button class="nav-btn" data-section="wedding" onclick="showSection('wedding')">Wedding</button>
+        <button class="nav-btn" data-section="honeymoon" onclick="showSection('honeymoon')">Honeymoon</button>
+        <button class="nav-btn" data-section="dayout" onclick="showSection('dayout')">Days Out</button>
+        <button class="nav-btn" data-section="recipes" onclick="showSection('recipes')">Recipes</button>
+        <button class="nav-btn" data-section="music" onclick="showSection('music')">Music</button>
+      </nav>
+    </div>
+  </header>
+  <main id="main-content"></main>
+  <div id="camera-dock">
+    <div class="cam-wrap">
+      <button class="cam-btn photos" onclick="openSidePanel()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      </button>
+      <div class="cam-label">All Photos</div>
+    </div>
+    <div class="cam-wrap">
+      <button class="cam-btn" onclick="triggerCapture()">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
+      </button>
+      <div class="cam-label">Capture</div>
+    </div>
+    <div class="cam-wrap">
+      <button class="cam-btn mood" onclick="openMoodBoard()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      </button>
+      <div class="cam-label">Mood Board</div>
+    </div>
+  </div>
+</div>
+
+<div id="modal" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeModal()">
+  <div class="modal-box" id="modal-box"></div>
+</div>
+
+<script>
+// ── RAL COLOURS ──
+const RAL={
+  '1000':'#CCC58F','1001':'#D0A86B','1002':'#D9A521','1003':'#F9A800','1004':'#E49E00','1005':'#CB8C00',
+  '2000':'#E75B12','2001':'#BE4E20','2002':'#C53D16','2003':'#F47023',
+  '3000':'#AB2524','3001':'#A52019','3002':'#A52019','3003':'#8E1B1C','3005':'#5B1A20','3007':'#3A1C22',
+  '3009':'#744231','3011':'#7B2B2B','3013':'#963434','3015':'#E8AFAB','3016':'#B54B3A','3018':'#C6304A',
+  '3020':'#BB1F25','3022':'#D2614A','3027':'#B52444',
+  '4001':'#8A4F7D','4002':'#8E2C48','4003':'#D15B8F','4005':'#7A5AA0','4007':'#4A1348','4009':'#A68BA0',
+  '5000':'#264E6E','5001':'#1A4E6A','5002':'#2B3480','5003':'#224568','5005':'#1A4B80','5007':'#3B6186',
+  '5010':'#0E4C8C','5011':'#1F3148','5012':'#3882C4','5015':'#1876B4','5017':'#064A8C','5018':'#3B9DB3',
+  '5021':'#007B8C','5024':'#7093AC',
+  '6000':'#3B6E52','6001':'#2E6444','6002':'#3C6944','6005':'#1F4D34','6010':'#3B6B3B','6011':'#587B4A',
+  '6016':'#1B6E3F','6017':'#4E813B','6018':'#5C9140','6019':'#C5DBB8','6024':'#3B8547','6027':'#82C8B8',
+  '6029':'#228B45','6032':'#237A4B','6037':'#2A8240',
+  '7000':'#7E8B93','7001':'#8A9598','7002':'#888070','7003':'#817B6E','7004':'#9B9C9B','7005':'#6A6E6A',
+  '7015':'#535B63','7016':'#3D4549','7021':'#252B2F','7030':'#939185','7031':'#5B6A75','7032':'#B5B0A0',
+  '7035':'#C5CBCF','7037':'#7D8589','7038':'#B0B4B5','7039':'#6F7172','7040':'#9EA4AA','7042':'#8F9695',
+  '7043':'#4B5457','7044':'#B9B7A8','7045':'#919599','7047':'#D0D0CF',
+  '8000':'#89693E','8001':'#9E6025','8002':'#7B4429','8003':'#7A4728','8004':'#874B35','8007':'#6F4925',
+  '8008':'#6D4D2A','8011':'#542F1E','8012':'#6D3026','8014':'#4B3421','8015':'#5D2A1F','8016':'#4C2820',
+  '8017':'#442320','8019':'#362B27','8022':'#1A1213','8023':'#9E5E25','8024':'#79471D','8025':'#6E4D2C',
+  '8028':'#4E3A27',
+  '9001':'#F4EBD4','9002':'#E5E0D4','9003':'#ECECE8','9004':'#2B2B2C','9005':'#0A0A0A','9006':'#A9ABAC',
+  '9007':'#898A8D','9010':'#F7F6EF','9011':'#1C1C1E','9016':'#F7F7F4','9017':'#282826','9018':'#D4D7D4'
+};
+const RAL_NAMES={
+  '1000':'Beige Green','1001':'Beige','1002':'Sand Yellow','1003':'Signal Yellow','1004':'Golden Yellow','1005':'Honey Yellow',
+  '2000':'Yellow Orange','2001':'Red Orange','2002':'Vermilion','2003':'Pastel Orange',
+  '3000':'Flame Red','3001':'Signal Red','3002':'Carmine Red','3003':'Ruby Red','3005':'Wine Red','3007':'Black Red',
+  '3009':'Oxide Red','3011':'Brown Red','3013':'Tomato Red','3015':'Light Pink','3016':'Coral Red','3018':'Strawberry Red',
+  '3020':'Traffic Red','3022':'Salmon Pink','3027':'Raspberry Red',
+  '4001':'Red Lilac','4002':'Red Violet','4003':'Heather Violet','4005':'Blue Lilac','4007':'Purple Violet','4009':'Pastel Violet',
+  '5000':'Violet Blue','5001':'Green Blue','5002':'Ultramarine Blue','5003':'Sapphire Blue','5005':'Signal Blue',
+  '5007':'Brilliant Blue','5010':'Gentian Blue','5011':'Steel Blue','5012':'Light Blue','5015':'Sky Blue',
+  '5017':'Traffic Blue','5018':'Turquoise Blue','5021':'Water Blue','5024':'Pastel Blue',
+  '6000':'Patina Green','6001':'Emerald Green','6002':'Leaf Green','6005':'Moss Green','6010':'Grass Green',
+  '6011':'Reseda Green','6016':'Turquoise Green','6017':'Yellow Olive','6018':'Yellow Green','6019':'White Green',
+  '6024':'Traffic Green','6027':'Light Green','6029':'Mint Green','6032':'Signal Green','6037':'Pure Green',
+  '7000':'Squirrel Grey','7001':'Silver Grey','7002':'Olive Grey','7003':'Moss Grey','7004':'Signal Grey',
+  '7005':'Mouse Grey','7015':'Slate Grey','7016':'Anthracite Grey','7021':'Black Grey','7030':'Stone Grey',
+  '7031':'Blue Grey','7032':'Pebble Grey','7035':'Light Grey','7037':'Dusty Grey','7038':'Agate Grey',
+  '7039':'Quartz Grey','7040':'Window Grey','7042':'Traffic Grey A','7043':'Traffic Grey B',
+  '7044':'Silk Grey','7045':'Telegrey 1','7047':'Telegrey 4',
+  '8000':'Green Brown','8001':'Ochre Brown','8002':'Signal Brown','8003':'Clay Brown','8004':'Copper Brown',
+  '8007':'Fawn Brown','8008':'Olive Brown','8011':'Nut Brown','8012':'Red Brown','8014':'Sepia Brown',
+  '8015':'Chestnut Brown','8016':'Mahogany Brown','8017':'Chocolate Brown','8019':'Grey Brown','8022':'Black Brown',
+  '8023':'Orange Brown','8024':'Beige Brown','8025':'Pale Brown','8028':'Terra Brown',
+  '9001':'Cream','9002':'Grey White','9003':'Signal White','9004':'Signal Black','9005':'Jet Black',
+  '9006':'White Aluminium','9007':'Grey Aluminium','9010':'Pure White','9011':'Graphite Black',
+  '9016':'Traffic White','9017':'Traffic Black','9018':'Papyrus White'
+};
+
+  const file=(list.files||[])[0];
+  if(!file){driveFileId=null;return 'nofile';}
+  driveFileId=file.id;
+  const dr=await driveFetch(`https://www.googleapis.com/drive/v3/files/${file.id}?alt=media`,auth);
+  const payload=await dr.json();
+  if(!payload||!payload.keys)return 'nofile';
+  const lwKey=`maison_${currentUser}_lastwrite`;
+  const localAt=parseInt(localStorage.getItem(lwKey)||'0',10);
+  const driveAt=payload.at||0;
+  if(driveAt>localAt){
+    // Drive copy is newer — replace local data with it
+    Object.keys(localStorage).filter(k=>k.startsWith(`maison_${currentUser}_`)).forEach(k=>localStorage.removeItem(k));
+    Object.entries(payload.keys).forEach(([k,v])=>{try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}});
+    localStorage.setItem(lwKey,String(driveAt));
+    showSection(currentSection);updatePanelBadge();
+    return 'applied';
+  }
+  return driveAt===localAt?'insync':'localnewer';
+}
+function scheduleDriveSync(){
+  if(!driveAccessToken)return;
+  if(driveSyncTimer)clearTimeout(driveSyncTimer);
+  driveSyncTimer=setTimeout(()=>{syncToDrive().then(()=>{lastSyncAt=Date.now();lastSyncError=null;}).catch(e=>{lastSyncError=(e&&e.message)||String(e);});},2500);
+}
+async function syncToDrive(){
+  if(!driveAccessToken||!currentUser)return;
+  const keys={};
+  const lwKey=`maison_${currentUser}_lastwrite`;
+  Object.keys(localStorage).filter(k=>k.startsWith(`maison_${currentUser}_`)&&k!==lwKey).forEach(k=>{try{keys[k]=JSON.parse(localStorage.getItem(k));}catch(e){}});
+  const at=Date.now();
+  const body=JSON.stringify({keys,at});
+  if(driveFileId){
+    await driveFetch(`https://www.googleapis.com/upload/drive/v3/files/${driveFileId}?uploadType=media`,{method:'PATCH',headers:{Authorization:'Bearer '+driveAccessToken,'Content-Type':'application/json'},body});
+  }else{
+    const form=new FormData();
+    form.append('metadata',new Blob([JSON.stringify({name:'maison_data.json',parents:['appDataFolder']})],{type:'application/json'}));
+    form.append('file',new Blob([body],{type:'application/json'}));
+    const cr=await driveFetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart',{method:'POST',headers:{Authorization:'Bearer '+driveAccessToken},body:form});
+    const created=await cr.json();
+    if(created.id)driveFileId=created.id;
+  }
+  localStorage.setItem(lwKey,String(at));
+}
+
+// ── PHOTO FILE SYNC (full-res photos live as individual files in appDataFolder) ──
+function referencedPhotoIds(){
+  const ids=[];
+  const push=p=>{if(p&&p.id)ids.push(p.id);};
+  const home=userData('home',{rooms:[]});
+  (home.rooms||[]).forEach(r=>{(r.photos||[]).forEach(push);((r.moodboard&&r.moodboard.tiles)||[]).forEach(push);});
+  const w=userData('wedding',{inspo:[]});(w.inspo||[]).forEach(push);
+  const h=userData('honeymoon',{rooms:[],inspo:[]});(h.inspo||[]).forEach(push);(h.rooms||[]).forEach(r=>(r.photos||[]).forEach(push));
+  const d=userData('dayout',{plans:[]});(d.plans||[]).forEach(pl=>(pl.photos||[]).forEach(push));
+  const rec=userData('recipes',{items:[]});rec.items.forEach(it=>{if(it.img&&it.id)ids.push(it.id);(it.photos||[]).forEach(push);});
+  ['wedding','home','honeymoon'].forEach(ctx=>{userData(`moodboards_${ctx}`,[]).forEach(b=>(b.tiles||[]).forEach(push));});
+  return ids;
+}
+function photoFileName(id){return 'mzphoto_'+id+'.jpg';}
+async function listRemotePhotos(){
+  const auth={headers:{Authorization:'Bearer '+driveAccessToken}};
+  const map={};let pageToken='';
+  do{
+    let url=`https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&q=${encodeURIComponent("name contains 'mzphoto_'")}&fields=nextPageToken,files(id,name)&pageSize=1000`;
+    if(pageToken)url+='&pageToken='+encodeURIComponent(pageToken);
+    const j=await(await driveFetch(url,auth)).json();
+    (j.files||[]).forEach(f=>{map[f.name]=f.id;});
+    pageToken=j.nextPageToken||'';
+  }while(pageToken);
+  return map;
+}
+async function uploadAppDataPhoto(id,blob){
+  const form=new FormData();
+  form.append('metadata',new Blob([JSON.stringify({name:photoFileName(id),parents:['appDataFolder']})],{type:'application/json'}));
+  form.append('file',blob,photoFileName(id));
+  await driveFetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart',{method:'POST',headers:{Authorization:'Bearer '+driveAccessToken},body:form});
+}
+let photoSyncRunning=false;
+async function syncPhotoFiles(){
+  if(!driveAccessToken||!currentUser||photoSyncRunning)return;
+  const ids=Array.from(new Set(referencedPhotoIds()));
+  if(!ids.length)return;
+  photoSyncRunning=true;
+  try{
+    const remote=await listRemotePhotos();
+    const auth={headers:{Authorization:'Bearer '+driveAccessToken}};
+    for(const id of ids){
+      const fn=photoFileName(id);
+      if(remote[fn]&&!(await idbGetPhoto(id))){
+        try{const blob=await(await driveFetch(`https://www.googleapis.com/drive/v3/files/${remote[fn]}?alt=media`,auth)).blob();await idbPutPhoto(id,blob);}catch(e){}
+      }
+    }
+    for(const id of ids){
+      if(!remote[photoFileName(id)]){
+        const blob=await idbGetPhoto(id);
+        if(blob){try{await uploadAppDataPhoto(id,blob);}catch(e){}}
+      }
+    }
+  }finally{photoSyncRunning=false;}
+}
+async function ensurePhotoLocal(id){
+  if(!driveAccessToken)return null;
+  try{
+    const auth={headers:{Authorization:'Bearer '+driveAccessToken}};
+    const url=`https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&q=${encodeURIComponent("name='"+photoFileName(id)+"'")}&fields=files(id)`;
+    const f=((await(await driveFetch(url,auth)).json()).files||[])[0];
+    if(!f)return null;
+    const blob=await(await driveFetch(`https://www.googleapis.com/drive/v3/files/${f.id}?alt=media`,auth)).blob();
+    await idbPutPhoto(id,blob);return blob;
+  }catch(e){return null;}
+}
+async function deleteRemotePhoto(id){
+  if(!driveAccessToken)return;
+  try{
+    const auth={headers:{Authorization:'Bearer '+driveAccessToken}};
+    const url=`https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&q=${encodeURIComponent("name='"+photoFileName(id)+"'")}&fields=files(id)`;
+    const f=((await(await driveFetch(url,auth)).json()).files||[])[0];
+    if(f)await driveFetch(`https://www.googleapis.com/drive/v3/files/${f.id}`,{method:'DELETE',headers:{Authorization:'Bearer '+driveAccessToken}});
+  }catch(e){}
+}
+function syncPhotosSoon(){if(driveAccessToken)syncPhotoFiles().catch(()=>{});}
+
+// ── PHOTO MIGRATION (converts old inline base64 photos to thumb + IndexedDB) ──
+async function migratePhotoArray(arr){
+  let changed=false;
+  for(const p of arr){
+    if(p&&p.img&&p.img.length>60000){
+      try{
+        const blob=dataURLtoBlob(p.img);
+        if(!(await idbGetPhoto(p.id)))await idbPutPhoto(p.id,blob);
+        const im=await loadImageFromDataURL(p.img);
+        const th=scaleDims(im.naturalWidth,im.naturalHeight,900);
+        p.img=canvasDataURL(drawToCanvas(im,th.w,th.h),.72);
+        changed=true;
+      }catch(e){}
+    }
+  }
+  return changed;
+}
+async function migrateInlinePhotos(){
+  let changed=false;
+  const home=userData('home',{rooms:[]});
+  for(const r of(home.rooms||[])){
+    if(await migratePhotoArray(r.photos||[]))changed=true;
+    if(r.moodboard&&await migratePhotoArray(r.moodboard.tiles||[]))changed=true;
+  }
+  if(changed)saveData('home',home);
+  const w=userData('wedding',{inspo:[]});
+  if(await migratePhotoArray(w.inspo||[])){saveData('wedding',w);changed=true;}
+  const h=userData('honeymoon',{rooms:[],inspo:[]});
+  let hChanged=await migratePhotoArray(h.inspo||[]);
+  for(const r of(h.rooms||[]))if(await migratePhotoArray(r.photos||[]))hChanged=true;
+  if(hChanged){saveData('honeymoon',h);changed=true;}
+  const d=userData('dayout',{plans:[]});
+  let dChanged=false;
+  for(const pl of(d.plans||[]))if(await migratePhotoArray(pl.photos||[]))dChanged=true;
+  if(dChanged){saveData('dayout',d);changed=true;}
+  const rec=userData('recipes',{items:[]});
+  let recChanged=false;
+  for(const it of rec.items){
+    if(it.img&&it.img.length>60000){
+      try{
+        const blob=dataURLtoBlob(it.img);
+        if(!(await idbGetPhoto(it.id)))await idbPutPhoto(it.id,blob);
+        const im=await loadImageFromDataURL(it.img);
+        const th=scaleDims(im.naturalWidth,im.naturalHeight,900);
+        it.img=canvasDataURL(drawToCanvas(im,th.w,th.h),.72);
+        recChanged=true;
+      }catch(e){}
+    }
+    if(await migratePhotoArray(it.photos||[]))recChanged=true;
+  }
+  if(recChanged){saveData('recipes',rec);changed=true;}
+  for(const ctx of['wedding','home','honeymoon']){
+    const boards=userData(`moodboards_${ctx}`,[]);
+    let bChanged=false;
+    for(const b of boards)if(await migratePhotoArray(b.tiles||[]))bChanged=true;
+    if(bChanged){saveData(`moodboards_${ctx}`,boards);changed=true;}
+  }
+  if(changed)syncPhotosSoon();
+  return changed;
+}
+function bootStorageAndMigration(){
+  if(navigator.storage&&navigator.storage.persist)navigator.storage.persist().catch(()=>{});
+  migrateInlinePhotos().then(changed=>{if(changed)showSection(currentSection);}).catch(()=>{});
+}
+
+// ── GOOGLE DRIVE BACKUP (visible folder, separate from the invisible sync above) ──
+const BACKUP_DRIVE_SCOPE='https://www.googleapis.com/auth/drive';
+const BACKUP_FILENAME='maison-backup.json';
+function getBkToken(){try{const t=JSON.parse(localStorage.getItem('maison_bkdrive_tok')||'null');if(t&&t.exp>Date.now())return t.tok;}catch(e){}return null;}
+function hasBkToken(){return !!getBkToken();}
+function bkTokenInvalid(){localStorage.removeItem('maison_bkdrive_tok');}
+function bkDriveAuthRedirect(interactive){
+  const p=new URLSearchParams({client_id:DRIVE_CLIENT_ID,redirect_uri:location.origin+location.pathname,response_type:'token',scope:BACKUP_DRIVE_SCOPE,state:'maison_bkdrive',include_granted_scopes:'true'});
+  if(currentUserEmail)p.set('login_hint',currentUserEmail);
+  p.set('prompt',interactive?'consent':'none');
+  location.href='https://accounts.google.com/o/oauth2/v2/auth?'+p.toString();
+}
+function checkBkDriveRedirect(){
+  if(!location.hash)return;
+  const h=new URLSearchParams(location.hash.slice(1));
+  if(h.get('state')!=='maison_bkdrive')return;
+  const err=h.get('error');
+  if(err){sessionStorage.setItem('maison_bkdrive_err',err);}
+  else if(h.get('access_token')){
+    const exp=Date.now()+(parseInt(h.get('expires_in')||'3600',10)-60)*1000;
+    localStorage.setItem('maison_bkdrive_tok',JSON.stringify({tok:h.get('access_token'),exp}));
+    sessionStorage.removeItem('maison_bkdrive_err');sessionStorage.removeItem('maison_bkdrive_tried');
+      wakeLock=await navigator.wakeLock.request('screen');
+      wakeLock.addEventListener('release',()=>{wakeLock=null;});
+      cookModeOn=true;
+    }catch(e){
+      cookModeOn=false;
+      alert('Could not keep the screen awake: '+(e&&e.message?e.message:e));
+    }
+  }else{
+    cookModeOn=false;
+    if(wakeLock){wakeLock.release().catch(()=>{});wakeLock=null;}
+  }
+  viewRecipe(id,servings);
+}
+document.addEventListener('visibilitychange',async()=>{
+  if(cookModeOn&&document.visibilityState==='visible'&&!wakeLock&&'wakeLock' in navigator){
+    try{wakeLock=await navigator.wakeLock.request('screen');}catch(e){}
+  }
+});
+
+// ── SIDE PANEL ──
+function openSidePanel(){renderSidePanel();document.getElementById('side-panel').classList.add('open');document.getElementById('panel-overlay').classList.add('open');document.body.style.overflow='hidden';}
+function closeSidePanel(){document.getElementById('side-panel').classList.remove('open');document.getElementById('panel-overlay').classList.remove('open');document.body.style.overflow='';}
+function setPanelFilter(f){
+  panelFilter=f;
+  document.querySelectorAll('.panel-filter').forEach(b=>{
+    const t=b.textContent.trim().toLowerCase();
+    const match=(f==='all'&&t==='all')||(f==='liked'&&t.includes('liked'))||(f==='archived'&&t==='archived')||(f==='recipes'&&t==='recipes')||(f==='dayout'&&t==='days out')||(f===t);
+    b.classList.toggle('active',match);
+  });
+  renderSidePanel();
+}
+function getAllPhotos(archivedOnly=false){
+  const all=[];
+  const home=userData('home',{rooms:[]});
+  home.rooms.forEach(r=>(r.photos||[]).filter(p=>archivedOnly?p.archived===true:!p.archived).forEach(p=>all.push({photo:p,type:'home_room',contextId:r.id,label:r.name,sectionKey:'home'})));
+  const w=userData('wedding',{inspo:[]});
+  (w.inspo||[]).filter(p=>archivedOnly?p.archived===true:!p.archived).forEach(p=>all.push({photo:p,type:'wedding',contextId:'wedding',label:'Wedding',sectionKey:'wedding'}));
+  const h=userData('honeymoon',{rooms:[],inspo:[]});
+  (h.inspo||[]).filter(p=>archivedOnly?p.archived===true:!p.archived).forEach(p=>all.push({photo:p,type:'honeymoon_inspo',contextId:'honeymoon',label:'Honeymoon',sectionKey:'honeymoon'}));
+  h.rooms.forEach(r=>(r.photos||[]).filter(p=>archivedOnly?p.archived===true:!p.archived).forEach(p=>all.push({photo:p,type:'honeymoon_room',contextId:r.id,label:r.name,sectionKey:'honeymoon'})));
+  const d=userData('dayout',{plans:[]});
+  d.plans.forEach(pl=>(pl.photos||[]).filter(p=>archivedOnly?p.archived===true:!p.archived).forEach(p=>all.push({photo:p,type:'dayout_plan',contextId:pl.id,label:pl.name,sectionKey:'dayout'})));
+  const rec=userData('recipes',{items:[]});
+  rec.items.forEach(item=>(item.photos||[]).filter(p=>archivedOnly?p.archived===true:!p.archived).forEach(p=>all.push({photo:p,type:'recipe_photo',contextId:item.id,label:item.title||'Recipe',sectionKey:'recipes'})));
+  return all;
+}
+function renderSidePanel(){
+  if(panelMode==='links'){renderSidePanelLinks();return;}
+  const isArchived=panelFilter==='archived';
+  let all=getAllPhotos(isArchived);
+  if(panelFilter==='liked')all=all.filter(e=>e.photo.liked);
+  else if(panelFilter==='home')all=all.filter(e=>e.sectionKey==='home');
+  else if(panelFilter==='wedding')all=all.filter(e=>e.sectionKey==='wedding');
+  else if(panelFilter==='honeymoon')all=all.filter(e=>e.sectionKey==='honeymoon');
+  else if(panelFilter==='dayout')all=all.filter(e=>e.sectionKey==='dayout');
+  else if(panelFilter==='recipes')all=all.filter(e=>e.sectionKey==='recipes');
+  const body=document.getElementById('panel-body');
+  if(!all.length){body.innerHTML=`<div class="panel-empty">${isArchived?'No archived photos.':'No photos yet.'}</div>`;return;}
+  if(isArchived){
+    const groups={};all.forEach(e=>{if(!groups[e.label])groups[e.label]=[];groups[e.label].push(e);});
+    body.innerHTML=Object.entries(groups).map(([l,items])=>`<div class="panel-section-label">${l}</div><div class="panel-grid">${items.map(e=>panelPhotoCard(e,true)).join('')}</div>`).join('');return;
+  }
+  const liked=all.filter(e=>e.photo.liked),rest=all.filter(e=>!e.photo.liked);
+  let html='';
+  if(liked.length&&panelFilter!=='liked')html+=`<div class="panel-pinned-label"><span>♥</span> Favourites</div><div class="panel-grid">${liked.map(e=>panelPhotoCard(e)).join('')}</div>`;
+  if(rest.length){
+    if(liked.length&&panelFilter!=='liked')html+=`<div class="panel-section-label" style="margin-top:18px">All Photos</div>`;
+    const groups={};rest.forEach(e=>{if(!groups[e.label])groups[e.label]=[];groups[e.label].push(e);});
+    Object.entries(groups).forEach(([l,items])=>{
+      if(['all','liked'].includes(panelFilter))html+=`<div class="panel-section-label">${l}</div>`;
+      html+=`<div class="panel-grid">${items.map(e=>panelPhotoCard(e)).join('')}</div>`;
+    });
+  }
+  if(panelFilter==='liked'&&liked.length){const groups={};liked.forEach(e=>{if(!groups[e.label])groups[e.label]=[];groups[e.label].push(e);});html=Object.entries(groups).map(([l,items])=>`<div class="panel-section-label">${l}</div><div class="panel-grid">${items.map(e=>panelPhotoCard(e)).join('')}</div>`).join('');}
+  body.innerHTML=html;
+}
+function panelPhotoCard(e,isArchived=false){
+  const p=e.photo;
+  if(isArchived)return`<div class="panel-photo"><img src="${p.img}" loading="lazy"/><div class="panel-photo-dest" style="transform:none">${e.label}</div><div class="panel-photo-arch-actions"><button class="arch-btn" style="background:rgba(42,95,63,.85)" onclick="restorePhoto('${p.id}','${e.type}','${e.contextId}')">↩ Restore</button><button class="arch-btn" style="background:rgba(168,32,32,.85)" onclick="deleteFromPanel('${p.id}','${e.type}','${e.contextId}')">✕ Delete</button></div></div>`;
+  return`<div class="panel-photo"><img src="${p.img}" loading="lazy" onclick="navigateToPhoto('${e.type}','${e.contextId}','${e.sectionKey}')"/>${p.liked?'<div class="panel-photo-liked"></div>':''}<button class="panel-photo-like${p.liked?' on':''}" onclick="panelToggleLike('${p.id}','${e.type}','${e.contextId}')">♥</button><button class="panel-photo-move" onclick="openAssignPhoto('${p.id}','${e.type}','${e.contextId}')">↗</button><div class="panel-photo-dest">${e.label}</div></div>`;
+}
+function panelToggleLike(photoId,type,contextId){const arr=getPhotosArray(type,contextId);const p=arr.find(p=>p.id===photoId);if(p){p.liked=!p.liked;savePhotosArray(type,contextId,arr);}renderSidePanel();updatePanelBadge();showSection(currentSection);}
+function restorePhoto(photoId,type,contextId){const arr=getPhotosArray(type,contextId);const p=arr.find(p=>p.id===photoId);if(p){p.archived=false;savePhotosArray(type,contextId,arr);}renderSidePanel();updatePanelBadge();showSection(currentSection);}
+function deleteFromPanel(photoId,type,contextId){if(!confirm('Permanently delete?'))return;savePhotosArray(type,contextId,getPhotosArray(type,contextId).filter(p=>p.id!==photoId));idbDeletePhoto(photoId).catch(()=>{});deleteRemotePhoto(photoId).catch(()=>{});renderSidePanel();updatePanelBadge();}
+function openAssignPhoto(photoId,fromType,fromContextId){
+  const home=userData('home',{rooms:[]});const h=userData('honeymoon',{rooms:[]});const d=userData('dayout',{plans:[]});
+  const dests=[
+    ...home.rooms.map(r=>({label:`${r.name} (Home)`,type:'home_room',contextId:r.id})),
+    {label:'Wedding Inspiration',type:'wedding',contextId:'wedding'},
+    {label:'Honeymoon Inspiration',type:'honeymoon_inspo',contextId:'honeymoon'},
+    ...h.rooms.map(r=>({label:`${r.name} (Honeymoon)`,type:'honeymoon_room',contextId:r.id})),
+    ...d.plans.map(pl=>({label:`${pl.name} (Day Out)`,type:'dayout_plan',contextId:pl.id}))
+  ].filter(dest=>!(dest.type===fromType&&dest.contextId===fromContextId));
+  if(!dests.length){alert('No other destinations available.');return;}
+  openModal(`<div class="modal-head"><div class="modal-title">Move Photo To</div><button class="modal-close" onclick="closeModal()">×</button></div><div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">${dests.map(dest=>`<button class="btn-ghost" style="text-align:left" onclick="doMovePhoto('${photoId}','${fromType}','${fromContextId}','${dest.type}','${dest.contextId}')">${dest.label}</button>`).join('')}</div>`);
+}
+function doMovePhoto(photoId,fromType,fromContextId,toType,toContextId){
+  const fromArr=getPhotosArray(fromType,fromContextId);const photo=fromArr.find(p=>p.id===photoId);if(!photo){closeModal();return;}
+  savePhotosArray(fromType,fromContextId,fromArr.filter(p=>p.id!==photoId));
+  const toArr=getPhotosArray(toType,toContextId);toArr.push(photo);savePhotosArray(toType,toContextId,toArr);
+  closeModal();renderSidePanel();showSection(currentSection);updatePanelBadge();
+}
+function navigateToPhoto(type,contextId,sectionKey){
+  closeSidePanel();
+  if(sectionKey==='home'){activeRoomId=contextId;homeView='rooms';activeRoomTab='photos';showSection('home');}
+  else if(sectionKey==='wedding'){weddingTab='inspo';showSection('wedding');}
+  else if(sectionKey==='honeymoon'){if(type==='honeymoon_room')activeHoneymoonRoomId=contextId;honeymoonTab=type==='honeymoon_room'?'rooms':'inspo';showSection('honeymoon');}
+  else if(sectionKey==='dayout'){activeDayOutId=contextId;showSection('dayout');}
+  else if(sectionKey==='recipes'){closeSidePanel();showSection('recipes');}
+}
+function updatePanelBadge(){
+  if(!currentUser)return;const liked=getAllPhotos(false).filter(e=>e.photo.liked).length;
+  const badge=document.getElementById('panel-badge');if(badge){badge.textContent=liked;badge.classList.toggle('show',liked>0);}
+}
+
+ri=r.items.find(i=>i.id===recId);if(ri){const p2={id:uid(),img:capturedDataURL,note,date:Date.now(),liked:false,archived:false};ri.photos=ri.photos||[];ri.photos.push(p2);saveData('recipes',r);newId=p2.id;}}
+  if(blob&&newId)await idbPutPhoto(newId,blob);
+  capturedDataURL=null;capturedFullBlob=null;closeModal();showSection(currentSection);updatePanelBadge();
+  syncPhotosSoon();
+}
+
+// ── QUICK NOTES ──
+function quickNotesBtn(section){
+  const hasNotes=!!(userData(`notes_${section}`,''));
+  return`<button class="notes-btn${hasNotes?' has-notes':''}" onclick="openQuickNotes('${section}')">📝 Notes</button>`;
+}
+function openQuickNotes(section){
+  const notes=userData(`notes_${section}`,'');
+  const label={home:'Home Notes',wedding:'Wedding Notes',honeymoon:'Honeymoon Notes',recipes:'Recipe Notes',music:'Music Notes'}[section]||'Notes';
+  openModal(`<div class="modal-head"><div class="modal-title">${label}</div><button class="modal-close" onclick="closeModal()">×</button></div><textarea id="qnotes-text" class="field-input" rows="10" placeholder="Jot anything down…" style="min-height:200px">${notes}</textarea><div class="modal-row" style="margin-top:8px"><button class="btn-solid sm" onclick="saveQuickNotes('${section}')">Save Notes</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);
+  setTimeout(()=>{const el=document.getElementById('qnotes-text');if(el){el.selectionStart=el.selectionEnd=el.value.length;el.focus();}},50);
+}
+function saveQuickNotes(section){saveData(`notes_${section}`,document.getElementById('qnotes-text').value);closeModal();showSection(currentSection);}
+
+// ── DRAG ROOMS ──
+function dragRoomStart(e,idx){dragRoomIdx=idx;e.dataTransfer.effectAllowed='move';setTimeout(()=>e.target.style.opacity='.45',0);}
+function dragRoomOver(e,idx){e.preventDefault();document.querySelectorAll('.room-tab[draggable]').forEach(t=>t.classList.remove('drag-over'));if(idx!==dragRoomIdx)e.currentTarget.classList.add('drag-over');}
+function dragRoomLeave(e){e.currentTarget.classList.remove('drag-over');}
+function dropRoom(e,idx,section='home'){
+  e.preventDefault();if(dragRoomIdx===null||dragRoomIdx===idx)return;
+  if(section==='home'){const home=userData('home',{rooms:[]});const[m]=home.rooms.splice(dragRoomIdx,1);home.rooms.splice(idx,0,m);saveData('home',home);}
+  else if(section==='dayout'){const d=userData('dayout',{plans:[]});const[m]=d.plans.splice(dragRoomIdx,1);d.plans.splice(idx,0,m);saveData('dayout',d);}
+  dragRoomIdx=null;document.querySelectorAll('.room-tab[draggable]').forEach(t=>{t.classList.remove('drag-over');t.style.opacity='1';});showSection(section);
+}
+function dragRoomEnd(e){e.target.style.opacity='1';document.querySelectorAll('.room-tab[draggable]').forEach(t=>t.classList.remove('drag-over'));dragRoomIdx=null;}
+
+// ── HOME ──
+let activeRoomId=null;
+function setHomeView(v){homeView=v;showSection('home');}
+function setRoomTab(t){activeRoomTab=t;showSection('home');}
+function setActiveRoom(id){if(id!==activeRoomId)activeRoomTab='overview';activeRoomId=id;showSection('home');}
+
+function renderHome(main){
+  const home=userData('home',{rooms:[]});
+  const viewToggle=`<div class="home-view-tabs"><button class="home-view-tab${homeView==='rooms'?' active':''}" onclick="setHomeView('rooms')">Rooms</button><button class="home-view-tab${homeView==='floorplan'?' active':''}" onclick="setHomeView('floorplan')">Floor Plan</button></div>`;
+  if(homeView==='floorplan'){main.innerHTML=`<div class="section-rule"><div><div class="section-title">Our Home</div><div class="section-sub">Visualise your space.</div></div>${quickNotesBtn('home')}</div>${viewToggle}${renderFloorPlanView()}`;return;}
+  if(!home.rooms.length){main.innerHTML=`<div class="section-rule"><div><div class="section-title">Our Home</div><div class="section-sub">Add rooms to start planning.</div></div><div class="flex-center">${quickNotesBtn('home')}<button class="btn-solid sm" onclick="openAddRoom()">+ Add Room</button></div></div>${viewToggle}<div class="empty"><div class="empty-icon">🏠</div>No rooms yet.</div>`;return;}
+  if(!activeRoomId||!home.rooms.find(r=>r.id===activeRoomId))activeRoomId=home.rooms[0].id;
+  const room=home.rooms.find(r=>r.id===activeRoomId);
+  const tabs=home.rooms.map((r,i)=>`<button class="room-tab${r.id===activeRoomId?' active':''}" draggable="true" ondragstart="dragRoomStart(event,${i})" ondragover="dragRoomOver(event,${i})" ondragleave="dragRoomLeave(event)" ondrop="dropRoom(event,${i},'home')" ondragend="dragRoomEnd(event)" onclick="setActiveRoom('${r.id}')"><span class="drag-handle">⋮⋮</span>${r.name}</button>`).join('');
+  const subTabs=['overview','photos','moodboard'].map(t=>`<button class="room-sub-tab${activeRoomTab===t?' active':''}" onclick="setRoomTab('${t}')">${t==='overview'?'Overview':t==='photos'?'Photos':'Mood Board'}</button>`).join('');
+  let content='';
+  if(activeRoomTab==='overview'){
+    const photos=room.photos||[],items=room.items||[];
+    const budget=room.budget||0,spent=items.reduce((s,it)=>s+(it.price||0),0)+photos.filter(p=>!p.archived).reduce((s,p)=>s+(p.price||0),0);
+    const pct=budget>0?Math.min(spent/budget*100,100):0,over=budget>0&&spent>budget;
+    content=`<div class="budget-block"><div class="budget-row"><div><div class="budget-label">${room.name} Budget</div><div class="budget-amount${over?' over':''}">£${spent.toLocaleString(undefined,{minimumFractionDigits:2})} <span style="font-size:14px;color:var(--muted)">/ £${(budget||0).toLocaleString()}</span></div></div><button class="btn-ghost" onclick="editRoomBudget('${room.id}')">Edit</button></div><div class="bar-track"><div class="bar-fill${over?' over':''}" style="width:${pct}%"></div></div><div class="bar-note${over?' over':''}">${over?'Over budget':'Remaining: £'+(budget-spent).toLocaleString(undefined,{minimumFractionDigits:2})}</div></div>
+      <div class="flex-between mb14"><div style="font-family:'Cormorant Garamond',serif;font-size:16px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)">Furniture &amp; Items</div><div class="flex-center"><button class="btn-ghost" onclick="openAddItem('${room.id}')">+ Add Item</button><button class="btn-ghost danger" onclick="deleteRoom('${room.id}')">Delete Room</button></div></div>
+      ${renderItemList(items,room.id)}`;
+  } else if(activeRoomTab==='photos'){
+    content=renderPhotoGrid(room.photos||[],'home_room',room.id);
+  } else {
+    content=renderRoomMoodboard(room);
+  }
+  main.innerHTML=`<div class="section-rule"><div><div class="section-title">Our Home</div><div class="section-sub">Track every room, budget &amp; piece of furniture.</div></div><div class="flex-center">${quickNotesBtn('home')}<button class="btn-solid sm" onclick="openAddRoom()">+ Room</button></div></div>${viewToggle}<div class="room-tabs-row">${tabs}</div><div class="room-sub-tabs">${subTabs}</div>${content}`;
+}
+
+function renderItemList(items,roomId){
+  if(!items.length)return`<div class="empty" style="padding:20px 0;font-size:13px">No items yet.</div>`;
+  return items.map(it=>`<div class="item-row">${it.img?`<img class="item-thumb" src="${it.img}"/>`:`<div class="item-thumb-ph">🛋</div>`}<div class="item-body"><div class="item-name">${it.name||'Item'}</div>${it.store?`<div class="item-store">${it.store}</div>`:''}${it.link?`<a class="item-link" href="${it.link}" target="_blank" rel="noopener">${it.link}</a>`:''}</div>${it.price?`<div class="item-price">£${it.price.toLocaleString(undefined,{minimumFractionDigits:2})}</div>`:''}<button class="icon-btn" onclick="deleteItem('${roomId}','${it.id}')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg></button></div>`).join('');
+}
+
+// ── ROOM MOOD BOARD ──
+function renderRoomMoodboard(room){
+  const mb=room.moodboard||{colors:[],tiles:[],notes:''};
+  const swatches=mb.colors.length?mb.colors.map((c,i)=>`<div class="mb-swatch-wrap"><div class="mb-swatch" style="background:${c.hex}" title="${c.ral?'RAL '+c.ral:''}"></div><button class="mb-swatch-del" onclick="removeRoomColor('${room.id}',${i})">×</button><div class="mb-swatch-label">${c.ral?'RAL '+c.ral:c.name||''}</div></div>`).join(''):`<p style="font-size:13px;color:var(--muted);font-style:italic">No colours yet.</p>`;
+  const tiles=mb.tiles&&mb.tiles.length?mb.tiles.map((tile,ti)=>`<div style="position:relative;overflow:hidden;border:1px solid var(--bone);display:inline-block;vertical-align:top"><img src="${tile.img}" style="width:${tile.size==='sm'?120:tile.size==='lg'?250:180}px;height:${tile.size==='sm'?90:tile.size==='lg'?180:130}px;object-fit:cover;display:block"/><button onclick="removeRoomMoodTile('${room.id}',${ti})" style="position:absolute;top:3px;right:3px;background:rgba(168,32,32,.85);border:none;color:#fff;width:18px;height:18px;font-size:11px;cursor:pointer">×</button></div>`).join(''):`<p style="font-size:13px;color:var(--muted);font-style:italic">No images yet.</p>`;
+  return`<div style="margin-bottom:20px">
+    <div class="flex-between mb14"><div style="font-family:'Cormorant Garamond',serif;font-size:16px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)">Colour Palette</div><button class="btn-ghost" onclick="openAddColor('${room.id}')">+ Add Colour</button></div>
+    <div style="display:flex;flex-wrap:wrap;gap:12px;margin-bottom:20px">${swatches}</div>
+    <div class="flex-between mb14"><div style="font-family:'Cormorant Garamond',serif;font-size:16px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)">Inspiration Images</div><button class="btn-ghost" onclick="openAddRoomMoodTile('${room.id}')">+ Add Image</button></div>
+    <div style="display:flex;flex-wrap:wrap;gap:10px">${tiles}</div>
+    ${mb.notes?`<div style="margin-top:14px;font-size:13px;color:var(--muted);font-style:italic">${mb.notes}</div>`:''}
+  </div>`;
+}
+
+function openAddColor(roomId){
+  const dropperBtn=typeof EyeDropper!=='undefined'?`<button class="btn-ghost" style="margin-bottom:14px;width:100%" onclick="useDropper('${roomId}')">🎯 Pick Colour from Screen</button>`:`<p style="font-size:11px;color:var(--muted);margin-bottom:14px;font-style:italic">Screen colour picker available in Chrome/Edge.</p>`;
+  openModal(`<div class="modal-head"><div class="modal-title">Add Colour</div><button class="modal-close" onclick="closeModal()">×</button></div>
+    <label class="field-label">Colour Picker</label>
+    <input id="color-picker" type="color" value="#c9b89a" class="color-picker-input"/>
+    ${dropperBtn}
+    <label class="field-label">Or Enter RAL Number</label>
+    <div class="ral-row mb14">
+      <input id="ral-input" class="field-input" placeholder="e.g. 9010" style="margin-bottom:0" oninput="previewRal(this.value)"/>
+      <div id="ral-preview" class="ral-preview-box"></div>
+    </div>
+    <div id="ral-name" style="font-size:12px;color:var(--muted);margin-bottom:14px;font-style:italic;margin-top:-12px"></div>
+    <label class="field-label">Colour Name (optional)</label>
+    <input id="color-name" class="field-input" placeholder="e.g. Cornish Cream…"/>
+    <div class="modal-row">
+      <button class="btn-solid sm" onclick="saveColor('${roomId}')">Add Colour</button>
+      <button class="btn-ghost" onclick="closeModal()">Cancel</button>
+    </div>`);
+}
+
+function previewRal(val){
+  const clean=val.trim().replace(/^RAL\s*/i,'');
+  const hex=RAL[clean],name=RAL_NAMES[clean]||'';
+  const preview=document.getElementById('ral-preview'),nameEl=document.getElementById('ral-name');
+  if(preview)preview.style.background=hex||'transparent';
+  if(nameEl)nameEl.textContent=hex?`RAL ${clean} — ${name}`:clean.length>=4?'RAL number not found':'';
+}
+
+function saveColor(roomId){
+  const ralRaw=(document.getElementById('ral-input')?.value||'').trim().replace(/^RAL\s*/i,'');
+  const pickerVal=document.getElementById('color-picker')?.value||'#808080';
+  const nameVal=(document.getElementById('color-name')?.value||'').trim();
+  let hex,ral=null,name=nameVal;
+  if(ralRaw&&RAL[ralRaw]){hex=RAL[ralRaw];ral=ralRaw;if(!name)name=RAL_NAMES[ralRaw]||'';}
+  else hex=pickerVal;
+  const home=userData('home',{rooms:[]});const room=home.rooms.find(r=>r.id===roomId);if(!room)return;
+  room.moodboard=room.moodboard||{colors:[],tiles:[],notes:''};
+  room.moodboard.colors.push({id:uid(),hex,ral,name});
+  saveData('home',home);closeModal();showSection('home');
+}
+
+function removeRoomColor(roomId,idx){
+  const home=userData('home',{rooms:[]});const room=home.rooms.find(r=>r.id===roomId);
+  if(room&&room.moodboard){room.moodboard.colors.splice(idx,1);saveData('home',home);}showSection('home');
+}
+
+async function useDropper(roomId){
+  try{const dropper=new EyeDropper();const result=await dropper.open();const picker=document.getElementById('color-picker');if(picker)picker.value=result.sRGBHex;}catch(e){}
+}
+
+function openAddRoomMoodTile(roomId){
+  const fi=document.getElementById('rm-tile-input');
+  fi.onchange=e=>{
+    Array.from(e.target.files).forEach(file=>{const r=new FileReader();r.onload=async ev=>{
+      const id=uid();
+      let thumb=ev.target.result,blob=null;
+      try{const p=await processPhotoDataURL(ev.target.result);thumb=p.thumb;blob=p.blob;}catch(err){}
+      const home=userData('home',{rooms:[]});const room=home.rooms.find(r=>r.id===roomId);if(!room)return;room.moodboard=room.moodboard||{colors:[],tiles:[],notes:''};room.moodboard.tiles=room.moodboard.tiles||[];room.moodboard.tiles.push({id,img:thumb,size:'md'});saveData('home',home);
+      if(blob)await idbPutPhoto(id,blob);
+      syncPhotosSoon();showSection('home');
+    };r.readAsDataURL(file);});fi.value='';
+  };fi.click();
+}
+
+function removeRoomMoodTile(roomId,idx){
+  const home=userData('home',{rooms:[]});const room=home.rooms.find(r=>r.id===roomId);
+  if(room&&room.moodboard){
+    const removed=room.moodboard.tiles[idx];
+    room.moodboard.tiles.splice(idx,1);saveData('home',home);
+    if(removed){idbDeletePhoto(removed.id).catch(()=>{});deleteRemotePhoto(removed.id).catch(()=>{});}
+  }
+  showSection('home');
+}
+</div>${board.palette&&board.palette.length?`<div class="mood-palette">${board.palette.map(c=>`<div class="palette-swatch" style="background:${c}"></div>`).join('')}</div>`:''}<div class="mood-board${!board.tiles||!board.tiles.length?' empty-board':''}">${!board.tiles||!board.tiles.length?'<span style="color:var(--muted);font-style:italic;font-size:14px">Empty. Edit to add images.</span>':board.tiles.map(tile=>`<div class="mood-tile size-${tile.size||'md'}"><img src="${tile.img}" loading="lazy"/>${tile.note?`<div class="tile-note">${tile.note}</div>`:''}</div>`).join('')}</div>${board.notes?`<div style="font-size:13px;color:var(--muted);margin-top:10px;font-style:italic">${board.notes}</div>`:''}</div>`).join('')}`;
+}
+function openMoodBoard(){openModal(`<div class="modal-head"><div class="modal-title">Create Mood Board</div><button class="modal-close" onclick="closeModal()">×</button></div><p style="font-size:14px;color:var(--muted);margin-bottom:18px;font-style:italic">Which section?</p><div style="display:flex;flex-direction:column;gap:10px"><button class="btn-ghost" onclick="closeModal();createMoodBoard('wedding');setWeddingTab('moodboard');showSection('wedding')">Wedding</button><button class="btn-ghost" onclick="closeModal();createMoodBoard('home');showSection('home')">Our Home</button><button class="btn-ghost" onclick="closeModal();createMoodBoard('honeymoon');showSection('honeymoon')">Honeymoon</button></div>`);}
+function createMoodBoard(context){openModal(`<div class="modal-head"><div class="modal-title">New Mood Board</div><button class="modal-close" onclick="closeModal()">×</button></div><label class="field-label">Board Title</label><input id="mb-title" class="field-input" placeholder="e.g. Romantic Garden…"/><label class="field-label">Palette Colours (hex, comma separated)</label><input id="mb-palette" class="field-input" placeholder="#f7e9d7, #c9b89a"/><label class="field-label">Notes / Mood</label><textarea id="mb-notes" class="field-input" rows="3" placeholder="Describe the vibe…"></textarea><div class="modal-row"><button class="btn-solid sm" onclick="saveMoodBoard('${context}')">Create</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);}
+function saveMoodBoard(context){const title=document.getElementById('mb-title').value.trim()||'New Board';const palette=document.getElementById('mb-palette').value.split(',').map(s=>s.trim()).filter(s=>s.startsWith('#'));const notes=document.getElementById('mb-notes').value.trim();const boards=userData(`moodboards_${context}`,[]);boards.push({id:uid(),title,palette,notes,tiles:[]});saveData(`moodboards_${context}`,boards);closeModal();if(context==='wedding'){setWeddingTab('moodboard');showSection('wedding');}else showSection(currentSection);}
+function openEditBoard(context,boardIndex){const boards=userData(`moodboards_${context}`,[]);const board=boards[boardIndex];openModal(`<div class="modal-head"><div class="modal-title">Edit: ${board.title}</div><button class="modal-close" onclick="closeModal()">×</button></div><input type="file" id="mb-file" accept="image/*" multiple style="display:none"/><button class="btn-ghost mb14" onclick="pickMoodBoardImages(${boardIndex},'${context}')">+ Add Images</button><div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px">${(board.tiles||[]).map((tile,ti)=>`<div style="position:relative;width:80px;height:80px;overflow:hidden;border:1px solid var(--bone)"><img src="${tile.img}" style="width:100%;height:100%;object-fit:cover"/><button onclick="removeTile(${boardIndex},'${context}',${ti})" style="position:absolute;top:2px;right:2px;background:rgba(168,32,32,.85);border:none;color:#fff;width:18px;height:18px;font-size:11px;cursor:pointer">×</button></div>`).join('')}</div><label class="field-label">Title</label><input id="mb-edit-title" class="field-input" value="${board.title||''}"/><label class="field-label">Palette</label><input id="mb-edit-palette" class="field-input" value="${(board.palette||[]).join(', ')}"/><label class="field-label">Notes</label><textarea id="mb-edit-notes" class="field-input" rows="3">${board.notes||''}</textarea><div class="modal-row"><button class="btn-solid sm" onclick="updateMoodBoard('${context}',${boardIndex})">Save</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);}
+function pickMoodBoardImages(boardIndex,context){const fi=document.getElementById('mb-file');fi.onchange=e=>{Array.from(e.target.files).forEach(file=>{const r=new FileReader();r.onload=async ev=>{
+  const id=uid();
+  let thumb=ev.target.result,blob=null;
+  try{const p=await processPhotoDataURL(ev.target.result);thumb=p.thumb;blob=p.blob;}catch(err){}
+  const boards=userData(`moodboards_${context}`,[]);boards[boardIndex].tiles=boards[boardIndex].tiles||[];boards[boardIndex].tiles.push({id,img:thumb,note:'',size:'md'});saveData(`moodboards_${context}`,boards);
+  if(blob)await idbPutPhoto(id,blob);
+  syncPhotosSoon();openEditBoard(context,boardIndex);
+};r.readAsDataURL(file);});fi.value='';};fi.click();}
+function removeTile(boardIndex,context,tileIndex){
+  const boards=userData(`moodboards_${context}`,[]);const removed=boards[boardIndex].tiles[tileIndex];
+  boards[boardIndex].tiles.splice(tileIndex,1);saveData(`moodboards_${context}`,boards);
+  if(removed){idbDeletePhoto(removed.id).catch(()=>{});deleteRemotePhoto(removed.id).catch(()=>{});}
+  openEditBoard(context,boardIndex);
+}
+function updateMoodBoard(context,boardIndex){const boards=userData(`moodboards_${context}`,[]);const board=boards[boardIndex];board.title=document.getElementById('mb-edit-title').value.trim()||'Board';board.palette=document.getElementById('mb-edit-palette').value.split(',').map(s=>s.trim()).filter(s=>s.startsWith('#'));board.notes=document.getElementById('mb-edit-notes').value.trim();saveData(`moodboards_${context}`,boards);closeModal();if(context==='wedding'){setWeddingTab('moodboard');showSection('wedding');}else showSection(currentSection);}
+function deleteMoodBoard(context,boardIndex){
+  if(!confirm('Delete this mood board?'))return;
+  const boards=userData(`moodboards_${context}`,[]);
+  ((boards[boardIndex]&&boards[boardIndex].tiles)||[]).forEach(t=>{idbDeletePhoto(t.id).catch(()=>{});deleteRemotePhoto(t.id).catch(()=>{});});
+  boards.splice(boardIndex,1);saveData(`moodboards_${context}`,boards);
+  if(context==='wedding'){setWeddingTab('moodboard');showSection('wedding');}else showSection(currentSection);
+}
+  if(_wpTemp){existing.img=_wpTemp;_wpTemp=null;}
+  const sects=['dashboard','home','wedding','honeymoon','dayout','recipes','music'];
+  const allChk=document.getElementById('wp-all');
+  const pages={all:allChk?allChk.checked:false};
+  sects.forEach(s=>{const el=document.getElementById('wp-'+s);pages[s]=el?el.checked:false;});
+  existing.pages=pages;
+  saveData('wallpaper',existing);
+  closeModal();
+  applyWallpaper();
+}
+function removeWallpaper(){
+  _wpTemp=null;
+  saveData('wallpaper',null);
+  document.body.style.backgroundImage='';
+  document.getElementById('app').classList.remove('has-wallpaper');
+  closeModal();
+  openSettings();
+}
+
+// ── FEEDBACK ──
+function openFeedback(){
+  openModal(`<div class="modal-head"><div class="modal-title">Send Feedback</div><button class="modal-close" onclick="closeModal()">×</button></div>
+    <label class="field-label">Your Feedback</label>
+    <textarea id="feedback-text" class="field-input" rows="5" placeholder="Suggestions, bugs, ideas…"></textarea>
+    <div class="modal-row" style="margin-top:8px">
+      ${currentUserEmail?`<button class="btn-solid sm" onclick="emailFeedback()">📧 Email to Myself</button>`:''}
+      <button class="btn-ghost" onclick="copyFeedback()">📋 Copy to Clipboard</button>
+    </div>
+    <p style="font-size:11px;color:var(--muted);margin-top:12px;font-style:italic">${currentUserEmail?`Will open your email app addressed to ${currentUserEmail}.`:'Copies your feedback to the clipboard.'}</p>`);
+}
+function emailFeedback(){
+  const text=document.getElementById('feedback-text').value.trim();if(!text)return;
+  const subject=encodeURIComponent('MAISON App Feedback');
+  const body=encodeURIComponent(`MAISON Feedback\n${'─'.repeat(30)}\n\n${text}\n\nSent from MAISON — ${new Date().toLocaleDateString('en-GB')}`);
+  window.open(`mailto:${currentUserEmail}?subject=${subject}&body=${body}`);closeModal();
+}
+function copyFeedback(){
+  const text=document.getElementById('feedback-text').value.trim();if(!text)return;
+  const full=`MAISON Feedback\n${'─'.repeat(30)}\n\n${text}\n\nSent from MAISON — ${new Date().toLocaleDateString('en-GB')}`;
+  navigator.clipboard.writeText(full).then(()=>{alert('Copied to clipboard!');closeModal();}).catch(()=>{const el=document.createElement('textarea');el.value=full;document.body.appendChild(el);el.select();document.execCommand('copy');document.body.removeChild(el);alert('Copied!');closeModal();});
+}
+
+// ── SETTINGS ──
+function openSettings(){
+  openModal(`<div class="modal-head"><div class="modal-title">Settings</div><button class="modal-close" onclick="closeModal()">×</button></div>
+    <div style="margin-bottom:20px">
+      <div class="field-label" style="margin-bottom:8px">Account</div>
+      <div style="font-size:15px;margin-bottom:4px">${currentUserName}</div>
+      ${currentUserEmail?`<div style="font-size:12px;color:var(--muted);margin-bottom:16px;font-style:italic">${currentUserEmail}</div>`:''}
+      <button class="btn-ghost" onclick="signOut()">Sign Out</button>
+    </div>
+    <hr class="divider"/>
+    <div style="margin-bottom:20px">
+      <div class="field-label" style="margin-bottom:8px">Wallpaper</div>
+      <p style="font-size:13px;color:var(--muted);font-style:italic;margin-bottom:12px">${(()=>{const wp=userData('wallpaper',null);return wp&&wp.img?'Custom wallpaper set.':'Upload a photo as your background.';})()}</p>
+      <button class="btn-ghost" onclick="closeModal();openWallpaperSettings()">Customise Wallpaper</button>
+    </div>
+    <hr class="divider"/>
+    <div style="margin-bottom:20px">
+      <div class="field-label" style="margin-bottom:8px">Feedback</div>
+      <p style="font-size:13px;color:var(--muted);font-style:italic;margin-bottom:12px">Share ideas, report bugs, or suggest features.</p>
+      <button class="btn-ghost" onclick="closeModal();openFeedback()">✉️ Send Feedback</button>
+    </div>
+    <hr class="divider"/>
+    <div style="margin-bottom:20px">
+      <div class="field-label" style="margin-bottom:8px">Cloud Sync</div>
+      ${(()=>{
+        const err=lastSyncError||sessionStorage.getItem('maison_drive_err');
+        const errHtml=err?`<p style="font-size:12px;color:var(--red);font-style:italic;margin-top:10px">${err==='access_denied'?'Google blocked access — in Google Cloud Console open OAuth consent screen, then either add your email as a Test User or publish the app.':err}</p>`:'';
+        if(driveAccessToken)return`<p style="font-size:13px;color:var(--green);font-style:italic;margin-bottom:12px">✓ Sync is on${lastSyncAt?` — last synced ${timeAgo(lastSyncAt)}`:''}</p><div class="modal-row"><button class="btn-ghost" onclick="driveSyncNow(true)">Sync Now</button><button class="btn-ghost danger" onclick="disableDriveSync()">Turn Off</button></div>${errHtml}`;
+        if(localStorage.getItem(`maison_drive_on_${currentUser}`))return`<p style="font-size:13px;color:var(--muted);font-style:italic;margin-bottom:12px">Sync needs to reconnect to Google.</p><button class="btn-ghost" onclick="enableDriveSync()">Reconnect Sync</button>${errHtml}`;
+        return`<p style="font-size:13px;color:var(--muted);font-style:italic;margin-bottom:12px">Back up and sync your data across devices via Google Drive.</p><button class="btn-ghost" onclick="enableDriveSync()">Enable Cross-Device Sync</button>${errHtml}`;
+      })()}
+    </div>
+    <hr class="divider"/>
+    <div style="margin-bottom:20px">
+      <div class="field-label" style="margin-bottom:8px">Google Drive Backup</div>
+      ${(()=>{
+        const gd=userData('gdrive_backup',{});
+        const bkConnected=hasBkToken();
+        const bkErr=sessionStorage.getItem('maison_bkdrive_err')||lastBkBackupError;
+        if(!bkConnected)return`<p style="font-size:13px;color:var(--muted);font-style:italic;margin-bottom:12px">Keep a visible backup file in a Google Drive folder you choose — separate from the automatic sync above. Connecting asks for a broader Google Drive permission, so you may see an "unverified app" notice; that's expected for this project and safe to continue through.${gd.folderId?`<br/>Was backing up to <b>${escHtml(gd.folderName||'Google Drive')}</b> — reconnect to resume.`:''}${bkErr?`<br/><span style="color:var(--red)">${escHtml(bkErr)}</span>`:''}</p><div class="modal-row"><button class="btn-ghost" onclick="bkDriveAuthRedirect(true)">${gd.folderId?'Reconnect':'Connect'} Google Drive Backup</button>${gd.folderId?`<button class="btn-ghost danger" onclick="bkDisconnect()">Disconnect</button>`:''}</div>`;
+        if(!gd.folderId)return`<p style="font-size:13px;color:var(--muted);font-style:italic;margin-bottom:12px">Connected. Choose a folder in your Google Drive to back up into.</p><div class="modal-row"><button class="btn-ghost" onclick="openBkFolderPicker()">Choose Folder</button><button class="btn-ghost danger" onclick="bkDisconnect()">Disconnect</button></div>`;
+        return`<p style="font-size:13px;color:${gd.enabled?'var(--green)':'var(--muted)'};font-style:italic;margin-bottom:12px">Backing up to <b>${escHtml(gd.folderName||'Google Drive')}</b> ${gd.enabled?'— on ✓':'— paused'}${lastBkBackupAt?`<br/>Last backed up ${timeAgo(lastBkBackupAt)}`:''}${lastBkBackupError?`<br/><span style="color:var(--red)">${escHtml(lastBkBackupError)}</span>`:''}</p>
+          <div class="modal-row">
+            <button class="btn-ghost" onclick="bkBackupNow(true)">Back Up Now</button>
+            <button class="btn-ghost" onclick="toggleBkBackup()">${gd.enabled?'Pause':'Resume'}</button>
+            <button class="btn-ghost" onclick="openBkFolderPicker()">Change Folder</button>
+            <button class="btn-ghost danger" onclick="bkDisconnect()">Disconnect</button>
+          </div>`;
+      })()}
+    </div>
+    <hr class="divider"/>
+    <div>
+      <div class="field-label" style="margin-bottom:8px">Data</div>
+      <button class="btn-ghost danger" onclick="clearData()">Clear All My Data</button>
+    </div>`);
+}
+function signOut(){localStorage.removeItem('maison_sess');localStorage.removeItem('maison_drive_tok');localStorage.removeItem('maison_bkdrive_tok');currentUser=null;capturedDataURL=null;activeRoomId=null;driveAccessToken=null;driveFileId=null;if(driveSyncTimer){clearTimeout(driveSyncTimer);driveSyncTimer=null;}if(bkBackupTimer){clearTimeout(bkBackupTimer);bkBackupTimer=null;}document.getElementById('app').classList.remove('visible');document.getElementById('auth-screen').style.display='flex';google.accounts.id.disableAutoSelect();closeModal();}
+function clearData(){
+  if(!confirm('Permanently delete all your data?'))return;
+  const photoIds=referencedPhotoIds();
+  photoIds.forEach(id=>{idbDeletePhoto(id).catch(()=>{});deleteRemotePhoto(id).catch(()=>{});});
+  Object.keys(localStorage).filter(k=>k.startsWith(`maison_${currentUser}_`)).forEach(k=>localStorage.removeItem(k));
+  if(driveAccessToken&&driveFileId){fetch(`https://www.googleapis.com/drive/v3/files/${driveFileId}`,{method:'DELETE',headers:{Authorization:'Bearer '+driveAccessToken}});driveFileId=null;}
+  closeModal();alert('Data cleared.');showSection('dashboard');
+}
+</script>
+</body>
+</html>
