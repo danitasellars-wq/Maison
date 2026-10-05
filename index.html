@@ -9,15 +9,15 @@
 <title>MAISON</title>
 <link rel="manifest" href="manifest.json"/>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-:root{--ink:#1c140a;--cream:#f7f3ed;--bone:#ede4d5;--warm:#c9b89a;--muted:#8a7a68;--red:#a82020;--green:#2a5f3f;--gold:#b8962e;--teal:#2a7070;--plum:#6b4a5e;--section-pad:28px 20px 160px;}
-body{font-family:'EB Garamond',serif;background:var(--cream);color:var(--ink);min-height:100vh;overflow-x:hidden}
+:root{--serif:'Cormorant Garamond',Georgia,serif;--sans:'DM Sans',system-ui,-apple-system,'Segoe UI',sans-serif;--ink:#1c140a;--cream:#f7f3ed;--bone:#ede4d5;--warm:#c9b89a;--muted:#8a7a68;--red:#a82020;--green:#2a5f3f;--gold:#b8962e;--teal:#2a7070;--plum:#6b4a5e;--section-pad:28px 20px 160px;}
+body{font-family:var(--sans);background:var(--cream);color:var(--ink);min-height:100vh;overflow-x:hidden}
 ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:var(--warm);border-radius:2px}
-input,textarea,select{font-family:'EB Garamond',serif;font-size:16px;background:transparent}
-input::placeholder,textarea::placeholder{color:#bbb;font-style:italic}
-button{font-family:'Cormorant Garamond',serif;cursor:pointer;touch-action:manipulation}
+input,textarea,select{font-family:var(--sans);font-size:16px;background:transparent}
+input::placeholder,textarea::placeholder{color:#bbb;}
+button{font-family:var(--sans);cursor:pointer;touch-action:manipulation}
 a{color:var(--ink)}img{display:block;max-width:100%}select{cursor:pointer}
 body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");opacity:.35;}
 
@@ -25,15 +25,15 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;b
 #auth-screen{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;background:var(--cream);position:relative;overflow:hidden}
 #auth-screen::before,#auth-screen::after{content:'';position:absolute;left:0;right:0;height:4px;background:repeating-linear-gradient(90deg,var(--ink) 0,var(--ink) 35px,transparent 35px,transparent 70px)}
 #auth-screen::before{top:0}#auth-screen::after{bottom:0}
-.auth-deco{position:absolute;font-family:'Cormorant Garamond',serif;font-size:220px;font-weight:700;color:var(--bone);letter-spacing:-.04em;pointer-events:none;user-select:none;top:50%;left:50%;transform:translate(-50%,-50%);white-space:nowrap}
+.auth-deco{position:absolute;font-family:var(--sans);font-size:220px;font-weight:700;color:var(--bone);pointer-events:none;user-select:none;top:50%;left:50%;transform:translate(-50%,-50%);white-space:nowrap}
 .auth-box{max-width:380px;width:100%;position:relative;z-index:1}
 .masthead{text-align:center;margin-bottom:48px}
-.masthead-sub{font-size:10px;letter-spacing:.5em;text-transform:uppercase;color:var(--warm);font-family:'Cormorant Garamond',serif;margin-bottom:14px}
-.masthead-title{font-family:'Cormorant Garamond',serif;font-size:80px;font-weight:700;color:var(--ink);line-height:.85;letter-spacing:-.02em}
+.masthead-sub{font-size:12px;color:var(--warm);font-family:var(--sans);margin-bottom:14px}
+.masthead-title{font-family:var(--sans);font-size:80px;font-weight:700;color:var(--ink);line-height:.85;}
 .masthead-rule{width:48px;height:1px;background:var(--warm);margin:22px auto 12px}
-.masthead-tagline{font-size:11px;letter-spacing:.35em;text-transform:uppercase;color:var(--muted);font-family:'Cormorant Garamond',serif}
-.auth-note{text-align:center;font-size:12px;color:var(--muted);margin-top:18px;font-style:italic;line-height:1.6}
-.err-msg{color:var(--red);font-size:13px;margin-bottom:12px;font-style:italic}
+.masthead-tagline{font-size:12.5px;color:var(--muted);font-family:var(--sans)}
+.auth-note{text-align:center;font-size:12px;color:var(--muted);margin-top:18px;line-height:1.6}
+.err-msg{color:var(--red);font-size:13px;margin-bottom:12px;}
 
 /* SIDE PANEL */
 #panel-overlay{position:fixed;inset:0;background:rgba(28,20,10,.45);z-index:400;display:none;backdrop-filter:blur(4px)}
@@ -41,14 +41,14 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;b
 #side-panel{position:fixed;top:0;left:0;bottom:0;width:300px;max-width:90vw;background:var(--cream);z-index:401;transform:translateX(-100%);transition:transform .3s cubic-bezier(.4,0,.2,1);overflow-y:auto;display:flex;flex-direction:column;border-right:1px solid var(--bone)}
 #side-panel.open{transform:translateX(0)}
 .panel-head{padding:20px 18px 14px;border-bottom:3px solid var(--ink);display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:var(--cream);z-index:1}
-.panel-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700;letter-spacing:-.01em;text-transform:uppercase}
+.panel-title{font-family:var(--sans);font-size:22px;font-weight:700;}
 .panel-close{background:none;border:none;font-size:22px;color:var(--muted);font-family:serif}
 .panel-filter-row{display:flex;gap:5px;padding:10px 14px;border-bottom:1px solid var(--bone);flex-wrap:wrap}
-.panel-filter{background:none;border:1px solid rgba(28,20,10,.18);color:var(--muted);font-family:'Cormorant Garamond',serif;font-size:9px;letter-spacing:.12em;text-transform:uppercase;padding:3px 8px;transition:all .2s}
+.panel-filter{background:none;border:1px solid rgba(28,20,10,.18);color:var(--muted);font-family:var(--sans);font-size:12.5px;padding:3px 8px;transition:all .2s}
 .panel-filter.active{background:var(--ink);border-color:var(--ink);color:var(--cream)}
 .panel-filter.arch-filter.active{background:var(--muted);border-color:var(--muted)}
 .panel-body{padding:14px 18px 80px;flex:1}
-.panel-section-label{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);font-family:'Cormorant Garamond',serif;margin:16px 0 8px;font-weight:600}
+.panel-section-label{font-size:12.5px;color:var(--muted);font-family:var(--sans);margin:16px 0 8px;font-weight:600}
 .panel-section-label:first-child{margin-top:0}
 .panel-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:4px}
 .panel-photo{position:relative;overflow:hidden;border:1px solid var(--bone);background:var(--bone);aspect-ratio:1;cursor:pointer;transition:box-shadow .2s}
@@ -61,12 +61,12 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;b
 .panel-photo-like.on{color:var(--red)}
 .panel-photo-move{position:absolute;bottom:5px;right:5px;background:rgba(247,243,237,.9);border:none;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:12px;opacity:0;transition:opacity .2s;cursor:pointer;color:var(--ink)}
 .panel-photo:hover .panel-photo-move{opacity:1}
-.panel-photo-dest{position:absolute;bottom:0;left:0;right:0;background:rgba(28,20,10,.6);color:var(--cream);font-size:9px;letter-spacing:.1em;text-transform:uppercase;font-family:'Cormorant Garamond',serif;padding:4px 6px;transform:translateY(100%);transition:transform .2s}
+.panel-photo-dest{position:absolute;bottom:0;left:0;right:0;background:rgba(28,20,10,.6);color:var(--cream);font-size:12.5px;font-family:var(--sans);padding:4px 6px;transform:translateY(100%);transition:transform .2s}
 .panel-photo:hover .panel-photo-dest{transform:translateY(0)}
 .panel-photo-arch-actions{position:absolute;top:5px;right:5px;display:flex;flex-direction:column;gap:3px}
-.arch-btn{border:none;color:white;padding:3px 6px;font-size:10px;cursor:pointer;font-family:'Cormorant Garamond',serif}
-.panel-pinned-label{display:flex;align-items:center;gap:6px;font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--red);font-family:'Cormorant Garamond',serif;margin:0 0 8px;font-weight:600}
-.panel-empty{font-size:13px;color:var(--muted);font-style:italic;text-align:center;padding:32px 0}
+.arch-btn{border:none;color:white;padding:3px 6px;font-size:12px;cursor:pointer;font-family:var(--sans)}
+.panel-pinned-label{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--red);font-family:var(--sans);margin:0 0 8px;font-weight:600}
+.panel-empty{font-size:13px;color:var(--muted);text-align:center;padding:32px 0}
 
 
 /* APP */
@@ -77,17 +77,17 @@ header{position:sticky;top:0;z-index:200;background:rgba(247,243,237,.97);backdr
 .header-top{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;min-height:56px}
 .hdr-left{justify-self:start}.hdr-right{justify-self:end}
 .header-brand{text-align:center;cursor:pointer}
-.brand-name{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:700;letter-spacing:.05em;color:var(--ink);line-height:1}
+.brand-name{font-family:var(--sans);font-size:24px;font-weight:700;color:var(--ink);line-height:1}
 .header-btn{background:none;border:none;color:var(--muted);display:flex;align-items:center;justify-content:center;gap:5px;width:44px;height:44px;margin-right:-10px;transition:color .2s;position:relative}
 .header-btn:hover{color:var(--ink)}
-.hdr-back{display:none;align-items:center;gap:6px;white-space:nowrap;background:none;border:none;color:var(--ink);font-family:'Cormorant Garamond',serif;font-size:13px;letter-spacing:.12em;text-transform:uppercase;min-height:44px;padding:0 10px 0 0}
+.hdr-back{display:none;align-items:center;gap:6px;white-space:nowrap;background:none;border:none;color:var(--ink);font-family:var(--sans);font-size:13px;min-height:44px;padding:0 10px 0 0}
 .hdr-back.show{display:flex}
 .hdr-back .chev{font-size:24px;line-height:1;margin-top:-3px;color:var(--muted)}
 .panel-badge{position:absolute;top:-4px;right:-4px;background:var(--red);color:#fff;width:14px;height:14px;border-radius:50%;font-size:8px;display:none;align-items:center;justify-content:center;font-family:sans-serif}
 .panel-badge.show{display:flex}
 main{max-width:980px;margin:0 auto;padding:var(--section-pad);width:100%;flex:1}
 
-/* CAMERA DOCK — camera only on the home screen; All Photos / Camera / Mood Board inside each area */
+/* CAMERA DOCK — camera only on the home screen; All photos / Camera / Mood board inside each area */
 #camera-dock{position:fixed;bottom:0;left:0;right:0;z-index:150;background:linear-gradient(to top,rgba(247,243,237,.98) 60%,rgba(247,243,237,0));display:flex;justify-content:center;align-items:flex-end;padding:26px 0 calc(14px + env(safe-area-inset-bottom));gap:30px;pointer-events:none}
 #camera-dock .cam-wrap{pointer-events:auto}
 #camera-dock.solo .cam-btn{width:68px;height:68px}
@@ -97,7 +97,7 @@ main{max-width:980px;margin:0 auto;padding:var(--section-pad);width:100%;flex:1}
 .cam-btn:hover{transform:scale(1.07)}
 .cam-btn.mood{background:var(--gold)}
 .cam-btn.photos{background:var(--green)}
-.cam-label{font-size:8px;letter-spacing:.3em;text-transform:uppercase;color:var(--muted);font-family:'Cormorant Garamond',serif}
+.cam-label{font-size:8px;color:var(--muted);font-family:var(--sans)}
 #file-input,#file-input-camera,#fp-file-input,#rm-tile-input,#closet-cam,#closet-lib{display:none}
 
 /* MODAL */
@@ -105,7 +105,7 @@ main{max-width:980px;margin:0 auto;padding:var(--section-pad);width:100%;flex:1}
 .modal-box{background:var(--cream);max-width:540px;width:100%;max-height:92vh;overflow-y:auto;padding:32px 36px;animation:modalIn .22s ease;border-top:3px solid var(--ink)}
 @keyframes modalIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
 .modal-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:22px}
-.modal-title{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:700;letter-spacing:.08em;color:var(--ink);text-transform:uppercase}
+.modal-title{font-family:var(--sans);font-size:20px;font-weight:700;color:var(--ink);}
 .modal-close{background:none;border:none;color:var(--muted);font-size:24px;line-height:1;margin-left:16px;padding:0;font-family:serif}
 .modal-close:hover{color:var(--ink)}
 .modal-preview{width:100%;max-height:240px;object-fit:cover;margin-bottom:16px;border:1px solid var(--bone)}
@@ -113,11 +113,11 @@ main{max-width:980px;margin:0 auto;padding:var(--section-pad);width:100%;flex:1}
 
 /* SECTION */
 .section-rule{padding-top:4px;margin-bottom:22px;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:12px}
-.section-title{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:600;color:var(--ink);letter-spacing:0;line-height:1.1}
-.section-sub{font-family:'EB Garamond',serif;font-size:13px;color:var(--muted);font-style:italic;margin-top:4px}
+.section-title{font-family:var(--sans);font-size:30px;font-weight:600;color:var(--ink);letter-spacing:0;line-height:1.1}
+.section-sub{font-family:var(--sans);font-size:13px;color:var(--muted);margin-top:4px}
 /* Sub-menus wrap onto extra lines instead of scrolling sideways (phone-friendly). */
 .room-tabs-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
-.room-tab{background:none;border:1px solid var(--bone);padding:9px 15px;font-family:'Cormorant Garamond',serif;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);transition:all .2s}
+.room-tab{background:none;border:1px solid var(--bone);padding:9px 15px;font-family:var(--sans);font-size:12.5px;color:var(--muted);transition:all .2s}
 .room-tab.active{background:var(--ink);border-color:var(--ink);color:var(--cream)}
 .room-tab.drag-over{border-color:var(--gold)!important;color:var(--gold)!important}
 .room-tab[draggable="true"]{cursor:grab;user-select:none}
@@ -125,27 +125,27 @@ main{max-width:980px;margin:0 auto;padding:var(--section-pad);width:100%;flex:1}
 
 /* ROOM SUB-TABS (segmented) */
 .room-sub-tabs{display:flex;border:1px solid var(--bone);margin-bottom:18px}
-.room-sub-tab{flex:1;background:none;border:none;border-right:1px solid var(--bone);padding:10px 6px;font-family:'Cormorant Garamond',serif;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);transition:all .2s}
+.room-sub-tab{flex:1;background:none;border:none;border-right:1px solid var(--bone);padding:10px 6px;font-family:var(--sans);font-size:12.5px;color:var(--muted);transition:all .2s}
 .room-sub-tab:last-child{border-right:none}
 .room-sub-tab.active{background:var(--ink);color:var(--cream)}
 
 /* FLOOR PLAN */
 .fp-container{position:relative;width:100%;cursor:crosshair;user-select:none;border:1px solid var(--bone);overflow:hidden;background:var(--bone)}
 .fp-img{width:100%;display:block;pointer-events:none}
-.fp-marker{position:absolute;width:30px;height:30px;border-radius:50%;background:var(--ink);border:2px solid var(--cream);box-shadow:0 2px 10px rgba(28,20,10,.35);transform:translate(-50%,-50%);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--cream);font-family:'Cormorant Garamond',serif;font-size:12px;font-weight:700;transition:transform .2s,background .2s;z-index:5}
+.fp-marker{position:absolute;width:30px;height:30px;border-radius:50%;background:var(--ink);border:2px solid var(--cream);box-shadow:0 2px 10px rgba(28,20,10,.35);transform:translate(-50%,-50%);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--cream);font-family:var(--sans);font-size:12px;font-weight:700;transition:transform .2s,background .2s;z-index:5}
 .fp-marker:hover{transform:translate(-50%,-50%) scale(1.2);background:var(--gold)}
-.fp-label{position:absolute;top:calc(100% + 5px);left:50%;transform:translateX(-50%);background:var(--ink);color:var(--cream);font-size:9px;letter-spacing:.1em;text-transform:uppercase;font-family:'Cormorant Garamond',serif;padding:3px 8px;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .2s}
+.fp-label{position:absolute;top:calc(100% + 5px);left:50%;transform:translateX(-50%);background:var(--ink);color:var(--cream);font-size:12.5px;font-family:var(--sans);padding:3px 8px;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .2s}
 .fp-marker:hover .fp-label{opacity:1}
-.fp-del{position:absolute;top:-5px;right:-5px;width:15px;height:15px;border-radius:50%;background:var(--red);border:none;color:white;font-size:9px;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .2s;cursor:pointer}
+.fp-del{position:absolute;top:-5px;right:-5px;width:15px;height:15px;border-radius:50%;background:var(--red);border:none;color:white;font-size:12.5px;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .2s;cursor:pointer}
 .fp-marker:hover .fp-del{opacity:1}
 
 /* MOOD BOARD SWATCHES */
 .mb-swatch-wrap{position:relative;display:inline-flex;flex-direction:column;align-items:center}
 .mb-swatch{width:52px;height:52px;border:1px solid rgba(28,20,10,.1);cursor:pointer;transition:transform .2s}
 .mb-swatch:hover{transform:scale(1.06)}
-.mb-swatch-del{position:absolute;top:-5px;right:-5px;background:var(--red);border:none;color:white;width:15px;height:15px;border-radius:50%;font-size:9px;cursor:pointer;opacity:0;transition:opacity .2s;display:flex;align-items:center;justify-content:center}
+.mb-swatch-del{position:absolute;top:-5px;right:-5px;background:var(--red);border:none;color:white;width:15px;height:15px;border-radius:50%;font-size:12.5px;cursor:pointer;opacity:0;transition:opacity .2s;display:flex;align-items:center;justify-content:center}
 .mb-swatch-wrap:hover .mb-swatch-del{opacity:1}
-.mb-swatch-label{font-size:9px;color:var(--muted);text-align:center;margin-top:3px;font-family:'Cormorant Garamond',serif;max-width:52px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mb-swatch-label{font-size:12.5px;color:var(--muted);text-align:center;margin-top:3px;font-family:var(--sans);max-width:52px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .color-picker-input{width:100%;height:48px;border:1px solid var(--bone);cursor:pointer;margin-bottom:14px;padding:2px}
 .ral-row{display:flex;gap:8px;align-items:flex-start;margin-bottom:6px}
 .ral-preview-box{width:44px;height:44px;border:1px solid var(--bone);flex-shrink:0;transition:background .2s}
@@ -153,13 +153,13 @@ main{max-width:980px;margin:0 auto;padding:var(--section-pad);width:100%;flex:1}
 /* BUDGET */
 .budget-block{background:var(--bone);padding:18px 22px;margin-bottom:22px;border-left:3px solid var(--ink)}
 .budget-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px}
-.budget-label{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);font-family:'Cormorant Garamond',serif;font-weight:600}
-.budget-amount{font-family:'Cormorant Garamond',serif;font-size:28px;color:var(--ink)}
+.budget-label{font-size:12px;color:var(--muted);font-family:var(--sans);font-weight:600}
+.budget-amount{font-family:var(--sans);font-size:28px;color:var(--ink)}
 .budget-amount.over{color:var(--red)}
 .bar-track{height:2px;background:rgba(28,20,10,.12);margin-bottom:6px}
 .bar-fill{height:100%;background:var(--ink);transition:width .6s}
 .bar-fill.over{background:var(--red)}
-.bar-note{font-family:'Cormorant Garamond',serif;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.bar-note{font-family:var(--sans);font-size:12.5px;color:var(--muted)}
 .bar-note.over{color:var(--red)}
 
 /* PHOTO GRID */
@@ -177,9 +177,9 @@ main{max-width:980px;margin:0 auto;padding:var(--section-pad);width:100%;flex:1}
 .img-btn.arch{background:rgba(247,243,237,.88);color:var(--muted)}
 .img-btn.arch:hover{background:rgba(28,20,10,.7);color:var(--cream)}
 .photo-note{padding:10px 12px 12px;font-size:13px;color:var(--ink);line-height:1.55;background:var(--cream);border-top:1px solid var(--bone)}
-.photo-link{display:block;padding:6px 12px;font-size:11px;color:var(--muted);font-family:'Cormorant Garamond',serif;letter-spacing:.1em;background:var(--bone);border-top:1px solid rgba(28,20,10,.07);text-decoration:none;text-overflow:ellipsis;overflow:hidden;white-space:nowrap}
+.photo-link{display:block;padding:6px 12px;font-size:12.5px;color:var(--muted);font-family:var(--sans);background:var(--bone);border-top:1px solid rgba(28,20,10,.07);text-decoration:none;text-overflow:ellipsis;overflow:hidden;white-space:nowrap}
 .photo-link:hover{color:var(--ink)}
-.photo-price{padding:4px 12px 10px;font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--green)}
+.photo-price{padding:4px 12px 10px;font-family:var(--sans);font-size:16px;color:var(--green)}
 .liked-dot{position:absolute;top:7px;left:7px;width:8px;height:8px;border-radius:50%;background:var(--red);box-shadow:0 0 0 2px rgba(247,243,237,.8)}
 
 /* ITEMS */
@@ -188,13 +188,13 @@ main{max-width:980px;margin:0 auto;padding:var(--section-pad);width:100%;flex:1}
 .item-thumb-ph{width:52px;height:52px;background:var(--bone);flex-shrink:0;display:flex;align-items:center;justify-content:center;color:var(--warm);font-size:22px}
 .item-body{flex:1;min-width:0}
 .item-name{font-size:15px;color:var(--ink);margin-bottom:2px}
-.item-store{font-size:10px;color:var(--muted);font-family:'Cormorant Garamond',serif;letter-spacing:.12em;text-transform:uppercase;margin-bottom:4px}
-.item-link{font-size:11px;color:var(--muted);text-decoration:underline;word-break:break-all}
+.item-store{font-size:12px;color:var(--muted);font-family:var(--sans);margin-bottom:4px}
+.item-link{font-size:12.5px;color:var(--muted);text-decoration:underline;word-break:break-all}
 .item-link:hover{color:var(--ink)}
-.item-price{font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--ink);flex-shrink:0;white-space:nowrap}
+.item-price{font-family:var(--sans);font-size:18px;color:var(--ink);flex-shrink:0;white-space:nowrap}
 .icon-btn{background:none;border:none;color:var(--muted);padding:3px;display:flex;transition:color .2s}
 .icon-btn:hover{color:var(--red)}
-.cat-badge{font-size:9px;letter-spacing:.1em;text-transform:uppercase;font-family:'Cormorant Garamond',serif;padding:2px 7px;border:1px solid var(--bone);color:var(--muted);margin-bottom:3px;display:inline-block}
+.cat-badge{font-size:12.5px;font-family:var(--sans);padding:2px 7px;border:1px solid var(--bone);color:var(--muted);margin-bottom:3px;display:inline-block}
 
 /* MOOD BOARD */
 .mood-board{min-height:300px;background:var(--bone);padding:20px;display:flex;flex-wrap:wrap;gap:10px;margin-bottom:20px;border:2px dashed var(--warm)}
@@ -204,7 +204,7 @@ main{max-width:980px;margin:0 auto;padding:var(--section-pad);width:100%;flex:1}
 .mood-tile.size-sm{width:130px;height:130px}
 .mood-tile.size-md{width:200px;height:150px}
 .mood-tile.size-lg{width:280px;height:200px}
-.mood-tile .tile-note{position:absolute;bottom:0;left:0;right:0;background:rgba(28,20,10,.6);color:var(--cream);font-size:11px;padding:5px 7px;transform:translateY(100%);transition:transform .2s}
+.mood-tile .tile-note{position:absolute;bottom:0;left:0;right:0;background:rgba(28,20,10,.6);color:var(--cream);font-size:12.5px;padding:5px 7px;transform:translateY(100%);transition:transform .2s}
 .mood-tile:hover .tile-note{transform:translateY(0)}
 .mood-palette{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
 .palette-swatch{width:32px;height:32px;border:2px solid transparent;transition:border-color .2s}
@@ -215,33 +215,33 @@ main{max-width:980px;margin:0 auto;padding:var(--section-pad);width:100%;flex:1}
 .recipe-card{break-inside:avoid;margin-bottom:14px;background:var(--cream);border:1px solid var(--bone);overflow:hidden}
 .recipe-img{width:100%;max-height:200px;object-fit:cover;display:block;cursor:pointer}
 .recipe-body{padding:14px 16px 16px}
-.recipe-tag{display:inline-block;font-size:9px;letter-spacing:.18em;text-transform:uppercase;border:1px solid var(--bone);padding:2px 8px;margin-right:5px;margin-bottom:8px;color:var(--muted);font-family:'Cormorant Garamond',serif}
-.recipe-title{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600;color:var(--ink);margin-bottom:6px}
+.recipe-tag{display:inline-block;font-size:12.5px;border:1px solid var(--bone);padding:2px 8px;margin-right:5px;margin-bottom:8px;color:var(--muted);font-family:var(--sans)}
+.recipe-title{font-family:var(--sans);font-size:18px;font-weight:600;color:var(--ink);margin-bottom:6px}
 .recipe-text{font-size:13px;color:var(--muted);line-height:1.6;white-space:pre-wrap}
-.recipe-section-label{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);font-family:'Cormorant Garamond',serif;font-weight:600;margin-bottom:10px}
+.recipe-section-label{font-size:12px;color:var(--muted);font-family:var(--sans);font-weight:600;margin-bottom:10px}
 .serving-adjust{display:flex;align-items:center;gap:12px;margin-bottom:14px}
-.serving-btn{width:26px;height:26px;border:1px solid var(--bone);background:var(--bone);color:var(--ink);font-size:15px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;font-family:'Cormorant Garamond',serif}
+.serving-btn{width:26px;height:26px;border:1px solid var(--bone);background:var(--bone);color:var(--ink);font-size:15px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;font-family:var(--sans)}
 .serving-btn:hover{background:var(--ink);color:var(--cream);border-color:var(--ink)}
-.serving-count{font-family:'Cormorant Garamond',serif;font-size:13px;letter-spacing:.05em;color:var(--ink);min-width:78px;text-align:center}
+.serving-count{font-family:var(--sans);font-size:13px;color:var(--ink);min-width:78px;text-align:center}
 .ingredient-list{list-style:none;padding:0;margin:0}
 .ingredient-list li{font-size:14px;color:var(--ink);padding:7px 0 7px 14px;border-bottom:1px solid var(--bone);position:relative}
 .ingredient-list li::before{content:'';position:absolute;left:0;top:16px;width:4px;height:4px;border-radius:50%;background:var(--warm)}
 .method-list{padding-left:22px;margin:0}
 .method-list li{font-size:14px;line-height:1.7;color:var(--ink);padding:8px 0;border-bottom:1px solid var(--bone)}
-.method-list li::marker{font-family:'Cormorant Garamond',serif;font-weight:700;color:var(--gold)}
-.cook-toggle{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--bone);background:var(--cream);color:var(--muted);font-family:'Cormorant Garamond',serif;font-size:10px;letter-spacing:.16em;text-transform:uppercase;padding:7px 14px;cursor:pointer;transition:all .2s;margin-top:12px}
+.method-list li::marker{font-family:var(--sans);font-weight:700;color:var(--gold)}
+.cook-toggle{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--bone);background:var(--cream);color:var(--muted);font-family:var(--sans);font-size:12px;padding:7px 14px;cursor:pointer;transition:all .2s;margin-top:12px}
 .cook-toggle.on{background:var(--ink);color:var(--cream);border-color:var(--ink)}
 .cook-toggle-dot{width:7px;height:7px;border-radius:50%;background:var(--warm);flex-shrink:0}
 .cook-toggle.on .cook-toggle-dot{background:var(--gold)}
 
 /* MUSIC */
 .song-row{display:flex;align-items:flex-start;gap:12px;padding:11px 0;border-bottom:1px solid var(--bone)}
-.song-num{font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--warm);min-width:26px;text-align:right;flex-shrink:0;padding-top:2px}
+.song-num{font-family:var(--sans);font-size:18px;color:var(--warm);min-width:26px;text-align:right;flex-shrink:0;padding-top:2px}
 .song-body{flex:1;min-width:0}
 .song-title{font-size:15px;color:var(--ink);margin-bottom:2px}
-.song-artist{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-family:'Cormorant Garamond',serif}
-.song-note{font-size:12px;color:var(--muted);font-style:italic;margin-top:3px}
-.song-link-btn{display:inline-flex;align-items:center;gap:4px;background:none;border:1px solid var(--bone);color:var(--muted);font-family:'Cormorant Garamond',serif;font-size:10px;letter-spacing:.12em;text-transform:uppercase;padding:5px 10px;text-decoration:none;transition:all .2s;flex-shrink:0;align-self:center;white-space:nowrap}
+.song-artist{font-size:12.5px;color:var(--muted);font-family:var(--sans)}
+.song-note{font-size:12px;color:var(--muted);margin-top:3px}
+.song-link-btn{display:inline-flex;align-items:center;gap:4px;background:none;border:1px solid var(--bone);color:var(--muted);font-family:var(--sans);font-size:12px;padding:5px 10px;text-decoration:none;transition:all .2s;flex-shrink:0;align-self:center;white-space:nowrap}
 .song-link-btn:hover{background:var(--ink);color:var(--cream);border-color:var(--ink)}
 
 /* CLOSET */
@@ -252,24 +252,29 @@ main{max-width:980px;margin:0 auto;padding:var(--section-pad);width:100%;flex:1}
 .cl-fav,.cl-del{position:absolute;top:4px;width:26px;height:26px;border:none;background:rgba(247,243,237,.88);color:var(--muted);font-size:14px;line-height:1;display:flex;align-items:center;justify-content:center;cursor:pointer;font-family:serif}
 .cl-fav{right:4px}.cl-del{left:4px;font-size:17px}
 .cl-fav.on{color:var(--red)}.cl-del:hover{color:var(--red)}
-.cl-cap{position:absolute;left:0;right:0;bottom:0;padding:12px 7px 5px;background:linear-gradient(transparent,rgba(237,228,213,.95) 60%);color:var(--ink);font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:'Cormorant Garamond',serif;font-weight:600;letter-spacing:.04em}
+.cl-cap{position:absolute;left:0;right:0;bottom:0;padding:12px 7px 5px;background:linear-gradient(transparent,rgba(237,228,213,.95) 60%);color:var(--ink);font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:var(--sans);font-weight:600;}
 .cl-checker{background-color:#fbf8f2;background-image:linear-gradient(45deg,#e9e2d6 25%,transparent 25%),linear-gradient(-45deg,#e9e2d6 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#e9e2d6 75%),linear-gradient(-45deg,transparent 75%,#e9e2d6 75%);background-size:16px 16px;background-position:0 0,0 8px,8px -8px,-8px 0;display:flex;justify-content:center;align-items:center;padding:8px;border:1px solid var(--bone);min-height:120px}
-.cl-checker canvas{max-width:100%;max-height:300px;display:block}
+.cl-checker canvas{max-width:100%;max-height:min(440px,58vh);display:block}
+.cl-checker canvas.editing{touch-action:none;cursor:crosshair}
+.cl-brushrow{display:flex;align-items:center;gap:14px;margin-bottom:12px}
+.cl-brushrow input{flex:1}
+.cl-dotbox{width:64px;height:64px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:var(--bone)}
+.cl-dot{display:block;border-radius:50%;background:rgba(168,32,32,.35);border:1px solid var(--red)}
 .cl-check{display:flex;align-items:center;gap:8px;font-size:14px;margin:14px 0 8px;cursor:pointer}
-.cl-hint{font-size:12px;color:var(--muted);font-style:italic;line-height:1.5;margin:4px 0 14px}
+.cl-hint{font-size:12px;color:var(--muted);line-height:1.5;margin:4px 0 14px}
 .cl-detail-img{background:var(--bone);display:flex;justify-content:center;padding:12px}
 .cl-detail-img img{max-width:100%;max-height:300px;object-fit:contain;display:block}
 .cl-facts{display:grid;grid-template-columns:1fr 1fr;gap:12px 16px;margin:16px 0 18px;font-size:14px}
-.cl-facts span{display:block;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-family:'Cormorant Garamond',serif;margin-bottom:2px}
+.cl-facts span{display:block;font-size:12.5px;color:var(--muted);font-family:var(--sans);margin-bottom:2px}
 .mini-board{position:relative;width:100%;aspect-ratio:3/4;background:#fbf8f2;overflow:hidden}
 .mini-board img{position:absolute;height:auto;display:block;pointer-events:none}
 .of-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px}
 .of-grid.sm{grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:10px;margin-top:10px}
 .of-card{background:var(--cream);border:1px solid var(--bone)}
 .of-body{padding:10px 12px 12px}
-.of-name{font-family:'Cormorant Garamond',serif;font-size:15px;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.of-meta{font-size:11px;color:var(--muted);font-style:italic}
-.of-tag{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--plum);font-family:'Cormorant Garamond',serif;font-weight:600}
+.of-name{font-family:var(--sans);font-size:15px;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.of-meta{font-size:12.5px;color:var(--muted);}
+.of-tag{font-size:12.5px;color:var(--plum);font-family:var(--sans);font-weight:600}
 .of-pick{cursor:pointer;border:1px solid var(--bone);padding:4px;background:var(--cream)}
 .of-pick:hover{border-color:var(--ink)}
 .of-pick.on{border-color:var(--gold);box-shadow:inset 0 0 0 1px var(--gold)}
@@ -285,18 +290,18 @@ main{max-width:980px;margin:0 auto;padding:var(--section-pad);width:100%;flex:1}
 .ob-strip button:hover{border-color:var(--ink)}
 .ob-strip img{width:100%;height:100%;object-fit:contain;display:block}
 .cal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;gap:8px}
-.cal-title{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:700;letter-spacing:.05em;text-transform:uppercase}
+.cal-title{font-family:var(--sans);font-size:20px;font-weight:700;}
 .cal-nav{width:34px;height:34px;border:1px solid var(--bone);background:var(--cream);color:var(--ink);font-size:18px;cursor:pointer}
 .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
-.cal-dow{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);text-align:center;font-family:'Cormorant Garamond',serif;padding-bottom:4px}
+.cal-dow{font-size:12.5px;color:var(--muted);text-align:center;font-family:var(--sans);padding-bottom:4px}
 .cal-cell{position:relative;aspect-ratio:3/4;background:var(--cream);border:1px solid var(--bone);cursor:pointer;overflow:hidden;padding:0;display:block}
 .cal-cell.blank{background:transparent;border-color:transparent;cursor:default}
 .cal-cell.today{border-color:var(--gold);box-shadow:inset 0 0 0 1px var(--gold)}
 .cal-cell .mini-board{position:absolute;inset:0;aspect-ratio:auto;height:100%;background:transparent}
-.cal-num{position:absolute;top:2px;left:4px;font-size:10px;color:var(--muted);z-index:50;font-family:'Cormorant Garamond',serif;font-weight:700}
-.cal-badge{position:absolute;bottom:2px;left:3px;z-index:50;font-size:9px;background:var(--ink);color:var(--cream);padding:0 4px;font-family:'Cormorant Garamond',serif}
-.cal-worn{position:absolute;bottom:1px;right:3px;z-index:50;font-size:11px;color:var(--green);font-weight:700}
-.cal-txt{position:absolute;inset:16px 3px 3px;font-size:9px;color:var(--muted);font-style:italic;overflow:hidden;line-height:1.2;text-align:left}
+.cal-num{position:absolute;top:2px;left:4px;font-size:12px;color:var(--muted);z-index:50;font-family:var(--sans);font-weight:700}
+.cal-badge{position:absolute;bottom:2px;left:3px;z-index:50;font-size:12.5px;background:var(--ink);color:var(--cream);padding:0 4px;font-family:var(--sans)}
+.cal-worn{position:absolute;bottom:1px;right:3px;z-index:50;font-size:12.5px;color:var(--green);font-weight:700}
+.cal-txt{position:absolute;inset:16px 3px 3px;font-size:12.5px;color:var(--muted);overflow:hidden;line-height:1.2;text-align:left}
 .sh-row{margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--bone)}
 .sh-row-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
 .sh-stage{display:flex;align-items:center;gap:6px}
@@ -304,12 +309,12 @@ main{max-width:980px;margin:0 auto;padding:var(--section-pad);width:100%;flex:1}
 .sh-slot{flex:1;min-width:0;display:flex;align-items:center;justify-content:center;gap:8px;min-height:130px}
 .sh-main{width:52%;max-width:150px;aspect-ratio:1;object-fit:contain;display:block}
 .sh-side{width:20%;max-width:58px;aspect-ratio:1;object-fit:contain;opacity:.35;display:block}
-.sh-name{text-align:center;font-size:13px;color:var(--muted);font-style:italic;margin-top:2px}
+.sh-name{text-align:center;font-size:13px;color:var(--muted);margin-top:2px}
 .st-tiles{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:24px}
 .st-tile{background:var(--bone);padding:14px 14px 12px;border-top:2px solid var(--ink)}
-.st-num{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:700;line-height:1}
-.st-lbl{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-top:6px;font-family:'Cormorant Garamond',serif}
-.st-h{font-family:'Cormorant Garamond',serif;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);font-weight:600;margin:6px 0 10px;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.st-num{font-family:var(--sans);font-size:26px;font-weight:700;line-height:1}
+.st-lbl{font-size:12.5px;color:var(--muted);margin-top:6px;font-family:var(--sans)}
+.st-h{font-family:var(--sans);font-size:12.5px;color:var(--muted);font-weight:600;margin:6px 0 10px;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
 .st-bars{margin-bottom:26px}
 .st-bar-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
 .st-bar-thumb{width:36px;height:36px;object-fit:contain;background:var(--bone);flex-shrink:0}
@@ -324,13 +329,13 @@ main{max-width:980px;margin:0 auto;padding:var(--section-pad);width:100%;flex:1}
 .pk-row input[type=checkbox]{width:18px;height:18px;flex-shrink:0;accent-color:var(--ink)}
 .pk-thumb{width:44px;height:44px;object-fit:contain;background:var(--bone);flex-shrink:0}
 .cl-mini56{width:48px;flex-shrink:0;border:1px solid var(--bone)}
-#cl-toast{position:fixed;left:50%;bottom:112px;transform:translateX(-50%);background:var(--ink);color:var(--cream);padding:10px 18px;font-family:'Cormorant Garamond',serif;font-size:12px;letter-spacing:.14em;text-transform:uppercase;z-index:600;opacity:0;transition:opacity .25s;pointer-events:none;white-space:nowrap}
+#cl-toast{position:fixed;left:50%;bottom:112px;transform:translateX(-50%);background:var(--ink);color:var(--cream);padding:10px 18px;font-family:var(--sans);font-size:12px;z-index:600;opacity:0;transition:opacity .25s;pointer-events:none;white-space:nowrap}
 #cl-toast.show{opacity:1}
 .dash-card:last-child:nth-child(odd){grid-column:1/-1}
 
 /* PANEL TABS */
 .panel-mode-tabs{display:flex;border-bottom:1px solid var(--bone)}
-.panel-mode-tab{flex:1;background:none;border:none;border-bottom:2px solid transparent;padding:10px 0;font-family:'Cormorant Garamond',serif;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:-1px;transition:all .2s;cursor:pointer}
+.panel-mode-tab{flex:1;background:none;border:none;border-bottom:2px solid transparent;padding:10px 0;font-family:var(--sans);font-size:12px;color:var(--muted);margin-bottom:-1px;transition:all .2s;cursor:pointer}
 .panel-mode-tab.active{border-bottom-color:var(--ink);color:var(--ink)}
 
 /* LINK ITEMS */
@@ -338,71 +343,178 @@ main{max-width:980px;margin:0 auto;padding:var(--section-pad);width:100%;flex:1}
 .link-item-icon{font-size:18px;flex-shrink:0;margin-top:1px}
 .link-item-body{flex:1;min-width:0}
 .link-item-title{font-size:14px;color:var(--ink);margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.link-item-url{font-size:11px;color:var(--muted);text-decoration:none;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.link-item-url{font-size:12.5px;color:var(--muted);text-decoration:none;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .link-item-url:hover{color:var(--ink)}
-.link-item-label{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--warm);font-family:'Cormorant Garamond',serif;margin-top:3px}
+.link-item-label{font-size:12.5px;color:var(--warm);font-family:var(--sans);margin-top:3px}
 
 /* NOTES BUTTON */
-.notes-btn{background:none;border:1px solid var(--bone);color:var(--muted);font-family:'Cormorant Garamond',serif;font-size:10px;letter-spacing:.14em;text-transform:uppercase;padding:5px 11px;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:5px;vertical-align:middle}
+.notes-btn{background:none;border:1px solid var(--bone);color:var(--muted);font-family:var(--sans);font-size:12px;padding:5px 11px;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:5px;vertical-align:middle}
 .notes-btn:hover,.notes-btn.has-notes{border-color:var(--gold);color:var(--gold)}
 .photo-card.pressing img{transform:scale(.97);opacity:.75;transition:none}
 
 /* UTILS */
-.field-label{display:block;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:5px;font-weight:600}
+.field-label{display:block;font-size:12px;color:var(--muted);margin-bottom:5px;font-weight:600}
 .field-input{width:100%;border:none;border-bottom:1px solid var(--warm);padding:9px 2px;color:var(--ink);font-size:15px;outline:none;margin-bottom:18px;border-radius:0;transition:border-color .2s}
 .field-input:focus{border-bottom-color:var(--ink)}
 textarea.field-input{resize:vertical;min-height:80px;border:1px solid var(--warm);padding:9px}
 select.field-input{appearance:none}
-.btn-solid{background:var(--ink);border:none;color:var(--cream);font-family:'Cormorant Garamond',serif;font-size:13px;letter-spacing:.14em;text-transform:uppercase;padding:13px 28px;width:100%;transition:opacity .2s}
+.btn-solid{background:var(--ink);border:none;color:var(--cream);font-family:var(--sans);font-size:13px;padding:13px 28px;width:100%;transition:opacity .2s}
 .btn-solid:hover{opacity:.82}
 .btn-solid.sm{padding:9px 20px;width:auto;font-size:12px}
 .btn-solid.green{background:var(--green)}
 .btn-solid.teal{background:var(--teal)}
-.btn-ghost{background:transparent;border:1px solid rgba(28,20,10,.22);color:var(--muted);font-family:'Cormorant Garamond',serif;font-size:11px;letter-spacing:.14em;text-transform:uppercase;padding:7px 16px;transition:all .2s}
+.btn-ghost{background:transparent;border:1px solid rgba(28,20,10,.22);color:var(--muted);font-family:var(--sans);font-size:12.5px;padding:7px 16px;transition:all .2s}
 .btn-ghost:hover{background:rgba(28,20,10,.08);border-color:var(--ink);color:var(--ink)}
 .btn-ghost.danger{border-color:var(--red);color:var(--red)}
 .btn-ghost.danger:hover{background:rgba(168,32,32,.08)}
-.tag-pill{background:transparent;border:1px solid rgba(28,20,10,.18);color:var(--muted);font-family:'Cormorant Garamond',serif;font-size:10px;letter-spacing:.14em;text-transform:uppercase;padding:4px 12px;transition:all .2s}
+.tag-pill{background:transparent;border:1px solid rgba(28,20,10,.18);color:var(--muted);font-family:var(--sans);font-size:12px;padding:4px 12px;transition:all .2s}
 .tag-pill:hover,.tag-pill.active{background:rgba(28,20,10,.08);border-color:var(--ink);color:var(--ink)}
 .tag-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px}
-.empty{font-size:15px;color:var(--muted);font-style:italic;padding:48px 0;text-align:center}
+.empty{font-size:15px;color:var(--muted);padding:48px 0;text-align:center}
 .empty-icon{font-size:36px;margin-bottom:10px;opacity:.4}
 .flex-between{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
 .flex-center{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .mb14{margin-bottom:14px}
 .divider{border:none;border-top:1px solid var(--bone);margin:20px 0}
-@media(max-width:520px){.photo-grid,.recipe-grid{columns:1}.modal-box{padding:22px 18px}.section-title{font-size:26px}.room-tabs-row{gap:6px}.room-tab{padding:9px 11px;font-size:10.5px;letter-spacing:.07em}}
+@media(max-width:520px){.photo-grid,.recipe-grid{columns:1}.modal-box{padding:22px 18px}.section-title{font-size:26px}.room-tabs-row{gap:6px}.room-tab{padding:9px 11px;font-size:12.5px;}}
 
 /* DASHBOARD */
 /* HOME SCREEN & AREAS */
 .empty-icon{display:none}
-.home-greet{font-size:10px;letter-spacing:.4em;text-transform:uppercase;color:var(--warm);font-family:'Cormorant Garamond',serif;margin:6px 0 22px}
+.home-greet{font-size:12px;color:var(--warm);font-family:var(--sans);margin:6px 0 22px}
 .home-tiles{display:flex;flex-direction:column;gap:14px;max-width:560px}
 .home-tile{display:flex;align-items:center;justify-content:space-between;gap:14px;width:100%;text-align:left;background:var(--cream);border:1px solid var(--bone);border-top:2px solid var(--ink);padding:26px 20px;cursor:pointer;font-family:inherit;color:var(--ink);transition:background .2s}
 .home-tile:active,.home-tile:hover{background:var(--bone)}
-.home-tile-num{font-family:'Cormorant Garamond',serif;font-size:10px;letter-spacing:.18em;font-weight:600;margin-bottom:12px}
-.home-tile-name{font-family:'Cormorant Garamond',serif;font-size:27px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;line-height:1}
-.home-tile-sub{font-size:12px;color:var(--muted);font-style:italic;margin-top:9px}
+.home-tile-num{font-family:var(--sans);font-size:12px;font-weight:600;margin-bottom:12px}
+.home-tile-name{font-family:var(--sans);font-size:27px;font-weight:700;line-height:1}
+.home-tile-sub{font-size:12px;color:var(--muted);margin-top:9px}
 .area-list{border-top:1px solid var(--bone);max-width:560px}
 .area-row{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;padding:20px 2px;background:none;border:none;border-bottom:1px solid var(--bone);text-align:left;cursor:pointer;font-family:inherit;color:var(--ink)}
 .area-row:active{background:var(--bone)}
-.area-row-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;letter-spacing:.02em}
-.area-row-meta{font-size:12px;color:var(--muted);font-style:italic;margin-top:3px}
-.area-chev{font-size:26px;color:var(--warm);font-family:'Cormorant Garamond',serif;line-height:1}
+.area-row-title{font-family:var(--sans);font-size:22px;font-weight:600;}
+.area-row-meta{font-size:12px;color:var(--muted);margin-top:3px}
+.area-chev{font-size:26px;color:var(--warm);font-family:var(--sans);line-height:1}
 .dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:28px}
 @media(max-width:480px){.dash-grid{grid-template-columns:1fr 1fr;gap:10px}}
 .dash-card{background:var(--cream);border:1px solid var(--bone);border-top:2px solid var(--ink);padding:20px 16px 18px;cursor:pointer;transition:all .22s;position:relative}
 .dash-card:hover{background:var(--bone);box-shadow:0 4px 20px rgba(28,20,10,.1)}
 .dash-card:active{opacity:.82}
-.dash-card-num{font-family:'Cormorant Garamond',serif;font-size:10px;letter-spacing:.18em;font-weight:600;margin-bottom:14px;opacity:.75}
-.dash-card-name{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:700;color:var(--ink);text-transform:uppercase;letter-spacing:.04em;line-height:1;margin-bottom:7px}
-.dash-card-sub{font-size:11px;color:var(--muted);font-style:italic;font-family:'EB Garamond',serif}
-.dash-card-empty{font-size:11px;color:var(--warm);font-style:italic;font-family:'EB Garamond',serif}
+.dash-card-num{font-family:var(--sans);font-size:12px;font-weight:600;margin-bottom:14px;opacity:.75}
+.dash-card-name{font-family:var(--sans);font-size:20px;font-weight:700;color:var(--ink);line-height:1;margin-bottom:7px}
+.dash-card-sub{font-size:12.5px;color:var(--muted);font-family:var(--sans)}
+.dash-card-empty{font-size:12.5px;color:var(--warm);font-family:var(--sans)}
 #app.has-wallpaper{background:rgba(247,243,237,.87)}
 .dash-recent-row{padding:10px 0;border-bottom:1px solid var(--bone);display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
 .dash-recent-label{font-size:14px;color:var(--ink)}
-.dash-recent-meta{font-size:10px;color:var(--muted);font-family:'Cormorant Garamond',serif;letter-spacing:.06em;margin-top:2px}
-.dash-recent-tag{font-size:9px;color:var(--warm);letter-spacing:.12em;text-transform:uppercase;font-family:'Cormorant Garamond',serif;white-space:nowrap;flex-shrink:0;margin-top:2px}
+.dash-recent-meta{font-size:12px;color:var(--muted);font-family:var(--sans);margin-top:2px}
+.dash-recent-tag{font-size:12.5px;color:var(--warm);font-family:var(--sans);white-space:nowrap;flex-shrink:0;margin-top:2px}
+
+/* ═══ EDITORIAL LAYER ═══
+   Serif (Cormorant) is for large display type only; everything small is a clean sans (DM Sans) so it never turns curly.
+   Hairline dividers instead of boxes, text-link menus, pill buttons, flat surfaces. Same palette as before. */
+:root{--line:#dccfba}
+body{font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+body::after{display:none}
+.auth-deco,.masthead-title,.brand-name,.section-title,.modal-title,.panel-title,.cal-title,.budget-amount,.home-tile-name,.area-row-title,.st-num,.st-h,.recipe-title{font-family:var(--serif);font-variant-numeric:lining-nums;font-feature-settings:'lnum' 1}
+.masthead-title{font-weight:600}
+.masthead-sub,.masthead-tagline{font-size:13px}
+/* header */
+.brand-name{font-size:21px;font-weight:600;letter-spacing:.2em;padding-left:.2em}
+.hdr-back{font-size:15px;color:var(--muted);font-weight:400}
+.hdr-back .chev{color:var(--muted)}
+/* titles */
+.section-title{font-size:38px;font-weight:500;letter-spacing:-.01em;line-height:1.05}
+.section-sub{font-size:14px;margin-top:6px}
+.section-rule{margin-bottom:20px}
+.st-h{font-size:23px;font-weight:500;color:var(--ink);margin:22px 0 10px;line-height:1.15}
+.st-h .tag-pill{font-family:var(--sans)}
+.st-h .of-meta,.st-h span.of-meta{font-family:var(--sans)}
+/* menus = text links with a hairline under the active one */
+.tag-row{gap:6px 18px;margin-bottom:16px}
+.tag-pill{background:none;border:none;border-bottom:1px solid transparent;border-radius:0;padding:4px 0;font-size:14.5px;color:var(--muted)}
+.tag-pill:hover{background:none;border-color:transparent;color:var(--ink)}
+.tag-pill.active{background:none;color:var(--ink);border-bottom-color:var(--ink)}
+.room-tabs-row{gap:6px 20px;margin-bottom:18px}
+.room-tab{background:none;border:none;border-bottom:1px solid transparent;border-radius:0;padding:4px 0;font-size:16px;color:var(--muted)}
+.room-tab.active{background:none;color:var(--ink);border-bottom-color:var(--ink)}
+.room-tab.drag-over{border-bottom-color:var(--gold)!important}
+.room-sub-tabs{border:none;border-bottom:1px solid var(--line);gap:24px;margin-bottom:18px}
+.room-sub-tab{flex:none;border:none;border-bottom:1px solid transparent;margin-bottom:-1px;padding:9px 0;font-size:15px;color:var(--muted)}
+.room-sub-tab.active{background:none;color:var(--ink);border-bottom-color:var(--ink)}
+/* buttons & form fields */
+.btn-solid{font-size:14.5px;font-weight:500;padding:14px 26px;border-radius:999px}
+.btn-solid.sm{padding:10px 20px;font-size:14px}
+.btn-ghost{border:1px solid var(--line);color:var(--ink);font-size:13.5px;font-weight:500;padding:8px 16px;border-radius:999px}
+.btn-ghost:hover{background:var(--bone);border-color:var(--warm);color:var(--ink)}
+.btn-ghost.danger{color:var(--red);border-color:rgba(168,32,32,.32)}
+.notes-btn{font-size:13.5px;font-weight:500;border-color:var(--line);color:var(--ink);padding:8px 16px;border-radius:999px}
+.notes-btn:hover,.notes-btn.has-notes{border-color:var(--gold);color:var(--gold)}
+.cook-toggle{font-size:13.5px;border-radius:999px;border-color:var(--line);padding:8px 16px}
+.song-link-btn{font-size:13px;border-radius:999px;border-color:var(--line);color:var(--ink);padding:6px 14px}
+.field-label{font-size:13px;font-weight:500;color:var(--muted);margin-bottom:6px}
+.field-input{font-size:16px;border-bottom:1px solid var(--line)}
+textarea.field-input{border:1px solid var(--line);border-radius:8px;padding:10px 12px}
+.serving-btn{border-radius:50%;border:1px solid var(--line);background:none;width:32px;height:32px}
+.serving-btn:hover{border-color:var(--ink)}
+.serving-count{font-size:14.5px}
+/* surfaces: flat, softly rounded, hairlines */
+.recipe-card,.photo-card,.of-card,.cl-card,.panel-photo,.mood-tile,.of-pick,.cal-cell,.ob-board,.fp-container,.cl-checker,.cl-detail-img,.cl-dotbox,.st-tile,.mood-board{border-radius:8px}
+.of-card,.recipe-card,.of-pick{border-color:var(--line)}
+.budget-block{border-left:none;border-radius:12px;padding:18px 20px}
+.budget-amount{font-size:34px;font-weight:500}
+.budget-amount span{font-family:var(--sans);font-feature-settings:normal}
+.budget-label,.recipe-section-label,.of-tag,.cl-facts span,.panel-section-label,.panel-pinned-label,.st-lbl,.cat-badge,.recipe-tag,.item-store,.link-item-label,.mb-swatch-label,.cam-label,.fp-label{font-size:12.5px;font-weight:500}
+.cat-badge,.recipe-tag{border-radius:999px;padding:2px 10px}
+.st-tile{border-top:none;padding:16px}
+.st-num{font-size:32px;font-weight:500}
+.st-lbl{margin-top:4px}
+.item-price,.photo-price{font-size:16px;font-weight:500}
+.item-name,.song-title{font-size:16px}
+.of-name{font-size:15px;font-weight:500}
+.of-meta{font-size:13px}
+.song-num{font-size:15px;color:var(--muted)}
+.recipe-title{font-size:23px;font-weight:500}
+.recipe-text,.photo-note{font-size:14px}
+.empty{font-size:15px}
+.cal-title{font-size:26px;font-weight:500}
+.cal-dow{font-size:12.5px}
+.cal-nav{border-radius:50%;border-color:var(--line)}
+.cl-cap{font-size:13px;font-weight:500}
+.hdr-back,.header-btn{font-family:var(--sans)}
+/* modals & panel */
+.modal-box{border-top:none;border-radius:18px;padding:30px 28px}
+.modal-title{font-size:28px;font-weight:500}
+.panel-head{border-bottom:1px solid var(--line)}
+.panel-title{font-size:27px;font-weight:500}
+.panel-filter-row{border-bottom:1px solid var(--line);gap:4px 14px}
+.panel-filter{background:none;border:none;border-bottom:1px solid transparent;border-radius:0;padding:3px 0;font-size:14px;color:var(--muted)}
+.panel-filter.active,.panel-filter.arch-filter.active{background:none;color:var(--ink);border-bottom-color:var(--ink)}
+.panel-mode-tab{font-size:14.5px}
+.panel-mode-tabs{border-bottom:1px solid var(--line)}
+/* home screen + area lists: editorial rows, not boxes */
+.home-greet{font-size:14.5px;color:var(--muted);margin:4px 0 10px}
+.home-tiles{gap:0;max-width:600px;border-top:1px solid var(--line)}
+.home-tile{background:none;border:none;border-bottom:1px solid var(--line);padding:22px 0}
+.home-tile:hover,.home-tile:active{background:none}
+.home-tile-num{font-size:12.5px;font-weight:500;letter-spacing:.16em;margin-bottom:6px}
+.home-tile-name{font-size:38px;font-weight:500;line-height:1.02}
+.home-tile-sub{font-size:14.5px;margin-top:7px}
+.area-list{max-width:600px;border-top:1px solid var(--line)}
+.area-row{border-bottom:1px solid var(--line);padding:19px 0}
+.area-row:active{background:none}
+.area-row-title{font-size:30px;font-weight:500;line-height:1.1}
+.area-row-meta{font-size:14px;margin-top:4px}
+.area-chev{font-size:22px;color:var(--muted)}
+/* bottom bar: outlined circles, centre camera filled */
+#camera-dock{background:var(--cream);border-top:1px solid var(--line);padding:10px 0 calc(10px + env(safe-area-inset-bottom));gap:38px;pointer-events:auto}
+#camera-dock.solo{background:transparent;border-top:none;padding:0 0 calc(24px + env(safe-area-inset-bottom))}
+.cam-btn,.cam-btn.photos,.cam-btn.mood{width:44px;height:44px;background:transparent;border:1px solid var(--warm);outline:none;box-shadow:none;color:var(--ink)}
+.cam-btn:hover,.cam-btn:active{transform:none;background:var(--bone)}
+#camera-dock .cam-wrap:nth-child(2) .cam-btn{width:52px;height:52px;background:var(--ink);border-color:var(--ink);color:var(--cream)}
+#camera-dock.solo .cam-btn{width:66px;height:66px;background:transparent;border:1px solid var(--ink);color:var(--ink)}
+.cam-label{color:var(--muted);font-weight:400}
+#cl-toast{border-radius:999px;font-size:13.5px;padding:10px 20px}
+@media(max-width:520px){.section-title{font-size:34px}.room-tab{padding:4px 0;font-size:15.5px}.home-tile-name{font-size:36px}.modal-box{padding:24px 20px}}
 </style>
 </head>
 <body>
@@ -983,13 +1095,13 @@ async function renderBkPicker(){
     openModal(`<div class="modal-head"><div class="modal-title">Google Drive</div><button class="modal-close" onclick="closeModal()">×</button></div><p style="color:var(--red);font-size:13px">Could not list your Drive folders: ${escHtml(e.message)}</p>`);
     return;
   }
-  const crumb=bkPickStack.map((s,i)=>`<button class="btn-ghost" style="padding:2px 8px;font-size:11px" onclick="bkPickStack=bkPickStack.slice(0,${i+1});renderBkPicker()">${escHtml(s.name)}</button>`).join(' / ');
+  const crumb=bkPickStack.map((s,i)=>`<button class="btn-ghost" style="padding:2px 8px;font-size:12.5px" onclick="bkPickStack=bkPickStack.slice(0,${i+1});renderBkPicker()">${escHtml(s.name)}</button>`).join(' / ');
   const rows=items.map(it=>`<div class="link-item" style="cursor:pointer" onclick='bkPickStack=bkPickStack.concat([{id:"${it.id}",name:${JSON.stringify(it.name)}}]);renderBkPicker()'><div class="link-item-title">${escHtml(it.name)}</div></div>`).join('')||`<div class="empty" style="padding:16px 0;font-size:13px">No folders here.</div>`;
-  openModal(`<div class="modal-head"><div class="modal-title">Choose a Google Drive Folder</div><button class="modal-close" onclick="closeModal()">×</button></div>
+  openModal(`<div class="modal-head"><div class="modal-title">Choose a Google Drive folder</div><button class="modal-close" onclick="closeModal()">×</button></div>
     <div style="margin-bottom:10px;font-size:12px">${crumb}</div>
     <div style="max-height:320px;overflow-y:auto;border-top:1px solid var(--bone)">${rows}</div>
     <div class="modal-row" style="margin-top:14px">
-      <button class="btn-solid sm" onclick='chooseBkFolder("${cur.id}",${JSON.stringify(cur.name)})'>Save Backups Here</button>
+      <button class="btn-solid sm" onclick='chooseBkFolder("${cur.id}",${JSON.stringify(cur.name)})'>Save backups here</button>
       <button class="btn-ghost" onclick="closeModal()">Cancel</button>
     </div>`);
 }
@@ -1052,7 +1164,7 @@ function setupFileInputs(){
 // Screens: 'dashboard' (home) · 'area_house|closet|other' (page lists) · 'moodboards' · the existing pages
 // ('home' = rooms/floor plan, 'wedding', 'honeymoon', 'dayout', 'recipes', 'music', 'closet').
 const AREAS={
-  house:{name:'House Planning',short:'House',sub:'Rooms, budgets & your floor plan.'},
+  house:{name:'House planning',short:'House',sub:'Rooms, budgets & your floor plan.'},
   closet:{name:'Closet',short:'Closet',sub:'Wardrobe, outfits, calendar & packing.'},
   other:{name:'Other',short:'Other',sub:'Wedding, honeymoon, days out, recipes & music.'},
 };
@@ -1108,7 +1220,7 @@ function goBack(){
   }
   showSection('area_'+(areaOf(s)||'house'));
 }
-// Bottom dock: just the camera on the home screen; All Photos · Camera · Mood Board inside an area.
+// Bottom dock: just the camera on the home screen; All photos · Camera · Mood board inside an area.
 function renderDock(){
   const d=document.getElementById('camera-dock');if(!d)return;
   if(currentSection==='closet'&&closetOutfitId&&outfitDraft){d.style.display='none';return;}
@@ -1116,7 +1228,7 @@ function renderDock(){
   const cam=`<div class="cam-wrap"><button class="cam-btn" onclick="triggerCapture()" aria-label="Capture photo">${ICON_CAM}</button><div class="cam-label">Capture</div></div>`;
   if(currentSection==='dashboard'){d.className='solo';d.innerHTML=cam;return;}
   d.className='';
-  d.innerHTML=`<div class="cam-wrap"><button class="cam-btn photos" onclick="openAreaPhotos()" aria-label="All photos">${ICON_PHOTOS}</button><div class="cam-label">All Photos</div></div>${cam}<div class="cam-wrap"><button class="cam-btn mood" onclick="openAreaMood()" aria-label="Mood boards">${ICON_MOOD}</button><div class="cam-label">Mood Board</div></div>`;
+  d.innerHTML=`<div class="cam-wrap"><button class="cam-btn photos" onclick="openAreaPhotos()" aria-label="All photos">${ICON_PHOTOS}</button><div class="cam-label">Photos</div></div>${cam}<div class="cam-wrap"><button class="cam-btn mood" onclick="openAreaMood()" aria-label="Mood boards">${ICON_MOOD}</button><div class="cam-label">Mood board</div></div>`;
 }
 function openAreaPhotos(){
   const a=areaOf(currentSection);
@@ -1133,7 +1245,7 @@ function areaRows(a){
     const spent=home.rooms.reduce((s,r)=>s+(r.items||[]).reduce((x,i)=>x+(i.price||0),0)+(r.photos||[]).filter(p=>!p.archived).reduce((x,p)=>x+(p.price||0),0),0);
     return[
       R('Rooms',home.rooms.length?n(home.rooms.length,'room')+(spent?` · ${clMoney(spent)}`:''):'Add your first room',"setHomeView('rooms')"),
-      R('Floor Plan',fp.img?'Tap the plan to pin rooms':'Upload a floor plan',"setHomeView('floorplan')"),
+      R('Floor plan',fp.img?'Tap the plan to pin rooms':'Upload a floor plan',"setHomeView('floorplan')"),
     ];
   }
   if(a==='closet'){
@@ -1152,7 +1264,7 @@ function areaRows(a){
   return[
     R('Wedding',w.wdate?new Date(w.wdate+'T12:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'}):(wP?n(wP,'photo'):'Inspiration & details'),"showSection('wedding')"),
     R('Honeymoon',h.rooms.length?n(h.rooms.length,'destination'):'Plan your trip',"showSection('honeymoon')"),
-    R('Days Out',d.plans.length?n(d.plans.length,'plan'):'Plan a day out',"showSection('dayout')"),
+    R('Days out',d.plans.length?n(d.plans.length,'plan'):'Plan a day out',"showSection('dayout')"),
     R('Recipes',rec.items.length?n(rec.items.length,'recipe'):'Save your first',"showSection('recipes')"),
     R('Music',mu.playlists.length?n(mu.playlists.length,'playlist')+(songs?' · '+n(songs,'song'):''):'Create a playlist',"showSection('music')"),
   ];
@@ -1160,7 +1272,7 @@ function areaRows(a){
 function renderArea(main,a){
   const info=AREAS[a];if(!info){showSection('dashboard');return;}
   main.innerHTML=`<div class="section-rule"><div><div class="section-title">${info.name}</div><div class="section-sub">${info.sub}</div></div></div>
-    <div class="area-list">${areaRows(a).map(r=>`<button class="area-row" onclick="${r.go}"><div><div class="area-row-title">${r.title}</div><div class="area-row-meta">${r.meta}</div></div><span class="area-chev">›</span></button>`).join('')}</div>`;
+    <div class="area-list">${areaRows(a).map(r=>`<button class="area-row" onclick="${r.go}"><div><div class="area-row-title">${r.title}</div><div class="area-row-meta">${r.meta}</div></div><span class="area-chev">→</span></button>`).join('')}</div>`;
 }
 
 // ── MODAL ──
@@ -1198,9 +1310,9 @@ document.addEventListener('visibilitychange',async()=>{
 let panelScope='all';
 const PANEL_SCOPE_SECTIONS={house:['home'],other:['wedding','honeymoon','dayout','recipes']};
 const PANEL_CHIPS={
-  all:[['all','All'],['liked','♥ Liked'],['home','Home'],['wedding','Wedding'],['honeymoon','Honeymoon'],['recipes','Recipes'],['dayout','Days Out'],['closet','Closet'],['archived','Archived']],
+  all:[['all','All'],['liked','♥ Liked'],['home','Home'],['wedding','Wedding'],['honeymoon','Honeymoon'],['recipes','Recipes'],['dayout','Days out'],['closet','Closet'],['archived','Archived']],
   house:[['all','All'],['liked','♥ Liked'],['archived','Archived']],
-  other:[['all','All'],['liked','♥ Liked'],['wedding','Wedding'],['honeymoon','Honeymoon'],['recipes','Recipes'],['dayout','Days Out'],['archived','Archived']],
+  other:[['all','All'],['liked','♥ Liked'],['wedding','Wedding'],['honeymoon','Honeymoon'],['recipes','Recipes'],['dayout','Days out'],['archived','Archived']],
 };
 function openSidePanel(scope){
   panelScope=PANEL_CHIPS[scope]?scope:'all';panelFilter='all';panelMode='photos';
@@ -1211,7 +1323,7 @@ function openSidePanel(scope){
 function closeSidePanel(){document.getElementById('side-panel').classList.remove('open');document.getElementById('panel-overlay').classList.remove('open');document.body.style.overflow='';}
 function renderPanelHead(){
   const t=document.querySelector('#side-panel .panel-title');
-  if(t)t.textContent=panelScope==='all'?'All Photos':AREAS[panelScope].name;
+  if(t)t.textContent=panelScope==='all'?'All photos':AREAS[panelScope].name;
   const row=document.getElementById('panel-filter-row');if(!row)return;
   row.style.display=panelMode==='photos'?'flex':'none';
   row.innerHTML=PANEL_CHIPS[panelScope].map(([k,l])=>`<button class="panel-filter${panelFilter===k?' active':''}${k==='archived'?' arch-filter':''}" onclick="setPanelFilter('${k}')">${l}</button>`).join('')
@@ -1257,7 +1369,7 @@ function renderSidePanel(){
   let html='';
   if(liked.length&&panelFilter!=='liked')html+=`<div class="panel-pinned-label"><span>♥</span> Favourites</div><div class="panel-grid">${liked.map(e=>panelPhotoCard(e)).join('')}</div>`;
   if(rest.length){
-    if(liked.length&&panelFilter!=='liked')html+=`<div class="panel-section-label" style="margin-top:18px">All Photos</div>`;
+    if(liked.length&&panelFilter!=='liked')html+=`<div class="panel-section-label" style="margin-top:18px">All photos</div>`;
     const groups={};rest.forEach(e=>{if(!groups[e.label])groups[e.label]=[];groups[e.label].push(e);});
     Object.entries(groups).forEach(([l,items])=>{
       if(['all','liked'].includes(panelFilter))html+=`<div class="panel-section-label">${l}</div>`;
@@ -1276,7 +1388,7 @@ function panelClosetHTML(){
 function panelOpenClosetItem(id){closeSidePanel();clSetTab('wardrobe');clOpenItem(id);}
 function panelPhotoCard(e,isArchived=false){
   const p=e.photo;
-  if(isArchived)return`<div class="panel-photo"><img src="${p.img}" loading="lazy"/><div class="panel-photo-dest" style="transform:none">${e.label}</div><div class="panel-photo-arch-actions"><button class="arch-btn" style="background:rgba(42,95,63,.85)" onclick="restorePhoto('${p.id}','${e.type}','${e.contextId}')">↩ Restore</button><button class="arch-btn" style="background:rgba(168,32,32,.85)" onclick="deleteFromPanel('${p.id}','${e.type}','${e.contextId}')">✕ Delete</button></div></div>`;
+  if(isArchived)return`<div class="panel-photo"><img src="${p.img}" loading="lazy"/><div class="panel-photo-dest" style="transform:none">${e.label}</div><div class="panel-photo-arch-actions"><button class="arch-btn" style="background:rgba(42,95,63,.85)" onclick="restorePhoto('${p.id}','${e.type}','${e.contextId}')">Restore</button><button class="arch-btn" style="background:rgba(168,32,32,.85)" onclick="deleteFromPanel('${p.id}','${e.type}','${e.contextId}')">Delete</button></div></div>`;
   return`<div class="panel-photo"><img src="${p.img}" loading="lazy" onclick="navigateToPhoto('${e.type}','${e.contextId}','${e.sectionKey}')"/>${p.liked?'<div class="panel-photo-liked"></div>':''}<button class="panel-photo-like${p.liked?' on':''}" onclick="panelToggleLike('${p.id}','${e.type}','${e.contextId}')">♥</button><button class="panel-photo-move" onclick="openAssignPhoto('${p.id}','${e.type}','${e.contextId}')">↗</button><div class="panel-photo-dest">${e.label}</div></div>`;
 }
 function panelToggleLike(photoId,type,contextId){const arr=getPhotosArray(type,contextId);const p=arr.find(p=>p.id===photoId);if(p){p.liked=!p.liked;savePhotosArray(type,contextId,arr);}renderSidePanel();updatePanelBadge();showSection(currentSection);}
@@ -1286,13 +1398,13 @@ function openAssignPhoto(photoId,fromType,fromContextId){
   const home=userData('home',{rooms:[]});const h=userData('honeymoon',{rooms:[]});const d=userData('dayout',{plans:[]});
   const dests=[
     ...home.rooms.map(r=>({label:`${r.name} (Home)`,type:'home_room',contextId:r.id})),
-    {label:'Wedding Inspiration',type:'wedding',contextId:'wedding'},
-    {label:'Honeymoon Inspiration',type:'honeymoon_inspo',contextId:'honeymoon'},
+    {label:'Wedding inspiration',type:'wedding',contextId:'wedding'},
+    {label:'Honeymoon inspiration',type:'honeymoon_inspo',contextId:'honeymoon'},
     ...h.rooms.map(r=>({label:`${r.name} (Honeymoon)`,type:'honeymoon_room',contextId:r.id})),
     ...d.plans.map(pl=>({label:`${pl.name} (Day Out)`,type:'dayout_plan',contextId:pl.id}))
   ].filter(dest=>!(dest.type===fromType&&dest.contextId===fromContextId));
   if(!dests.length){alert('No other destinations available.');return;}
-  openModal(`<div class="modal-head"><div class="modal-title">Move Photo To</div><button class="modal-close" onclick="closeModal()">×</button></div><div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">${dests.map(dest=>`<button class="btn-ghost" style="text-align:left" onclick="doMovePhoto('${photoId}','${fromType}','${fromContextId}','${dest.type}','${dest.contextId}')">${dest.label}</button>`).join('')}</div>`);
+  openModal(`<div class="modal-head"><div class="modal-title">Move photo to</div><button class="modal-close" onclick="closeModal()">×</button></div><div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">${dests.map(dest=>`<button class="btn-ghost" style="text-align:left" onclick="doMovePhoto('${photoId}','${fromType}','${fromContextId}','${dest.type}','${dest.contextId}')">${dest.label}</button>`).join('')}</div>`);
 }
 function doMovePhoto(photoId,fromType,fromContextId,toType,toContextId){
   const fromArr=getPhotosArray(fromType,fromContextId);const photo=fromArr.find(p=>p.id===photoId);if(!photo){closeModal();return;}
@@ -1349,16 +1461,16 @@ function getAllLinks(){
 function renderSidePanelLinks(){
   const body=document.getElementById('panel-body');
   const links=getAllLinks();
-  const addBtn=`<div style="padding:10px 0 6px;text-align:right"><button class="btn-ghost" onclick="openAddSavedLink()" style="font-size:10px;padding:5px 12px">+ Add Link</button></div>`;
-  if(!links.length){body.innerHTML=`<div class="panel-empty">No saved links yet.<br/><br/><span style="font-size:11px;color:var(--warm);font-style:italic">Links from photos, items &amp; songs appear here.</span><br/><br/><button class="btn-ghost" onclick="openAddSavedLink()" style="margin-top:8px">+ Add Link</button></div>`;return;}
+  const addBtn=`<div style="padding:10px 0 6px;text-align:right"><button class="btn-ghost" onclick="openAddSavedLink()" style="font-size:12px;padding:5px 12px">+ Add link</button></div>`;
+  if(!links.length){body.innerHTML=`<div class="panel-empty">No saved links yet.<br/><br/><span style="font-size:12.5px;color:var(--warm);">Links from photos, items &amp; songs appear here.</span><br/><br/><button class="btn-ghost" onclick="openAddSavedLink()" style="margin-top:8px">+ Add link</button></div>`;return;}
   body.innerHTML=addBtn+links.map(l=>`<div class="link-item"><div class="link-item-icon">${l.icon}</div><div class="link-item-body"><div class="link-item-title">${l.title}</div><a class="link-item-url" href="${l.url}" target="_blank" rel="noopener">${l.url}</a><div class="link-item-label">${l.label}</div></div></div>`).join('');
 }
 function openAddSavedLink(){
-  openModal(`<div class="modal-head"><div class="modal-title">Add Link</div><button class="modal-close" onclick="closeModal()">×</button></div>
+  openModal(`<div class="modal-head"><div class="modal-title">Add link</div><button class="modal-close" onclick="closeModal()">×</button></div>
     <label class="field-label">Title</label><input id="sl-title" class="field-input" placeholder="e.g. Kitchen Inspo…"/>
     <label class="field-label">URL</label><input id="sl-url" class="field-input" type="url" placeholder="https://…"/>
     <label class="field-label">Label / Source</label><input id="sl-label" class="field-input" placeholder="e.g. Pinterest, Houzz…"/>
-    <div class="modal-row"><button class="btn-solid sm" onclick="saveLink()">Save Link</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);
+    <div class="modal-row"><button class="btn-solid sm" onclick="saveLink()">Save link</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);
 }
 function saveLink(){
   const url=(document.getElementById('sl-url').value||'').trim();if(!url)return;
@@ -1398,7 +1510,7 @@ function cancelLongPress(){if(_lpTimer){clearTimeout(_lpTimer);_lpTimer=null;}}
 function toggleLike(photoId,type,contextId){const arr=getPhotosArray(type,contextId);const p=arr.find(p=>p.id===photoId);if(p)p.liked=!p.liked;savePhotosArray(type,contextId,arr);showSection(currentSection);updatePanelBadge();}
 function archivePhoto(photoId,type,contextId){const arr=getPhotosArray(type,contextId);const p=arr.find(p=>p.id===photoId);if(p){p.archived=true;savePhotosArray(type,contextId,arr);}showSection(currentSection);updatePanelBadge();}
 function deletePhoto(photoId,type,contextId){if(!confirm('Permanently delete this photo?'))return;savePhotosArray(type,contextId,getPhotosArray(type,contextId).filter(p=>p.id!==photoId));idbDeletePhoto(photoId).catch(()=>{});deleteRemotePhoto(photoId).catch(()=>{});showSection(currentSection);updatePanelBadge();}
-function viewPhoto(photoId,type,contextId){const p=getPhotosArray(type,contextId).find(p=>p.id===photoId);if(!p)return;openModal(`<div class="modal-head"><div class="modal-title">${p.note||'Photo'}</div><button class="modal-close" onclick="closeModal()">×</button></div><img src="${p.img}" style="width:100%;max-height:360px;object-fit:contain;border:1px solid var(--bone);margin-bottom:12px"/>${p.note?`<p style="font-size:15px;line-height:1.6;margin-bottom:10px">${p.note}</p>`:''}${p.link?`<a href="${p.link}" target="_blank" rel="noopener" style="font-size:13px;color:var(--muted);word-break:break-all">🔗 ${p.link}</a>`:''}${p.price?`<div style="font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--green);margin-top:8px">£${p.price.toLocaleString(undefined,{minimumFractionDigits:2})}</div>`:''}`); }
+function viewPhoto(photoId,type,contextId){const p=getPhotosArray(type,contextId).find(p=>p.id===photoId);if(!p)return;openModal(`<div class="modal-head"><div class="modal-title">${p.note||'Photo'}</div><button class="modal-close" onclick="closeModal()">×</button></div><img src="${p.img}" style="width:100%;max-height:360px;object-fit:contain;border:1px solid var(--bone);margin-bottom:12px"/>${p.note?`<p style="font-size:15px;line-height:1.6;margin-bottom:10px">${p.note}</p>`:''}${p.link?`<a href="${p.link}" target="_blank" rel="noopener" style="font-size:13px;color:var(--muted);word-break:break-all">🔗 ${p.link}</a>`:''}${p.price?`<div style="font-family:var(--sans);font-size:20px;color:var(--green);margin-top:8px">£${p.price.toLocaleString(undefined,{minimumFractionDigits:2})}</div>`:''}`); }
 
 function renderPhotoGrid(photos,type,contextId){
   const visible=(photos||[]).filter(p=>!p.archived);
@@ -1409,7 +1521,7 @@ function renderPhotoGrid(photos,type,contextId){
 
 // ── CAPTURE ──
 // Camera button. Inside an area it saves straight into that area (destinations limited to it, current page
-// pre-selected); on the home screen every destination is offered. Everything lands in the All Photos gallery too.
+// pre-selected); on the home screen every destination is offered. Everything lands in the All photos gallery too.
 function capturePreselect(opts){
   const s=currentSection,has=v=>opts.some(o=>o.v===v);
   const want=s==='home'&&activeRoomId?'home_'+activeRoomId:s==='wedding'?'wedding':s==='honeymoon'?'honeymoon':s==='dayout'&&activeDayOutId?'dayout_'+activeDayOutId:s==='recipes'?'recipes_new':null;
@@ -1424,23 +1536,23 @@ function triggerCapture(){
   const opts=[];
   if(!area||area==='house')home.rooms.forEach(r=>opts.push({v:'home_'+r.id,label:r.name+' (Room)'}));
   if(!area||area==='other'){
-    opts.push({v:'wedding',label:'Wedding Inspiration'},{v:'honeymoon',label:'Honeymoon Inspiration'});
+    opts.push({v:'wedding',label:'Wedding inspiration'},{v:'honeymoon',label:'Honeymoon inspiration'});
     d.plans.forEach(pl=>opts.push({v:'dayout_'+pl.id,label:pl.name+' (Day Out)'}));
     opts.push({v:'recipes_new',label:'New Recipe'});
     rec.items.forEach(ri=>opts.push({v:'recipe_'+ri.id,label:'Add to recipe: '+(ri.title||'Recipe')}));
   }
   if(!area)opts.push({v:'closet',label:'Closet (new piece)'});
   if(!opts.length){
-    openModal(`<div class="modal-head"><div class="modal-title">Add a room first</div><button class="modal-close" onclick="closeModal()">×</button></div><p class="cl-hint" style="margin-top:0">Photos in House Planning are saved into a room. Create one, then use the camera.</p><div class="modal-row"><button class="btn-solid sm" onclick="closeModal();setHomeView('rooms');openAddRoom()">Add a room</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);
+    openModal(`<div class="modal-head"><div class="modal-title">Add a room first</div><button class="modal-close" onclick="closeModal()">×</button></div><p class="cl-hint" style="margin-top:0">Photos in House planning are saved into a room. Create one, then use the camera.</p><div class="modal-row"><button class="btn-solid sm" onclick="closeModal();setHomeView('rooms');openAddRoom()">Add a room</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);
     return;
   }
   const pre=capturePreselect(opts);
-  openModal(`<div class="modal-head"><div class="modal-title">Add Photo</div><button class="modal-close" onclick="closeModal()">×</button></div>
-    ${opts.length>1?`<label class="field-label">Save To</label>`:`<p class="cl-hint" style="margin-top:0">Saving to <b>${escHtml(opts[0].label)}</b></p>`}
+  openModal(`<div class="modal-head"><div class="modal-title">Add photo</div><button class="modal-close" onclick="closeModal()">×</button></div>
+    ${opts.length>1?`<label class="field-label">Save to</label>`:`<p class="cl-hint" style="margin-top:0">Saving to <b>${escHtml(opts[0].label)}</b></p>`}
     <select id="cap-dest" class="field-input"${opts.length>1?'':' style="display:none"'}>${opts.map(o=>`<option value="${o.v}"${o.v===pre?' selected':''}>${escHtml(o.label)}</option>`).join('')}</select>
     <div class="modal-row" style="margin-top:4px">
-      <button class="btn-solid sm green" onclick="pickFile('camera')">Take Photo</button>
-      <button class="btn-solid sm" onclick="pickFile('gallery')">From Gallery</button>
+      <button class="btn-solid sm green" onclick="pickFile('camera')">Take photo</button>
+      <button class="btn-solid sm" onclick="pickFile('gallery')">From gallery</button>
     </div>
     <div id="cap-preview-wrap" style="margin-top:14px;display:none">
       <img id="cap-preview" class="modal-preview"/>
@@ -1491,8 +1603,8 @@ function quickNotesBtn(section){
 }
 function openQuickNotes(section){
   const notes=userData(`notes_${section}`,'');
-  const label={home:'Home Notes',wedding:'Wedding Notes',honeymoon:'Honeymoon Notes',recipes:'Recipe Notes',music:'Music Notes',closet:'Closet Notes'}[section]||'Notes';
-  openModal(`<div class="modal-head"><div class="modal-title">${label}</div><button class="modal-close" onclick="closeModal()">×</button></div><textarea id="qnotes-text" class="field-input" rows="10" placeholder="Jot anything down…" style="min-height:200px">${notes}</textarea><div class="modal-row" style="margin-top:8px"><button class="btn-solid sm" onclick="saveQuickNotes('${section}')">Save Notes</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);
+  const label={home:'Home notes',wedding:'Wedding notes',honeymoon:'Honeymoon notes',recipes:'Recipe notes',music:'Music notes',closet:'Closet notes'}[section]||'Notes';
+  openModal(`<div class="modal-head"><div class="modal-title">${label}</div><button class="modal-close" onclick="closeModal()">×</button></div><textarea id="qnotes-text" class="field-input" rows="10" placeholder="Jot anything down…" style="min-height:200px">${notes}</textarea><div class="modal-row" style="margin-top:8px"><button class="btn-solid sm" onclick="saveQuickNotes('${section}')">Save notes</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);
   setTimeout(()=>{const el=document.getElementById('qnotes-text');if(el){el.selectionStart=el.selectionEnd=el.value.length;el.focus();}},50);
 }
 function saveQuickNotes(section){saveData(`notes_${section}`,document.getElementById('qnotes-text').value);closeModal();showSection(currentSection);}
@@ -1517,19 +1629,19 @@ function setActiveRoom(id){if(id!==activeRoomId)activeRoomTab='overview';activeR
 
 function renderHome(main){
   const home=userData('home',{rooms:[]});
-  if(homeView==='floorplan'){main.innerHTML=`<div class="section-rule"><div><div class="section-title">Floor Plan</div><div class="section-sub">Visualise your space.</div></div>${quickNotesBtn('home')}</div>${renderFloorPlanView()}`;return;}
+  if(homeView==='floorplan'){main.innerHTML=`<div class="section-rule"><div><div class="section-title">Floor plan</div><div class="section-sub">Visualise your space.</div></div>${quickNotesBtn('home')}</div>${renderFloorPlanView()}`;return;}
   if(!home.rooms.length){main.innerHTML=`<div class="section-rule"><div><div class="section-title">Rooms</div><div class="section-sub">Add rooms to start planning.</div></div><div class="flex-center">${quickNotesBtn('home')}<button class="btn-solid sm" onclick="openAddRoom()">+ Room</button></div></div><div class="empty">No rooms yet.</div>`;return;}
   if(!activeRoomId||!home.rooms.find(r=>r.id===activeRoomId))activeRoomId=home.rooms[0].id;
   const room=home.rooms.find(r=>r.id===activeRoomId);
   const tabs=home.rooms.map((r,i)=>`<button class="room-tab${r.id===activeRoomId?' active':''}" draggable="true" ondragstart="dragRoomStart(event,${i})" ondragover="dragRoomOver(event,${i})" ondragleave="dragRoomLeave(event)" ondrop="dropRoom(event,${i},'home')" ondragend="dragRoomEnd(event)" onclick="setActiveRoom('${r.id}')"><span class="drag-handle">⋮⋮</span>${r.name}</button>`).join('');
-  const subTabs=['overview','photos','moodboard'].map(t=>`<button class="room-sub-tab${activeRoomTab===t?' active':''}" onclick="setRoomTab('${t}')">${t==='overview'?'Overview':t==='photos'?'Photos':'Mood Board'}</button>`).join('');
+  const subTabs=['overview','photos','moodboard'].map(t=>`<button class="room-sub-tab${activeRoomTab===t?' active':''}" onclick="setRoomTab('${t}')">${t==='overview'?'Overview':t==='photos'?'Photos':'Mood board'}</button>`).join('');
   let content='';
   if(activeRoomTab==='overview'){
     const photos=room.photos||[],items=room.items||[];
     const budget=room.budget||0,spent=items.reduce((s,it)=>s+(it.price||0),0)+photos.filter(p=>!p.archived).reduce((s,p)=>s+(p.price||0),0);
     const pct=budget>0?Math.min(spent/budget*100,100):0,over=budget>0&&spent>budget;
-    content=`<div class="budget-block"><div class="budget-row"><div><div class="budget-label">${room.name} Budget</div><div class="budget-amount${over?' over':''}">£${spent.toLocaleString(undefined,{minimumFractionDigits:2})} <span style="font-size:14px;color:var(--muted)">/ £${(budget||0).toLocaleString()}</span></div></div><button class="btn-ghost" onclick="editRoomBudget('${room.id}')">Edit</button></div><div class="bar-track"><div class="bar-fill${over?' over':''}" style="width:${pct}%"></div></div><div class="bar-note${over?' over':''}">${over?'Over budget':'Remaining: £'+(budget-spent).toLocaleString(undefined,{minimumFractionDigits:2})}</div></div>
-      <div class="flex-between mb14"><div style="font-family:'Cormorant Garamond',serif;font-size:16px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)">Furniture &amp; Items</div><div class="flex-center"><button class="btn-ghost" onclick="openAddItem('${room.id}')">+ Add Item</button><button class="btn-ghost danger" onclick="deleteRoom('${room.id}')">Delete Room</button></div></div>
+    content=`<div class="budget-block"><div class="budget-row"><div><div class="budget-label">${room.name} budget</div><div class="budget-amount${over?' over':''}">£${spent.toLocaleString(undefined,{minimumFractionDigits:2})} <span style="font-size:14px;color:var(--muted)">/ £${(budget||0).toLocaleString()}</span></div></div><button class="btn-ghost" onclick="editRoomBudget('${room.id}')">Edit</button></div><div class="bar-track"><div class="bar-fill${over?' over':''}" style="width:${pct}%"></div></div><div class="bar-note${over?' over':''}">${over?'Over budget':'Remaining: £'+(budget-spent).toLocaleString(undefined,{minimumFractionDigits:2})}</div></div>
+      <div class="flex-between mb14"><div style="font-family:var(--sans);font-size:16px;color:var(--muted)">Furniture &amp; items</div><div class="flex-center"><button class="btn-ghost" onclick="openAddItem('${room.id}')">+ Add item</button><button class="btn-ghost danger" onclick="deleteRoom('${room.id}')">Delete room</button></div></div>
       ${renderItemList(items,room.id)}`;
   } else if(activeRoomTab==='photos'){
     content=renderPhotoGrid(room.photos||[],'home_room',room.id);
@@ -1547,33 +1659,33 @@ function renderItemList(items,roomId){
 // ── ROOM MOOD BOARD ──
 function renderRoomMoodboard(room){
   const mb=room.moodboard||{colors:[],tiles:[],notes:''};
-  const swatches=mb.colors.length?mb.colors.map((c,i)=>`<div class="mb-swatch-wrap"><div class="mb-swatch" style="background:${c.hex}" title="${c.ral?'RAL '+c.ral:''}"></div><button class="mb-swatch-del" onclick="removeRoomColor('${room.id}',${i})">×</button><div class="mb-swatch-label">${c.ral?'RAL '+c.ral:c.name||''}</div></div>`).join(''):`<p style="font-size:13px;color:var(--muted);font-style:italic">No colours yet.</p>`;
-  const tiles=mb.tiles&&mb.tiles.length?mb.tiles.map((tile,ti)=>`<div style="position:relative;overflow:hidden;border:1px solid var(--bone);display:inline-block;vertical-align:top"><img src="${tile.img}" style="width:${tile.size==='sm'?120:tile.size==='lg'?250:180}px;height:${tile.size==='sm'?90:tile.size==='lg'?180:130}px;object-fit:cover;display:block"/><button onclick="removeRoomMoodTile('${room.id}',${ti})" style="position:absolute;top:3px;right:3px;background:rgba(168,32,32,.85);border:none;color:#fff;width:18px;height:18px;font-size:11px;cursor:pointer">×</button></div>`).join(''):`<p style="font-size:13px;color:var(--muted);font-style:italic">No images yet.</p>`;
+  const swatches=mb.colors.length?mb.colors.map((c,i)=>`<div class="mb-swatch-wrap"><div class="mb-swatch" style="background:${c.hex}" title="${c.ral?'RAL '+c.ral:''}"></div><button class="mb-swatch-del" onclick="removeRoomColor('${room.id}',${i})">×</button><div class="mb-swatch-label">${c.ral?'RAL '+c.ral:c.name||''}</div></div>`).join(''):`<p style="font-size:13px;color:var(--muted);">No colours yet.</p>`;
+  const tiles=mb.tiles&&mb.tiles.length?mb.tiles.map((tile,ti)=>`<div style="position:relative;overflow:hidden;border:1px solid var(--bone);display:inline-block;vertical-align:top"><img src="${tile.img}" style="width:${tile.size==='sm'?120:tile.size==='lg'?250:180}px;height:${tile.size==='sm'?90:tile.size==='lg'?180:130}px;object-fit:cover;display:block"/><button onclick="removeRoomMoodTile('${room.id}',${ti})" style="position:absolute;top:3px;right:3px;background:rgba(168,32,32,.85);border:none;color:#fff;width:18px;height:18px;font-size:12.5px;cursor:pointer">×</button></div>`).join(''):`<p style="font-size:13px;color:var(--muted);">No images yet.</p>`;
   return`<div style="margin-bottom:20px">
-    <div class="flex-between mb14"><div style="font-family:'Cormorant Garamond',serif;font-size:16px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)">Colour Palette</div><button class="btn-ghost" onclick="openAddColor('${room.id}')">+ Add Colour</button></div>
+    <div class="flex-between mb14"><div style="font-family:var(--sans);font-size:16px;color:var(--muted)">Colour palette</div><button class="btn-ghost" onclick="openAddColor('${room.id}')">+ Add colour</button></div>
     <div style="display:flex;flex-wrap:wrap;gap:12px;margin-bottom:20px">${swatches}</div>
-    <div class="flex-between mb14"><div style="font-family:'Cormorant Garamond',serif;font-size:16px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)">Inspiration Images</div><button class="btn-ghost" onclick="openAddRoomMoodTile('${room.id}')">+ Add Image</button></div>
+    <div class="flex-between mb14"><div style="font-family:var(--sans);font-size:16px;color:var(--muted)">Inspiration images</div><button class="btn-ghost" onclick="openAddRoomMoodTile('${room.id}')">+ Add image</button></div>
     <div style="display:flex;flex-wrap:wrap;gap:10px">${tiles}</div>
-    ${mb.notes?`<div style="margin-top:14px;font-size:13px;color:var(--muted);font-style:italic">${mb.notes}</div>`:''}
+    ${mb.notes?`<div style="margin-top:14px;font-size:13px;color:var(--muted);">${mb.notes}</div>`:''}
   </div>`;
 }
 
 function openAddColor(roomId){
-  const dropperBtn=typeof EyeDropper!=='undefined'?`<button class="btn-ghost" style="margin-bottom:14px;width:100%" onclick="useDropper('${roomId}')">🎯 Pick Colour from Screen</button>`:`<p style="font-size:11px;color:var(--muted);margin-bottom:14px;font-style:italic">Screen colour picker available in Chrome/Edge.</p>`;
-  openModal(`<div class="modal-head"><div class="modal-title">Add Colour</div><button class="modal-close" onclick="closeModal()">×</button></div>
-    <label class="field-label">Colour Picker</label>
+  const dropperBtn=typeof EyeDropper!=='undefined'?`<button class="btn-ghost" style="margin-bottom:14px;width:100%" onclick="useDropper('${roomId}')">Pick colour from screen</button>`:`<p style="font-size:12.5px;color:var(--muted);margin-bottom:14px;">Screen colour picker available in Chrome/Edge.</p>`;
+  openModal(`<div class="modal-head"><div class="modal-title">Add colour</div><button class="modal-close" onclick="closeModal()">×</button></div>
+    <label class="field-label">Colour picker</label>
     <input id="color-picker" type="color" value="#c9b89a" class="color-picker-input"/>
     ${dropperBtn}
-    <label class="field-label">Or Enter RAL Number</label>
+    <label class="field-label">Or enter RAL number</label>
     <div class="ral-row mb14">
       <input id="ral-input" class="field-input" placeholder="e.g. 9010" style="margin-bottom:0" oninput="previewRal(this.value)"/>
       <div id="ral-preview" class="ral-preview-box"></div>
     </div>
-    <div id="ral-name" style="font-size:12px;color:var(--muted);margin-bottom:14px;font-style:italic;margin-top:-12px"></div>
-    <label class="field-label">Colour Name (optional)</label>
+    <div id="ral-name" style="font-size:12px;color:var(--muted);margin-bottom:14px;margin-top:-12px"></div>
+    <label class="field-label">Colour name (optional)</label>
     <input id="color-name" class="field-input" placeholder="e.g. Cornish Cream…"/>
     <div class="modal-row">
-      <button class="btn-solid sm" onclick="saveColor('${roomId}')">Add Colour</button>
+      <button class="btn-solid sm" onclick="saveColor('${roomId}')">Add colour</button>
       <button class="btn-ghost" onclick="closeModal()">Cancel</button>
     </div>`);
 }
@@ -1635,24 +1747,24 @@ function removeRoomMoodTile(roomId,idx){
 // ── FLOOR PLAN ──
 function renderFloorPlanView(){
   const fp=userData('floorplan',{img:null,markers:[]});
-  if(!fp.img)return`<div style="text-align:center;padding:48px 20px"><div style="font-size:48px;opacity:.3;margin-bottom:16px">🏠</div><p style="font-size:15px;color:var(--muted);font-style:italic;margin-bottom:20px">Upload a floor plan image to get started</p><button class="btn-solid sm" onclick="document.getElementById('fp-file-input').click()">Upload Floor Plan</button><p style="font-size:11px;color:var(--muted);margin-top:12px;font-style:italic">Supports JPG and PNG</p></div>`;
-  return`<div class="flex-between mb14"><p style="font-size:12px;color:var(--muted);font-style:italic">Tap an empty area to pin a room</p><div class="flex-center"><button class="btn-ghost" onclick="document.getElementById('fp-file-input').click()">Replace</button><button class="btn-ghost danger" onclick="clearFloorPlan()">Remove</button></div></div>
+  if(!fp.img)return`<div style="text-align:center;padding:48px 20px"><div style="font-size:48px;opacity:.3;margin-bottom:16px">🏠</div><p style="font-size:15px;color:var(--muted);margin-bottom:20px">Upload a floor plan image to get started</p><button class="btn-solid sm" onclick="document.getElementById('fp-file-input').click()">Upload floor plan</button><p style="font-size:12.5px;color:var(--muted);margin-top:12px;">Supports JPG and PNG</p></div>`;
+  return`<div class="flex-between mb14"><p style="font-size:12px;color:var(--muted);">Tap an empty area to pin a room</p><div class="flex-center"><button class="btn-ghost" onclick="document.getElementById('fp-file-input').click()">Replace</button><button class="btn-ghost danger" onclick="clearFloorPlan()">Remove</button></div></div>
   <div class="fp-container" onclick="floorPlanClick(event)"><img src="${fp.img}" class="fp-img"/>${fp.markers.map(m=>`<div class="fp-marker" style="left:${m.x}%;top:${m.y}%" onclick="event.stopPropagation();navigateFromMarker('${m.roomId}')">${m.label.charAt(0).toUpperCase()}<div class="fp-label">${m.label}</div><button class="fp-del" onclick="event.stopPropagation();deleteMarker('${m.id}')">×</button></div>`).join('')}</div>`;
 }
 function floorPlanClick(e){if(e.target.closest('.fp-marker'))return;const rect=e.currentTarget.getBoundingClientRect();const x=((e.clientX-rect.left)/rect.width*100).toFixed(1);const y=((e.clientY-rect.top)/rect.height*100).toFixed(1);openAddMarkerModal(parseFloat(x),parseFloat(y));}
-function openAddMarkerModal(x,y){const home=userData('home',{rooms:[]});if(!home.rooms.length){alert('Add some rooms first.');return;}openModal(`<div class="modal-head"><div class="modal-title">Pin a Room</div><button class="modal-close" onclick="closeModal()">×</button></div><label class="field-label">Select Room</label><select id="marker-room" class="field-input">${home.rooms.map(r=>`<option value="${r.id}">${r.name}</option>`).join('')}</select><div class="modal-row"><button class="btn-solid sm" onclick="saveMarker(${x},${y})">Add Pin</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);}
+function openAddMarkerModal(x,y){const home=userData('home',{rooms:[]});if(!home.rooms.length){alert('Add some rooms first.');return;}openModal(`<div class="modal-head"><div class="modal-title">Pin a room</div><button class="modal-close" onclick="closeModal()">×</button></div><label class="field-label">Select room</label><select id="marker-room" class="field-input">${home.rooms.map(r=>`<option value="${r.id}">${r.name}</option>`).join('')}</select><div class="modal-row"><button class="btn-solid sm" onclick="saveMarker(${x},${y})">Add pin</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);}
 function saveMarker(x,y){const roomId=document.getElementById('marker-room').value;const home=userData('home',{rooms:[]});const room=home.rooms.find(r=>r.id===roomId);if(!room)return;const fp=userData('floorplan',{img:null,markers:[]});fp.markers.push({id:uid(),x,y,roomId,label:room.name});saveData('floorplan',fp);closeModal();showSection('home');}
 function deleteMarker(markerId){const fp=userData('floorplan',{img:null,markers:[]});fp.markers=fp.markers.filter(m=>m.id!==markerId);saveData('floorplan',fp);showSection('home');}
 function navigateFromMarker(roomId){activeRoomId=roomId;homeView='rooms';activeRoomTab='overview';showSection('home');}
 function clearFloorPlan(){if(!confirm('Remove the floor plan?'))return;saveData('floorplan',{img:null,markers:[]});showSection('home');}
 
 // ── HOME CRUD ──
-function openAddRoom(){openModal(`<div class="modal-head"><div class="modal-title">Add Room</div><button class="modal-close" onclick="closeModal()">×</button></div><label class="field-label">Room Name</label><input id="new-room-name" class="field-input" placeholder="e.g. Living Room…"/><label class="field-label">Budget (optional)</label><input id="new-room-budget" class="field-input" type="number" placeholder="0.00" min="0" step="0.01"/><div class="modal-row"><button class="btn-solid sm" onclick="saveRoom()">Create Room</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);}
+function openAddRoom(){openModal(`<div class="modal-head"><div class="modal-title">Add room</div><button class="modal-close" onclick="closeModal()">×</button></div><label class="field-label">Room name</label><input id="new-room-name" class="field-input" placeholder="e.g. Living Room…"/><label class="field-label">Budget (optional)</label><input id="new-room-budget" class="field-input" type="number" placeholder="0.00" min="0" step="0.01"/><div class="modal-row"><button class="btn-solid sm" onclick="saveRoom()">Create room</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);}
 function saveRoom(){const name=document.getElementById('new-room-name').value.trim();if(!name)return;const budget=parseFloat(document.getElementById('new-room-budget').value)||0;const home=userData('home',{rooms:[]});const id=uid();home.rooms.push({id,name,budget,photos:[],items:[],moodboard:{colors:[],tiles:[],notes:''}});saveData('home',home);activeRoomId=id;activeRoomTab='overview';closeModal();showSection('home');}
-function editRoomBudget(roomId){const home=userData('home',{rooms:[]});const room=home.rooms.find(r=>r.id===roomId);openModal(`<div class="modal-head"><div class="modal-title">Edit Budget</div><button class="modal-close" onclick="closeModal()">×</button></div><label class="field-label">${room.name}</label><input id="edit-budget" class="field-input" type="number" value="${room.budget||0}" min="0" step="0.01"/><div class="modal-row"><button class="btn-solid sm" onclick="saveRoomBudget('${roomId}')">Save</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);}
+function editRoomBudget(roomId){const home=userData('home',{rooms:[]});const room=home.rooms.find(r=>r.id===roomId);openModal(`<div class="modal-head"><div class="modal-title">Edit budget</div><button class="modal-close" onclick="closeModal()">×</button></div><label class="field-label">${room.name}</label><input id="edit-budget" class="field-input" type="number" value="${room.budget||0}" min="0" step="0.01"/><div class="modal-row"><button class="btn-solid sm" onclick="saveRoomBudget('${roomId}')">Save</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);}
 function saveRoomBudget(id){const home=userData('home',{rooms:[]});const room=home.rooms.find(r=>r.id===id);if(room){room.budget=parseFloat(document.getElementById('edit-budget').value)||0;saveData('home',home);}closeModal();showSection('home');}
 function deleteRoom(roomId){if(!confirm('Delete this room and all its content?'))return;const home=userData('home',{rooms:[]});home.rooms=home.rooms.filter(r=>r.id!==roomId);activeRoomId=home.rooms.length?home.rooms[0].id:null;saveData('home',home);showSection('home');}
-function openAddItem(roomId){openModal(`<div class="modal-head"><div class="modal-title">Add Item</div><button class="modal-close" onclick="closeModal()">×</button></div><label class="field-label">Item Name</label><input id="item-name" class="field-input" placeholder="e.g. IKEA Kallax"/><label class="field-label">Store</label><input id="item-store" class="field-input" placeholder="e.g. IKEA…"/><label class="field-label">Link</label><input id="item-link" class="field-input" type="url" placeholder="https://…"/><label class="field-label">Price</label><input id="item-price" class="field-input" type="number" placeholder="0.00" min="0" step="0.01"/><label class="field-label">Photo (optional)</label><button class="btn-ghost" onclick="pickItemPhoto()">Choose Photo</button><img id="item-img-preview" style="display:none;max-height:120px;margin-top:8px"/><input type="file" id="item-file" accept="image/*" style="display:none"/><div class="modal-row" style="margin-top:14px"><button class="btn-solid sm" onclick="saveItem('${roomId}')">Add to Room</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);}
+function openAddItem(roomId){openModal(`<div class="modal-head"><div class="modal-title">Add item</div><button class="modal-close" onclick="closeModal()">×</button></div><label class="field-label">Item name</label><input id="item-name" class="field-input" placeholder="e.g. IKEA Kallax"/><label class="field-label">Store</label><input id="item-store" class="field-input" placeholder="e.g. IKEA…"/><label class="field-label">Link</label><input id="item-link" class="field-input" type="url" placeholder="https://…"/><label class="field-label">Price</label><input id="item-price" class="field-input" type="number" placeholder="0.00" min="0" step="0.01"/><label class="field-label">Photo (optional)</label><button class="btn-ghost" onclick="pickItemPhoto()">Choose photo</button><img id="item-img-preview" style="display:none;max-height:120px;margin-top:8px"/><input type="file" id="item-file" accept="image/*" style="display:none"/><div class="modal-row" style="margin-top:14px"><button class="btn-solid sm" onclick="saveItem('${roomId}')">Add to room</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);}
 let itemImgData=null;
 function pickItemPhoto(){itemImgData=null;const fi=document.getElementById('item-file');fi.onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{itemImgData=ev.target.result;const p=document.getElementById('item-img-preview');p.src=itemImgData;p.style.display='block';};r.readAsDataURL(f);};fi.click();}
 function saveItem(roomId){const name=document.getElementById('item-name').value.trim();if(!name)return;const home=userData('home',{rooms:[]});const room=home.rooms.find(r=>r.id===roomId);if(!room)return;room.items=room.items||[];room.items.push({id:uid(),name,store:document.getElementById('item-store').value.trim(),link:document.getElementById('item-link').value.trim(),price:parseFloat(document.getElementById('item-price').value)||0,img:itemImgData||null});itemImgData=null;saveData('home',home);closeModal();showSection('home');}
@@ -1661,7 +1773,7 @@ function deleteItem(roomId,itemId){const home=userData('home',{rooms:[]});const 
 // ── DAYS OUT ──
 function renderDayOut(main){
   const d=userData('dayout',{plans:[]});
-  if(!d.plans.length){main.innerHTML=`<div class="section-rule"><div><div class="section-title">Days Out</div><div class="section-sub">Plan trips, days out &amp; adventures.</div></div><button class="btn-solid sm teal" onclick="openAddDayOutPlan()">+ Add Plan</button></div><div class="empty"><div class="empty-icon">🗺️</div>No plans yet. Add your first day out!</div>`;return;}
+  if(!d.plans.length){main.innerHTML=`<div class="section-rule"><div><div class="section-title">Days out</div><div class="section-sub">Plan trips, days out &amp; adventures.</div></div><button class="btn-solid sm teal" onclick="openAddDayOutPlan()">+ Add plan</button></div><div class="empty"><div class="empty-icon">🗺️</div>No plans yet. Add your first day out!</div>`;return;}
   if(!activeDayOutId||!d.plans.find(p=>p.id===activeDayOutId))activeDayOutId=d.plans[0].id;
   const plan=d.plans.find(p=>p.id===activeDayOutId);
   const photos=plan.photos||[],items=plan.items||[];
@@ -1670,22 +1782,22 @@ function renderDayOut(main){
   const tabs=d.plans.map((p,i)=>`<button class="room-tab${p.id===activeDayOutId?' active':''}" draggable="true" ondragstart="dragRoomStart(event,${i})" ondragover="dragRoomOver(event,${i})" ondragleave="dragRoomLeave(event)" ondrop="dropRoom(event,${i},'dayout')" ondragend="dragRoomEnd(event)" onclick="setActiveDayOut('${p.id}')"><span class="drag-handle">⋮⋮</span>${p.name}</button>`).join('');
   const catIcons={'Travel':'🚗','Food & Drink':'🍽️','Activity':'🎭','Shopping':'🛍️','Other':'📌'};
   const itemsHtml=items.length?items.map(it=>`<div class="item-row"><div class="item-thumb-ph">${catIcons[it.cat]||'📌'}</div><div class="item-body"><span class="cat-badge">${it.cat||'Other'}</span><div class="item-name">${it.name}</div>${it.link?`<a class="item-link" href="${it.link}" target="_blank" rel="noopener">${it.link}</a>`:''}</div>${it.price?`<div class="item-price">£${it.price.toLocaleString(undefined,{minimumFractionDigits:2})}</div>`:''}<button class="icon-btn" onclick="deleteDayOutItem('${plan.id}','${it.id}')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg></button></div>`).join(''):`<div class="empty" style="padding:20px 0;font-size:13px">No activities yet.</div>`;
-  main.innerHTML=`<div class="section-rule"><div><div class="section-title">Days Out</div><div class="section-sub">Plan trips, days out &amp; adventures.</div></div><button class="btn-solid sm teal" onclick="openAddDayOutPlan()">+ Add Plan</button></div>
+  main.innerHTML=`<div class="section-rule"><div><div class="section-title">Days out</div><div class="section-sub">Plan trips, days out &amp; adventures.</div></div><button class="btn-solid sm teal" onclick="openAddDayOutPlan()">+ Add plan</button></div>
     <div class="room-tabs-row">${tabs}</div>
-    ${plan.date||plan.location?`<div style="font-size:13px;color:var(--muted);margin-bottom:16px;font-style:italic">${plan.date?`📅 ${new Date(plan.date+'T00:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})}`:''} ${plan.location?`📍 ${plan.location}`:''}</div>`:''}
-    <div class="budget-block"><div class="budget-row"><div><div class="budget-label">${plan.name} Budget</div><div class="budget-amount${over?' over':''}">£${spent.toLocaleString(undefined,{minimumFractionDigits:2})} <span style="font-size:14px;color:var(--muted)">/ £${budget.toLocaleString()}</span></div></div><div class="flex-center"><button class="btn-ghost" onclick="editDayOutBudget('${plan.id}')">Edit Budget</button><button class="btn-ghost danger" onclick="deleteDayOutPlan('${plan.id}')">Delete</button></div></div><div class="bar-track"><div class="bar-fill${over?' over':''}" style="width:${pct}%"></div></div><div class="bar-note${over?' over':''}">${over?'Over budget':'Remaining: £'+(budget-spent).toLocaleString(undefined,{minimumFractionDigits:2})}</div></div>
-    <div class="flex-between mb14"><div style="font-family:'Cormorant Garamond',serif;font-size:16px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)">Activities &amp; Bookings</div><button class="btn-ghost" onclick="openAddDayOutItem('${plan.id}')">+ Add</button></div>
+    ${plan.date||plan.location?`<div style="font-size:13px;color:var(--muted);margin-bottom:16px;">${plan.date?`📅 ${new Date(plan.date+'T00:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})}`:''} ${plan.location?`📍 ${plan.location}`:''}</div>`:''}
+    <div class="budget-block"><div class="budget-row"><div><div class="budget-label">${plan.name} budget</div><div class="budget-amount${over?' over':''}">£${spent.toLocaleString(undefined,{minimumFractionDigits:2})} <span style="font-size:14px;color:var(--muted)">/ £${budget.toLocaleString()}</span></div></div><div class="flex-center"><button class="btn-ghost" onclick="editDayOutBudget('${plan.id}')">Edit budget</button><button class="btn-ghost danger" onclick="deleteDayOutPlan('${plan.id}')">Delete</button></div></div><div class="bar-track"><div class="bar-fill${over?' over':''}" style="width:${pct}%"></div></div><div class="bar-note${over?' over':''}">${over?'Over budget':'Remaining: £'+(budget-spent).toLocaleString(undefined,{minimumFractionDigits:2})}</div></div>
+    <div class="flex-between mb14"><div style="font-family:var(--sans);font-size:16px;color:var(--muted)">Activities &amp; bookings</div><button class="btn-ghost" onclick="openAddDayOutItem('${plan.id}')">+ Add</button></div>
     ${itemsHtml}
-    <div class="flex-between mb14" style="margin-top:22px"><div style="font-family:'Cormorant Garamond',serif;font-size:16px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)">Photos</div></div>
+    <div class="flex-between mb14" style="margin-top:22px"><div style="font-family:var(--sans);font-size:16px;color:var(--muted)">Photos</div></div>
     ${renderPhotoGrid(photos,'dayout_plan',plan.id)}`;
 }
 function setActiveDayOut(id){activeDayOutId=id;showSection('dayout');}
-function openAddDayOutPlan(){openModal(`<div class="modal-head"><div class="modal-title">New Day Out</div><button class="modal-close" onclick="closeModal()">×</button></div><label class="field-label">Name</label><input id="do-name" class="field-input" placeholder="e.g. Cornwall Weekend, Tate Modern…"/><label class="field-label">Date (optional)</label><input id="do-date" class="field-input" type="date"/><label class="field-label">Location (optional)</label><input id="do-location" class="field-input" placeholder="e.g. London, Cornwall…"/><label class="field-label">Budget (optional)</label><input id="do-budget" class="field-input" type="number" placeholder="0.00" min="0" step="0.01"/><div class="modal-row"><button class="btn-solid sm teal" onclick="saveDayOutPlan()">Create Plan</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);}
+function openAddDayOutPlan(){openModal(`<div class="modal-head"><div class="modal-title">New day out</div><button class="modal-close" onclick="closeModal()">×</button></div><label class="field-label">Name</label><input id="do-name" class="field-input" placeholder="e.g. Cornwall Weekend, Tate Modern…"/><label class="field-label">Date (optional)</label><input id="do-date" class="field-input" type="date"/><label class="field-label">Location (optional)</label><input id="do-location" class="field-input" placeholder="e.g. London, Cornwall…"/><label class="field-label">Budget (optional)</label><input id="do-budget" class="field-input" type="number" placeholder="0.00" min="0" step="0.01"/><div class="modal-row"><button class="btn-solid sm teal" onclick="saveDayOutPlan()">Create plan</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);}
 function saveDayOutPlan(){const name=document.getElementById('do-name').value.trim();if(!name)return;const d=userData('dayout',{plans:[]});const id=uid();d.plans.push({id,name,date:document.getElementById('do-date').value,location:document.getElementById('do-location').value.trim(),budget:parseFloat(document.getElementById('do-budget').value)||0,photos:[],items:[]});saveData('dayout',d);activeDayOutId=id;closeModal();showSection('dayout');}
 function deleteDayOutPlan(planId){if(!confirm('Delete this day out plan?'))return;const d=userData('dayout',{plans:[]});d.plans=d.plans.filter(p=>p.id!==planId);activeDayOutId=d.plans.length?d.plans[0].id:null;saveData('dayout',d);showSection('dayout');}
-function editDayOutBudget(planId){const d=userData('dayout',{plans:[]});const pl=d.plans.find(p=>p.id===planId);openModal(`<div class="modal-head"><div class="modal-title">Edit Budget</div><button class="modal-close" onclick="closeModal()">×</button></div><label class="field-label">${pl.name}</label><input id="edit-budget" class="field-input" type="number" value="${pl.budget||0}" min="0" step="0.01"/><div class="modal-row"><button class="btn-solid sm" onclick="saveDayOutBudget('${planId}')">Save</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);}
+function editDayOutBudget(planId){const d=userData('dayout',{plans:[]});const pl=d.plans.find(p=>p.id===planId);openModal(`<div class="modal-head"><div class="modal-title">Edit budget</div><button class="modal-close" onclick="closeModal()">×</button></div><label class="field-label">${pl.name}</label><input id="edit-budget" class="field-input" type="number" value="${pl.budget||0}" min="0" step="0.01"/><div class="modal-row"><button class="btn-solid sm" onclick="saveDayOutBudget('${planId}')">Save</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);}
 function saveDayOutBudget(planId){const d=userData('dayout',{plans:[]});const pl=d.plans.find(p=>p.id===planId);if(pl){pl.budget=parseFloat(document.getElementById('edit-budget').value)||0;saveData('dayout',d);}closeModal();showSection('dayout');}
-function openAddDayOutItem(planId){openModal(`<div class="modal-head"><div class="modal-title">Add Activity / Booking</div><button class="modal-close" onclick="closeModal()">×</button></div><label class="field-label">Name</label><input id="doi-name" class="field-input" placeholder="e.g. Lunch at The Seafood Bar…"/><label class="field-label">Category</label><select id="doi-cat" class="field-input"><option>Travel</option><option>Food & Drink</option><option>Activity</option><option>Shopping</option><option>Other</option></select><label class="field-label">Link</label><input id="doi-link" class="field-input" type="url" placeholder="https://…"/><label class="field-label">Price</label><input id="doi-price" class="field-input" type="number" placeholder="0.00" min="0" step="0.01"/><div class="modal-row"><button class="btn-solid sm teal" onclick="saveDayOutItem('${planId}')">Add</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);}
+function openAddDayOutItem(planId){openModal(`<div class="modal-head"><div class="modal-title">Add activity / booking</div><button class="modal-close" onclick="closeModal()">×</button></div><label class="field-label">Name</label><input id="doi-name" class="field-input" placeholder="e.g. Lunch at The Seafood Bar…"/><label class="field-label">Category</label><select id="doi-cat" class="field-input"><option>Travel</option><option>Food & Drink</option><option>Activity</option><option>Shopping</option><option>Other</option></select><label class="field-label">Link</label><input id="doi-link" class="field-input" type="url" placeholder="https://…"/><label class="field-label">Price</label><input id="doi-price" class="field-input" type="number" placeholder="0.00" min="0" step="0.01"/><div class="modal-row"><button class="btn-solid sm teal" onclick="saveDayOutItem('${planId}')">Add</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);}
 function saveDayOutItem(planId){const name=document.getElementById('doi-name').value.trim();if(!name)return;const d=userData('dayout',{plans:[]});const pl=d.plans.find(p=>p.id===planId);if(!pl)return;pl.items=pl.items||[];pl.items.push({id:uid(),name,cat:document.getElementById('doi-cat').value,link:document.getElementById('doi-link').value.trim(),price:parseFloat(document.getElementById('doi-price').value)||0});saveData('dayout',d);closeModal();showSection('dayout');}
 function deleteDayOutItem(planId,itemId){const d=userData('dayout',{plans:[]});const pl=d.plans.find(p=>p.id===planId);if(pl){pl.items=(pl.items||[]).filter(i=>i.id!==itemId);saveData('dayout',d);}showSection('dayout');}
 
@@ -1693,12 +1805,12 @@ function deleteDayOutItem(planId,itemId){const d=userData('dayout',{plans:[]});c
 let weddingTab='inspo';
 function renderWedding(main){
   const w=userData('wedding',{inspo:[],wdate:'',venue:'',theme:'',notes:''});
-  if(weddingTab==='moodboard')weddingTab='inspo';   // mood boards now live behind the Mood Board button
+  if(weddingTab==='moodboard')weddingTab='inspo';   // mood boards now live behind the Mood board button
   const tabs=['inspo','details'].map(t=>`<button class="room-tab${weddingTab===t?' active':''}" onclick="setWeddingTab('${t}')">${t==='inspo'?'Inspiration':'Details'}</button>`).join('');
   let content='';
-  if(weddingTab==='inspo')content=`<div class="flex-between mb14"><div style="font-family:'Cormorant Garamond',serif;font-size:16px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)">Inspiration Gallery</div></div>${renderPhotoGrid(w.inspo||[],'wedding','wedding')}`;
+  if(weddingTab==='inspo')content=`<div class="flex-between mb14"><div style="font-family:var(--sans);font-size:16px;color:var(--muted)">Inspiration gallery</div></div>${renderPhotoGrid(w.inspo||[],'wedding','wedding')}`;
   else if(weddingTab==='moodboard')content=renderMoodBoardSection('wedding');
-  else content=`<label class="field-label">Wedding Date</label><input id="w-date" class="field-input" type="date" value="${w.wdate||''}"/><label class="field-label">Venue</label><input id="w-venue" class="field-input" placeholder="The Grand Hotel…" value="${w.venue||''}"/><label class="field-label">Theme / Aesthetic</label><input id="w-theme" class="field-input" placeholder="Garden romance…" value="${w.theme||''}"/><label class="field-label">Notes</label><textarea id="w-notes" class="field-input" rows="4">${w.notes||''}</textarea><button class="btn-solid sm" onclick="saveWeddingDetails()">Save Details</button>`;
+  else content=`<label class="field-label">Wedding date</label><input id="w-date" class="field-input" type="date" value="${w.wdate||''}"/><label class="field-label">Venue</label><input id="w-venue" class="field-input" placeholder="The Grand Hotel…" value="${w.venue||''}"/><label class="field-label">Theme / Aesthetic</label><input id="w-theme" class="field-input" placeholder="Garden romance…" value="${w.theme||''}"/><label class="field-label">Notes</label><textarea id="w-notes" class="field-input" rows="4">${w.notes||''}</textarea><button class="btn-solid sm" onclick="saveWeddingDetails()">Save details</button>`;
   main.innerHTML=`<div class="section-rule"><div><div class="section-title">Wedding</div><div class="section-sub">Gather inspiration &amp; build your vision.</div></div>${quickNotesBtn('wedding')}</div><div class="room-tabs-row">${tabs}</div>${content}`;
 }
 function setWeddingTab(t){weddingTab=t;showSection('wedding');}
@@ -1724,35 +1836,35 @@ function renderHoneymoon(main){
       const rPct=room.budget>0?Math.min(rSpent/room.budget*100,100):0,rOver=room.budget>0&&rSpent>room.budget;
       inner=`<div class="room-tabs-row">${h.rooms.map(r=>`<button class="room-tab${r.id===activeHoneymoonRoomId?' active':''}" onclick="setActiveHoneymoonRoom('${r.id}')">${r.name}</button>`).join('')}</div>
         <div class="budget-block"><div class="budget-row"><div><div class="budget-label">${room.name}</div><div class="budget-amount${rOver?' over':''}">£${rSpent.toLocaleString(undefined,{minimumFractionDigits:2})} / £${(room.budget||0).toLocaleString()}</div></div><button class="btn-ghost" onclick="editHoneymoonRoomBudget('${room.id}')">Edit</button></div><div class="bar-track"><div class="bar-fill${rOver?' over':''}" style="width:${rPct}%"></div></div><div class="bar-note${rOver?' over':''}">${rOver?'Over budget':'Remaining: £'+(room.budget-rSpent).toLocaleString(undefined,{minimumFractionDigits:2})}</div></div>
-        <div class="flex-between mb14"><div style="font-family:'Cormorant Garamond',serif;font-size:15px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">Bookings</div><button class="btn-ghost" onclick="openAddHoneymoonItem('${room.id}')">+ Add</button></div>
+        <div class="flex-between mb14"><div style="font-family:var(--sans);font-size:15px;color:var(--muted)">Bookings</div><button class="btn-ghost" onclick="openAddHoneymoonItem('${room.id}')">+ Add</button></div>
         ${renderItemList(room.items||[],room.id)}<div style="margin-top:18px">${renderPhotoGrid(room.photos||[],'honeymoon_room',room.id)}</div>`;
     }
     content=`<div class="flex-between mb14"><div></div><div class="flex-center"><button class="btn-solid sm" onclick="openAddHoneymoonRoom()">+ Destination</button>${h.rooms.length?`<button class="btn-ghost danger" onclick="deleteHoneymoonRoom('${activeHoneymoonRoomId}')">Delete</button>`:''}</div></div>`+inner;
   } else {
-    content=`<div class="budget-block"><div class="budget-row"><div><div class="budget-label">Total Budget</div><div class="budget-amount${over?' over':''}">£${spent.toLocaleString(undefined,{minimumFractionDigits:2})} / £${budget.toLocaleString()}</div></div><button class="btn-ghost" onclick="editOverallHoneymoonBudget()">Edit</button></div><div class="bar-track"><div class="bar-fill${over?' over':''}" style="width:${pct}%"></div></div><div class="bar-note${over?' over':''}">${over?'Over budget':'Remaining: £'+(budget-spent).toLocaleString(undefined,{minimumFractionDigits:2})}</div></div><div style="margin-top:18px">${h.rooms.map(r=>{const rs=(r.items||[]).reduce((s,i)=>s+(i.price||0),0);return`<div class="item-row"><div class="item-body"><div class="item-name">${r.name}</div><div class="item-store">Budget: £${(r.budget||0).toLocaleString()}</div></div><div class="item-price">£${rs.toLocaleString(undefined,{minimumFractionDigits:2})}</div></div>`;}).join('')}</div>`;
+    content=`<div class="budget-block"><div class="budget-row"><div><div class="budget-label">Total budget</div><div class="budget-amount${over?' over':''}">£${spent.toLocaleString(undefined,{minimumFractionDigits:2})} / £${budget.toLocaleString()}</div></div><button class="btn-ghost" onclick="editOverallHoneymoonBudget()">Edit</button></div><div class="bar-track"><div class="bar-fill${over?' over':''}" style="width:${pct}%"></div></div><div class="bar-note${over?' over':''}">${over?'Over budget':'Remaining: £'+(budget-spent).toLocaleString(undefined,{minimumFractionDigits:2})}</div></div><div style="margin-top:18px">${h.rooms.map(r=>{const rs=(r.items||[]).reduce((s,i)=>s+(i.price||0),0);return`<div class="item-row"><div class="item-body"><div class="item-name">${r.name}</div><div class="item-store">Budget: £${(r.budget||0).toLocaleString()}</div></div><div class="item-price">£${rs.toLocaleString(undefined,{minimumFractionDigits:2})}</div></div>`;}).join('')}</div>`;
   }
   main.innerHTML=`<div class="section-rule"><div><div class="section-title">Honeymoon</div><div class="section-sub">Plan your perfect getaway.</div></div>${quickNotesBtn('honeymoon')}</div><div class="room-tabs-row">${tabs}</div>${content}`;
 }
 function setHoneymoonTab(t){honeymoonTab=t;showSection('honeymoon');}
 function setActiveHoneymoonRoom(id){activeHoneymoonRoomId=id;showSection('honeymoon');}
-function openAddHoneymoonRoom(){openModal(`<div class="modal-head"><div class="modal-title">Add Destination</div><button class="modal-close" onclick="closeModal()">×</button></div><label class="field-label">Destination</label><input id="new-hroom-name" class="field-input" placeholder="e.g. Santorini…"/><label class="field-label">Budget</label><input id="new-hroom-budget" class="field-input" type="number" placeholder="0.00" min="0" step="0.01"/><div class="modal-row"><button class="btn-solid sm" onclick="saveHoneymoonRoom()">Add</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);}
+function openAddHoneymoonRoom(){openModal(`<div class="modal-head"><div class="modal-title">Add destination</div><button class="modal-close" onclick="closeModal()">×</button></div><label class="field-label">Destination</label><input id="new-hroom-name" class="field-input" placeholder="e.g. Santorini…"/><label class="field-label">Budget</label><input id="new-hroom-budget" class="field-input" type="number" placeholder="0.00" min="0" step="0.01"/><div class="modal-row"><button class="btn-solid sm" onclick="saveHoneymoonRoom()">Add</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);}
 function saveHoneymoonRoom(){const name=document.getElementById('new-hroom-name').value.trim();if(!name)return;const budget=parseFloat(document.getElementById('new-hroom-budget').value)||0;const h=userData('honeymoon',{rooms:[],inspo:[],budget:0});const id=uid();h.rooms.push({id,name,budget,photos:[],items:[]});saveData('honeymoon',h);activeHoneymoonRoomId=id;closeModal();showSection('honeymoon');}
-function editHoneymoonRoomBudget(roomId){const h=userData('honeymoon',{rooms:[]});const room=h.rooms.find(r=>r.id===roomId);openModal(`<div class="modal-head"><div class="modal-title">Edit Budget</div><button class="modal-close" onclick="closeModal()">×</button></div><label class="field-label">${room.name}</label><input id="edit-budget" class="field-input" type="number" value="${room.budget||0}" min="0" step="0.01"/><div class="modal-row"><button class="btn-solid sm" onclick="saveHoneymoonRoomBudget('${roomId}')">Save</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);}
+function editHoneymoonRoomBudget(roomId){const h=userData('honeymoon',{rooms:[]});const room=h.rooms.find(r=>r.id===roomId);openModal(`<div class="modal-head"><div class="modal-title">Edit budget</div><button class="modal-close" onclick="closeModal()">×</button></div><label class="field-label">${room.name}</label><input id="edit-budget" class="field-input" type="number" value="${room.budget||0}" min="0" step="0.01"/><div class="modal-row"><button class="btn-solid sm" onclick="saveHoneymoonRoomBudget('${roomId}')">Save</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);}
 function saveHoneymoonRoomBudget(roomId){const h=userData('honeymoon',{rooms:[]});const room=h.rooms.find(r=>r.id===roomId);if(room){room.budget=parseFloat(document.getElementById('edit-budget').value)||0;saveData('honeymoon',h);}closeModal();showSection('honeymoon');}
-function editOverallHoneymoonBudget(){const h=userData('honeymoon',{budget:0});openModal(`<div class="modal-head"><div class="modal-title">Overall Budget</div><button class="modal-close" onclick="closeModal()">×</button></div><label class="field-label">Total Budget</label><input id="edit-budget" class="field-input" type="number" value="${h.budget||0}" min="0" step="0.01"/><div class="modal-row"><button class="btn-solid sm" onclick="saveOverallHoneymoonBudget()">Save</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);}
+function editOverallHoneymoonBudget(){const h=userData('honeymoon',{budget:0});openModal(`<div class="modal-head"><div class="modal-title">Overall budget</div><button class="modal-close" onclick="closeModal()">×</button></div><label class="field-label">Total budget</label><input id="edit-budget" class="field-input" type="number" value="${h.budget||0}" min="0" step="0.01"/><div class="modal-row"><button class="btn-solid sm" onclick="saveOverallHoneymoonBudget()">Save</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);}
 function saveOverallHoneymoonBudget(){const h=userData('honeymoon',{rooms:[],inspo:[],budget:0});h.budget=parseFloat(document.getElementById('edit-budget').value)||0;saveData('honeymoon',h);closeModal();showSection('honeymoon');}
 function deleteHoneymoonRoom(roomId){if(!confirm('Delete this destination?'))return;const h=userData('honeymoon',{rooms:[]});h.rooms=h.rooms.filter(r=>r.id!==roomId);activeHoneymoonRoomId=h.rooms.length?h.rooms[0].id:null;saveData('honeymoon',h);showSection('honeymoon');}
-function openAddHoneymoonItem(roomId){openModal(`<div class="modal-head"><div class="modal-title">Add Booking</div><button class="modal-close" onclick="closeModal()">×</button></div><label class="field-label">Name</label><input id="hitem-name" class="field-input" placeholder="e.g. Hotel Caldera…"/><label class="field-label">Platform</label><input id="hitem-store" class="field-input" placeholder="e.g. Booking.com…"/><label class="field-label">Link</label><input id="hitem-link" class="field-input" type="url" placeholder="https://…"/><label class="field-label">Price</label><input id="hitem-price" class="field-input" type="number" placeholder="0.00" min="0" step="0.01"/><div class="modal-row"><button class="btn-solid sm" onclick="saveHoneymoonItem('${roomId}')">Add</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);}
+function openAddHoneymoonItem(roomId){openModal(`<div class="modal-head"><div class="modal-title">Add booking</div><button class="modal-close" onclick="closeModal()">×</button></div><label class="field-label">Name</label><input id="hitem-name" class="field-input" placeholder="e.g. Hotel Caldera…"/><label class="field-label">Platform</label><input id="hitem-store" class="field-input" placeholder="e.g. Booking.com…"/><label class="field-label">Link</label><input id="hitem-link" class="field-input" type="url" placeholder="https://…"/><label class="field-label">Price</label><input id="hitem-price" class="field-input" type="number" placeholder="0.00" min="0" step="0.01"/><div class="modal-row"><button class="btn-solid sm" onclick="saveHoneymoonItem('${roomId}')">Add</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);}
 function saveHoneymoonItem(roomId){const name=document.getElementById('hitem-name').value.trim();if(!name)return;const h=userData('honeymoon',{rooms:[]});const room=h.rooms.find(r=>r.id===roomId);if(!room)return;room.items=room.items||[];room.items.push({id:uid(),name,store:document.getElementById('hitem-store').value.trim(),link:document.getElementById('hitem-link').value.trim(),price:parseFloat(document.getElementById('hitem-price').value)||0});saveData('honeymoon',h);closeModal();showSection('honeymoon');}
 
 // ── RECIPES ──
 let recipeFilter='All';
 function renderRecipes(main){
   const r=userData('recipes',{items:[]});const allTags=['All',...new Set(r.items.flatMap(i=>i.tags||[]))];const filtered=recipeFilter==='All'?r.items:r.items.filter(i=>(i.tags||[]).includes(recipeFilter));
-  main.innerHTML=`<div class="section-rule"><div><div class="section-title">Recipes</div><div class="section-sub">Save photos, notes &amp; full recipes.</div></div><div class="flex-center">${quickNotesBtn('recipes')}<button class="btn-solid sm" onclick="openAddRecipe()">+ Add Recipe</button></div></div><div class="tag-row">${allTags.map(t=>`<button class="tag-pill${recipeFilter===t?' active':''}" onclick="setRecipeFilter('${t}')">${t}</button>`).join('')}</div>${filtered.length?`<div class="recipe-grid">${filtered.map(item=>{
+  main.innerHTML=`<div class="section-rule"><div><div class="section-title">Recipes</div><div class="section-sub">Save photos, notes &amp; full recipes.</div></div><div class="flex-center">${quickNotesBtn('recipes')}<button class="btn-solid sm" onclick="openAddRecipe()">+ Add recipe</button></div></div><div class="tag-row">${allTags.map(t=>`<button class="tag-pill${recipeFilter===t?' active':''}" onclick="setRecipeFilter('${t}')">${t}</button>`).join('')}</div>${filtered.length?`<div class="recipe-grid">${filtered.map(item=>{
     const summary=item.text?`<div class="recipe-text">${escHtml(item.text.slice(0,180))}${item.text.length>180?'…':''}</div>`
       :((item.ingredients&&item.ingredients.length)?`<div class="recipe-text">${item.ingredients.length} ingredient${item.ingredients.length!==1?'s':''}${item.method&&item.method.length?` · ${item.method.length} step${item.method.length!==1?'s':''}`:''}</div>`:'');
-    return`<div class="recipe-card">${item.img?`<img class="recipe-img" src="${item.img}" loading="lazy" onclick="viewRecipe('${item.id}')"/>`:''}<div class="recipe-body">${(item.tags||[]).map(t=>`<span class="recipe-tag">${escHtml(t)}</span>`).join('')}<div class="recipe-title">${escHtml(item.title)}</div>${summary}<div class="flex-center" style="margin-top:10px"><button class="btn-ghost" style="font-size:10px;padding:4px 12px" onclick="viewRecipe('${item.id}')">View</button><button class="btn-ghost danger" style="font-size:10px;padding:4px 12px" onclick="deleteRecipe('${item.id}')">Delete</button></div></div></div>`;
+    return`<div class="recipe-card">${item.img?`<img class="recipe-img" src="${item.img}" loading="lazy" onclick="viewRecipe('${item.id}')"/>`:''}<div class="recipe-body">${(item.tags||[]).map(t=>`<span class="recipe-tag">${escHtml(t)}</span>`).join('')}<div class="recipe-title">${escHtml(item.title)}</div>${summary}<div class="flex-center" style="margin-top:10px"><button class="btn-ghost" style="font-size:12px;padding:4px 12px" onclick="viewRecipe('${item.id}')">View</button><button class="btn-ghost danger" style="font-size:12px;padding:4px 12px" onclick="deleteRecipe('${item.id}')">Delete</button></div></div></div>`;
   }).join('')}</div>`:`<div class="empty"><div class="empty-icon">🍽</div>No recipes yet.</div>`}`;
 }
 function setRecipeFilter(f){recipeFilter=f;showSection('recipes');}
@@ -1788,19 +1900,19 @@ function openAddRecipe(editId){
   const item=editId?r.items.find(i=>i.id===editId):null;
   recipeImgData=item?(item.img||null):null;
   openModal(`<div class="modal-head"><div class="modal-title">${item?'Edit Recipe':'Add Recipe'}</div><button class="modal-close" onclick="closeModal()">×</button></div>
-    <label class="field-label">Recipe Name</label><input id="rec-title" class="field-input" placeholder="e.g. Roast Chicken…" value="${item?escHtml(item.title):''}"/>
+    <label class="field-label">Recipe name</label><input id="rec-title" class="field-input" placeholder="e.g. Roast Chicken…" value="${item?escHtml(item.title):''}"/>
     <label class="field-label">Tags (comma separated)</label><input id="rec-tags" class="field-input" placeholder="Dinner, Italian…" value="${item?escHtml((item.tags||[]).join(', ')):''}"/>
     <label class="field-label">Servings</label><input id="rec-servings" type="number" min="1" class="field-input" style="max-width:100px" value="${item&&item.servings?item.servings:4}"/>
-    <label class="field-label">Ingredients <span style="text-transform:none;letter-spacing:0;font-style:italic;color:var(--muted)">— one per line, e.g. "200g flour"</span></label>
+    <label class="field-label">Ingredients <span style="text-transform:none;letter-spacing:0;color:var(--muted)">— one per line, e.g. "200g flour"</span></label>
     <textarea id="rec-ingredients" class="field-input" rows="6" placeholder="200g plain flour&#10;2 eggs&#10;1 tsp vanilla extract">${item?escHtml((item.ingredients||[]).join('\n')):''}</textarea>
-    <label class="field-label">Method <span style="text-transform:none;letter-spacing:0;font-style:italic;color:var(--muted)">— paste instructions, each line becomes a numbered step</span></label>
+    <label class="field-label">Method <span style="text-transform:none;letter-spacing:0;color:var(--muted)">— paste instructions, each line becomes a numbered step</span></label>
     <textarea id="rec-method" class="field-input" rows="8" placeholder="Preheat the oven to 180°C.&#10;Mix the flour and sugar together.">${item?escHtml((item.method||[]).join('\n')):''}</textarea>
-    <label class="field-label">Tips <span style="text-transform:none;letter-spacing:0;font-style:italic;color:var(--muted)">— optional</span></label>
+    <label class="field-label">Tips <span style="text-transform:none;letter-spacing:0;color:var(--muted)">— optional</span></label>
     <textarea id="rec-tips" class="field-input" rows="3" placeholder="Any variations, storage notes…">${item?escHtml(item.tips||''):''}</textarea>
-    <label class="field-label">Photo (optional)</label><button class="btn-ghost" onclick="pickRecipePhoto()">Choose Photo</button>
+    <label class="field-label">Photo (optional)</label><button class="btn-ghost" onclick="pickRecipePhoto()">Choose photo</button>
     <img id="rec-img-preview" style="display:${recipeImgData?'block':'none'};max-height:140px;margin-top:8px" ${recipeImgData?`src="${recipeImgData}"`:''}/>
     <input type="file" id="rec-file" accept="image/*" style="display:none"/>
-    <div class="modal-row" style="margin-top:14px"><button class="btn-solid sm" onclick="saveRecipe(${item?`'${item.id}'`:'null'})">Save Recipe</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);
+    <div class="modal-row" style="margin-top:14px"><button class="btn-solid sm" onclick="saveRecipe(${item?`'${item.id}'`:'null'})">Save recipe</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);
 }
 let recipeImgData=null,recipeFullBlobPending=null;
 function pickRecipePhoto(){const fi=document.getElementById('rec-file');fi.onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=async ev=>{
@@ -1848,12 +1960,12 @@ function viewRecipe(id,overrideServings){
     <ul class="ingredient-list">${ingredients.map(line=>{const{qty,rest}=parseIngredientLine(line);const display=qty!=null?`${formatQty(qty*multiplier)} ${rest}`:rest;return`<li>${escHtml(display)}</li>`;}).join('')}</ul>
   </div>`:'';
   const methodHtml=method.length?`<div style="margin-top:18px"><div class="recipe-section-label">Method</div><ol class="method-list">${method.map(step=>`<li>${escHtml(step)}</li>`).join('')}</ol></div>`:'';
-  const tipsHtml=item.tips?`<div style="margin-top:18px"><div class="recipe-section-label">Tips</div><p style="font-size:14px;line-height:1.7;color:var(--muted);font-style:italic;white-space:pre-wrap">${escHtml(item.tips)}</p></div>`:'';
+  const tipsHtml=item.tips?`<div style="margin-top:18px"><div class="recipe-section-label">Tips</div><p style="font-size:14px;line-height:1.7;color:var(--muted);white-space:pre-wrap">${escHtml(item.tips)}</p></div>`:'';
   const legacyHtml=(!hasStructured&&item.text)?`<div style="margin-top:12px;font-size:15px;line-height:1.75;white-space:pre-wrap">${escHtml(item.text)}</div>`:'';
   const extraPhotos=item.photos||[];
-  const photosHtml=extraPhotos.length?`<div style="margin-top:16px"><div class="recipe-section-label">Extra Photos</div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:6px">${extraPhotos.map((p,i)=>`<div style="position:relative;aspect-ratio:1;overflow:hidden;background:var(--bone);border:1px solid var(--bone)"><img src="${p.img}" style="width:100%;height:100%;object-fit:cover;display:block"/><button onclick="deleteRecipePhoto('${id}',${i})" style="position:absolute;top:3px;right:3px;background:rgba(168,32,32,.85);border:none;color:#fff;width:18px;height:18px;font-size:10px;cursor:pointer;line-height:1">×</button></div>`).join('')}</div></div>`:'';
+  const photosHtml=extraPhotos.length?`<div style="margin-top:16px"><div class="recipe-section-label">Extra photos</div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:6px">${extraPhotos.map((p,i)=>`<div style="position:relative;aspect-ratio:1;overflow:hidden;background:var(--bone);border:1px solid var(--bone)"><img src="${p.img}" style="width:100%;height:100%;object-fit:cover;display:block"/><button onclick="deleteRecipePhoto('${id}',${i})" style="position:absolute;top:3px;right:3px;background:rgba(168,32,32,.85);border:none;color:#fff;width:18px;height:18px;font-size:12px;cursor:pointer;line-height:1">×</button></div>`).join('')}</div></div>`:'';
   const cookToggleHtml=`<button class="cook-toggle${cookModeOn?' on':''}" onclick="toggleCookMode('${id}',${curServings})"><span class="cook-toggle-dot"></span>Cook Mode${cookModeOn?' — Screen Staying On':''}</button>`;
-  openModal(`<div class="modal-head"><div class="modal-title">${escHtml(item.title)}</div><button class="modal-close" onclick="closeModal()">×</button></div>${cookToggleHtml}${item.img?`<img src="${item.img}" class="modal-preview" style="margin-top:12px"/>`:''}${legacyHtml}${ingredientsHtml}${methodHtml}${tipsHtml}<input type="file" id="rec-extra-photo" accept="image/*" style="display:none"/>${photosHtml}<div class="modal-row" style="margin-top:16px"><button class="btn-ghost" onclick="closeModal();openAddRecipe('${id}')">Edit</button><button class="btn-ghost" onclick="addPhotoToRecipe('${id}')">📷 Add Photo</button><button class="btn-ghost danger" onclick="deleteRecipe('${id}');closeModal()">Delete</button></div>`);
+  openModal(`<div class="modal-head"><div class="modal-title">${escHtml(item.title)}</div><button class="modal-close" onclick="closeModal()">×</button></div>${cookToggleHtml}${item.img?`<img src="${item.img}" class="modal-preview" style="margin-top:12px"/>`:''}${legacyHtml}${ingredientsHtml}${methodHtml}${tipsHtml}<input type="file" id="rec-extra-photo" accept="image/*" style="display:none"/>${photosHtml}<div class="modal-row" style="margin-top:16px"><button class="btn-ghost" onclick="closeModal();openAddRecipe('${id}')">Edit</button><button class="btn-ghost" onclick="addPhotoToRecipe('${id}')">Add photo</button><button class="btn-ghost danger" onclick="deleteRecipe('${id}');closeModal()">Delete</button></div>`);
 }
 function addPhotoToRecipe(recipeId){
   const fi=document.getElementById('rec-extra-photo');if(!fi)return;
@@ -1886,20 +1998,20 @@ function deleteRecipe(id){
 // ── MOOD BOARD (global) ──
 function renderMoodBoardSection(context){
   const boards=userData(`moodboards_${context}`,[]);
-  if(!boards.length)return`<div class="empty"><div class="empty-icon">🎨</div>No mood boards yet.</div><div style="text-align:center;margin-top:16px"><button class="btn-solid sm" onclick="createMoodBoard('${context}')">Create Mood Board</button></div>`;
-  return`<div class="flex-between mb14"><div></div><button class="btn-solid sm" onclick="createMoodBoard('${context}')">+ New Board</button></div>${boards.map((board,bi)=>`<div style="margin-bottom:32px"><div class="flex-between mb14"><div style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:700">${board.title||'Untitled'}</div><div class="flex-center"><button class="btn-ghost" onclick="openEditBoard('${context}',${bi})">Edit</button><button class="btn-ghost danger" onclick="deleteMoodBoard('${context}',${bi})">Delete</button></div></div>${board.palette&&board.palette.length?`<div class="mood-palette">${board.palette.map(c=>`<div class="palette-swatch" style="background:${c}"></div>`).join('')}</div>`:''}<div class="mood-board${!board.tiles||!board.tiles.length?' empty-board':''}">${!board.tiles||!board.tiles.length?'<span style="color:var(--muted);font-style:italic;font-size:14px">Empty. Edit to add images.</span>':board.tiles.map(tile=>`<div class="mood-tile size-${tile.size||'md'}"><img src="${tile.img}" loading="lazy"/>${tile.note?`<div class="tile-note">${tile.note}</div>`:''}</div>`).join('')}</div>${board.notes?`<div style="font-size:13px;color:var(--muted);margin-top:10px;font-style:italic">${board.notes}</div>`:''}</div>`).join('')}`;
+  if(!boards.length)return`<div class="empty"><div class="empty-icon">🎨</div>No mood boards yet.</div><div style="text-align:center;margin-top:16px"><button class="btn-solid sm" onclick="createMoodBoard('${context}')">Create mood board</button></div>`;
+  return`<div class="flex-between mb14"><div></div><button class="btn-solid sm" onclick="createMoodBoard('${context}')">+ New board</button></div>${boards.map((board,bi)=>`<div style="margin-bottom:32px"><div class="flex-between mb14"><div style="font-family:var(--sans);font-size:20px;font-weight:700">${board.title||'Untitled'}</div><div class="flex-center"><button class="btn-ghost" onclick="openEditBoard('${context}',${bi})">Edit</button><button class="btn-ghost danger" onclick="deleteMoodBoard('${context}',${bi})">Delete</button></div></div>${board.palette&&board.palette.length?`<div class="mood-palette">${board.palette.map(c=>`<div class="palette-swatch" style="background:${c}"></div>`).join('')}</div>`:''}<div class="mood-board${!board.tiles||!board.tiles.length?' empty-board':''}">${!board.tiles||!board.tiles.length?'<span style="color:var(--muted);font-size:14px">Empty. Edit to add images.</span>':board.tiles.map(tile=>`<div class="mood-tile size-${tile.size||'md'}"><img src="${tile.img}" loading="lazy"/>${tile.note?`<div class="tile-note">${tile.note}</div>`:''}</div>`).join('')}</div>${board.notes?`<div style="font-size:13px;color:var(--muted);margin-top:10px;">${board.notes}</div>`:''}</div>`).join('')}`;
 }
-// Mood Board button: boards for the area you're in — House Planning (house boards), Closet (style boards),
+// Mood board button: boards for the area you're in — House planning (house boards), Closet (style boards),
 // Other (wedding + honeymoon boards). Per-room palettes still live inside each room.
 const MB_CONTEXTS={house:[['home','House']],closet:[['closet','Style']],other:[['wedding','Wedding'],['honeymoon','Honeymoon']]};
 function renderMoodBoards(main){
   const ctxs=MB_CONTEXTS[mbArea]||MB_CONTEXTS.house;
-  main.innerHTML=`<div class="section-rule"><div><div class="section-title">Mood Boards</div><div class="section-sub">${AREAS[mbArea].name}</div></div></div>`
+  main.innerHTML=`<div class="section-rule"><div><div class="section-title">Mood boards</div><div class="section-sub">${AREAS[mbArea].name}</div></div></div>`
     +ctxs.map(([c,l])=>(ctxs.length>1?`<div class="st-h"><span>${l}</span></div>`:'')+renderMoodBoardSection(c)).join('');
 }
-function createMoodBoard(context){openModal(`<div class="modal-head"><div class="modal-title">New Mood Board</div><button class="modal-close" onclick="closeModal()">×</button></div><label class="field-label">Board Title</label><input id="mb-title" class="field-input" placeholder="e.g. Romantic Garden…"/><label class="field-label">Palette Colours (hex, comma separated)</label><input id="mb-palette" class="field-input" placeholder="#f7e9d7, #c9b89a"/><label class="field-label">Notes / Mood</label><textarea id="mb-notes" class="field-input" rows="3" placeholder="Describe the vibe…"></textarea><div class="modal-row"><button class="btn-solid sm" onclick="saveMoodBoard('${context}')">Create</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);}
+function createMoodBoard(context){openModal(`<div class="modal-head"><div class="modal-title">New mood board</div><button class="modal-close" onclick="closeModal()">×</button></div><label class="field-label">Board title</label><input id="mb-title" class="field-input" placeholder="e.g. Romantic Garden…"/><label class="field-label">Palette colours (hex, comma separated)</label><input id="mb-palette" class="field-input" placeholder="#f7e9d7, #c9b89a"/><label class="field-label">Notes / Mood</label><textarea id="mb-notes" class="field-input" rows="3" placeholder="Describe the vibe…"></textarea><div class="modal-row"><button class="btn-solid sm" onclick="saveMoodBoard('${context}')">Create</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);}
 function saveMoodBoard(context){const title=document.getElementById('mb-title').value.trim()||'New Board';const palette=document.getElementById('mb-palette').value.split(',').map(s=>s.trim()).filter(s=>s.startsWith('#'));const notes=document.getElementById('mb-notes').value.trim();const boards=userData(`moodboards_${context}`,[]);boards.push({id:uid(),title,palette,notes,tiles:[]});saveData(`moodboards_${context}`,boards);closeModal();showSection(currentSection);}
-function openEditBoard(context,boardIndex){const boards=userData(`moodboards_${context}`,[]);const board=boards[boardIndex];openModal(`<div class="modal-head"><div class="modal-title">Edit: ${board.title}</div><button class="modal-close" onclick="closeModal()">×</button></div><input type="file" id="mb-file" accept="image/*" multiple style="display:none"/><button class="btn-ghost mb14" onclick="pickMoodBoardImages(${boardIndex},'${context}')">+ Add Images</button><div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px">${(board.tiles||[]).map((tile,ti)=>`<div style="position:relative;width:80px;height:80px;overflow:hidden;border:1px solid var(--bone)"><img src="${tile.img}" style="width:100%;height:100%;object-fit:cover"/><button onclick="removeTile(${boardIndex},'${context}',${ti})" style="position:absolute;top:2px;right:2px;background:rgba(168,32,32,.85);border:none;color:#fff;width:18px;height:18px;font-size:11px;cursor:pointer">×</button></div>`).join('')}</div><label class="field-label">Title</label><input id="mb-edit-title" class="field-input" value="${board.title||''}"/><label class="field-label">Palette</label><input id="mb-edit-palette" class="field-input" value="${(board.palette||[]).join(', ')}"/><label class="field-label">Notes</label><textarea id="mb-edit-notes" class="field-input" rows="3">${board.notes||''}</textarea><div class="modal-row"><button class="btn-solid sm" onclick="updateMoodBoard('${context}',${boardIndex})">Save</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);}
+function openEditBoard(context,boardIndex){const boards=userData(`moodboards_${context}`,[]);const board=boards[boardIndex];openModal(`<div class="modal-head"><div class="modal-title">Edit: ${board.title}</div><button class="modal-close" onclick="closeModal()">×</button></div><input type="file" id="mb-file" accept="image/*" multiple style="display:none"/><button class="btn-ghost mb14" onclick="pickMoodBoardImages(${boardIndex},'${context}')">+ Add images</button><div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px">${(board.tiles||[]).map((tile,ti)=>`<div style="position:relative;width:80px;height:80px;overflow:hidden;border:1px solid var(--bone)"><img src="${tile.img}" style="width:100%;height:100%;object-fit:cover"/><button onclick="removeTile(${boardIndex},'${context}',${ti})" style="position:absolute;top:2px;right:2px;background:rgba(168,32,32,.85);border:none;color:#fff;width:18px;height:18px;font-size:12.5px;cursor:pointer">×</button></div>`).join('')}</div><label class="field-label">Title</label><input id="mb-edit-title" class="field-input" value="${board.title||''}"/><label class="field-label">Palette</label><input id="mb-edit-palette" class="field-input" value="${(board.palette||[]).join(', ')}"/><label class="field-label">Notes</label><textarea id="mb-edit-notes" class="field-input" rows="3">${board.notes||''}</textarea><div class="modal-row"><button class="btn-solid sm" onclick="updateMoodBoard('${context}',${boardIndex})">Save</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);}
 function pickMoodBoardImages(boardIndex,context){const fi=document.getElementById('mb-file');fi.onchange=e=>{Array.from(e.target.files).forEach(file=>{const r=new FileReader();r.onload=async ev=>{
   const id=uid();
   let thumb=ev.target.result,blob=null;
@@ -1944,11 +2056,11 @@ function renderDashboard(main){
   const tiles=[
     {a:'house',color:'var(--ink)',sub:home.rooms.length?n(home.rooms.length,'room')+(spent?` · ${clMoney(spent)}`:''):'Rooms, budgets & floor plan'},
     {a:'closet',color:'var(--plum)',sub:c.items.length?n(c.items.length,'piece')+(c.outfits.length?` · ${n(c.outfits.length,'outfit')}`:''):'Wardrobe, outfits & packing'},
-    {a:'other',color:'var(--gold)',sub:'Wedding · Honeymoon · Days Out · Recipes · Music'},
+    {a:'other',color:'var(--gold)',sub:'Wedding · Honeymoon · Days out · Recipes · Music'},
   ];
   const firstName=currentUserName?currentUserName.split(' ')[0]:'';
   main.innerHTML=`<div class="home-greet">Welcome back${firstName?', '+escHtml(firstName):''}</div>
-    <div class="home-tiles">${tiles.map((t,i)=>`<button class="home-tile" style="border-top-color:${t.color}" onclick="showSection('area_${t.a}')"><div><div class="home-tile-num" style="color:${t.color}">${String(i+1).padStart(2,'0')}</div><div class="home-tile-name">${AREAS[t.a].name}</div><div class="home-tile-sub">${t.sub}</div></div><span class="area-chev">›</span></button>`).join('')}</div>`;
+    <div class="home-tiles">${tiles.map((t,i)=>`<button class="home-tile" style="border-top-color:${t.color}" onclick="showSection('area_${t.a}')"><div><div class="home-tile-num" style="color:${t.color}">${String(i+1).padStart(2,'0')}</div><div class="home-tile-name">${AREAS[t.a].name}</div><div class="home-tile-sub">${t.sub}</div></div><span class="area-chev">→</span></button>`).join('')}</div>`;
 }
 
 // ── MUSIC ──
@@ -1969,25 +2081,25 @@ function renderMusic(main){
       ${s.artist?`<div class="song-artist">${s.artist}</div>`:''}
       ${s.note?`<div class="song-note">${s.note}</div>`:''}
     </div>
-    ${s.link?`<a href="${s.link}" target="_blank" rel="noopener" class="song-link-btn">▶ Play</a>`:''}
+    ${s.link?`<a href="${s.link}" target="_blank" rel="noopener" class="song-link-btn">Play</a>`:''}
     <button class="icon-btn" title="Delete" onclick="deleteSong('${pl.id}','${s.id}')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg></button>
   </div>`).join(''):`<div class="empty" style="padding:20px 0;font-size:13px">No songs yet — add your first!</div>`;
   main.innerHTML=`<div class="section-rule"><div><div class="section-title">Music</div><div class="section-sub">Your favourite songs &amp; playlists.</div></div><div class="flex-center">${quickNotesBtn('music')}<button class="btn-solid sm" onclick="openAddPlaylist()">+ Playlist</button></div></div>
     <div class="room-tabs-row">${tabs}</div>
     <div class="flex-between mb14" style="padding-top:16px">
-      <div style="font-family:'Cormorant Garamond',serif;font-size:16px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">${pl.name} <span style="font-size:12px;font-weight:400;letter-spacing:.04em">${songs.length} song${songs.length!==1?'s':''}</span></div>
+      <div style="font-family:var(--sans);font-size:16px;color:var(--muted)">${pl.name} <span style="font-size:12px;font-weight:400;">${songs.length} song${songs.length!==1?'s':''}</span></div>
       <div class="flex-center">
-        <button class="btn-ghost" onclick="openAddSong('${pl.id}')">+ Add Song</button>
+        <button class="btn-ghost" onclick="openAddSong('${pl.id}')">+ Add song</button>
         <button class="btn-ghost danger" onclick="deletePlaylist('${pl.id}')">Delete</button>
       </div>
     </div>
-    ${pl.description?`<p style="font-size:13px;color:var(--muted);font-style:italic;margin-bottom:14px">${pl.description}</p>`:''}
+    ${pl.description?`<p style="font-size:13px;color:var(--muted);margin-bottom:14px">${pl.description}</p>`:''}
     ${songsHtml}`;
 }
 function setActiveMusicPlaylist(id){activeMusicPlaylistId=id;showSection('music');}
 function openAddPlaylist(){
-  openModal(`<div class="modal-head"><div class="modal-title">New Playlist</div><button class="modal-close" onclick="closeModal()">×</button></div>
-    <label class="field-label">Playlist Name</label>
+  openModal(`<div class="modal-head"><div class="modal-title">New playlist</div><button class="modal-close" onclick="closeModal()">×</button></div>
+    <label class="field-label">Playlist name</label>
     <input id="pl-name" class="field-input" placeholder="e.g. Favourites, Wedding Morning…"/>
     <label class="field-label">Description (optional)</label>
     <input id="pl-desc" class="field-input" placeholder="A note about this playlist…"/>
@@ -2007,8 +2119,8 @@ function deletePlaylist(id){
   saveData('music',m);showSection('music');
 }
 function openAddSong(playlistId){
-  openModal(`<div class="modal-head"><div class="modal-title">Add Song</div><button class="modal-close" onclick="closeModal()">×</button></div>
-    <label class="field-label">Song Title</label>
+  openModal(`<div class="modal-head"><div class="modal-title">Add song</div><button class="modal-close" onclick="closeModal()">×</button></div>
+    <label class="field-label">Song title</label>
     <input id="song-title" class="field-input" placeholder="e.g. Fly Me to the Moon…"/>
     <label class="field-label">Artist</label>
     <input id="song-artist" class="field-input" placeholder="e.g. Frank Sinatra…"/>
@@ -2016,7 +2128,7 @@ function openAddSong(playlistId){
     <input id="song-link" class="field-input" type="url" placeholder="https://…"/>
     <label class="field-label">Note (optional)</label>
     <input id="song-note" class="field-input" placeholder="Why you love it…"/>
-    <div class="modal-row"><button class="btn-solid sm" onclick="saveSong('${playlistId}')">Add to Playlist</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);
+    <div class="modal-row"><button class="btn-solid sm" onclick="saveSong('${playlistId}')">Add to playlist</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);
 }
 function saveSong(playlistId){
   const title=(document.getElementById('song-title').value||'').trim();if(!title)return;
@@ -2136,12 +2248,22 @@ function clCutBackground(src,sens){
     if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;if(y>y1)y1=y;
   }
   if(x1<0)return null;
+  // Returned at the photo's full size (not trimmed) so the touch-up brushes line up with the original; clTrim() crops at save.
   const full=document.createElement('canvas');full.width=w;full.height=h;full.getContext('2d').putImageData(out,0,0);
+  full._frac=kept/n;
+  return full;
+}
+function clCopyCanvas(src){const c=document.createElement('canvas');c.width=src.width;c.height=src.height;c.getContext('2d').drawImage(src,0,0);return c;}
+// Crops transparent margins (with a little breathing room). Returns null if nothing visible is left.
+function clTrim(cv){
+  const w=cv.width,h=cv.height,d=cv.getContext('2d').getImageData(0,0,w,h).data;
+  let x0=w,y0=h,x1=-1,y1=-1;
+  for(let y=0;y<h;y++)for(let x=0;x<w;x++){if(d[(y*w+x)*4+3]>12){if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;if(y>y1)y1=y;}}
+  if(x1<0)return null;
   const pad=Math.round(Math.max(w,h)*.015);
   x0=Math.max(0,x0-pad);y0=Math.max(0,y0-pad);x1=Math.min(w-1,x1+pad);y1=Math.min(h-1,y1+pad);
   const c=document.createElement('canvas');c.width=x1-x0+1;c.height=y1-y0+1;
-  c.getContext('2d').drawImage(full,x0,y0,c.width,c.height,0,0,c.width,c.height);
-  c._frac=kept/n;
+  c.getContext('2d').drawImage(cv,x0,y0,c.width,c.height,0,0,c.width,c.height);
   return c;
 }
 // Start at a normal sensitivity; if that eats most of the piece (item close in colour to the background), back off.
@@ -2174,7 +2296,8 @@ async function clNext(){
     const im=await loadImageFromDataURL(dataURL);
     const s=scaleDims(im.naturalWidth,im.naturalHeight,900);
     const orig=drawToCanvas(im,s.w,s.h),auto=clAutoCut(orig);
-    closetDraft={orig,cut:auto.cut,useCut:!!auto.cut,sens:auto.sens};
+    // work = the editable transparent version (starts as the automatic result); orig stays untouched for "Paint back"
+    closetDraft={orig,cut:auto.cut,work:auto.cut?clCopyCanvas(auto.cut):null,useCut:!!auto.cut,sens:auto.sens,mode:'erase',brush:56,tol:40,undo:[],autoFailed:false,stroke:null};
     clOpenAddModal();
   }catch(e){closetDraft=null;alert('Could not read that photo.');if(closetQueue.length)clNext();}
 }
@@ -2187,25 +2310,114 @@ function clFieldsHTML(p,v){
 }
 function clOpenAddModal(){
   const d=closetDraft,more=closetQueue.length;
-  openModal(`<div class="modal-head"><div class="modal-title">Add to Closet${more?` <span style="font-size:13px;color:var(--muted);font-style:italic;text-transform:none">(${more} more waiting)</span>`:''}</div><button class="modal-close" onclick="clCancelAdd()">×</button></div>
-    <div class="cl-checker"><canvas id="cl-prev"></canvas></div>
+  openModal(`<div class="modal-head"><div class="modal-title">Add to Closet${more?` <span style="font-size:13px;color:var(--muted);text-transform:none">(${more} more waiting)</span>`:''}</div><button class="modal-close" onclick="clCancelAdd()">×</button></div>
+    <div class="cl-checker"><canvas id="cl-prev" onpointerdown="clPointerDown(event)" onpointermove="clPointerMove(event)" onpointerup="clPointerUp()" onpointercancel="clPointerUp()"></canvas></div>
     <label class="cl-check"><input type="checkbox" id="cl-usecut" ${d.useCut?'checked':''} onchange="clToggleCut(this.checked)"/> Remove background</label>
-    <div id="cl-sens-wrap" style="${d.useCut?'':'display:none'}"><label class="field-label">Sensitivity <span id="cl-sens-val">${d.sens}</span></label><input type="range" id="cl-sens" min="8" max="100" value="${d.sens}" style="width:100%" oninput="clSens(this.value)"/>
-      <p class="cl-hint">Works best on a plain background — lay the piece flat on a bed, floor or door. Raise it if background is left behind; lower it if the piece is being eaten away.</p></div>
-    <p id="cl-msg" class="cl-hint" style="color:var(--red)"></p>
+    <p id="cl-msg" class="cl-hint" style="margin-top:0"></p>
+    <div id="cl-tools" style="${d.useCut?'':'display:none'}">
+      <label class="field-label">Automatic — sensitivity <span id="cl-sens-val">${d.sens}</span></label><input type="range" id="cl-sens" min="8" max="100" value="${d.sens}" style="width:100%" oninput="clSens(this.value)"/>
+      <p class="cl-hint">Raise it if background is left behind; lower it if the piece is being eaten away. Moving it redoes the automatic step (and your touch-ups).</p>
+      <label class="field-label" style="margin-top:6px">Touch up yourself</label>
+      <div class="tag-row" style="margin-bottom:10px">
+        <button type="button" class="tag-pill cl-mode active" data-m="erase" onclick="clSetMode('erase')">Erase</button>
+        <button type="button" class="tag-pill cl-mode" data-m="restore" onclick="clSetMode('restore')">Paint back</button>
+        <button type="button" class="tag-pill cl-mode" data-m="wand" onclick="clSetMode('wand')">Tap to remove</button>
+        <button type="button" class="tag-pill" id="cl-undo" onclick="clUndo()" disabled>Undo</button>
+        <button type="button" class="tag-pill" onclick="clResetEdits()">Reset</button>
+      </div>
+      <div id="cl-brush-wrap"><label class="field-label">Brush size</label><div class="cl-brushrow"><input type="range" id="cl-brush" min="10" max="220" value="${d.brush}" oninput="clBrush(this.value)"/><span class="cl-dotbox"><span id="cl-dot" class="cl-dot"></span></span></div></div>
+      <div id="cl-tol-wrap" style="display:none"><label class="field-label">Colour tolerance <span id="cl-tol-val">${d.tol}</span></label><input type="range" id="cl-tol" min="8" max="100" value="${d.tol}" style="width:100%" oninput="clTol(this.value)"/></div>
+      <p class="cl-hint">Rub over the picture with your finger to rub background away, or switch to Paint back to restore a bit you went over. <b>Tap to remove</b> clears the whole patch of similar colour you tap — good for leftover floor or shadow.</p>
+    </div>
     ${clFieldsHTML('ca',{cat:'Tops'})}
-    <div class="modal-row"><button class="btn-solid sm" onclick="clSaveItem()">Save to Closet</button><button class="btn-ghost" onclick="clSkipAdd()">${more?'Skip':'Cancel'}</button></div>`);
+    <div class="modal-row"><button class="btn-solid sm" onclick="clSaveItem()">Save to closet</button><button class="btn-ghost" onclick="clSkipAdd()">${more?'Skip':'Cancel'}</button></div>`);
   clDrawPreview();
 }
 function clDrawPreview(){
   const d=closetDraft,cv=document.getElementById('cl-prev');if(!d||!cv)return;
-  const src=(d.useCut&&d.cut)?d.cut:d.orig;cv.width=src.width;cv.height=src.height;cv.getContext('2d').drawImage(src,0,0);
-  const m=document.getElementById('cl-msg');if(m)m.textContent=(d.useCut&&!d.cut)?'Could not separate the piece from the background — try a different sensitivity, or untick Remove background.':'';
+  const editing=d.useCut&&!!d.work,src=editing?d.work:d.orig;
+  if(cv.width!==src.width||cv.height!==src.height){cv.width=src.width;cv.height=src.height;}
+  const ctx=cv.getContext('2d');ctx.clearRect(0,0,cv.width,cv.height);ctx.drawImage(src,0,0);
+  cv.classList.toggle('editing',editing);
+  const m=document.getElementById('cl-msg');if(m)m.textContent=(d.useCut&&d.autoFailed)?"The automatic step couldn't find the background — rub it out yourself with the tools below.":'';
+  clUpdateDot();
 }
-function clToggleCut(on){const d=closetDraft;if(!d)return;d.useCut=on;document.getElementById('cl-sens-wrap').style.display=on?'':'none';if(on&&!d.cut)clRunCut();clDrawPreview();}
+function clToggleCut(on){
+  const d=closetDraft;if(!d)return;d.useCut=on;
+  if(on&&!d.work){if(!d.cut)clRunCut();d.autoFailed=!d.cut;d.work=clCopyCanvas(d.cut||d.orig);d.undo=[];}   // no auto result: start from the plain photo
+  document.getElementById('cl-tools').style.display=on?'':'none';
+  clUpdateUndoBtn();clDrawPreview();
+}
 function clSens(v){
   const d=closetDraft;if(!d)return;d.sens=+v;document.getElementById('cl-sens-val').textContent=v;
-  clearTimeout(closetSensTimer);closetSensTimer=setTimeout(()=>{clRunCut();clDrawPreview();},50);
+  clearTimeout(closetSensTimer);closetSensTimer=setTimeout(()=>{clRunCut();d.autoFailed=!d.cut;d.work=clCopyCanvas(d.cut||d.orig);d.undo=[];clUpdateUndoBtn();clDrawPreview();},50);
+}
+
+// ── Manual touch-up: erase / paint back / tap-to-remove, with undo ──
+function clSetMode(m){
+  const d=closetDraft;if(!d)return;d.mode=m;
+  document.querySelectorAll('.cl-mode').forEach(b=>b.classList.toggle('active',b.dataset.m===m));
+  document.getElementById('cl-brush-wrap').style.display=m==='wand'?'none':'';
+  document.getElementById('cl-tol-wrap').style.display=m==='wand'?'':'none';
+  clUpdateDot();
+}
+function clBrush(v){if(closetDraft){closetDraft.brush=+v;clUpdateDot();}}
+function clTol(v){if(closetDraft){closetDraft.tol=+v;const l=document.getElementById('cl-tol-val');if(l)l.textContent=v;}}
+// The little circle beside the slider shows the brush size as it appears on the picture.
+function clUpdateDot(){
+  const d=closetDraft,cv=document.getElementById('cl-prev'),dot=document.getElementById('cl-dot');if(!d||!cv||!dot)return;
+  const k=(cv.getBoundingClientRect().width/cv.width)||1,s=Math.max(4,Math.min(60,d.brush*k));dot.style.width=dot.style.height=s+'px';
+}
+function clUpdateUndoBtn(){const b=document.getElementById('cl-undo'),d=closetDraft;if(b)b.disabled=!(d&&d.undo&&d.undo.length);}
+function clPushUndo(){
+  const d=closetDraft;if(!d||!d.work)return;
+  d.undo.push(d.work.getContext('2d').getImageData(0,0,d.work.width,d.work.height));
+  if(d.undo.length>8)d.undo.shift();clUpdateUndoBtn();
+}
+function clUndo(){
+  const d=closetDraft;if(!d||!d.work||!d.undo.length)return;
+  d.work.getContext('2d').putImageData(d.undo.pop(),0,0);clUpdateUndoBtn();clDrawPreview();
+}
+function clResetEdits(){const d=closetDraft;if(!d)return;d.work=clCopyCanvas(d.cut||d.orig);d.undo=[];clUpdateUndoBtn();clDrawPreview();}
+function clPtr(e){const cv=e.currentTarget,r=cv.getBoundingClientRect();return{x:(e.clientX-r.left)*cv.width/r.width,y:(e.clientY-r.top)*cv.height/r.height};}
+function clBrushDab(x,y){
+  const d=closetDraft,ctx=d.work.getContext('2d');ctx.save();ctx.beginPath();ctx.arc(x,y,d.brush/2,0,Math.PI*2);
+  if(d.mode==='erase'){ctx.globalCompositeOperation='destination-out';ctx.fill();}
+  else{ctx.clip();ctx.drawImage(d.orig,0,0);}   // paint back = copy the original photo into the circle
+  ctx.restore();
+}
+function clBrushLine(a,b){
+  const d=closetDraft,r=d.brush/2,dist=Math.hypot(b.x-a.x,b.y-a.y),step=Math.max(1,r/3);
+  for(let t=step;t<dist;t+=step)clBrushDab(a.x+(b.x-a.x)*t/dist,a.y+(b.y-a.y)*t/dist);
+  clBrushDab(b.x,b.y);
+}
+function clPointerDown(e){
+  const d=closetDraft;if(!d||!d.useCut||!d.work)return;
+  e.preventDefault();const p=clPtr(e);clPushUndo();
+  if(d.mode==='wand'){clWand(p.x,p.y);clDrawPreview();return;}
+  d.stroke={last:p};clBrushDab(p.x,p.y);clDrawPreview();
+  try{e.currentTarget.setPointerCapture(e.pointerId);}catch(err){}
+}
+function clPointerMove(e){const d=closetDraft;if(!d||!d.stroke)return;const p=clPtr(e);clBrushLine(d.stroke.last,p);d.stroke.last=p;clDrawPreview();}
+function clPointerUp(){if(closetDraft)closetDraft.stroke=null;}
+// Tap-to-remove: flood-fills outwards from the tapped pixel over similar colours (also following gentle gradients/shadows) and clears them.
+function clWand(px,py){
+  const d=closetDraft,cv=d.work,w=cv.width,h=cv.height,ctx=cv.getContext('2d');
+  const x0=Math.round(px),y0=Math.round(py);if(x0<0||y0<0||x0>=w||y0>=h)return;
+  const img=ctx.getImageData(0,0,w,h),a=img.data,s=(y0*w+x0)*4;
+  if(a[s+3]<12){d.undo.pop();clUpdateUndoBtn();return;}   // tapped something already removed
+  const sr=a[s],sg=a[s+1],sb=a[s+2],thr2=Math.pow(d.tol*2.2,2),loc2=Math.pow(Math.max(6,d.tol*.5),2),max2=Math.pow(d.tol*3.2,2);
+  const n=w*h,seen=new Uint8Array(n),st=new Int32Array(n);let sp=0;
+  const tryPush=(i,from)=>{
+    if(seen[i])return;const p=i*4;if(a[p+3]<12)return;
+    const dr=a[p]-sr,dg=a[p+1]-sg,db=a[p+2]-sb,dd=dr*dr+dg*dg+db*db;let ok=dd<=thr2;
+    if(!ok&&dd<=max2){const f=from*4,r=a[p]-a[f],g=a[p+1]-a[f+1],b=a[p+2]-a[f+2];ok=r*r+g*g+b*b<=loc2;}
+    if(ok){seen[i]=1;st[sp++]=i;}
+  };
+  seen[y0*w+x0]=1;st[sp++]=y0*w+x0;
+  while(sp){const i=st[--sp],x=i%w;if(x>0)tryPush(i-1,i);if(x<w-1)tryPush(i+1,i);if(i>=w)tryPush(i-w,i);if(i<n-w)tryPush(i+w,i);}
+  for(let i=0;i<n;i++)if(seen[i])a[i*4+3]=0;
+  ctx.putImageData(img,0,0);
 }
 function clCancelAdd(){closetQueue=[];closetDraft=null;closeModal();}
 function clSkipAdd(){if(closetQueue.length)clNext();else clCancelAdd();}
@@ -2216,7 +2428,10 @@ async function clSaveItem(){
   const name=document.getElementById('ca-name').value.trim()||`${cat} ${c.items.filter(i=>i.cat===cat).length+1}`;
   const price=parseFloat(document.getElementById('ca-price').value)||0;
   const notes=document.getElementById('ca-notes').value.trim();
-  const useCut=d.useCut&&!!d.cut,cv=useCut?d.cut:d.orig,id=uid();
+  const useCut=d.useCut&&!!d.work;
+  const cv=useCut?clTrim(d.work):d.orig;
+  if(!cv){alert('Nothing is left of the piece — tap Undo or Reset, or untick Remove background.');return;}
+  const id=uid();
   const blob=await clBlob(cv,useCut?'image/png':'image/jpeg',.88);
   await idbPutPhoto(id,blob);
   c.items.push({id,name,cat,price,notes,fav:false,date:Date.now(),cut:useCut,ar:+(cv.width/cv.height).toFixed(3),thumb:clMakeThumb(cv,useCut)});
@@ -2256,7 +2471,7 @@ function clOpenItem(id){
       <div><span>Last worn</span>${lastTxt}</div>
       <div><span>In outfits</span>${inOut}</div>
     </div>
-    ${it.notes?`<p style="font-size:14px;color:var(--muted);font-style:italic;margin-bottom:14px">${escHtml(it.notes)}</p>`:''}
+    ${it.notes?`<p style="font-size:14px;color:var(--muted);margin-bottom:14px">${escHtml(it.notes)}</p>`:''}
     <div class="modal-row"><button class="btn-ghost" onclick="clToggleFav('${id}',true)">${it.fav?'Remove favourite':'Add to favourites'}</button><button class="btn-ghost" onclick="clEditItem('${id}')">Edit</button><button class="btn-ghost danger" onclick="clDeleteItem('${id}')">Delete</button></div>`);
   hydrateClosetImgs(document.getElementById('modal-box'));
 }
@@ -2313,10 +2528,10 @@ function clMiniBoard(c,o){
 }
 function clOutfitsHTML(c){
   const wornBy={};Object.values(c.calendar).forEach(arr=>arr.forEach(e=>{if(e.worn&&e.outfitId)wornBy[e.outfitId]=(wornBy[e.outfitId]||0)+1;}));
-  const head=`<div class="flex-between mb14"><div class="section-sub" style="margin:0">Build flat-lay outfits from your closet.</div><button class="btn-solid sm" onclick="clNewOutfit()">+ New Outfit</button></div>`;
+  const head=`<div class="flex-between mb14"><div class="section-sub" style="margin:0">Build flat-lay outfits from your closet.</div><button class="btn-solid sm" onclick="clNewOutfit()">+ New outfit</button></div>`;
   if(!c.items.length)return head+`<div class="empty">Add some clothes in <b>Wardrobe</b> first, then build outfits here.</div>`;
-  if(!c.outfits.length)return head+`<div class="empty">No outfits yet.<br/>Tap <b>+ New Outfit</b>, or try the <b>Shuffle</b> tab.</div>`;
-  const btn='padding:4px 10px;font-size:10px';
+  if(!c.outfits.length)return head+`<div class="empty">No outfits yet.<br/>Tap <b>+ New outfit</b>, or try the <b>Shuffle</b> tab.</div>`;
+  const btn='padding:4px 10px;font-size:12px';
   return head+`<div class="of-grid">${c.outfits.map(o=>{const n=clOutfitItemIds(c,o).length,w=wornBy[o.id]||0;return`<div class="of-card"><div style="cursor:pointer" onclick="clEditOutfit('${o.id}')">${clMiniBoard(c,o)}</div><div class="of-body"><div class="of-name">${escHtml(o.name)}</div><div class="of-meta">${n} piece${n!==1?'s':''} · worn ${w}×</div><div class="flex-center" style="margin-top:8px;gap:6px"><button class="btn-ghost" style="${btn}" onclick="clEditOutfit('${o.id}')">Edit</button><button class="btn-ghost" style="${btn}" onclick="clWearToday('${o.id}')">Wear today</button><button class="btn-ghost danger" style="${btn}" onclick="clDeleteOutfit('${o.id}')">×</button></div></div></div>`;}).join('')}</div>`;
 }
 function clNewOutfit(){
@@ -2353,7 +2568,7 @@ function clEditorHTML(c){
 function clBoardInner(c){
   if(!outfitDraft)return'';
   const parts=outfitDraft.items.map((x,i)=>{const it=clItem(c,x.itemId);return it?`<div class="ob-item${x.iid===obSel?' sel':''}" data-iid="${x.iid}" style="left:${x.x}%;top:${x.y}%;width:${x.w}%;z-index:${i+1}"><img data-cimg="${it.id}" src="${it.thumb}" alt="" draggable="false"/><div class="ob-handle"></div></div>`:'';}).join('');
-  return parts||`<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:24px;text-align:center;color:var(--muted);font-style:italic;font-size:14px;pointer-events:none">Tap a piece below to add it to the board</div>`;
+  return parts||`<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:24px;text-align:center;color:var(--muted);font-size:14px;pointer-events:none">Tap a piece below to add it to the board</div>`;
 }
 function clToolsHTML(){
   if(!obSel)return`<p class="cl-hint" style="text-align:center">Tap a piece to select it · drag to move · drag the gold dot to resize</p>`;
@@ -2579,7 +2794,7 @@ function clPackProgress(c,p){
   return{done:its.filter(e=>chk[e.id]).length+cu.filter(x=>x.done).length,tot:its.length+cu.length,pieces:its.length};
 }
 function clPackingHTML(c){
-  const head=`<div class="flex-between mb14"><div class="section-sub" style="margin:0">Trips &amp; seasonal capsules — add outfits and the suitcase list writes itself.</div><button class="btn-solid sm" onclick="clNewPackModal()">+ New List</button></div>`;
+  const head=`<div class="flex-between mb14"><div class="section-sub" style="margin:0">Trips &amp; seasonal capsules — add outfits and the suitcase list writes itself.</div><button class="btn-solid sm" onclick="clNewPackModal()">+ New list</button></div>`;
   if(!c.packing.length)return head+`<div class="empty">No packing lists yet.</div>`;
   return head+`<div class="of-grid">${c.packing.map(p=>{const pr=clPackProgress(c,p);return`<div class="of-card" style="cursor:pointer" onclick="clOpenPack('${p.id}')"><div class="of-body"><div class="of-tag">${p.type==='capsule'?'Capsule':'Trip'}</div><div class="of-name">${escHtml(p.name)}</div><div class="of-meta">${(p.outfitIds||[]).length} outfit${(p.outfitIds||[]).length!==1?'s':''} · ${pr.pieces} piece${pr.pieces!==1?'s':''}</div><div class="st-bar-track" style="margin:8px 0 4px"><div class="st-bar-fill green" style="width:${pr.tot?pr.done/pr.tot*100:0}%"></div></div><div class="of-meta">${pr.done} of ${pr.tot} packed</div></div></div>`;}).join('')}</div>`;
 }
@@ -2604,7 +2819,7 @@ function clPackDetailHTML(c){
     <div class="flex-center" style="margin-top:10px;flex-wrap:nowrap"><input id="pk-custom" class="field-input" style="margin:0;flex:1" placeholder="Passport, chargers, swimwear…" onkeydown="if(event.key==='Enter')clPackAddCustom('${p.id}')"/><button class="btn-ghost" onclick="clPackAddCustom('${p.id}')">Add</button></div>`;
 }
 function clNewPackModal(){
-  openModal(`<div class="modal-head"><div class="modal-title">New Packing List</div><button class="modal-close" onclick="closeModal()">×</button></div>
+  openModal(`<div class="modal-head"><div class="modal-title">New packing list</div><button class="modal-close" onclick="closeModal()">×</button></div>
     <label class="field-label">Name</label><input id="pk-name" class="field-input" placeholder="e.g. Honeymoon in Santorini"/>
     <label class="field-label">Type</label><select id="pk-type" class="field-input"><option value="trip">Trip</option><option value="capsule">Seasonal capsule</option></select>
     <div class="modal-row"><button class="btn-solid sm" onclick="clSavePack()">Create</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);
@@ -2670,23 +2885,23 @@ function applyWallpaper(){
 function openWallpaperSettings(){
   const wp=userData('wallpaper',null);
   const pages=wp&&wp.pages||{};
-  const sects=[['dashboard','Home screen'],['home','House Planning'],['wedding','Wedding'],['honeymoon','Honeymoon'],['dayout','Days Out'],['recipes','Recipes'],['music','Music'],['closet','Closet']];
+  const sects=[['dashboard','Home screen'],['home','House planning'],['wedding','Wedding'],['honeymoon','Honeymoon'],['dayout','Days out'],['recipes','Recipes'],['music','Music'],['closet','Closet']];
   openModal(`<div class="modal-head"><div class="modal-title">Wallpaper</div><button class="modal-close" onclick="closeModal()">×</button></div>
-    <div id="wp-preview-wrap" style="margin-bottom:14px">${wp&&wp.img?`<img id="wp-preview" src="${wp.img}" style="width:100%;height:130px;object-fit:cover;display:block;border:1px solid var(--bone)"/>`:`<div style="height:80px;border:1px dashed var(--warm);display:flex;align-items:center;justify-content:center;color:var(--muted);font-style:italic;font-size:13px">No wallpaper set</div>`}</div>
+    <div id="wp-preview-wrap" style="margin-bottom:14px">${wp&&wp.img?`<img id="wp-preview" src="${wp.img}" style="width:100%;height:130px;object-fit:cover;display:block;border:1px solid var(--bone)"/>`:`<div style="height:80px;border:1px dashed var(--warm);display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:13px">No wallpaper set</div>`}</div>
     <input type="file" id="wp-file" accept="image/*" style="display:none" onchange="previewWallpaper(this)"/>
     <div class="modal-row" style="margin-bottom:18px">
-      <button id="wp-upload-btn" class="btn-ghost" onclick="document.getElementById('wp-file').click()">Upload Photo</button>
+      <button id="wp-upload-btn" class="btn-ghost" onclick="document.getElementById('wp-file').click()">Upload photo</button>
       ${wp&&wp.img?`<button class="btn-ghost danger" onclick="removeWallpaper()">Remove</button>`:''}
     </div>
     <hr class="divider"/>
     <div class="field-label" style="margin-bottom:10px">Apply to</div>
     <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:22px">
-      <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-family:'EB Garamond',serif;font-size:15px">
+      <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-family:var(--sans);font-size:15px">
         <input type="checkbox" id="wp-all" ${pages.all?'checked':''} onchange="document.querySelectorAll('.wp-sect').forEach(c=>c.checked=this.checked)"/>
         All pages
       </label>
       <div style="width:1px;height:1px;border-top:1px solid var(--bone);margin:2px 0 2px 24px"></div>
-      ${sects.map(([s,label])=>`<label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-family:'EB Garamond',serif;font-size:14px;padding-left:20px;color:var(--muted)"><input type="checkbox" class="wp-sect" id="wp-${s}" ${pages.all||pages[s]?'checked':''}/>${label}</label>`).join('')}
+      ${sects.map(([s,label])=>`<label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-family:var(--sans);font-size:14px;padding-left:20px;color:var(--muted)"><input type="checkbox" class="wp-sect" id="wp-${s}" ${pages.all||pages[s]?'checked':''}/>${label}</label>`).join('')}
     </div>
     <button class="btn-solid" onclick="saveWallpaper()">Save</button>`);
 }
@@ -2724,14 +2939,14 @@ function removeWallpaper(){
 
 // ── FEEDBACK ──
 function openFeedback(){
-  openModal(`<div class="modal-head"><div class="modal-title">Send Feedback</div><button class="modal-close" onclick="closeModal()">×</button></div>
-    <label class="field-label">Your Feedback</label>
+  openModal(`<div class="modal-head"><div class="modal-title">Send feedback</div><button class="modal-close" onclick="closeModal()">×</button></div>
+    <label class="field-label">Your feedback</label>
     <textarea id="feedback-text" class="field-input" rows="5" placeholder="Suggestions, bugs, ideas…"></textarea>
     <div class="modal-row" style="margin-top:8px">
-      ${currentUserEmail?`<button class="btn-solid sm" onclick="emailFeedback()">📧 Email to Myself</button>`:''}
-      <button class="btn-ghost" onclick="copyFeedback()">📋 Copy to Clipboard</button>
+      ${currentUserEmail?`<button class="btn-solid sm" onclick="emailFeedback()">Email to myself</button>`:''}
+      <button class="btn-ghost" onclick="copyFeedback()">Copy to clipboard</button>
     </div>
-    <p style="font-size:11px;color:var(--muted);margin-top:12px;font-style:italic">${currentUserEmail?`Will open your email app addressed to ${currentUserEmail}.`:'Copies your feedback to the clipboard.'}</p>`);
+    <p style="font-size:12.5px;color:var(--muted);margin-top:12px;">${currentUserEmail?`Will open your email app addressed to ${currentUserEmail}.`:'Copies your feedback to the clipboard.'}</p>`);
 }
 function emailFeedback(){
   const text=document.getElementById('feedback-text').value.trim();if(!text)return;
@@ -2751,46 +2966,46 @@ function openSettings(){
     <div style="margin-bottom:20px">
       <div class="field-label" style="margin-bottom:8px">Account</div>
       <div style="font-size:15px;margin-bottom:4px">${currentUserName}</div>
-      ${currentUserEmail?`<div style="font-size:12px;color:var(--muted);margin-bottom:16px;font-style:italic">${currentUserEmail}</div>`:''}
-      <button class="btn-ghost" onclick="signOut()">Sign Out</button>
+      ${currentUserEmail?`<div style="font-size:12px;color:var(--muted);margin-bottom:16px;">${currentUserEmail}</div>`:''}
+      <button class="btn-ghost" onclick="signOut()">Sign out</button>
     </div>
     <hr class="divider"/>
     <div style="margin-bottom:20px">
       <div class="field-label" style="margin-bottom:8px">Wallpaper</div>
-      <p style="font-size:13px;color:var(--muted);font-style:italic;margin-bottom:12px">${(()=>{const wp=userData('wallpaper',null);return wp&&wp.img?'Custom wallpaper set.':'Upload a photo as your background.';})()}</p>
-      <button class="btn-ghost" onclick="closeModal();openWallpaperSettings()">Customise Wallpaper</button>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:12px">${(()=>{const wp=userData('wallpaper',null);return wp&&wp.img?'Custom wallpaper set.':'Upload a photo as your background.';})()}</p>
+      <button class="btn-ghost" onclick="closeModal();openWallpaperSettings()">Customise wallpaper</button>
     </div>
     <hr class="divider"/>
     <div style="margin-bottom:20px">
       <div class="field-label" style="margin-bottom:8px">Feedback</div>
-      <p style="font-size:13px;color:var(--muted);font-style:italic;margin-bottom:12px">Share ideas, report bugs, or suggest features.</p>
-      <button class="btn-ghost" onclick="closeModal();openFeedback()">✉️ Send Feedback</button>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:12px">Share ideas, report bugs, or suggest features.</p>
+      <button class="btn-ghost" onclick="closeModal();openFeedback()">Send feedback</button>
     </div>
     <hr class="divider"/>
     <div style="margin-bottom:20px">
-      <div class="field-label" style="margin-bottom:8px">Cloud Sync</div>
+      <div class="field-label" style="margin-bottom:8px">Cloud sync</div>
       ${(()=>{
         const err=lastSyncError||sessionStorage.getItem('maison_drive_err');
-        const errHtml=err?`<p style="font-size:12px;color:var(--red);font-style:italic;margin-top:10px">${err==='access_denied'?'Google blocked access — in Google Cloud Console open OAuth consent screen, then either add your email as a Test User or publish the app.':err}</p>`:'';
-        if(driveAccessToken)return`<p style="font-size:13px;color:var(--green);font-style:italic;margin-bottom:12px">✓ Sync is on${lastSyncAt?` — last synced ${timeAgo(lastSyncAt)}`:''}</p><div class="modal-row"><button class="btn-ghost" onclick="driveSyncNow(true)">Sync Now</button><button class="btn-ghost danger" onclick="disableDriveSync()">Turn Off</button></div>${errHtml}`;
-        if(localStorage.getItem(`maison_drive_on_${currentUser}`))return`<p style="font-size:13px;color:var(--muted);font-style:italic;margin-bottom:12px">Sync needs to reconnect to Google.</p><button class="btn-ghost" onclick="enableDriveSync()">Reconnect Sync</button>${errHtml}`;
-        return`<p style="font-size:13px;color:var(--muted);font-style:italic;margin-bottom:12px">Back up and sync your data across devices via Google Drive.</p><button class="btn-ghost" onclick="enableDriveSync()">Enable Cross-Device Sync</button>${errHtml}`;
+        const errHtml=err?`<p style="font-size:12px;color:var(--red);margin-top:10px">${err==='access_denied'?'Google blocked access — in Google Cloud Console open OAuth consent screen, then either add your email as a Test User or publish the app.':err}</p>`:'';
+        if(driveAccessToken)return`<p style="font-size:13px;color:var(--green);margin-bottom:12px">✓ Sync is on${lastSyncAt?` — last synced ${timeAgo(lastSyncAt)}`:''}</p><div class="modal-row"><button class="btn-ghost" onclick="driveSyncNow(true)">Sync now</button><button class="btn-ghost danger" onclick="disableDriveSync()">Turn off</button></div>${errHtml}`;
+        if(localStorage.getItem(`maison_drive_on_${currentUser}`))return`<p style="font-size:13px;color:var(--muted);margin-bottom:12px">Sync needs to reconnect to Google.</p><button class="btn-ghost" onclick="enableDriveSync()">Reconnect sync</button>${errHtml}`;
+        return`<p style="font-size:13px;color:var(--muted);margin-bottom:12px">Back up and sync your data across devices via Google Drive.</p><button class="btn-ghost" onclick="enableDriveSync()">Enable cross-device sync</button>${errHtml}`;
       })()}
     </div>
     <hr class="divider"/>
     <div style="margin-bottom:20px">
-      <div class="field-label" style="margin-bottom:8px">Google Drive Backup</div>
+      <div class="field-label" style="margin-bottom:8px">Google Drive backup</div>
       ${(()=>{
         const gd=userData('gdrive_backup',{});
         const bkConnected=hasBkToken();
         const bkErr=sessionStorage.getItem('maison_bkdrive_err')||lastBkBackupError;
-        if(!bkConnected)return`<p style="font-size:13px;color:var(--muted);font-style:italic;margin-bottom:12px">Keep a visible backup file in a Google Drive folder you choose — separate from the automatic sync above. Connecting asks for a broader Google Drive permission, so you may see an "unverified app" notice; that's expected for this project and safe to continue through.${gd.folderId?`<br/>Was backing up to <b>${escHtml(gd.folderName||'Google Drive')}</b> — reconnect to resume.`:''}${bkErr?`<br/><span style="color:var(--red)">${escHtml(bkErr)}</span>`:''}</p><div class="modal-row"><button class="btn-ghost" onclick="bkDriveAuthRedirect(true)">${gd.folderId?'Reconnect':'Connect'} Google Drive Backup</button>${gd.folderId?`<button class="btn-ghost danger" onclick="bkDisconnect()">Disconnect</button>`:''}</div>`;
-        if(!gd.folderId)return`<p style="font-size:13px;color:var(--muted);font-style:italic;margin-bottom:12px">Connected. Choose a folder in your Google Drive to back up into.</p><div class="modal-row"><button class="btn-ghost" onclick="openBkFolderPicker()">Choose Folder</button><button class="btn-ghost danger" onclick="bkDisconnect()">Disconnect</button></div>`;
-        return`<p style="font-size:13px;color:${gd.enabled?'var(--green)':'var(--muted)'};font-style:italic;margin-bottom:12px">Backing up to <b>${escHtml(gd.folderName||'Google Drive')}</b> ${gd.enabled?'— on ✓':'— paused'}${lastBkBackupAt?`<br/>Last backed up ${timeAgo(lastBkBackupAt)}`:''}${lastBkBackupError?`<br/><span style="color:var(--red)">${escHtml(lastBkBackupError)}</span>`:''}</p>
+        if(!bkConnected)return`<p style="font-size:13px;color:var(--muted);margin-bottom:12px">Keep a visible backup file in a Google Drive folder you choose — separate from the automatic sync above. Connecting asks for a broader Google Drive permission, so you may see an "unverified app" notice; that's expected for this project and safe to continue through.${gd.folderId?`<br/>Was backing up to <b>${escHtml(gd.folderName||'Google Drive')}</b> — reconnect to resume.`:''}${bkErr?`<br/><span style="color:var(--red)">${escHtml(bkErr)}</span>`:''}</p><div class="modal-row"><button class="btn-ghost" onclick="bkDriveAuthRedirect(true)">${gd.folderId?'Reconnect':'Connect'} Google Drive Backup</button>${gd.folderId?`<button class="btn-ghost danger" onclick="bkDisconnect()">Disconnect</button>`:''}</div>`;
+        if(!gd.folderId)return`<p style="font-size:13px;color:var(--muted);margin-bottom:12px">Connected. Choose a folder in your Google Drive to back up into.</p><div class="modal-row"><button class="btn-ghost" onclick="openBkFolderPicker()">Choose folder</button><button class="btn-ghost danger" onclick="bkDisconnect()">Disconnect</button></div>`;
+        return`<p style="font-size:13px;color:${gd.enabled?'var(--green)':'var(--muted)'};margin-bottom:12px">Backing up to <b>${escHtml(gd.folderName||'Google Drive')}</b> ${gd.enabled?'— on ✓':'— paused'}${lastBkBackupAt?`<br/>Last backed up ${timeAgo(lastBkBackupAt)}`:''}${lastBkBackupError?`<br/><span style="color:var(--red)">${escHtml(lastBkBackupError)}</span>`:''}</p>
           <div class="modal-row">
-            <button class="btn-ghost" onclick="bkBackupNow(true)">Back Up Now</button>
+            <button class="btn-ghost" onclick="bkBackupNow(true)">Back up now</button>
             <button class="btn-ghost" onclick="toggleBkBackup()">${gd.enabled?'Pause':'Resume'}</button>
-            <button class="btn-ghost" onclick="openBkFolderPicker()">Change Folder</button>
+            <button class="btn-ghost" onclick="openBkFolderPicker()">Change folder</button>
             <button class="btn-ghost danger" onclick="bkDisconnect()">Disconnect</button>
           </div>`;
       })()}
@@ -2799,7 +3014,7 @@ function openSettings(){
     <div>
       <div class="field-label" style="margin-bottom:8px">Storage</div>
       <div id="storage-info" class="cl-hint" style="margin-top:0">Checking…</div>
-      <button class="btn-ghost danger" onclick="clearData()">Clear All My Data</button>
+      <button class="btn-ghost danger" onclick="clearData()">Clear all my data</button>
     </div>`);
   updateStorageInfo();
 }
@@ -2815,7 +3030,7 @@ async function updateStorageInfo(){
   if(!document.getElementById('storage-info'))return;
   el.innerHTML=`<div class="st-bar-track" style="margin:2px 0 6px"><div class="st-bar-fill ${pct>85?'red':pct>65?'gold':'green'}" style="width:${Math.max(2,pct)}%"></div></div>
     <div class="of-meta">${mb(used)} of about ${mb(LS_BUDGET)} used (${pct}%)</div>
-    ${pct>85?`<div style="color:var(--red);font-size:12px;font-style:italic;margin-top:4px">Nearly full — delete photos you no longer need so new ones keep saving.</div>`:''}${full}`;
+    ${pct>85?`<div style="color:var(--red);font-size:12px;margin-top:4px">Nearly full — delete photos you no longer need so new ones keep saving.</div>`:''}${full}`;
 }
 function signOut(){localStorage.removeItem('maison_sess');localStorage.removeItem('maison_drive_tok');localStorage.removeItem('maison_bkdrive_tok');currentUser=null;capturedDataURL=null;activeRoomId=null;driveAccessToken=null;driveFileId=null;if(driveSyncTimer){clearTimeout(driveSyncTimer);driveSyncTimer=null;}if(bkBackupTimer){clearTimeout(bkBackupTimer);bkBackupTimer=null;}document.getElementById('app').classList.remove('visible');document.getElementById('auth-screen').style.display='flex';google.accounts.id.disableAutoSelect();closeModal();}
 function clearData(){
