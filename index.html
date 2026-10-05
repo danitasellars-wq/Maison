@@ -473,6 +473,35 @@ textarea.field-input{border:1px solid var(--line);border-radius:8px;padding:10px
 .of-name{font-size:15px;font-weight:500}
 .of-meta{font-size:13px}
 .song-num{font-size:15px;color:var(--muted)}
+/* tags + music player */
+#song-file{border:none;border-bottom:none;padding:6px 0;font-family:var(--sans);font-size:14px;color:var(--muted);background:transparent}
+#song-file::file-selector-button{font-family:var(--sans);font-size:14px;color:var(--ink);background:transparent;border:1px solid var(--line);border-radius:999px;padding:7px 16px;margin-right:12px;cursor:pointer}
+.cl-chips{display:flex;flex-wrap:wrap;gap:8px;margin:2px 0 14px}
+.cl-chip{position:relative;cursor:pointer}
+.cl-chip input{position:absolute;opacity:0;pointer-events:none}
+.cl-chip span{display:inline-block;font-family:var(--sans);font-size:14px;color:var(--muted);padding:6px 14px;border:1px solid var(--line);border-radius:999px;background:transparent;transition:all .15s}
+.cl-chip input:checked+span{background:var(--ink);border-color:var(--ink);color:var(--cream)}
+.cl-chip input:focus-visible+span{outline:2px solid var(--gold);outline-offset:2px}
+.of-filter{display:flex;align-items:baseline;gap:14px;margin-bottom:4px}
+.of-filter-label{font-family:var(--sans);font-size:12.5px;color:var(--muted);min-width:64px}
+.of-filter .tag-row{margin-bottom:10px}
+#of-filters{margin:6px 0 14px}
+.of-tags{font-size:12.5px;color:var(--muted);margin-top:2px}
+.song-play{display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:50%;border:1px solid var(--ink);background:var(--ink);color:var(--cream);cursor:pointer;flex-shrink:0;align-self:center;padding:0}
+.song-play svg{width:14px;height:14px;fill:currentColor}
+.song-row.playing .song-title{color:var(--red)}
+.song-actions{display:flex;align-items:center;gap:8px;flex-shrink:0;align-self:center}
+.song-tag{display:inline-block;font-family:var(--sans);font-size:11.5px;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:1px 8px;margin-left:6px}
+#mini-player{position:fixed;left:12px;right:12px;bottom:calc(92px + env(safe-area-inset-bottom));z-index:140;background:var(--ink);color:var(--cream);padding:10px 8px 10px 16px;display:none;align-items:center;gap:4px;border-radius:14px;overflow:hidden;box-shadow:0 6px 24px rgba(28,20,10,.25);max-width:560px;margin:0 auto}
+#mini-player.on{display:flex}
+#mini-player .mp-info{flex:1;min-width:0}
+#mini-player .mp-title{font-family:var(--sans);font-size:14.5px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#mini-player .mp-sub{font-size:12px;color:var(--warm);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#mini-player button{background:none;border:none;color:var(--cream);cursor:pointer;padding:6px;display:inline-flex}
+#mini-player button svg{width:20px;height:20px;fill:currentColor}
+#mini-player .mp-bar{position:absolute;left:0;right:0;top:0;height:2px;background:rgba(255,255,255,.15)}
+#mini-player .mp-bar i{display:block;height:100%;width:0;background:var(--gold)}
+body.has-player #main-content{padding-bottom:80px}
 .recipe-title{font-size:23px;font-weight:500}
 .recipe-text,.photo-note{font-size:14px}
 .empty{font-size:15px}
@@ -889,6 +918,13 @@ function referencedPhotoIds(){
   const rec=userData('recipes',{items:[]});rec.items.forEach(it=>{if(it.img&&it.id)ids.push(it.id);(it.photos||[]).forEach(push);});
   ['wedding','home','honeymoon','closet'].forEach(ctx=>{userData(`moodboards_${ctx}`,[]).forEach(b=>(b.tiles||[]).forEach(push));});
   ((userData('closet',null)||{}).items||[]).forEach(push);
+  return ids.concat(referencedAudioIds());
+}
+// Uploaded songs ride the same IndexedDB + Drive file mirror as photos, keyed by song id. Unlike photos they are
+// only downloaded to a new device when played (see syncPhotoFiles / playSong), since they can be large.
+function referencedAudioIds(){
+  const ids=[];
+  (userData('music',{playlists:[]}).playlists||[]).forEach(p=>(p.songs||[]).forEach(s=>{if(s&&s.id&&s.audio)ids.push(s.id);}));
   return ids;
 }
 function photoFileName(id){return 'mzphoto_'+id+'.jpg';}
@@ -905,6 +941,13 @@ async function listRemotePhotos(){
   return map;
 }
 async function uploadAppDataPhoto(id,blob){
+  // Songs are big: above ~4MB use Drive's resumable upload (single PUT), falling back to multipart if the browser can't read the session URL.
+  if(blob.size>4*1048576){
+    const type=blob.type||'application/octet-stream';
+    const init=await driveFetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable',{method:'POST',headers:{Authorization:'Bearer '+driveAccessToken,'Content-Type':'application/json; charset=UTF-8','X-Upload-Content-Type':type,'X-Upload-Content-Length':String(blob.size)},body:JSON.stringify({name:photoFileName(id),parents:['appDataFolder']})});
+    const loc=init.headers&&init.headers.get('Location');
+    if(loc){await driveFetch(loc,{method:'PUT',headers:{'Content-Type':type},body:blob});return;}
+  }
   const form=new FormData();
   form.append('metadata',new Blob([JSON.stringify({name:photoFileName(id),parents:['appDataFolder']})],{type:'application/json'}));
   form.append('file',blob,photoFileName(id));
@@ -922,8 +965,10 @@ async function syncPhotoFiles(){
   try{
     const remote=await listRemotePhotos();
     const auth={headers:{Authorization:'Bearer '+driveAccessToken}};
+    const audioIds=new Set(referencedAudioIds());
     for(const id of ids){
       const fn=photoFileName(id);
+      if(audioIds.has(id))continue;   // songs are fetched on demand
       if(remote[fn]&&!(await idbGetPhoto(id))){
         try{const blob=await(await driveFetch(`https://www.googleapis.com/drive/v3/files/${remote[fn]}?alt=media`,auth)).blob();if(!(await idbPutPhoto(id,blob)))failed++;}catch(e){failed++;if(!driveAccessToken)break;}
       }
@@ -2072,29 +2117,33 @@ function renderMusic(main){
   }
   if(!activeMusicPlaylistId||!m.playlists.find(p=>p.id===activeMusicPlaylistId))activeMusicPlaylistId=m.playlists[0].id;
   const pl=m.playlists.find(p=>p.id===activeMusicPlaylistId);
-  const tabs=m.playlists.map(p=>`<button class="room-tab${p.id===activeMusicPlaylistId?' active':''}" onclick="setActiveMusicPlaylist('${p.id}')">${p.name}</button>`).join('');
+  const tabs=m.playlists.map(p=>`<button class="room-tab${p.id===activeMusicPlaylistId?' active':''}" onclick="setActiveMusicPlaylist('${p.id}')">${escHtml(p.name)}</button>`).join('');
   const songs=pl.songs||[];
-  const songsHtml=songs.length?songs.map((s,i)=>`<div class="song-row">
+  const songsHtml=songs.length?songs.map((s,i)=>{const link=safeLink(s.link);return`<div class="song-row" data-sid="${s.id}">
     <div class="song-num">${i+1}</div>
     <div class="song-body">
-      <div class="song-title">${s.title}</div>
-      ${s.artist?`<div class="song-artist">${s.artist}</div>`:''}
-      ${s.note?`<div class="song-note">${s.note}</div>`:''}
+      <div class="song-title">${escHtml(s.title)}${s.audio?'<span class="song-tag">Uploaded</span>':''}</div>
+      ${s.artist?`<div class="song-artist">${escHtml(s.artist)}</div>`:''}
+      ${s.note?`<div class="song-note">${escHtml(s.note)}</div>`:''}
     </div>
-    ${s.link?`<a href="${s.link}" target="_blank" rel="noopener" class="song-link-btn">Play</a>`:''}
-    <button class="icon-btn" title="Delete" onclick="deleteSong('${pl.id}','${s.id}')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg></button>
-  </div>`).join(''):`<div class="empty" style="padding:20px 0;font-size:13px">No songs yet — add your first!</div>`;
+    <div class="song-actions">
+      ${s.audio?`<button class="song-play" data-play="${s.id}" aria-label="Play ${escHtml(s.title)}" onclick="playSong('${pl.id}','${s.id}')">${MP_ICON_PLAY}</button>`:''}
+      ${link?`<a href="${escHtml(link)}" target="_blank" rel="noopener" class="song-link-btn">${s.audio?'Link':'Play'}</a>`:''}
+      <button class="icon-btn" title="Delete" onclick="deleteSong('${pl.id}','${s.id}')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg></button>
+    </div>
+  </div>`;}).join(''):`<div class="empty" style="padding:20px 0;font-size:13px">No songs yet — add your first!</div>`;
   main.innerHTML=`<div class="section-rule"><div><div class="section-title">Music</div><div class="section-sub">Your favourite songs &amp; playlists.</div></div><div class="flex-center">${quickNotesBtn('music')}<button class="btn-solid sm" onclick="openAddPlaylist()">+ Playlist</button></div></div>
     <div class="room-tabs-row">${tabs}</div>
     <div class="flex-between mb14" style="padding-top:16px">
-      <div style="font-family:var(--sans);font-size:16px;color:var(--muted)">${pl.name} <span style="font-size:12px;font-weight:400;">${songs.length} song${songs.length!==1?'s':''}</span></div>
+      <div style="font-family:var(--sans);font-size:16px;color:var(--muted)">${escHtml(pl.name)} <span style="font-size:12px;font-weight:400;">${songs.length} song${songs.length!==1?'s':''}</span></div>
       <div class="flex-center">
         <button class="btn-ghost" onclick="openAddSong('${pl.id}')">+ Add song</button>
         <button class="btn-ghost danger" onclick="deletePlaylist('${pl.id}')">Delete</button>
       </div>
     </div>
-    ${pl.description?`<p style="font-size:13px;color:var(--muted);margin-bottom:14px">${pl.description}</p>`:''}
+    ${pl.description?`<p style="font-size:13px;color:var(--muted);margin-bottom:14px">${escHtml(pl.description)}</p>`:''}
     ${songsHtml}`;
+  mpRefresh();
 }
 function setActiveMusicPlaylist(id){activeMusicPlaylistId=id;showSection('music');}
 function openAddPlaylist(){
@@ -2111,9 +2160,15 @@ function savePlaylist(){
   m.playlists.push({id,name,description:(document.getElementById('pl-desc').value||'').trim(),songs:[]});
   saveData('music',m);activeMusicPlaylistId=id;closeModal();showSection('music');
 }
+function dropSongAudio(s){
+  if(!s||!s.audio)return;
+  if(mpNow&&mpNow.songId===s.id)mpStop();
+  idbDeletePhoto(s.id).catch(()=>{});deleteRemotePhoto(s.id).catch(()=>{});
+}
 function deletePlaylist(id){
   if(!confirm('Delete this playlist and all its songs?'))return;
   const m=userData('music',{playlists:[]});
+  (m.playlists.find(p=>p.id===id)||{songs:[]}).songs.forEach(dropSongAudio);
   m.playlists=m.playlists.filter(p=>p.id!==id);
   activeMusicPlaylistId=m.playlists.length?m.playlists[0].id:null;
   saveData('music',m);showSection('music');
@@ -2126,34 +2181,159 @@ function openAddSong(playlistId){
     <input id="song-artist" class="field-input" placeholder="e.g. Frank Sinatra…"/>
     <label class="field-label">Link (Spotify / YouTube / Apple Music)</label>
     <input id="song-link" class="field-input" type="url" placeholder="https://…"/>
+    <label class="field-label">Or upload the song</label>
+    <input id="song-file" class="field-input" type="file" accept="audio/*,.mp3,.m4a,.aac,.wav,.ogg,.flac" onchange="songFilePicked(this)"/>
+    <p class="cl-hint" id="song-file-hint">Add a link, upload a file, or both. Uploaded songs play inside MAISON and sync through Google Drive.</p>
     <label class="field-label">Note (optional)</label>
     <input id="song-note" class="field-input" placeholder="Why you love it…"/>
-    <div class="modal-row"><button class="btn-solid sm" onclick="saveSong('${playlistId}')">Add to playlist</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);
+    <div class="modal-row"><button class="btn-solid sm" id="song-save" onclick="saveSong('${playlistId}')">Add to playlist</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);
 }
-function saveSong(playlistId){
+const SONG_MAX_BYTES=80*1048576;
+function songFilePicked(inp){
+  const f=inp.files&&inp.files[0],hint=document.getElementById('song-file-hint'),t=document.getElementById('song-title');
+  if(!f||!hint)return;
+  if(f.size>SONG_MAX_BYTES){hint.textContent='That file is '+(f.size/1048576).toFixed(0)+' MB. The limit is 80 MB, so please choose a smaller one.';inp.value='';return;}
+  hint.textContent=f.name+' · '+(f.size/1048576).toFixed(1)+' MB';
+  if(t&&!t.value.trim())t.value=f.name.replace(/\.[^.]+$/,'').replace(/[_]+/g,' ');
+}
+// Only web links are kept as links (blocks javascript: and similar), and a bare "spotify.com/…" gets https://
+function safeLink(u){u=(u||'').trim();if(!u)return'';if(!/^[a-z][a-z0-9+.-]*:/i.test(u))u='https://'+u;return/^https?:\/\//i.test(u)?u:'';}
+async function saveSong(playlistId){
   const title=(document.getElementById('song-title').value||'').trim();if(!title)return;
   const m=userData('music',{playlists:[]});const pl=m.playlists.find(p=>p.id===playlistId);if(!pl)return;
-  pl.songs=pl.songs||[];
-  pl.songs.push({id:uid(),title,artist:(document.getElementById('song-artist').value||'').trim(),link:(document.getElementById('song-link').value||'').trim(),note:(document.getElementById('song-note').value||'').trim(),date:Date.now()});
-  saveData('music',m);closeModal();showSection('music');
+  const fileInp=document.getElementById('song-file'),file=fileInp&&fileInp.files&&fileInp.files[0];
+  const id=uid(),song={id,title,artist:(document.getElementById('song-artist').value||'').trim(),link:safeLink(document.getElementById('song-link').value),note:(document.getElementById('song-note').value||'').trim(),date:Date.now()};
+  if(file){
+    if(file.size>SONG_MAX_BYTES){clToast('That file is over 80 MB');return;}
+    const btn=document.getElementById('song-save');if(btn){btn.disabled=true;btn.textContent='Saving…';}
+    const ok=await idbPutPhoto(id,file);   // store the song on this device first; if that fails nothing is added
+    if(!ok){if(btn){btn.disabled=false;btn.textContent='Add to playlist';}return;}
+    song.audio={name:file.name,type:file.type||'audio/mpeg',size:file.size};
+  }
+  pl.songs=pl.songs||[];pl.songs.push(song);
+  if(!saveData('music',m)){if(song.audio)idbDeletePhoto(id).catch(()=>{});const btn=document.getElementById('song-save');if(btn){btn.disabled=false;btn.textContent='Add to playlist';}return;}
+  closeModal();showSection('music');
+  if(song.audio)syncPhotosSoon();
 }
 function deleteSong(playlistId,songId){
   const m=userData('music',{playlists:[]});const pl=m.playlists.find(p=>p.id===playlistId);
-  if(pl){pl.songs=(pl.songs||[]).filter(s=>s.id!==songId);saveData('music',m);}showSection('music');
+  if(pl){dropSongAudio((pl.songs||[]).find(s=>s.id===songId));pl.songs=(pl.songs||[]).filter(s=>s.id!==songId);saveData('music',m);}showSection('music');
+}
+
+// ── In-app player for uploaded songs ──
+// One shared <audio> element, so a song keeps playing while you move around the app. The bar above the dock shows what's playing.
+const MP_ICON_PLAY='<svg viewBox="0 0 24 24"><path d="M7 4.5v15a1 1 0 0 0 1.5.86l12-7.5a1 1 0 0 0 0-1.72l-12-7.5A1 1 0 0 0 7 4.5z"/></svg>';
+const MP_ICON_PAUSE='<svg viewBox="0 0 24 24"><rect x="6" y="4" width="4.5" height="16" rx="1"/><rect x="13.5" y="4" width="4.5" height="16" rx="1"/></svg>';
+const MP_ICON_PREV='<svg viewBox="0 0 24 24"><rect x="5" y="5" width="2.5" height="14" rx="1"/><path d="M19 5.6v12.8a1 1 0 0 1-1.55.83l-9-6.4a1 1 0 0 1 0-1.66l9-6.4A1 1 0 0 1 19 5.6z"/></svg>';
+const MP_ICON_NEXT='<svg viewBox="0 0 24 24"><rect x="16.5" y="5" width="2.5" height="14" rx="1"/><path d="M5 5.6v12.8a1 1 0 0 0 1.55.83l9-6.4a1 1 0 0 0 0-1.66l-9-6.4A1 1 0 0 0 5 5.6z"/></svg>';
+const MP_ICON_CLOSE='<svg viewBox="0 0 24 24"><path d="M6.4 5l12.6 12.6-1.4 1.4L5 6.4zM19 6.4L6.4 19 5 17.6 17.6 5z"/></svg>';
+let mpAudioEl=null,mpURL=null,mpNow=null,mpLoading=0;
+function mpEl(){
+  if(mpAudioEl)return mpAudioEl;
+  const a=new Audio();a.preload='auto';
+  a.addEventListener('ended',()=>mpStep(1,true));
+  a.addEventListener('play',mpRefresh);a.addEventListener('pause',mpRefresh);
+  a.addEventListener('timeupdate',()=>{const i=document.querySelector('#mini-player .mp-bar i');if(i&&a.duration)i.style.width=(a.currentTime/a.duration*100)+'%';});
+  a.addEventListener('error',()=>{if(mpNow){clToast("This file couldn't be played");mpRefresh();}});
+  mpAudioEl=a;return a;
+}
+function mpFind(songId){
+  const m=userData('music',{playlists:[]});
+  for(const p of m.playlists){const s=(p.songs||[]).find(x=>x.id===songId);if(s)return{pl:p,song:s};}
+  return null;
+}
+async function playSong(plId,songId){
+  const a=mpEl();
+  if(mpNow&&mpNow.songId===songId&&a.src){if(a.paused)a.play().catch(()=>{});else a.pause();return;}
+  const f=mpFind(songId);if(!f||!f.song.audio)return;
+  const token=++mpLoading;
+  let blob=await idbGetPhoto(songId).catch(()=>null);
+  if(!blob){
+    clToast('Fetching this song from Google Drive…');
+    blob=await ensurePhotoLocal(songId);
+    if(!blob){if(token===mpLoading)clToast("Couldn't load this song. Check you're connected to Google Drive.");return;}
+  }
+  if(token!==mpLoading)return;   // a newer tap superseded this one
+  if(mpURL)URL.revokeObjectURL(mpURL);
+  mpURL=URL.createObjectURL(new Blob([blob],{type:f.song.audio.type||blob.type||'audio/mpeg'}));
+  mpNow={plId:f.pl.id,songId};
+  a.src=mpURL;
+  try{await a.play();}catch(e){clToast("Tap play to start the song");}
+  mpMediaSession(f.song);mpRefresh();
+}
+// Previous / next among the uploaded songs of the current playlist; stops quietly at the ends.
+function mpStep(dir,fromEnd){
+  if(!mpNow)return;
+  const f=mpFind(mpNow.songId);if(!f)return mpStop();
+  const list=(f.pl.songs||[]).filter(s=>s.audio),i=list.findIndex(s=>s.id===mpNow.songId),n=list[i+dir];
+  if(n)playSong(f.pl.id,n.id);
+  else if(fromEnd){const a=mpEl();a.currentTime=0;mpRefresh();}
+}
+function mpStop(){
+  mpLoading++;mpNow=null;
+  if(mpAudioEl){mpAudioEl.pause();mpAudioEl.removeAttribute('src');try{mpAudioEl.load();}catch(e){}}
+  if(mpURL){URL.revokeObjectURL(mpURL);mpURL=null;}
+  mpRefresh();
+}
+function mpMediaSession(song){
+  if(!('mediaSession' in navigator))return;
+  try{
+    navigator.mediaSession.metadata=new MediaMetadata({title:song.title,artist:song.artist||'MAISON'});
+    navigator.mediaSession.setActionHandler('play',()=>mpEl().play());
+    navigator.mediaSession.setActionHandler('pause',()=>mpEl().pause());
+    navigator.mediaSession.setActionHandler('previoustrack',()=>mpStep(-1));
+    navigator.mediaSession.setActionHandler('nexttrack',()=>mpStep(1));
+  }catch(e){}
+}
+// Keeps song rows and the player bar in step with what's playing. Safe to call any time.
+function mpRefresh(){
+  const a=mpAudioEl,playing=!!(a&&mpNow&&!a.paused);
+  document.querySelectorAll('.song-row').forEach(r=>{
+    const on=!!mpNow&&r.dataset.sid===mpNow.songId;
+    r.classList.toggle('playing',on);
+    const b=r.querySelector('.song-play');if(b)b.innerHTML=on&&playing?MP_ICON_PAUSE:MP_ICON_PLAY;
+  });
+  let bar=document.getElementById('mini-player');
+  if(!mpNow){if(bar)bar.classList.remove('on');document.body.classList.remove('has-player');return;}
+  const f=mpFind(mpNow.songId);if(!f){mpStop();return;}
+  if(!bar){bar=document.createElement('div');bar.id='mini-player';document.body.appendChild(bar);}
+  bar.innerHTML=`<div class="mp-bar"><i></i></div>
+    <div class="mp-info"><div class="mp-title">${escHtml(f.song.title)}</div><div class="mp-sub">${escHtml(f.song.artist||f.pl.name)}</div></div>
+    <button onclick="mpStep(-1)" aria-label="Previous song">${MP_ICON_PREV}</button>
+    <button onclick="playSong('${f.pl.id}','${f.song.id}')" aria-label="${playing?'Pause':'Play'}">${playing?MP_ICON_PAUSE:MP_ICON_PLAY}</button>
+    <button onclick="mpStep(1)" aria-label="Next song">${MP_ICON_NEXT}</button>
+    <button onclick="mpStop()" aria-label="Close player">${MP_ICON_CLOSE}</button>`;
+  bar.classList.add('on');document.body.classList.add('has-player');
+  const i=bar.querySelector('.mp-bar i');if(i&&a&&a.duration)i.style.width=(a.currentTime/a.duration*100)+'%';
 }
 
 // ── CLOSET ──
 // Own data key (`closet`) and own photo store — deliberately separate from the Maison photo gallery.
 // Item records keep only a tiny thumbnail inline; the full image lives in IndexedDB (+ Drive mirror) under the item id.
-const CLOSET_CATS=['Tops','Bottoms','Dresses','Outerwear','Shoes','Bags','Accessories'];
+const CLOSET_CATS=['Tops','Bottoms','Skirts','Dresses','Outerwear','Shoes','Headscarves','Bags','Accessories'];
+// Two separate tag groups on every piece (and outfit): occasion and season. "Tween" = in-between weather.
+const CL_OCC=[['meeting','Meeting'],['casual','Casual']];
+const CL_SEASONS=[['summer','Summer'],['winter','Winter'],['tween','Tween']];
+function clTagLabel(list,k){const f=list.find(x=>x[0]===k);return f?f[1]:k;}
+function clChipsHTML(id,list,sel,onchange){return`<div class="cl-chips" id="${id}">${list.map(([k,l])=>`<label class="cl-chip"><input type="checkbox" value="${k}"${(sel||[]).indexOf(k)>=0?' checked':''}${onchange?` onchange="${onchange}"`:''}/><span>${l}</span></label>`).join('')}</div>`;}
+function clReadChips(id){return Array.from(document.querySelectorAll('#'+id+' input:checked')).map(i=>i.value);}
+function clTagsText(occ,seasons){return[].concat((occ||[]).map(k=>clTagLabel(CL_OCC,k)),(seasons||[]).map(k=>clTagLabel(CL_SEASONS,k))).join(' · ');}
+// An outfit's tags: the ones you set by hand, otherwise what every tagged piece in it has in common.
+function clOutfitTags(c,o){
+  if(o.tagsManual)return{occ:o.occ||[],seasons:o.seasons||[]};
+  const its=clOutfitItemIds(c,o).map(id=>clItem(c,id));
+  const common=key=>{const sets=its.map(i=>i[key]||[]).filter(a=>a.length);return sets.length?sets.reduce((a,b)=>a.filter(x=>b.indexOf(x)>=0)):[];};
+  return{occ:common('occ'),seasons:common('seasons')};
+}
 const CLOSET_TABS=[['wardrobe','Wardrobe'],['outfits','Outfits'],['calendar','Calendar'],['shuffle','Shuffle'],['stats','Stats'],['packing','Packing']];
 // Flat-lay slots per category: x/y/w are % of the board, h is the max height (% of board) the piece may take.
-const CL_DEFAULT_POS={Tops:{x:29,y:4,w:42,h:34},Bottoms:{x:31,y:38,w:38,h:36},Dresses:{x:28,y:6,w:44,h:62},Outerwear:{x:3,y:6,w:46,h:42},Shoes:{x:30,y:77,w:26,h:18},Bags:{x:68,y:40,w:26,h:26},Accessories:{x:70,y:8,w:20,h:18}};
+const CL_DEFAULT_POS={Tops:{x:29,y:4,w:42,h:34},Bottoms:{x:31,y:38,w:38,h:36},Skirts:{x:30,y:38,w:40,h:32},Headscarves:{x:62,y:2,w:26,h:18},Dresses:{x:28,y:6,w:44,h:62},Outerwear:{x:3,y:6,w:46,h:42},Shoes:{x:30,y:77,w:26,h:18},Bags:{x:68,y:40,w:26,h:26},Accessories:{x:70,y:8,w:20,h:18}};
 function clDefaultPlace(it,same){
   const d=CL_DEFAULT_POS[it.cat]||{x:35,y:35,w:30,h:30},ar=it.ar||1;
   const w=Math.min(d.w,d.h*(4/3)*ar);
   return{x:+clClamp(d.x+(d.w-w)/2+same*6,0,100-w).toFixed(1),y:+clClamp(d.y+same*5,0,88).toFixed(1),w:+w.toFixed(1)};
 }
+let ofFilter={occ:'all',season:'all'};
 let closetTab='wardrobe',closetFilter='all',closetOutfitId=null,closetPackId=null,closetCalMonth=null,closetStatsSort='best';
 let closetQueue=[],closetDraft=null,closetSensTimer=null,outfitDraft=null,obSel=null,obDrag=null,obCat='all',obNameTimer=null;
 let shuffleState={idx:{},lock:{},favOnly:false,busy:false};
@@ -2305,6 +2485,8 @@ function clRunCut(){const d=closetDraft;if(!d)return;try{d.cut=clCutBackground(d
 function clFieldsHTML(p,v){
   return`<label class="field-label">Name</label><input id="${p}-name" class="field-input" placeholder="e.g. Navy linen shirt" value="${escHtml(v.name||'')}"/>
     <label class="field-label">Category</label><select id="${p}-cat" class="field-input">${CLOSET_CATS.map(x=>`<option${v.cat===x?' selected':''}>${x}</option>`).join('')}</select>
+    <label class="field-label">Occasion</label>${clChipsHTML(p+'-occ',CL_OCC,v.occ)}
+    <label class="field-label">Season <span style="font-weight:400">(tween = in-between weather)</span></label>${clChipsHTML(p+'-seasons',CL_SEASONS,v.seasons)}
     <label class="field-label">Price paid (£)</label><input id="${p}-price" class="field-input" type="number" min="0" step="0.01" inputmode="decimal" placeholder="0.00" value="${v.price>0?v.price:''}"/>
     <label class="field-label">Notes (optional)</label><input id="${p}-notes" class="field-input" placeholder="Brand, size, where it's from…" value="${escHtml(v.notes||'')}"/>`;
 }
@@ -2434,7 +2616,7 @@ async function clSaveItem(){
   const id=uid();
   const blob=await clBlob(cv,useCut?'image/png':'image/jpeg',.88);
   await idbPutPhoto(id,blob);
-  c.items.push({id,name,cat,price,notes,fav:false,date:Date.now(),cut:useCut,ar:+(cv.width/cv.height).toFixed(3),thumb:clMakeThumb(cv,useCut)});
+  c.items.push({id,name,cat,price,notes,occ:clReadChips('ca-occ'),seasons:clReadChips('ca-seasons'),fav:false,date:Date.now(),cut:useCut,ar:+(cv.width/cv.height).toFixed(3),thumb:clMakeThumb(cv,useCut)});
   saveCloset(c);syncPhotosSoon();
   clToast('Added to closet');
   if(closetQueue.length)clNext();
@@ -2466,6 +2648,8 @@ function clOpenItem(id){
     <div class="cl-facts">
       <div><span>Category</span>${escHtml(it.cat)}</div>
       <div><span>Price</span>${it.price>0?clMoney(it.price):'—'}</div>
+      <div><span>Occasion</span>${(it.occ||[]).length?escHtml((it.occ||[]).map(k=>clTagLabel(CL_OCC,k)).join(', ')):'—'}</div>
+      <div><span>Season</span>${(it.seasons||[]).length?escHtml((it.seasons||[]).map(k=>clTagLabel(CL_SEASONS,k)).join(', ')):'—'}</div>
       <div><span>Worn</span>${w} time${w!==1?'s':''}</div>
       <div><span>Cost per wear</span>${cpw!=null?clMoney(cpw):(it.price>0?'Not worn yet':'—')}</div>
       <div><span>Last worn</span>${lastTxt}</div>
@@ -2487,6 +2671,7 @@ function clSaveEdit(id){
   it.name=document.getElementById('ce-name').value.trim()||it.cat;
   it.price=parseFloat(document.getElementById('ce-price').value)||0;
   it.notes=document.getElementById('ce-notes').value.trim();
+  it.occ=clReadChips('ce-occ');it.seasons=clReadChips('ce-seasons');
   saveCloset(c);showSection('closet');clOpenItem(id);
 }
 function clDeleteItem(id){
@@ -2527,13 +2712,44 @@ function clMiniBoard(c,o){
   return`<div class="mini-board">${(o.items||[]).map((x,i)=>{const it=clItem(c,x.itemId);return it?`<img src="${it.thumb}" alt="" style="left:${x.x}%;top:${x.y}%;width:${x.w}%;z-index:${i+1}"/>`:'';}).join('')}</div>`;
 }
 function clOutfitsHTML(c){
-  const wornBy={};Object.values(c.calendar).forEach(arr=>arr.forEach(e=>{if(e.worn&&e.outfitId)wornBy[e.outfitId]=(wornBy[e.outfitId]||0)+1;}));
   const head=`<div class="flex-between mb14"><div class="section-sub" style="margin:0">Build flat-lay outfits from your closet.</div><button class="btn-solid sm" onclick="clNewOutfit()">+ New outfit</button></div>`;
   if(!c.items.length)return head+`<div class="empty">Add some clothes in <b>Wardrobe</b> first, then build outfits here.</div>`;
   if(!c.outfits.length)return head+`<div class="empty">No outfits yet.<br/>Tap <b>+ New outfit</b>, or try the <b>Shuffle</b> tab.</div>`;
-  const btn='padding:4px 10px;font-size:12px';
-  return head+`<div class="of-grid">${c.outfits.map(o=>{const n=clOutfitItemIds(c,o).length,w=wornBy[o.id]||0;return`<div class="of-card"><div style="cursor:pointer" onclick="clEditOutfit('${o.id}')">${clMiniBoard(c,o)}</div><div class="of-body"><div class="of-name">${escHtml(o.name)}</div><div class="of-meta">${n} piece${n!==1?'s':''} · worn ${w}×</div><div class="flex-center" style="margin-top:8px;gap:6px"><button class="btn-ghost" style="${btn}" onclick="clEditOutfit('${o.id}')">Edit</button><button class="btn-ghost" style="${btn}" onclick="clWearToday('${o.id}')">Wear today</button><button class="btn-ghost danger" style="${btn}" onclick="clDeleteOutfit('${o.id}')">×</button></div></div></div>`;}).join('')}</div>`;
+  return head+`<div id="of-filters">${clOutfitFiltersHTML()}</div><div id="of-list">${clOutfitGridHTML(c)}</div>`;
 }
+function clOutfitFiltersHTML(){
+  const row=(label,list,kind)=>`<div class="of-filter"><span class="of-filter-label">${label}</span><div class="tag-row">${[['all','All']].concat(list).map(([k,l])=>`<button class="tag-pill${ofFilter[kind]===k?' active':''}" onclick="clOfFilter('${kind}','${k}')">${l}</button>`).join('')}</div></div>`;
+  return row('Occasion',CL_OCC,'occ')+row('Season',CL_SEASONS,'season');
+}
+function clOutfitGridHTML(c){
+  const wornBy={};Object.values(c.calendar).forEach(arr=>arr.forEach(e=>{if(e.worn&&e.outfitId)wornBy[e.outfitId]=(wornBy[e.outfitId]||0)+1;}));
+  const list=c.outfits.filter(o=>{const t=clOutfitTags(c,o);return(ofFilter.occ==='all'||t.occ.indexOf(ofFilter.occ)>=0)&&(ofFilter.season==='all'||t.seasons.indexOf(ofFilter.season)>=0);});
+  if(!list.length)return`<div class="empty">No outfits match${ofFilter.occ!=='all'?' '+clTagLabel(CL_OCC,ofFilter.occ).toLowerCase():''}${ofFilter.season!=='all'?' '+clTagLabel(CL_SEASONS,ofFilter.season).toLowerCase():''} yet.<br/>Tag pieces in your wardrobe, or tag an outfit when you edit it.</div>`;
+  const btn='padding:4px 10px;font-size:12px';
+  return`<div class="of-grid">${list.map(o=>{const n=clOutfitItemIds(c,o).length,w=wornBy[o.id]||0,t=clOutfitTags(c,o),tg=clTagsText(t.occ,t.seasons);return`<div class="of-card"><div style="cursor:pointer" onclick="clEditOutfit('${o.id}')">${clMiniBoard(c,o)}</div><div class="of-body"><div class="of-name">${escHtml(o.name)}</div><div class="of-meta">${n} piece${n!==1?'s':''} · worn ${w}×</div>${tg?`<div class="of-tags">${tg}</div>`:''}<div class="flex-center" style="margin-top:8px;gap:6px"><button class="btn-ghost" style="${btn}" onclick="clEditOutfit('${o.id}')">Edit</button><button class="btn-ghost" style="${btn}" onclick="clWearToday('${o.id}')">Wear today</button><button class="btn-ghost danger" style="${btn}" onclick="clDeleteOutfit('${o.id}')">×</button></div></div></div>`;}).join('')}</div>`;
+}
+function clOfFilter(kind,k){
+  ofFilter[kind]=k;
+  const f=document.getElementById('of-filters'),l=document.getElementById('of-list');
+  if(f)f.innerHTML=clOutfitFiltersHTML();if(l)l.innerHTML=clOutfitGridHTML(closetData());
+}
+// Outfit tag chips in the editor: ticking one switches the outfit from automatic (from its pieces) to manual.
+function clOutfitTagsHTML(c){
+  const t=clOutfitTags(c,outfitDraft);
+  return`<div class="field-label">Occasion</div>${clChipsHTML('ob-occ',CL_OCC,t.occ,'clOutfitTagChange()')}
+    <div class="field-label">Season</div>${clChipsHTML('ob-seasons',CL_SEASONS,t.seasons,'clOutfitTagChange()')}
+    <p class="cl-hint">${outfitDraft.tagsManual?'Tags set by you. <a href="#" onclick="clOutfitTagAuto();return false">Use the pieces\' tags instead</a>':'Taken from the tags on its pieces. Tick one to set them yourself.'}</p>`;
+}
+function clOutfitTagChange(){
+  if(!outfitDraft)return;
+  outfitDraft.tagsManual=true;outfitDraft.occ=clReadChips('ob-occ');outfitDraft.seasons=clReadChips('ob-seasons');
+  clSaveDraft();clRefreshOutfitTags();
+}
+function clOutfitTagAuto(){
+  if(!outfitDraft)return;
+  outfitDraft.tagsManual=false;delete outfitDraft.occ;delete outfitDraft.seasons;clSaveDraft();clRefreshOutfitTags();
+}
+function clRefreshOutfitTags(){const e=document.getElementById('ob-tags');if(e&&outfitDraft)e.innerHTML=clOutfitTagsHTML(closetData());}
 function clNewOutfit(){
   const c=closetData();if(!c.items.length){clToast('Add some clothes first');return;}
   const o={id:uid(),name:'New outfit',items:[],date:Date.now()};c.outfits.push(o);saveCloset(c);clEditOutfit(o.id);
@@ -2562,6 +2778,7 @@ function clEditorHTML(c){
     <input id="ob-name" class="field-input" value="${escHtml(outfitDraft.name)}" placeholder="Outfit name" oninput="clOutfitName(this.value)"/>
     <div id="ob-board" class="ob-board">${clBoardInner(c)}</div>
     <div id="ob-tools">${clToolsHTML()}</div>
+    <div id="ob-tags">${clOutfitTagsHTML(c)}</div>
     <div class="field-label">Add pieces</div>
     <div id="ob-add">${clAddStripHTML(c)}</div>`;
 }
@@ -2585,6 +2802,7 @@ function clRefreshBoard(){
   const b=document.getElementById('ob-board');if(!b)return;
   b.innerHTML=clBoardInner(closetData());hydrateClosetImgs(b);
   const t=document.getElementById('ob-tools');if(t)t.innerHTML=clToolsHTML();
+  if(!outfitDraft.tagsManual)clRefreshOutfitTags();
 }
 function clAddToBoard(itemId){
   const c=closetData(),it=clItem(c,itemId);if(!it||!outfitDraft)return;
@@ -2701,7 +2919,8 @@ function clUnpin(key,id){
 
 // ── Shuffle (Clueless-style) ──
 const SHUFFLE_CATS=['Tops','Bottoms','Shoes'];
-function clShufflePool(c,cat){return c.items.filter(i=>i.cat===cat&&(!shuffleState.favOnly||i.fav));}
+// Skirts count as bottoms when shuffling.
+function clShufflePool(c,cat){const cats=cat==='Bottoms'?['Bottoms','Skirts']:[cat];return c.items.filter(i=>cats.indexOf(i.cat)>=0&&(!shuffleState.favOnly||i.fav));}
 function clShuffleCur(c,cat){const pool=clShufflePool(c,cat);if(!pool.length)return null;const n=pool.length,k=(((shuffleState.idx[cat]||0)%n)+n)%n;shuffleState.idx[cat]=k;return{pool,n,k};}
 function clShuffleInner(c){
   return SHUFFLE_CATS.map(cat=>{
@@ -3032,9 +3251,10 @@ async function updateStorageInfo(){
     <div class="of-meta">${mb(used)} of about ${mb(LS_BUDGET)} used (${pct}%)</div>
     ${pct>85?`<div style="color:var(--red);font-size:12px;margin-top:4px">Nearly full — delete photos you no longer need so new ones keep saving.</div>`:''}${full}`;
 }
-function signOut(){localStorage.removeItem('maison_sess');localStorage.removeItem('maison_drive_tok');localStorage.removeItem('maison_bkdrive_tok');currentUser=null;capturedDataURL=null;activeRoomId=null;driveAccessToken=null;driveFileId=null;if(driveSyncTimer){clearTimeout(driveSyncTimer);driveSyncTimer=null;}if(bkBackupTimer){clearTimeout(bkBackupTimer);bkBackupTimer=null;}document.getElementById('app').classList.remove('visible');document.getElementById('auth-screen').style.display='flex';google.accounts.id.disableAutoSelect();closeModal();}
+function signOut(){mpStop();localStorage.removeItem('maison_sess');localStorage.removeItem('maison_drive_tok');localStorage.removeItem('maison_bkdrive_tok');currentUser=null;capturedDataURL=null;activeRoomId=null;driveAccessToken=null;driveFileId=null;if(driveSyncTimer){clearTimeout(driveSyncTimer);driveSyncTimer=null;}if(bkBackupTimer){clearTimeout(bkBackupTimer);bkBackupTimer=null;}document.getElementById('app').classList.remove('visible');document.getElementById('auth-screen').style.display='flex';google.accounts.id.disableAutoSelect();closeModal();}
 function clearData(){
   if(!confirm('Permanently delete all your data?'))return;
+  mpStop();
   const photoIds=referencedPhotoIds();
   photoIds.forEach(id=>{idbDeletePhoto(id).catch(()=>{});deleteRemotePhoto(id).catch(()=>{});});
   Object.keys(localStorage).filter(k=>k.startsWith(`maison_${currentUser}_`)).forEach(k=>localStorage.removeItem(k));
