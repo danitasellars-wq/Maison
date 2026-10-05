@@ -12,7 +12,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet"/>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-:root{--ink:#1c140a;--cream:#f7f3ed;--bone:#ede4d5;--warm:#c9b89a;--muted:#8a7a68;--red:#a82020;--green:#2a5f3f;--gold:#b8962e;--teal:#2a7070;--section-pad:28px 20px 160px;}
+:root{--ink:#1c140a;--cream:#f7f3ed;--bone:#ede4d5;--warm:#c9b89a;--muted:#8a7a68;--red:#a82020;--green:#2a5f3f;--gold:#b8962e;--teal:#2a7070;--plum:#6b4a5e;--section-pad:28px 20px 160px;}
 body{font-family:'EB Garamond',serif;background:var(--cream);color:var(--ink);min-height:100vh;overflow-x:hidden}
 ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:var(--warm);border-radius:2px}
 input,textarea,select{font-family:'EB Garamond',serif;font-size:16px;background:transparent}
@@ -72,24 +72,25 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;b
 /* APP */
 #app{display:none;min-height:100vh;flex-direction:column}
 #app.visible{display:flex}
-header{position:sticky;top:0;z-index:200;background:rgba(247,243,237,.97);backdrop-filter:blur(12px);border-bottom:1px solid var(--bone)}
-.header-stripe{height:3px;background:repeating-linear-gradient(90deg,var(--ink) 0,var(--ink) 30px,transparent 30px,transparent 60px)}
+header{position:sticky;top:0;z-index:200;background:rgba(247,243,237,.97);backdrop-filter:blur(12px)}
 .header-inner{max-width:980px;margin:0 auto;padding:0 20px}
-.header-top{display:flex;align-items:center;justify-content:space-between;padding:12px 0 8px}
-.header-brand{text-align:center}
-.brand-name{font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:700;letter-spacing:-.025em;color:var(--ink);line-height:1}
-.brand-sub{font-size:8px;letter-spacing:.55em;text-transform:uppercase;color:var(--warm);font-family:'Cormorant Garamond',serif}
-.header-btn{background:none;border:none;color:var(--muted);display:flex;align-items:center;gap:5px;font-family:'Cormorant Garamond',serif;font-size:10px;letter-spacing:.2em;text-transform:uppercase;transition:color .2s;position:relative}
+.header-top{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;min-height:56px}
+.hdr-left{justify-self:start}.hdr-right{justify-self:end}
+.header-brand{text-align:center;cursor:pointer}
+.brand-name{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:700;letter-spacing:.05em;color:var(--ink);line-height:1}
+.header-btn{background:none;border:none;color:var(--muted);display:flex;align-items:center;justify-content:center;gap:5px;width:44px;height:44px;margin-right:-10px;transition:color .2s;position:relative}
 .header-btn:hover{color:var(--ink)}
+.hdr-back{display:none;align-items:center;gap:6px;white-space:nowrap;background:none;border:none;color:var(--ink);font-family:'Cormorant Garamond',serif;font-size:13px;letter-spacing:.12em;text-transform:uppercase;min-height:44px;padding:0 10px 0 0}
+.hdr-back.show{display:flex}
+.hdr-back .chev{font-size:24px;line-height:1;margin-top:-3px;color:var(--muted)}
 .panel-badge{position:absolute;top:-4px;right:-4px;background:var(--red);color:#fff;width:14px;height:14px;border-radius:50%;font-size:8px;display:none;align-items:center;justify-content:center;font-family:sans-serif}
 .panel-badge.show{display:flex}
-nav{display:flex;justify-content:center;border-top:1px solid var(--bone);overflow-x:auto;gap:0;-webkit-overflow-scrolling:touch}
-.nav-btn{background:none;border:none;border-bottom:2px solid transparent;padding:11px 16px;font-family:'Cormorant Garamond',serif;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:-1px;white-space:nowrap;transition:color .2s}
-.nav-btn.active{border-bottom-color:var(--ink);color:var(--ink)}
 main{max-width:980px;margin:0 auto;padding:var(--section-pad);width:100%;flex:1}
 
-/* CAMERA DOCK */
-#camera-dock{position:fixed;bottom:0;left:0;right:0;z-index:150;background:rgba(247,243,237,.96);backdrop-filter:blur(16px);border-top:1px solid var(--bone);display:flex;justify-content:center;padding:14px 0 calc(20px + env(safe-area-inset-bottom));gap:18px}
+/* CAMERA DOCK — camera only on the home screen; All Photos / Camera / Mood Board inside each area */
+#camera-dock{position:fixed;bottom:0;left:0;right:0;z-index:150;background:linear-gradient(to top,rgba(247,243,237,.98) 60%,rgba(247,243,237,0));display:flex;justify-content:center;align-items:flex-end;padding:26px 0 calc(14px + env(safe-area-inset-bottom));gap:30px;pointer-events:none}
+#camera-dock .cam-wrap{pointer-events:auto}
+#camera-dock.solo .cam-btn{width:68px;height:68px}
 .cam-wrap{display:flex;flex-direction:column;align-items:center;gap:5px}
 .cam-btn{width:54px;height:54px;border-radius:50%;background:var(--ink);border:3px solid var(--cream);outline:1px solid var(--ink);display:flex;align-items:center;justify-content:center;color:var(--cream);box-shadow:0 4px 20px rgba(28,20,10,.22);transition:transform .2s,box-shadow .2s;touch-action:manipulation}
 .cam-btn:active{transform:scale(.96)}
@@ -97,7 +98,7 @@ main{max-width:980px;margin:0 auto;padding:var(--section-pad);width:100%;flex:1}
 .cam-btn.mood{background:var(--gold)}
 .cam-btn.photos{background:var(--green)}
 .cam-label{font-size:8px;letter-spacing:.3em;text-transform:uppercase;color:var(--muted);font-family:'Cormorant Garamond',serif}
-#file-input,#file-input-camera,#fp-file-input,#rm-tile-input{display:none}
+#file-input,#file-input-camera,#fp-file-input,#rm-tile-input,#closet-cam,#closet-lib{display:none}
 
 /* MODAL */
 .modal-overlay{position:fixed;inset:0;background:rgba(28,20,10,.52);backdrop-filter:blur(8px);z-index:500;display:flex;align-items:center;justify-content:center;padding:16px}
@@ -111,23 +112,22 @@ main{max-width:980px;margin:0 auto;padding:var(--section-pad);width:100%;flex:1}
 .modal-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
 
 /* SECTION */
-.section-rule{border-top:3px solid var(--ink);padding-top:18px;margin-bottom:26px;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:12px}
-.section-title{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:700;color:var(--ink);text-transform:uppercase;letter-spacing:-.01em}
+.section-rule{padding-top:4px;margin-bottom:22px;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:12px}
+.section-title{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:600;color:var(--ink);letter-spacing:0;line-height:1.1}
 .section-sub{font-family:'EB Garamond',serif;font-size:13px;color:var(--muted);font-style:italic;margin-top:4px}
-.room-tabs-row{display:flex;border-bottom:1px solid var(--bone);margin-bottom:22px;overflow-x:auto;gap:0;-webkit-overflow-scrolling:touch}
-.room-tab{background:none;border:none;border-bottom:2px solid transparent;padding:10px 16px;font-family:'Cormorant Garamond',serif;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);white-space:nowrap;margin-bottom:-1px;transition:color .2s;position:relative}
-.room-tab.active{border-bottom-color:var(--ink);color:var(--ink)}
-.room-tab.drag-over{border-bottom-color:var(--gold)!important;color:var(--gold)!important}
+/* Sub-menus wrap onto extra lines instead of scrolling sideways (phone-friendly). */
+.room-tabs-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.room-tab{background:none;border:1px solid var(--bone);padding:9px 15px;font-family:'Cormorant Garamond',serif;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);transition:all .2s}
+.room-tab.active{background:var(--ink);border-color:var(--ink);color:var(--cream)}
+.room-tab.drag-over{border-color:var(--gold)!important;color:var(--gold)!important}
 .room-tab[draggable="true"]{cursor:grab;user-select:none}
-.drag-handle{font-size:9px;color:var(--warm);margin-right:4px;letter-spacing:-.1em}
+.drag-handle{display:none}
 
-/* HOME VIEW & ROOM SUB-TABS */
-.home-view-tabs{display:flex;border-bottom:1px solid var(--bone);margin-bottom:22px}
-.home-view-tab{background:none;border:none;border-bottom:2px solid transparent;padding:10px 22px;font-family:'Cormorant Garamond',serif;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:-1px;transition:color .2s}
-.home-view-tab.active{border-bottom-color:var(--ink);color:var(--ink)}
-.room-sub-tabs{display:flex;border-bottom:1px solid var(--bone);margin-bottom:20px}
-.room-sub-tab{background:none;border:none;border-bottom:2px solid transparent;padding:9px 16px;font-family:'Cormorant Garamond',serif;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:-1px;transition:color .2s}
-.room-sub-tab.active{border-bottom-color:var(--gold);color:var(--ink)}
+/* ROOM SUB-TABS (segmented) */
+.room-sub-tabs{display:flex;border:1px solid var(--bone);margin-bottom:18px}
+.room-sub-tab{flex:1;background:none;border:none;border-right:1px solid var(--bone);padding:10px 6px;font-family:'Cormorant Garamond',serif;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);transition:all .2s}
+.room-sub-tab:last-child{border-right:none}
+.room-sub-tab.active{background:var(--ink);color:var(--cream)}
 
 /* FLOOR PLAN */
 .fp-container{position:relative;width:100%;cursor:crosshair;user-select:none;border:1px solid var(--bone);overflow:hidden;background:var(--bone)}
@@ -244,6 +244,90 @@ main{max-width:980px;margin:0 auto;padding:var(--section-pad);width:100%;flex:1}
 .song-link-btn{display:inline-flex;align-items:center;gap:4px;background:none;border:1px solid var(--bone);color:var(--muted);font-family:'Cormorant Garamond',serif;font-size:10px;letter-spacing:.12em;text-transform:uppercase;padding:5px 10px;text-decoration:none;transition:all .2s;flex-shrink:0;align-self:center;white-space:nowrap}
 .song-link-btn:hover{background:var(--ink);color:var(--cream);border-color:var(--ink)}
 
+/* CLOSET */
+.cl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:10px}
+.cl-card{position:relative;background:var(--bone);border:1px solid rgba(28,20,10,.07);aspect-ratio:4/5;cursor:pointer;overflow:hidden}
+.cl-card img{width:100%;height:100%;object-fit:contain;padding:8px 8px 22px;display:block;transition:transform .25s}
+.cl-card:hover img{transform:scale(1.04)}
+.cl-fav,.cl-del{position:absolute;top:4px;width:26px;height:26px;border:none;background:rgba(247,243,237,.88);color:var(--muted);font-size:14px;line-height:1;display:flex;align-items:center;justify-content:center;cursor:pointer;font-family:serif}
+.cl-fav{right:4px}.cl-del{left:4px;font-size:17px}
+.cl-fav.on{color:var(--red)}.cl-del:hover{color:var(--red)}
+.cl-cap{position:absolute;left:0;right:0;bottom:0;padding:12px 7px 5px;background:linear-gradient(transparent,rgba(237,228,213,.95) 60%);color:var(--ink);font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:'Cormorant Garamond',serif;font-weight:600;letter-spacing:.04em}
+.cl-checker{background-color:#fbf8f2;background-image:linear-gradient(45deg,#e9e2d6 25%,transparent 25%),linear-gradient(-45deg,#e9e2d6 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#e9e2d6 75%),linear-gradient(-45deg,transparent 75%,#e9e2d6 75%);background-size:16px 16px;background-position:0 0,0 8px,8px -8px,-8px 0;display:flex;justify-content:center;align-items:center;padding:8px;border:1px solid var(--bone);min-height:120px}
+.cl-checker canvas{max-width:100%;max-height:300px;display:block}
+.cl-check{display:flex;align-items:center;gap:8px;font-size:14px;margin:14px 0 8px;cursor:pointer}
+.cl-hint{font-size:12px;color:var(--muted);font-style:italic;line-height:1.5;margin:4px 0 14px}
+.cl-detail-img{background:var(--bone);display:flex;justify-content:center;padding:12px}
+.cl-detail-img img{max-width:100%;max-height:300px;object-fit:contain;display:block}
+.cl-facts{display:grid;grid-template-columns:1fr 1fr;gap:12px 16px;margin:16px 0 18px;font-size:14px}
+.cl-facts span{display:block;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-family:'Cormorant Garamond',serif;margin-bottom:2px}
+.mini-board{position:relative;width:100%;aspect-ratio:3/4;background:#fbf8f2;overflow:hidden}
+.mini-board img{position:absolute;height:auto;display:block;pointer-events:none}
+.of-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px}
+.of-grid.sm{grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:10px;margin-top:10px}
+.of-card{background:var(--cream);border:1px solid var(--bone)}
+.of-body{padding:10px 12px 12px}
+.of-name{font-family:'Cormorant Garamond',serif;font-size:15px;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.of-meta{font-size:11px;color:var(--muted);font-style:italic}
+.of-tag{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--plum);font-family:'Cormorant Garamond',serif;font-weight:600}
+.of-pick{cursor:pointer;border:1px solid var(--bone);padding:4px;background:var(--cream)}
+.of-pick:hover{border-color:var(--ink)}
+.of-pick.on{border-color:var(--gold);box-shadow:inset 0 0 0 1px var(--gold)}
+.ob-board{position:relative;width:100%;max-width:440px;aspect-ratio:3/4;margin:0 auto 12px;background:#fbf8f2;border:1px solid var(--warm);overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none}
+.ob-item{position:absolute;cursor:grab;touch-action:none}
+.ob-item img{width:100%;height:auto;display:block;pointer-events:none;-webkit-user-drag:none}
+.ob-item.sel{outline:1px dashed var(--gold);outline-offset:1px}
+.ob-handle{display:none;position:absolute;right:-9px;bottom:-9px;width:22px;height:22px;border-radius:50%;background:var(--gold);border:2px solid var(--cream);cursor:nwse-resize;touch-action:none}
+.ob-item.sel .ob-handle{display:block}
+.ob-tools{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-bottom:14px}
+.ob-strip{display:flex;gap:8px;overflow-x:auto;padding:4px 0 12px;-webkit-overflow-scrolling:touch}
+.ob-strip button{flex:0 0 76px;height:76px;background:var(--bone);border:1px solid transparent;padding:4px;cursor:pointer}
+.ob-strip button:hover{border-color:var(--ink)}
+.ob-strip img{width:100%;height:100%;object-fit:contain;display:block}
+.cal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;gap:8px}
+.cal-title{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:700;letter-spacing:.05em;text-transform:uppercase}
+.cal-nav{width:34px;height:34px;border:1px solid var(--bone);background:var(--cream);color:var(--ink);font-size:18px;cursor:pointer}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.cal-dow{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);text-align:center;font-family:'Cormorant Garamond',serif;padding-bottom:4px}
+.cal-cell{position:relative;aspect-ratio:3/4;background:var(--cream);border:1px solid var(--bone);cursor:pointer;overflow:hidden;padding:0;display:block}
+.cal-cell.blank{background:transparent;border-color:transparent;cursor:default}
+.cal-cell.today{border-color:var(--gold);box-shadow:inset 0 0 0 1px var(--gold)}
+.cal-cell .mini-board{position:absolute;inset:0;aspect-ratio:auto;height:100%;background:transparent}
+.cal-num{position:absolute;top:2px;left:4px;font-size:10px;color:var(--muted);z-index:50;font-family:'Cormorant Garamond',serif;font-weight:700}
+.cal-badge{position:absolute;bottom:2px;left:3px;z-index:50;font-size:9px;background:var(--ink);color:var(--cream);padding:0 4px;font-family:'Cormorant Garamond',serif}
+.cal-worn{position:absolute;bottom:1px;right:3px;z-index:50;font-size:11px;color:var(--green);font-weight:700}
+.cal-txt{position:absolute;inset:16px 3px 3px;font-size:9px;color:var(--muted);font-style:italic;overflow:hidden;line-height:1.2;text-align:left}
+.sh-row{margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--bone)}
+.sh-row-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.sh-stage{display:flex;align-items:center;gap:6px}
+.sh-arrow{width:34px;height:34px;border:1px solid var(--bone);background:var(--cream);color:var(--ink);font-size:18px;cursor:pointer;flex-shrink:0}
+.sh-slot{flex:1;min-width:0;display:flex;align-items:center;justify-content:center;gap:8px;min-height:130px}
+.sh-main{width:52%;max-width:150px;aspect-ratio:1;object-fit:contain;display:block}
+.sh-side{width:20%;max-width:58px;aspect-ratio:1;object-fit:contain;opacity:.35;display:block}
+.sh-name{text-align:center;font-size:13px;color:var(--muted);font-style:italic;margin-top:2px}
+.st-tiles{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:24px}
+.st-tile{background:var(--bone);padding:14px 14px 12px;border-top:2px solid var(--ink)}
+.st-num{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:700;line-height:1}
+.st-lbl{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-top:6px;font-family:'Cormorant Garamond',serif}
+.st-h{font-family:'Cormorant Garamond',serif;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);font-weight:600;margin:6px 0 10px;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.st-bars{margin-bottom:26px}
+.st-bar-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.st-bar-thumb{width:36px;height:36px;object-fit:contain;background:var(--bone);flex-shrink:0}
+.st-bar-main{flex:1;min-width:0}
+.st-bar-label{font-size:13px;color:var(--ink);display:flex;justify-content:space-between;gap:8px}
+.st-bar-label span:first-child{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.st-bar-right{color:var(--muted);font-size:12px;white-space:nowrap;flex-shrink:0}
+.st-bar-track{height:7px;background:var(--bone);margin-top:4px}
+.st-bar-fill{height:100%;background:var(--ink)}
+.st-bar-fill.green{background:var(--green)}.st-bar-fill.red{background:var(--red)}.st-bar-fill.plum{background:var(--plum)}.st-bar-fill.gold{background:var(--gold)}
+.pk-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--bone);cursor:pointer}
+.pk-row input[type=checkbox]{width:18px;height:18px;flex-shrink:0;accent-color:var(--ink)}
+.pk-thumb{width:44px;height:44px;object-fit:contain;background:var(--bone);flex-shrink:0}
+.cl-mini56{width:48px;flex-shrink:0;border:1px solid var(--bone)}
+#cl-toast{position:fixed;left:50%;bottom:112px;transform:translateX(-50%);background:var(--ink);color:var(--cream);padding:10px 18px;font-family:'Cormorant Garamond',serif;font-size:12px;letter-spacing:.14em;text-transform:uppercase;z-index:600;opacity:0;transition:opacity .25s;pointer-events:none;white-space:nowrap}
+#cl-toast.show{opacity:1}
+.dash-card:last-child:nth-child(odd){grid-column:1/-1}
+
 /* PANEL TABS */
 .panel-mode-tabs{display:flex;border-bottom:1px solid var(--bone)}
 .panel-mode-tab{flex:1;background:none;border:none;border-bottom:2px solid transparent;padding:10px 0;font-family:'Cormorant Garamond',serif;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:-1px;transition:all .2s;cursor:pointer}
@@ -287,10 +371,24 @@ select.field-input{appearance:none}
 .flex-center{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .mb14{margin-bottom:14px}
 .divider{border:none;border-top:1px solid var(--bone);margin:20px 0}
-@media(max-width:520px){.brand-name{font-size:26px}.nav-btn{padding:11px 8px;font-size:10px;letter-spacing:.12em}.photo-grid,.recipe-grid{columns:1}.modal-box{padding:22px 18px}}
+@media(max-width:520px){.photo-grid,.recipe-grid{columns:1}.modal-box{padding:22px 18px}.section-title{font-size:26px}.room-tabs-row{gap:6px}.room-tab{padding:9px 11px;font-size:10.5px;letter-spacing:.07em}}
 
 /* DASHBOARD */
-#app.dashboard-mode header nav{display:none}
+/* HOME SCREEN & AREAS */
+.empty-icon{display:none}
+.home-greet{font-size:10px;letter-spacing:.4em;text-transform:uppercase;color:var(--warm);font-family:'Cormorant Garamond',serif;margin:6px 0 22px}
+.home-tiles{display:flex;flex-direction:column;gap:14px;max-width:560px}
+.home-tile{display:flex;align-items:center;justify-content:space-between;gap:14px;width:100%;text-align:left;background:var(--cream);border:1px solid var(--bone);border-top:2px solid var(--ink);padding:26px 20px;cursor:pointer;font-family:inherit;color:var(--ink);transition:background .2s}
+.home-tile:active,.home-tile:hover{background:var(--bone)}
+.home-tile-num{font-family:'Cormorant Garamond',serif;font-size:10px;letter-spacing:.18em;font-weight:600;margin-bottom:12px}
+.home-tile-name{font-family:'Cormorant Garamond',serif;font-size:27px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;line-height:1}
+.home-tile-sub{font-size:12px;color:var(--muted);font-style:italic;margin-top:9px}
+.area-list{border-top:1px solid var(--bone);max-width:560px}
+.area-row{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;padding:20px 2px;background:none;border:none;border-bottom:1px solid var(--bone);text-align:left;cursor:pointer;font-family:inherit;color:var(--ink)}
+.area-row:active{background:var(--bone)}
+.area-row-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;letter-spacing:.02em}
+.area-row-meta{font-size:12px;color:var(--muted);font-style:italic;margin-top:3px}
+.area-chev{font-size:26px;color:var(--warm);font-family:'Cormorant Garamond',serif;line-height:1}
 .dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:28px}
 @media(max-width:480px){.dash-grid{grid-template-columns:1fr 1fr;gap:10px}}
 .dash-card{background:var(--cream);border:1px solid var(--bone);border-top:2px solid var(--ink);padding:20px 16px 18px;cursor:pointer;transition:all .22s;position:relative}
@@ -312,22 +410,15 @@ select.field-input{appearance:none}
 <input type="file" id="file-input-camera" accept="image/*" capture="environment"/>
 <input type="file" id="fp-file-input" accept="image/*"/>
 <input type="file" id="rm-tile-input" accept="image/*" multiple/>
+<input type="file" id="closet-cam" accept="image/*" capture="environment" onchange="closetFilesPicked(this)"/>
+<input type="file" id="closet-lib" accept="image/*" multiple onchange="closetFilesPicked(this)"/>
 
 <!-- SIDE PANEL -->
 <div id="panel-overlay" onclick="closeSidePanel()"></div>
 <div id="side-panel">
   <div class="panel-head"><div class="panel-title">Gallery</div><button class="panel-close" onclick="closeSidePanel()">×</button></div>
   <div class="panel-mode-tabs"><button class="panel-mode-tab active" id="pmt-photos" onclick="setPanelMode('photos')">Photos</button><button class="panel-mode-tab" id="pmt-links" onclick="setPanelMode('links')">Links</button></div>
-  <div class="panel-filter-row" id="panel-filter-row">
-    <button class="panel-filter active" onclick="setPanelFilter('all')">All</button>
-    <button class="panel-filter" onclick="setPanelFilter('liked')">♥ Liked</button>
-    <button class="panel-filter" onclick="setPanelFilter('home')">Home</button>
-    <button class="panel-filter" onclick="setPanelFilter('wedding')">Wedding</button>
-    <button class="panel-filter" onclick="setPanelFilter('honeymoon')">Honeymoon</button>
-    <button class="panel-filter" onclick="setPanelFilter('recipes')">Recipes</button>
-    <button class="panel-filter" onclick="setPanelFilter('dayout')">Days Out</button>
-    <button class="panel-filter arch-filter" onclick="setPanelFilter('archived')">Archived</button>
-  </div>
+  <div class="panel-filter-row" id="panel-filter-row"></div>
   <div class="panel-body" id="panel-body"></div>
 </div>
 
@@ -352,51 +443,18 @@ select.field-input{appearance:none}
 <!-- APP -->
 <div id="app">
   <header>
-    <div class="header-stripe"></div>
     <div class="header-inner">
       <div class="header-top">
-        <button class="header-btn" onclick="openSidePanel()">
-          <div class="panel-badge" id="panel-badge"></div>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-          Photos
-        </button>
-        <div class="header-brand" onclick="showSection('dashboard')" style="cursor:pointer"><div class="brand-name">MAISON</div><div class="brand-sub">Home &amp; Wedding Journal</div></div>
-        <button class="header-btn" onclick="openSettings()">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
-          Settings
-        </button>
+        <div class="hdr-left"><button id="hdr-back" class="hdr-back" onclick="goBack()"><span class="chev">‹</span><span id="hdr-back-label">Home</span></button></div>
+        <div class="header-brand" onclick="showSection('dashboard')"><div class="brand-name">MAISON</div></div>
+        <div class="hdr-right"><button class="header-btn" onclick="openSettings()" aria-label="Settings">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+        </button></div>
       </div>
-      <nav>
-        <button class="nav-btn active" data-section="home" onclick="showSection('home')">Our Home</button>
-        <button class="nav-btn" data-section="wedding" onclick="showSection('wedding')">Wedding</button>
-        <button class="nav-btn" data-section="honeymoon" onclick="showSection('honeymoon')">Honeymoon</button>
-        <button class="nav-btn" data-section="dayout" onclick="showSection('dayout')">Days Out</button>
-        <button class="nav-btn" data-section="recipes" onclick="showSection('recipes')">Recipes</button>
-        <button class="nav-btn" data-section="music" onclick="showSection('music')">Music</button>
-      </nav>
     </div>
   </header>
   <main id="main-content"></main>
-  <div id="camera-dock">
-    <div class="cam-wrap">
-      <button class="cam-btn photos" onclick="openSidePanel()">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-      </button>
-      <div class="cam-label">All Photos</div>
-    </div>
-    <div class="cam-wrap">
-      <button class="cam-btn" onclick="triggerCapture()">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
-      </button>
-      <div class="cam-label">Capture</div>
-    </div>
-    <div class="cam-wrap">
-      <button class="cam-btn mood" onclick="openMoodBoard()">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-      </button>
-      <div class="cam-label">Mood Board</div>
-    </div>
-  </div>
+  <div id="camera-dock"></div>
 </div>
 
 <div id="modal" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeModal()">
@@ -467,9 +525,20 @@ let _wpTemp=null;
 let bkPickStack=null,bkBackupTimer=null,lastBkBackupAt=null,lastBkBackupError=null;
 
 function getStore(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch(e){return d;}}
-function setStore(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+// Browsers cap localStorage (~5MB). A failed write used to vanish silently, so the user thought data was saved when it wasn't.
+let _storageWarnAt=0;
+function storageFull(what){
+  if(Date.now()-_storageWarnAt<20000)return;_storageWarnAt=Date.now();
+  alert((what||"MAISON couldn't save that — this device's storage for the app is full.")+"\n\nFree up space by deleting photos you no longer need (Settings shows how much is used). Your data already in Google Drive is not affected.");
+}
+function setStore(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true;}catch(e){storageFull();return false;}}
 function userData(k,d){return getStore(`maison_${currentUser}_${k}`,d);}
-function saveData(k,v){setStore(`maison_${currentUser}_${k}`,v);try{localStorage.setItem(`maison_${currentUser}_lastwrite`,String(Date.now()));}catch(e){}scheduleDriveSync();scheduleBkBackup();}
+function saveData(k,v){
+  const ok=setStore(`maison_${currentUser}_${k}`,v);
+  if(!ok)return false;   // nothing was stored, so don't mark a newer write or push stale data to Drive
+  try{localStorage.setItem(`maison_${currentUser}_lastwrite`,String(Date.now()));}catch(e){}
+  scheduleDriveSync();scheduleBkBackup();return true;
+}
 function escHtml(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
 
@@ -495,10 +564,13 @@ async function processPhotoDataURL(dataURL){
   const im=await loadImageFromDataURL(dataURL);
   const full=scaleDims(im.naturalWidth,im.naturalHeight,1600);
   const blob=await canvasBlob(drawToCanvas(im,full.w,full.h),.85)||dataURLtoBlob(dataURL);
-  const th=scaleDims(im.naturalWidth,im.naturalHeight,900);
-  const thumb=canvasDataURL(drawToCanvas(im,th.w,th.h),.72);
+  const thumb=makeThumb(im);
   return{thumb,blob};
 }
+// Inline thumbnail (what lives in localStorage and the synced JSON). ~30KB instead of ~70KB at 900px, so a
+// 5MB browser limit holds ~170 photos rather than ~65. The full-size copy is in IndexedDB + Drive.
+const THUMB_MAX=560,THUMB_Q=.62;
+function makeThumb(im){const th=scaleDims(im.naturalWidth,im.naturalHeight,THUMB_MAX);return canvasDataURL(drawToCanvas(im,th.w,th.h),THUMB_Q);}
 async function compressSingleImage(dataURL,maxDim,quality){
   try{const im=await loadImageFromDataURL(dataURL);const d=scaleDims(im.naturalWidth,im.naturalHeight,maxDim||1600);return canvasDataURL(drawToCanvas(im,d.w,d.h),quality||.8);}catch(e){return dataURL;}
 }
@@ -511,7 +583,15 @@ function mediaDB(){
     req.onerror=()=>reject(req.error);
   });
 }
-async function idbPutPhoto(id,blob){const db=await mediaDB();return new Promise((resolve,reject)=>{const tx=db.transaction(PHOTO_STORE,'readwrite');tx.objectStore(PHOTO_STORE).put(blob,id);tx.oncomplete=()=>resolve();tx.onerror=()=>reject(tx.error);});}
+// Never throws: if the full-size copy can't be stored (device storage low) the thumbnail still saves, the user is told,
+// and callers can check the boolean. (A throw here used to abort saves half-way and leave dialogs stuck.)
+async function idbPutPhoto(id,blob){
+  try{
+    const db=await mediaDB();
+    await new Promise((resolve,reject)=>{const tx=db.transaction(PHOTO_STORE,'readwrite');tx.objectStore(PHOTO_STORE).put(blob,id);tx.oncomplete=()=>resolve();tx.onerror=()=>reject(tx.error);tx.onabort=()=>reject(tx.error);});
+    return true;
+  }catch(e){storageFull("The photo was saved, but its full-size copy couldn't be stored — this device is low on space.");return false;}
+}
 async function idbGetPhoto(id){const db=await mediaDB();return new Promise((resolve,reject)=>{const tx=db.transaction(PHOTO_STORE,'readonly');const rq=tx.objectStore(PHOTO_STORE).get(id);rq.onsuccess=()=>resolve(rq.result||null);rq.onerror=()=>reject(rq.error);});}
 async function idbDeletePhoto(id){const db=await mediaDB();return new Promise((resolve,reject)=>{const tx=db.transaction(PHOTO_STORE,'readwrite');tx.objectStore(PHOTO_STORE).delete(id);tx.oncomplete=()=>resolve();tx.onerror=()=>reject(tx.error);});}
 
@@ -608,10 +688,12 @@ async function driveFetch(url,opts){
 async function driveSyncNow(manual){
   if(!driveAccessToken||!currentUser)return;
   try{
+    driveBlocked=false;
     const verdict=await loadFromDrive();
     if(verdict!=='applied'&&verdict!=='insync')await syncToDrive();
-    await syncPhotoFiles();
-    lastSyncAt=Date.now();lastSyncError=null;
+    const failedPhotos=await syncPhotoFiles();
+    lastSyncAt=Date.now();
+    lastSyncError=failedPhotos?`${failedPhotos} photo${failedPhotos!==1?'s':''} couldn't be copied to Drive yet — they'll be retried on the next sync.`:null;
     if(manual){closeModal();alert('Synced successfully ✓');openSettings();}
   }catch(e){
     lastSyncError=(e&&e.message)?e.message:String(e);
@@ -633,11 +715,25 @@ async function loadFromDrive(){
   const localAt=parseInt(localStorage.getItem(lwKey)||'0',10);
   const driveAt=payload.at||0;
   if(driveAt>localAt){
-    // Drive copy is newer — replace local data with it
-    Object.keys(localStorage).filter(k=>k.startsWith(`maison_${currentUser}_`)).forEach(k=>localStorage.removeItem(k));
-    Object.entries(payload.keys).forEach(([k,v])=>{try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}});
-    localStorage.setItem(lwKey,String(driveAt));
+    // Drive copy is newer — replace local data with it. If it doesn't fit on this device the old local data is put
+    // back and pushing to Drive is blocked, so a partial restore can never overwrite the complete copy in Drive.
+    const prefix=`maison_${currentUser}_`;
+    const oldEntries=Object.keys(localStorage).filter(k=>k.startsWith(prefix)).map(k=>[k,localStorage.getItem(k)]);
+    oldEntries.forEach(([k])=>localStorage.removeItem(k));
+    const written=[];let failed=false;
+    for(const [k,v] of Object.entries(payload.keys)){
+      try{localStorage.setItem(k,JSON.stringify(v));written.push(k);}catch(e){failed=true;break;}
+    }
+    if(failed){
+      written.forEach(k=>localStorage.removeItem(k));
+      oldEntries.forEach(([k,v])=>{try{localStorage.setItem(k,v);}catch(e){}});
+      driveBlocked=true;
+      storageFull("Your latest data in Google Drive is too big to load on this device, so syncing is paused to keep it safe.");
+      throw new Error('Not enough storage on this device to load your Drive data — free up space, then tap Sync Now.');
+    }
+    try{localStorage.setItem(lwKey,String(driveAt));}catch(e){}
     showSection(currentSection);updatePanelBadge();
+    migrateInlinePhotos().then(ch=>{if(ch)showSection(currentSection);}).catch(()=>{});   // shrink any big photos that arrived from an older device
     return 'applied';
   }
   return driveAt===localAt?'insync':'localnewer';
@@ -647,8 +743,10 @@ function scheduleDriveSync(){
   if(driveSyncTimer)clearTimeout(driveSyncTimer);
   driveSyncTimer=setTimeout(()=>{syncToDrive().then(()=>{lastSyncAt=Date.now();lastSyncError=null;}).catch(e=>{lastSyncError=(e&&e.message)||String(e);});},2500);
 }
+let driveBlocked=false;   // set when a Drive restore didn't fit on this device: never push local data over Drive
 async function syncToDrive(){
   if(!driveAccessToken||!currentUser)return;
+  if(driveBlocked)throw new Error('Sync is paused because your Drive data did not fit on this device — free up space, then tap Sync Now.');
   const keys={};
   const lwKey=`maison_${currentUser}_lastwrite`;
   Object.keys(localStorage).filter(k=>k.startsWith(`maison_${currentUser}_`)&&k!==lwKey).forEach(k=>{try{keys[k]=JSON.parse(localStorage.getItem(k));}catch(e){}});
@@ -664,7 +762,7 @@ async function syncToDrive(){
     const created=await cr.json();
     if(created.id)driveFileId=created.id;
   }
-  localStorage.setItem(lwKey,String(at));
+  try{localStorage.setItem(lwKey,String(at));}catch(e){}
 }
 
 // ── PHOTO FILE SYNC (full-res photos live as individual files in appDataFolder) ──
@@ -677,7 +775,8 @@ function referencedPhotoIds(){
   const h=userData('honeymoon',{rooms:[],inspo:[]});(h.inspo||[]).forEach(push);(h.rooms||[]).forEach(r=>(r.photos||[]).forEach(push));
   const d=userData('dayout',{plans:[]});(d.plans||[]).forEach(pl=>(pl.photos||[]).forEach(push));
   const rec=userData('recipes',{items:[]});rec.items.forEach(it=>{if(it.img&&it.id)ids.push(it.id);(it.photos||[]).forEach(push);});
-  ['wedding','home','honeymoon'].forEach(ctx=>{userData(`moodboards_${ctx}`,[]).forEach(b=>(b.tiles||[]).forEach(push));});
+  ['wedding','home','honeymoon','closet'].forEach(ctx=>{userData(`moodboards_${ctx}`,[]).forEach(b=>(b.tiles||[]).forEach(push));});
+  ((userData('closet',null)||{}).items||[]).forEach(push);
   return ids;
 }
 function photoFileName(id){return 'mzphoto_'+id+'.jpg';}
@@ -699,28 +798,36 @@ async function uploadAppDataPhoto(id,blob){
   form.append('file',blob,photoFileName(id));
   await driveFetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart',{method:'POST',headers:{Authorization:'Bearer '+driveAccessToken},body:form});
 }
-let photoSyncRunning=false;
+let photoSyncRunning=false,photoSyncAgain=false;
+// Copies full-size photos between this device (IndexedDB) and Drive. Returns how many couldn't be transferred so
+// the caller can tell the user (failures used to be swallowed). A photo added while a sync is running triggers a re-run.
 async function syncPhotoFiles(){
-  if(!driveAccessToken||!currentUser||photoSyncRunning)return;
+  if(!driveAccessToken||!currentUser)return 0;
+  if(photoSyncRunning){photoSyncAgain=true;return 0;}
   const ids=Array.from(new Set(referencedPhotoIds()));
-  if(!ids.length)return;
-  photoSyncRunning=true;
+  if(!ids.length)return 0;
+  photoSyncRunning=true;let failed=0;
   try{
     const remote=await listRemotePhotos();
     const auth={headers:{Authorization:'Bearer '+driveAccessToken}};
     for(const id of ids){
       const fn=photoFileName(id);
       if(remote[fn]&&!(await idbGetPhoto(id))){
-        try{const blob=await(await driveFetch(`https://www.googleapis.com/drive/v3/files/${remote[fn]}?alt=media`,auth)).blob();await idbPutPhoto(id,blob);}catch(e){}
+        try{const blob=await(await driveFetch(`https://www.googleapis.com/drive/v3/files/${remote[fn]}?alt=media`,auth)).blob();if(!(await idbPutPhoto(id,blob)))failed++;}catch(e){failed++;if(!driveAccessToken)break;}
       }
     }
     for(const id of ids){
+      if(!driveAccessToken)break;
       if(!remote[photoFileName(id)]){
         const blob=await idbGetPhoto(id);
-        if(blob){try{await uploadAppDataPhoto(id,blob);}catch(e){}}
+        if(blob){try{await uploadAppDataPhoto(id,blob);}catch(e){failed++;}}
       }
     }
-  }finally{photoSyncRunning=false;}
+  }finally{
+    photoSyncRunning=false;
+    if(photoSyncAgain){photoSyncAgain=false;syncPhotoFiles().catch(()=>{});}
+  }
+  return failed;
 }
 async function ensurePhotoLocal(id){
   if(!driveAccessToken)return null;
@@ -745,20 +852,26 @@ async function deleteRemotePhoto(id){
 function syncPhotosSoon(){if(driveAccessToken)syncPhotoFiles().catch(()=>{});}
 
 // ── PHOTO MIGRATION (converts old inline base64 photos to thumb + IndexedDB) ──
+// Shrinks an oversized inline photo (`owner.img`) down to the standard thumbnail. Two cases:
+//  • legacy inline original (>180k chars, from before the IndexedDB fix): the original is stored in IndexedDB FIRST;
+//    if that fails the photo is left untouched so nothing is ever lost.
+//  • older 900px thumbnail: the full-size copy already lives in IndexedDB/Drive, so only the thumbnail is shrunk
+//    (it must NOT be stored as the "full-size" copy, or a second device would never pull the real one).
+async function shrinkInlinePhoto(owner,id){
+  const s=owner&&owner.img;
+  if(!s||s.length<=45000||s.indexOf('data:')!==0)return false;
+  try{
+    const im=await loadImageFromDataURL(s);
+    if(Math.max(im.naturalWidth,im.naturalHeight)<=THUMB_MAX+20&&s.length<=90000)return false;   // already a standard thumbnail
+    if(s.length>180000&&!(await idbGetPhoto(id))){
+      if(!(await idbPutPhoto(id,dataURLtoBlob(s))))return false;
+    }
+    owner.img=makeThumb(im);return true;
+  }catch(e){return false;}
+}
 async function migratePhotoArray(arr){
   let changed=false;
-  for(const p of arr){
-    if(p&&p.img&&p.img.length>60000){
-      try{
-        const blob=dataURLtoBlob(p.img);
-        if(!(await idbGetPhoto(p.id)))await idbPutPhoto(p.id,blob);
-        const im=await loadImageFromDataURL(p.img);
-        const th=scaleDims(im.naturalWidth,im.naturalHeight,900);
-        p.img=canvasDataURL(drawToCanvas(im,th.w,th.h),.72);
-        changed=true;
-      }catch(e){}
-    }
-  }
+  for(const p of arr)if(await shrinkInlinePhoto(p,p&&p.id))changed=true;
   return changed;
 }
 async function migrateInlinePhotos(){
@@ -782,20 +895,11 @@ async function migrateInlinePhotos(){
   const rec=userData('recipes',{items:[]});
   let recChanged=false;
   for(const it of rec.items){
-    if(it.img&&it.img.length>60000){
-      try{
-        const blob=dataURLtoBlob(it.img);
-        if(!(await idbGetPhoto(it.id)))await idbPutPhoto(it.id,blob);
-        const im=await loadImageFromDataURL(it.img);
-        const th=scaleDims(im.naturalWidth,im.naturalHeight,900);
-        it.img=canvasDataURL(drawToCanvas(im,th.w,th.h),.72);
-        recChanged=true;
-      }catch(e){}
-    }
+    if(await shrinkInlinePhoto(it,it.id))recChanged=true;
     if(await migratePhotoArray(it.photos||[]))recChanged=true;
   }
   if(recChanged){saveData('recipes',rec);changed=true;}
-  for(const ctx of['wedding','home','honeymoon']){
+  for(const ctx of['wedding','home','honeymoon','closet']){
     const boards=userData(`moodboards_${ctx}`,[]);
     let bChanged=false;
     for(const b of boards)if(await migratePhotoArray(b.tiles||[]))bChanged=true;
@@ -903,6 +1007,7 @@ function toggleBkBackup(){
 async function bkBackupNow(manual){
   const gd=userData('gdrive_backup',{});
   if(!gd.enabled||!gd.folderId)return;
+  if(driveBlocked){lastBkBackupError='Backup paused: your Drive data did not fit on this device. Free up space and sync first.';if(manual)alert(lastBkBackupError);return;}   // never overwrite the backup with a partial copy
   const token=getBkToken();
   if(!token){if(manual)alert('Reconnect Google Drive backup in Settings.');return;}
   const keys={};
@@ -943,19 +1048,119 @@ function setupFileInputs(){
 }
 
 // ── NAV ──
+// Home screen → three areas → pages. To regroup pages edit AREAS, SECTION_AREA and areaRows().
+// Screens: 'dashboard' (home) · 'area_house|closet|other' (page lists) · 'moodboards' · the existing pages
+// ('home' = rooms/floor plan, 'wedding', 'honeymoon', 'dayout', 'recipes', 'music', 'closet').
+const AREAS={
+  house:{name:'House Planning',short:'House',sub:'Rooms, budgets & your floor plan.'},
+  closet:{name:'Closet',short:'Closet',sub:'Wardrobe, outfits, calendar & packing.'},
+  other:{name:'Other',short:'Other',sub:'Wedding, honeymoon, days out, recipes & music.'},
+};
+const SECTION_AREA={home:'house',closet:'closet',wedding:'other',honeymoon:'other',dayout:'other',recipes:'other',music:'other'};
+let lastShown=null,mbArea='house';
+const ICON_CAM=`<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>`;
+const ICON_PHOTOS=`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>`;
+const ICON_MOOD=`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>`;
+function areaOf(s){
+  if(!s||s==='dashboard')return null;
+  if(s.indexOf('area_')===0)return s.slice(5);
+  if(s==='moodboards')return mbArea;
+  return SECTION_AREA[s]||null;
+}
 function showSection(s){
-  currentSection=s;
-  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.section===s));
-  document.getElementById('app').classList.toggle('dashboard-mode',s==='dashboard');
+  const changed=s!==lastShown;lastShown=s;currentSection=s;
   applyWallpaper();
   const main=document.getElementById('main-content');
   if(s==='dashboard')renderDashboard(main);
+  else if(s.indexOf('area_')===0)renderArea(main,s.slice(5));
+  else if(s==='moodboards')renderMoodBoards(main);
   else if(s==='home')renderHome(main);
   else if(s==='wedding')renderWedding(main);
   else if(s==='honeymoon')renderHoneymoon(main);
   else if(s==='dayout')renderDayOut(main);
   else if(s==='recipes')renderRecipes(main);
   else if(s==='music')renderMusic(main);
+  else if(s==='closet')renderCloset(main);
+  renderHeaderNav();renderDock();
+  if(changed)window.scrollTo(0,0);
+}
+// Header back button: page → its area → home. Inside Closet it also steps out of the outfit editor / a packing list.
+function backLabel(){
+  const s=currentSection;
+  if(s==='dashboard')return null;
+  if(s.indexOf('area_')===0)return'Home';
+  if(s==='closet'){if(closetOutfitId&&outfitDraft)return'Outfits';if(closetTab==='packing'&&closetPackId)return'Packing';}
+  const a=areaOf(s);return a?AREAS[a].short:'Home';
+}
+function renderHeaderNav(){
+  const b=document.getElementById('hdr-back');if(!b)return;
+  const lab=backLabel();b.classList.toggle('show',!!lab);
+  if(lab)document.getElementById('hdr-back-label').textContent=lab;
+}
+function goBack(){
+  const s=currentSection;
+  if(s==='dashboard')return;
+  if(s.indexOf('area_')===0){showSection('dashboard');return;}
+  if(s==='closet'){
+    if(closetOutfitId&&outfitDraft){clCloseEditor();return;}
+    if(closetTab==='packing'&&closetPackId){clClosePack();return;}
+    clFinishEditor();
+  }
+  showSection('area_'+(areaOf(s)||'house'));
+}
+// Bottom dock: just the camera on the home screen; All Photos · Camera · Mood Board inside an area.
+function renderDock(){
+  const d=document.getElementById('camera-dock');if(!d)return;
+  if(currentSection==='closet'&&closetOutfitId&&outfitDraft){d.style.display='none';return;}
+  d.style.display='';
+  const cam=`<div class="cam-wrap"><button class="cam-btn" onclick="triggerCapture()" aria-label="Capture photo">${ICON_CAM}</button><div class="cam-label">Capture</div></div>`;
+  if(currentSection==='dashboard'){d.className='solo';d.innerHTML=cam;return;}
+  d.className='';
+  d.innerHTML=`<div class="cam-wrap"><button class="cam-btn photos" onclick="openAreaPhotos()" aria-label="All photos">${ICON_PHOTOS}</button><div class="cam-label">All Photos</div></div>${cam}<div class="cam-wrap"><button class="cam-btn mood" onclick="openAreaMood()" aria-label="Mood boards">${ICON_MOOD}</button><div class="cam-label">Mood Board</div></div>`;
+}
+function openAreaPhotos(){
+  const a=areaOf(currentSection);
+  if(a==='closet'){clSetTab('wardrobe');return;}   // the closet's own photo store
+  openSidePanel(a||'all');
+}
+function openAreaMood(){mbArea=areaOf(currentSection)||'house';showSection('moodboards');}
+// Area screens: a plain list of the area's pages.
+function areaRows(a){
+  const R=(title,meta,go)=>({title,meta,go});
+  const n=(k,w)=>`${k} ${w}${k!==1?'s':''}`;
+  if(a==='house'){
+    const home=userData('home',{rooms:[]}),fp=userData('floorplan',{img:null});
+    const spent=home.rooms.reduce((s,r)=>s+(r.items||[]).reduce((x,i)=>x+(i.price||0),0)+(r.photos||[]).filter(p=>!p.archived).reduce((x,p)=>x+(p.price||0),0),0);
+    return[
+      R('Rooms',home.rooms.length?n(home.rooms.length,'room')+(spent?` · ${clMoney(spent)}`:''):'Add your first room',"setHomeView('rooms')"),
+      R('Floor Plan',fp.img?'Tap the plan to pin rooms':'Upload a floor plan',"setHomeView('floorplan')"),
+    ];
+  }
+  if(a==='closet'){
+    const c=closetData(),days=Object.keys(c.calendar).length,total=c.items.reduce((s,i)=>s+(i.price||0),0);
+    return[
+      R('Wardrobe',c.items.length?n(c.items.length,'piece'):'Add your first piece',"clSetTab('wardrobe')"),
+      R('Outfits',c.outfits.length?n(c.outfits.length,'outfit'):'Build flat-lay outfits',"clSetTab('outfits')"),
+      R('Calendar',days?n(days,'day')+' planned or logged':'Plan what to wear',"clSetTab('calendar')"),
+      R('Shuffle','Mix tops, bottoms & shoes',"clSetTab('shuffle')"),
+      R('Stats',c.items.length&&total?`${clMoney(total)} · cost per wear`:'Cost per wear & utilisation',"clSetTab('stats')"),
+      R('Packing',c.packing.length?n(c.packing.length,'list'):'Trip & capsule lists',"clSetTab('packing')"),
+    ];
+  }
+  const w=userData('wedding',{inspo:[]}),h=userData('honeymoon',{rooms:[]}),d=userData('dayout',{plans:[]}),rec=userData('recipes',{items:[]}),mu=userData('music',{playlists:[]});
+  const wP=(w.inspo||[]).filter(p=>!p.archived).length,songs=mu.playlists.reduce((s,p)=>s+(p.songs||[]).length,0);
+  return[
+    R('Wedding',w.wdate?new Date(w.wdate+'T12:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'}):(wP?n(wP,'photo'):'Inspiration & details'),"showSection('wedding')"),
+    R('Honeymoon',h.rooms.length?n(h.rooms.length,'destination'):'Plan your trip',"showSection('honeymoon')"),
+    R('Days Out',d.plans.length?n(d.plans.length,'plan'):'Plan a day out',"showSection('dayout')"),
+    R('Recipes',rec.items.length?n(rec.items.length,'recipe'):'Save your first',"showSection('recipes')"),
+    R('Music',mu.playlists.length?n(mu.playlists.length,'playlist')+(songs?' · '+n(songs,'song'):''):'Create a playlist',"showSection('music')"),
+  ];
+}
+function renderArea(main,a){
+  const info=AREAS[a];if(!info){showSection('dashboard');return;}
+  main.innerHTML=`<div class="section-rule"><div><div class="section-title">${info.name}</div><div class="section-sub">${info.sub}</div></div></div>
+    <div class="area-list">${areaRows(a).map(r=>`<button class="area-row" onclick="${r.go}"><div><div class="area-row-title">${r.title}</div><div class="area-row-meta">${r.meta}</div></div><span class="area-chev">›</span></button>`).join('')}</div>`;
 }
 
 // ── MODAL ──
@@ -989,17 +1194,31 @@ document.addEventListener('visibilitychange',async()=>{
 });
 
 // ── SIDE PANEL ──
-function openSidePanel(){renderSidePanel();document.getElementById('side-panel').classList.add('open');document.getElementById('panel-overlay').classList.add('open');document.body.style.overflow='hidden';}
-function closeSidePanel(){document.getElementById('side-panel').classList.remove('open');document.getElementById('panel-overlay').classList.remove('open');document.body.style.overflow='';}
-function setPanelFilter(f){
-  panelFilter=f;
-  document.querySelectorAll('.panel-filter').forEach(b=>{
-    const t=b.textContent.trim().toLowerCase();
-    const match=(f==='all'&&t==='all')||(f==='liked'&&t.includes('liked'))||(f==='archived'&&t==='archived')||(f==='recipes'&&t==='recipes')||(f==='dayout'&&t==='days out')||(f===t);
-    b.classList.toggle('active',match);
-  });
-  renderSidePanel();
+// The gallery opens scoped to the area you're in (house / other); scope 'all' is every photo in Maison.
+let panelScope='all';
+const PANEL_SCOPE_SECTIONS={house:['home'],other:['wedding','honeymoon','dayout','recipes']};
+const PANEL_CHIPS={
+  all:[['all','All'],['liked','♥ Liked'],['home','Home'],['wedding','Wedding'],['honeymoon','Honeymoon'],['recipes','Recipes'],['dayout','Days Out'],['closet','Closet'],['archived','Archived']],
+  house:[['all','All'],['liked','♥ Liked'],['archived','Archived']],
+  other:[['all','All'],['liked','♥ Liked'],['wedding','Wedding'],['honeymoon','Honeymoon'],['recipes','Recipes'],['dayout','Days Out'],['archived','Archived']],
+};
+function openSidePanel(scope){
+  panelScope=PANEL_CHIPS[scope]?scope:'all';panelFilter='all';panelMode='photos';
+  document.querySelectorAll('.panel-mode-tab').forEach(b=>b.classList.toggle('active',b.id==='pmt-photos'));
+  renderPanelHead();renderSidePanel();
+  document.getElementById('side-panel').classList.add('open');document.getElementById('panel-overlay').classList.add('open');document.body.style.overflow='hidden';
 }
+function closeSidePanel(){document.getElementById('side-panel').classList.remove('open');document.getElementById('panel-overlay').classList.remove('open');document.body.style.overflow='';}
+function renderPanelHead(){
+  const t=document.querySelector('#side-panel .panel-title');
+  if(t)t.textContent=panelScope==='all'?'All Photos':AREAS[panelScope].name;
+  const row=document.getElementById('panel-filter-row');if(!row)return;
+  row.style.display=panelMode==='photos'?'flex':'none';
+  row.innerHTML=PANEL_CHIPS[panelScope].map(([k,l])=>`<button class="panel-filter${panelFilter===k?' active':''}${k==='archived'?' arch-filter':''}" onclick="setPanelFilter('${k}')">${l}</button>`).join('')
+    +(panelScope!=='all'?`<button class="panel-filter" style="margin-left:auto" onclick="setPanelScope('all')">Everything</button>`:'');
+}
+function setPanelScope(sc){panelScope=sc;panelFilter='all';renderPanelHead();renderSidePanel();}
+function setPanelFilter(f){panelFilter=f;renderPanelHead();renderSidePanel();}
 function getAllPhotos(archivedOnly=false){
   const all=[];
   const home=userData('home',{rooms:[]});
@@ -1019,14 +1238,17 @@ function renderSidePanel(){
   if(panelMode==='links'){renderSidePanelLinks();return;}
   const isArchived=panelFilter==='archived';
   let all=getAllPhotos(isArchived);
-  if(panelFilter==='liked')all=all.filter(e=>e.photo.liked);
+  const scopeSecs=PANEL_SCOPE_SECTIONS[panelScope];if(scopeSecs)all=all.filter(e=>scopeSecs.includes(e.sectionKey));
+  if(panelFilter==='closet')all=[];
+  else if(panelFilter==='liked')all=all.filter(e=>e.photo.liked);
   else if(panelFilter==='home')all=all.filter(e=>e.sectionKey==='home');
   else if(panelFilter==='wedding')all=all.filter(e=>e.sectionKey==='wedding');
   else if(panelFilter==='honeymoon')all=all.filter(e=>e.sectionKey==='honeymoon');
   else if(panelFilter==='dayout')all=all.filter(e=>e.sectionKey==='dayout');
   else if(panelFilter==='recipes')all=all.filter(e=>e.sectionKey==='recipes');
   const body=document.getElementById('panel-body');
-  if(!all.length){body.innerHTML=`<div class="panel-empty">${isArchived?'No archived photos.':'No photos yet.'}</div>`;return;}
+  const closetHtml=(!isArchived&&panelScope==='all'&&(panelFilter==='all'||panelFilter==='closet'))?panelClosetHTML():'';
+  if(!all.length&&!closetHtml){body.innerHTML=`<div class="panel-empty">${isArchived?'No archived photos.':'No photos yet.'}</div>`;return;}
   if(isArchived){
     const groups={};all.forEach(e=>{if(!groups[e.label])groups[e.label]=[];groups[e.label].push(e);});
     body.innerHTML=Object.entries(groups).map(([l,items])=>`<div class="panel-section-label">${l}</div><div class="panel-grid">${items.map(e=>panelPhotoCard(e,true)).join('')}</div>`).join('');return;
@@ -1043,8 +1265,15 @@ function renderSidePanel(){
     });
   }
   if(panelFilter==='liked'&&liked.length){const groups={};liked.forEach(e=>{if(!groups[e.label])groups[e.label]=[];groups[e.label].push(e);});html=Object.entries(groups).map(([l,items])=>`<div class="panel-section-label">${l}</div><div class="panel-grid">${items.map(e=>panelPhotoCard(e)).join('')}</div>`).join('');}
-  body.innerHTML=html;
+  body.innerHTML=html+closetHtml;
 }
+// Closet pieces appear in the everything-view too (read-only here; manage them in Closet → Wardrobe).
+function panelClosetHTML(){
+  const items=closetData().items.slice().sort((a,b)=>(b.date||0)-(a.date||0));
+  if(!items.length)return'';
+  return`<div class="panel-section-label"${panelFilter==='closet'?'':' style="margin-top:18px"'}>Closet</div><div class="panel-grid">${items.map(i=>`<div class="panel-photo" style="background:var(--bone)"><img src="${i.thumb}" style="object-fit:contain;padding:6px" loading="lazy" onclick="panelOpenClosetItem('${i.id}')"/><div class="panel-photo-dest">${escHtml(i.name)}</div></div>`).join('')}</div>`;
+}
+function panelOpenClosetItem(id){closeSidePanel();clSetTab('wardrobe');clOpenItem(id);}
 function panelPhotoCard(e,isArchived=false){
   const p=e.photo;
   if(isArchived)return`<div class="panel-photo"><img src="${p.img}" loading="lazy"/><div class="panel-photo-dest" style="transform:none">${e.label}</div><div class="panel-photo-arch-actions"><button class="arch-btn" style="background:rgba(42,95,63,.85)" onclick="restorePhoto('${p.id}','${e.type}','${e.contextId}')">↩ Restore</button><button class="arch-btn" style="background:rgba(168,32,32,.85)" onclick="deleteFromPanel('${p.id}','${e.type}','${e.contextId}')">✕ Delete</button></div></div>`;
@@ -1088,8 +1317,7 @@ function updatePanelBadge(){
 function setPanelMode(m){
   panelMode=m;
   document.querySelectorAll('.panel-mode-tab').forEach(b=>b.classList.toggle('active',b.id===`pmt-${m}`));
-  const pfr=document.getElementById('panel-filter-row');
-  if(pfr)pfr.style.display=m==='photos'?'flex':'none';
+  renderPanelHead();
   renderSidePanel();
 }
 function getAllLinks(){
@@ -1180,17 +1408,39 @@ function renderPhotoGrid(photos,type,contextId){
 }
 
 // ── CAPTURE ──
+// Camera button. Inside an area it saves straight into that area (destinations limited to it, current page
+// pre-selected); on the home screen every destination is offered. Everything lands in the All Photos gallery too.
+function capturePreselect(opts){
+  const s=currentSection,has=v=>opts.some(o=>o.v===v);
+  const want=s==='home'&&activeRoomId?'home_'+activeRoomId:s==='wedding'?'wedding':s==='honeymoon'?'honeymoon':s==='dayout'&&activeDayOutId?'dayout_'+activeDayOutId:s==='recipes'?'recipes_new':null;
+  if(want&&has(want))return want;
+  const last=localStorage.getItem('maison_lastdest');
+  return last&&has(last)?last:opts[0].v;
+}
 function triggerCapture(){
-  const home=userData('home',{rooms:[]});const d=userData('dayout',{plans:[]});const rec=userData('recipes',{items:[]});
-  const roomOpts=home.rooms.map(r=>`<option value="home_${r.id}">${r.name} (Room)</option>`).join('');
-  const dayOpts=d.plans.map(pl=>`<option value="dayout_${pl.id}">${pl.name} (Day Out)</option>`).join('');
-  const recOpts=rec.items.length?rec.items.map(ri=>`<option value="recipe_${ri.id}">📸 Add to: ${ri.title||'Recipe'}</option>`).join(''):'';
+  const area=areaOf(currentSection);
+  if(area==='closet'){closetCamera();return;}
+  const home=userData('home',{rooms:[]}),d=userData('dayout',{plans:[]}),rec=userData('recipes',{items:[]});
+  const opts=[];
+  if(!area||area==='house')home.rooms.forEach(r=>opts.push({v:'home_'+r.id,label:r.name+' (Room)'}));
+  if(!area||area==='other'){
+    opts.push({v:'wedding',label:'Wedding Inspiration'},{v:'honeymoon',label:'Honeymoon Inspiration'});
+    d.plans.forEach(pl=>opts.push({v:'dayout_'+pl.id,label:pl.name+' (Day Out)'}));
+    opts.push({v:'recipes_new',label:'New Recipe'});
+    rec.items.forEach(ri=>opts.push({v:'recipe_'+ri.id,label:'Add to recipe: '+(ri.title||'Recipe')}));
+  }
+  if(!area)opts.push({v:'closet',label:'Closet (new piece)'});
+  if(!opts.length){
+    openModal(`<div class="modal-head"><div class="modal-title">Add a room first</div><button class="modal-close" onclick="closeModal()">×</button></div><p class="cl-hint" style="margin-top:0">Photos in House Planning are saved into a room. Create one, then use the camera.</p><div class="modal-row"><button class="btn-solid sm" onclick="closeModal();setHomeView('rooms');openAddRoom()">Add a room</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);
+    return;
+  }
+  const pre=capturePreselect(opts);
   openModal(`<div class="modal-head"><div class="modal-title">Add Photo</div><button class="modal-close" onclick="closeModal()">×</button></div>
-    <label class="field-label">Save To</label>
-    <select id="cap-dest" class="field-input">${roomOpts}<option value="wedding">Wedding Inspiration</option><option value="honeymoon">Honeymoon Inspiration</option>${dayOpts}<option value="recipes_new">🆕 New Recipe</option>${recOpts}</select>
+    ${opts.length>1?`<label class="field-label">Save To</label>`:`<p class="cl-hint" style="margin-top:0">Saving to <b>${escHtml(opts[0].label)}</b></p>`}
+    <select id="cap-dest" class="field-input"${opts.length>1?'':' style="display:none"'}>${opts.map(o=>`<option value="${o.v}"${o.v===pre?' selected':''}>${escHtml(o.label)}</option>`).join('')}</select>
     <div class="modal-row" style="margin-top:4px">
-      <button class="btn-solid sm green" onclick="pickFile('camera')">📷 Take Photo</button>
-      <button class="btn-solid sm" onclick="pickFile('gallery')">🖼 From Gallery</button>
+      <button class="btn-solid sm green" onclick="pickFile('camera')">Take Photo</button>
+      <button class="btn-solid sm" onclick="pickFile('gallery')">From Gallery</button>
     </div>
     <div id="cap-preview-wrap" style="margin-top:14px;display:none">
       <img id="cap-preview" class="modal-preview"/>
@@ -1199,13 +1449,16 @@ function triggerCapture(){
       <label class="field-label">Price — £ (optional)</label><input id="cap-price" class="field-input" placeholder="0.00" type="number" min="0" step="0.01"/>
       <label class="field-label">Name (optional)</label><input id="cap-name" class="field-input" placeholder="e.g. IKEA Kallax"/>
       <div class="modal-row" style="margin-top:8px">
-        <button class="btn-solid sm" onclick="saveCapture()">Save to Journal</button>
+        <button class="btn-solid sm" onclick="saveCapture()">Save</button>
         <button class="btn-ghost" onclick="closeModal()">Cancel</button>
       </div>
     </div>`);
 }
 let capturedFullBlob=null;
-function pickFile(src){const fi=src==='camera'?document.getElementById('file-input-camera'):document.getElementById('file-input');fi.onchange=e=>{const file=e.target.files[0];if(!file)return;const r=new FileReader();r.onload=async ev=>{
+function pickFile(src){
+  const dd=document.getElementById('cap-dest');
+  if(dd&&dd.value==='closet'){closeModal();if(src==='camera')closetCamera();else closetLibrary();return;}   // home-screen camera → new closet piece
+  const fi=src==='camera'?document.getElementById('file-input-camera'):document.getElementById('file-input');fi.onchange=e=>{const file=e.target.files[0];if(!file)return;const r=new FileReader();r.onload=async ev=>{
   const raw=ev.target.result;
   try{const{thumb,blob}=await processPhotoDataURL(raw);capturedDataURL=thumb;capturedFullBlob=blob;}
   catch(err){capturedDataURL=raw;capturedFullBlob=null;}
@@ -1226,6 +1479,7 @@ async function saveCapture(){
   else if(dest==='recipes_new'||dest==='recipes'){const r=userData('recipes',{items:[]});const rec={id:uid(),img:capturedDataURL,title:name||'New Recipe',tags:[],text:note,date:Date.now(),photos:[]};r.items.push(rec);saveData('recipes',r);newId=rec.id;}
   else if(dest.startsWith('recipe_')){const recId=dest.replace('recipe_','');const r=userData('recipes',{items:[]});const ri=r.items.find(i=>i.id===recId);if(ri){const p2={id:uid(),img:capturedDataURL,note,date:Date.now(),liked:false,archived:false};ri.photos=ri.photos||[];ri.photos.push(p2);saveData('recipes',r);newId=p2.id;}}
   if(blob&&newId)await idbPutPhoto(newId,blob);
+  try{localStorage.setItem('maison_lastdest',dest);}catch(e){}
   capturedDataURL=null;capturedFullBlob=null;closeModal();showSection(currentSection);updatePanelBadge();
   syncPhotosSoon();
 }
@@ -1233,11 +1487,11 @@ async function saveCapture(){
 // ── QUICK NOTES ──
 function quickNotesBtn(section){
   const hasNotes=!!(userData(`notes_${section}`,''));
-  return`<button class="notes-btn${hasNotes?' has-notes':''}" onclick="openQuickNotes('${section}')">📝 Notes</button>`;
+  return`<button class="notes-btn${hasNotes?' has-notes':''}" onclick="openQuickNotes('${section}')">Notes</button>`;
 }
 function openQuickNotes(section){
   const notes=userData(`notes_${section}`,'');
-  const label={home:'Home Notes',wedding:'Wedding Notes',honeymoon:'Honeymoon Notes',recipes:'Recipe Notes',music:'Music Notes'}[section]||'Notes';
+  const label={home:'Home Notes',wedding:'Wedding Notes',honeymoon:'Honeymoon Notes',recipes:'Recipe Notes',music:'Music Notes',closet:'Closet Notes'}[section]||'Notes';
   openModal(`<div class="modal-head"><div class="modal-title">${label}</div><button class="modal-close" onclick="closeModal()">×</button></div><textarea id="qnotes-text" class="field-input" rows="10" placeholder="Jot anything down…" style="min-height:200px">${notes}</textarea><div class="modal-row" style="margin-top:8px"><button class="btn-solid sm" onclick="saveQuickNotes('${section}')">Save Notes</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);
   setTimeout(()=>{const el=document.getElementById('qnotes-text');if(el){el.selectionStart=el.selectionEnd=el.value.length;el.focus();}},50);
 }
@@ -1263,9 +1517,8 @@ function setActiveRoom(id){if(id!==activeRoomId)activeRoomTab='overview';activeR
 
 function renderHome(main){
   const home=userData('home',{rooms:[]});
-  const viewToggle=`<div class="home-view-tabs"><button class="home-view-tab${homeView==='rooms'?' active':''}" onclick="setHomeView('rooms')">Rooms</button><button class="home-view-tab${homeView==='floorplan'?' active':''}" onclick="setHomeView('floorplan')">Floor Plan</button></div>`;
-  if(homeView==='floorplan'){main.innerHTML=`<div class="section-rule"><div><div class="section-title">Our Home</div><div class="section-sub">Visualise your space.</div></div>${quickNotesBtn('home')}</div>${viewToggle}${renderFloorPlanView()}`;return;}
-  if(!home.rooms.length){main.innerHTML=`<div class="section-rule"><div><div class="section-title">Our Home</div><div class="section-sub">Add rooms to start planning.</div></div><div class="flex-center">${quickNotesBtn('home')}<button class="btn-solid sm" onclick="openAddRoom()">+ Add Room</button></div></div>${viewToggle}<div class="empty"><div class="empty-icon">🏠</div>No rooms yet.</div>`;return;}
+  if(homeView==='floorplan'){main.innerHTML=`<div class="section-rule"><div><div class="section-title">Floor Plan</div><div class="section-sub">Visualise your space.</div></div>${quickNotesBtn('home')}</div>${renderFloorPlanView()}`;return;}
+  if(!home.rooms.length){main.innerHTML=`<div class="section-rule"><div><div class="section-title">Rooms</div><div class="section-sub">Add rooms to start planning.</div></div><div class="flex-center">${quickNotesBtn('home')}<button class="btn-solid sm" onclick="openAddRoom()">+ Room</button></div></div><div class="empty">No rooms yet.</div>`;return;}
   if(!activeRoomId||!home.rooms.find(r=>r.id===activeRoomId))activeRoomId=home.rooms[0].id;
   const room=home.rooms.find(r=>r.id===activeRoomId);
   const tabs=home.rooms.map((r,i)=>`<button class="room-tab${r.id===activeRoomId?' active':''}" draggable="true" ondragstart="dragRoomStart(event,${i})" ondragover="dragRoomOver(event,${i})" ondragleave="dragRoomLeave(event)" ondrop="dropRoom(event,${i},'home')" ondragend="dragRoomEnd(event)" onclick="setActiveRoom('${r.id}')"><span class="drag-handle">⋮⋮</span>${r.name}</button>`).join('');
@@ -1283,7 +1536,7 @@ function renderHome(main){
   } else {
     content=renderRoomMoodboard(room);
   }
-  main.innerHTML=`<div class="section-rule"><div><div class="section-title">Our Home</div><div class="section-sub">Track every room, budget &amp; piece of furniture.</div></div><div class="flex-center">${quickNotesBtn('home')}<button class="btn-solid sm" onclick="openAddRoom()">+ Room</button></div></div>${viewToggle}<div class="room-tabs-row">${tabs}</div><div class="room-sub-tabs">${subTabs}</div>${content}`;
+  main.innerHTML=`<div class="section-rule"><div><div class="section-title">Rooms</div><div class="section-sub">Track every room, budget &amp; piece of furniture.</div></div><div class="flex-center">${quickNotesBtn('home')}<button class="btn-solid sm" onclick="openAddRoom()">+ Room</button></div></div><div class="room-tabs-row">${tabs}</div><div class="room-sub-tabs">${subTabs}</div>${content}`;
 }
 
 function renderItemList(items,roomId){
@@ -1440,7 +1693,8 @@ function deleteDayOutItem(planId,itemId){const d=userData('dayout',{plans:[]});c
 let weddingTab='inspo';
 function renderWedding(main){
   const w=userData('wedding',{inspo:[],wdate:'',venue:'',theme:'',notes:''});
-  const tabs=['inspo','moodboard','details'].map(t=>`<button class="room-tab${weddingTab===t?' active':''}" onclick="setWeddingTab('${t}')">${t==='inspo'?'Inspiration':t==='moodboard'?'Mood Board':'Details'}</button>`).join('');
+  if(weddingTab==='moodboard')weddingTab='inspo';   // mood boards now live behind the Mood Board button
+  const tabs=['inspo','details'].map(t=>`<button class="room-tab${weddingTab===t?' active':''}" onclick="setWeddingTab('${t}')">${t==='inspo'?'Inspiration':'Details'}</button>`).join('');
   let content='';
   if(weddingTab==='inspo')content=`<div class="flex-between mb14"><div style="font-family:'Cormorant Garamond',serif;font-size:16px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)">Inspiration Gallery</div></div>${renderPhotoGrid(w.inspo||[],'wedding','wedding')}`;
   else if(weddingTab==='moodboard')content=renderMoodBoardSection('wedding');
@@ -1635,9 +1889,16 @@ function renderMoodBoardSection(context){
   if(!boards.length)return`<div class="empty"><div class="empty-icon">🎨</div>No mood boards yet.</div><div style="text-align:center;margin-top:16px"><button class="btn-solid sm" onclick="createMoodBoard('${context}')">Create Mood Board</button></div>`;
   return`<div class="flex-between mb14"><div></div><button class="btn-solid sm" onclick="createMoodBoard('${context}')">+ New Board</button></div>${boards.map((board,bi)=>`<div style="margin-bottom:32px"><div class="flex-between mb14"><div style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:700">${board.title||'Untitled'}</div><div class="flex-center"><button class="btn-ghost" onclick="openEditBoard('${context}',${bi})">Edit</button><button class="btn-ghost danger" onclick="deleteMoodBoard('${context}',${bi})">Delete</button></div></div>${board.palette&&board.palette.length?`<div class="mood-palette">${board.palette.map(c=>`<div class="palette-swatch" style="background:${c}"></div>`).join('')}</div>`:''}<div class="mood-board${!board.tiles||!board.tiles.length?' empty-board':''}">${!board.tiles||!board.tiles.length?'<span style="color:var(--muted);font-style:italic;font-size:14px">Empty. Edit to add images.</span>':board.tiles.map(tile=>`<div class="mood-tile size-${tile.size||'md'}"><img src="${tile.img}" loading="lazy"/>${tile.note?`<div class="tile-note">${tile.note}</div>`:''}</div>`).join('')}</div>${board.notes?`<div style="font-size:13px;color:var(--muted);margin-top:10px;font-style:italic">${board.notes}</div>`:''}</div>`).join('')}`;
 }
-function openMoodBoard(){openModal(`<div class="modal-head"><div class="modal-title">Create Mood Board</div><button class="modal-close" onclick="closeModal()">×</button></div><p style="font-size:14px;color:var(--muted);margin-bottom:18px;font-style:italic">Which section?</p><div style="display:flex;flex-direction:column;gap:10px"><button class="btn-ghost" onclick="closeModal();createMoodBoard('wedding');setWeddingTab('moodboard');showSection('wedding')">Wedding</button><button class="btn-ghost" onclick="closeModal();createMoodBoard('home');showSection('home')">Our Home</button><button class="btn-ghost" onclick="closeModal();createMoodBoard('honeymoon');showSection('honeymoon')">Honeymoon</button></div>`);}
+// Mood Board button: boards for the area you're in — House Planning (house boards), Closet (style boards),
+// Other (wedding + honeymoon boards). Per-room palettes still live inside each room.
+const MB_CONTEXTS={house:[['home','House']],closet:[['closet','Style']],other:[['wedding','Wedding'],['honeymoon','Honeymoon']]};
+function renderMoodBoards(main){
+  const ctxs=MB_CONTEXTS[mbArea]||MB_CONTEXTS.house;
+  main.innerHTML=`<div class="section-rule"><div><div class="section-title">Mood Boards</div><div class="section-sub">${AREAS[mbArea].name}</div></div></div>`
+    +ctxs.map(([c,l])=>(ctxs.length>1?`<div class="st-h"><span>${l}</span></div>`:'')+renderMoodBoardSection(c)).join('');
+}
 function createMoodBoard(context){openModal(`<div class="modal-head"><div class="modal-title">New Mood Board</div><button class="modal-close" onclick="closeModal()">×</button></div><label class="field-label">Board Title</label><input id="mb-title" class="field-input" placeholder="e.g. Romantic Garden…"/><label class="field-label">Palette Colours (hex, comma separated)</label><input id="mb-palette" class="field-input" placeholder="#f7e9d7, #c9b89a"/><label class="field-label">Notes / Mood</label><textarea id="mb-notes" class="field-input" rows="3" placeholder="Describe the vibe…"></textarea><div class="modal-row"><button class="btn-solid sm" onclick="saveMoodBoard('${context}')">Create</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);}
-function saveMoodBoard(context){const title=document.getElementById('mb-title').value.trim()||'New Board';const palette=document.getElementById('mb-palette').value.split(',').map(s=>s.trim()).filter(s=>s.startsWith('#'));const notes=document.getElementById('mb-notes').value.trim();const boards=userData(`moodboards_${context}`,[]);boards.push({id:uid(),title,palette,notes,tiles:[]});saveData(`moodboards_${context}`,boards);closeModal();if(context==='wedding'){setWeddingTab('moodboard');showSection('wedding');}else showSection(currentSection);}
+function saveMoodBoard(context){const title=document.getElementById('mb-title').value.trim()||'New Board';const palette=document.getElementById('mb-palette').value.split(',').map(s=>s.trim()).filter(s=>s.startsWith('#'));const notes=document.getElementById('mb-notes').value.trim();const boards=userData(`moodboards_${context}`,[]);boards.push({id:uid(),title,palette,notes,tiles:[]});saveData(`moodboards_${context}`,boards);closeModal();showSection(currentSection);}
 function openEditBoard(context,boardIndex){const boards=userData(`moodboards_${context}`,[]);const board=boards[boardIndex];openModal(`<div class="modal-head"><div class="modal-title">Edit: ${board.title}</div><button class="modal-close" onclick="closeModal()">×</button></div><input type="file" id="mb-file" accept="image/*" multiple style="display:none"/><button class="btn-ghost mb14" onclick="pickMoodBoardImages(${boardIndex},'${context}')">+ Add Images</button><div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px">${(board.tiles||[]).map((tile,ti)=>`<div style="position:relative;width:80px;height:80px;overflow:hidden;border:1px solid var(--bone)"><img src="${tile.img}" style="width:100%;height:100%;object-fit:cover"/><button onclick="removeTile(${boardIndex},'${context}',${ti})" style="position:absolute;top:2px;right:2px;background:rgba(168,32,32,.85);border:none;color:#fff;width:18px;height:18px;font-size:11px;cursor:pointer">×</button></div>`).join('')}</div><label class="field-label">Title</label><input id="mb-edit-title" class="field-input" value="${board.title||''}"/><label class="field-label">Palette</label><input id="mb-edit-palette" class="field-input" value="${(board.palette||[]).join(', ')}"/><label class="field-label">Notes</label><textarea id="mb-edit-notes" class="field-input" rows="3">${board.notes||''}</textarea><div class="modal-row"><button class="btn-solid sm" onclick="updateMoodBoard('${context}',${boardIndex})">Save</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);}
 function pickMoodBoardImages(boardIndex,context){const fi=document.getElementById('mb-file');fi.onchange=e=>{Array.from(e.target.files).forEach(file=>{const r=new FileReader();r.onload=async ev=>{
   const id=uid();
@@ -1653,13 +1914,13 @@ function removeTile(boardIndex,context,tileIndex){
   if(removed){idbDeletePhoto(removed.id).catch(()=>{});deleteRemotePhoto(removed.id).catch(()=>{});}
   openEditBoard(context,boardIndex);
 }
-function updateMoodBoard(context,boardIndex){const boards=userData(`moodboards_${context}`,[]);const board=boards[boardIndex];board.title=document.getElementById('mb-edit-title').value.trim()||'Board';board.palette=document.getElementById('mb-edit-palette').value.split(',').map(s=>s.trim()).filter(s=>s.startsWith('#'));board.notes=document.getElementById('mb-edit-notes').value.trim();saveData(`moodboards_${context}`,boards);closeModal();if(context==='wedding'){setWeddingTab('moodboard');showSection('wedding');}else showSection(currentSection);}
+function updateMoodBoard(context,boardIndex){const boards=userData(`moodboards_${context}`,[]);const board=boards[boardIndex];board.title=document.getElementById('mb-edit-title').value.trim()||'Board';board.palette=document.getElementById('mb-edit-palette').value.split(',').map(s=>s.trim()).filter(s=>s.startsWith('#'));board.notes=document.getElementById('mb-edit-notes').value.trim();saveData(`moodboards_${context}`,boards);closeModal();showSection(currentSection);}
 function deleteMoodBoard(context,boardIndex){
   if(!confirm('Delete this mood board?'))return;
   const boards=userData(`moodboards_${context}`,[]);
   ((boards[boardIndex]&&boards[boardIndex].tiles)||[]).forEach(t=>{idbDeletePhoto(t.id).catch(()=>{});deleteRemotePhoto(t.id).catch(()=>{});});
   boards.splice(boardIndex,1);saveData(`moodboards_${context}`,boards);
-  if(context==='wedding'){setWeddingTab('moodboard');showSection('wedding');}else showSection(currentSection);
+  showSection(currentSection);
 }
 
 // ── DASHBOARD ──
@@ -1674,46 +1935,20 @@ function timeAgo(ts){
   if(days<7)return`${days} day${days!==1?'s':''} ago`;
   return new Date(ts).toLocaleDateString('en-GB',{day:'numeric',month:'short'});
 }
+// Home screen: three big tiles. Everything else is one tap deeper (see AREAS / areaRows).
 function renderDashboard(main){
   const home=userData('home',{rooms:[]});
-  const w=userData('wedding',{inspo:[]});
-  const h=userData('honeymoon',{rooms:[],inspo:[],budget:0});
-  const d=userData('dayout',{plans:[]});
-  const rec=userData('recipes',{items:[]});
-  const music=userData('music',{playlists:[]});
-
-  const homeSpent=home.rooms.reduce((s,r)=>s+(r.items||[]).reduce((a,i)=>a+(i.price||0),0)+(r.photos||[]).filter(p=>!p.archived).reduce((a,p)=>a+(p.price||0),0),0);
-  const wPhotos=(w.inspo||[]).filter(p=>!p.archived).length;
-  const songCount=music.playlists.reduce((s,p)=>s+(p.songs||[]).length,0);
-
-  const cards=[
-    {color:'var(--ink)',   name:'Our Home',   sub:home.rooms.length?`${home.rooms.length} room${home.rooms.length!==1?'s':''}${homeSpent?` · £${homeSpent.toLocaleString(undefined,{minimumFractionDigits:2})}`:''}`:null, empty:'No rooms yet',section:'home'},
-    {color:'var(--red)',   name:'Wedding',    sub:wPhotos?`${wPhotos} photo${wPhotos!==1?'s':''} saved`:null, empty:'Add inspiration',section:'wedding'},
-    {color:'var(--teal)',  name:'Honeymoon',  sub:h.rooms.length?`${h.rooms.length} destination${h.rooms.length!==1?'s':''}`:null, empty:'Plan your trip',section:'honeymoon'},
-    {color:'var(--teal)',  name:'Days Out',   sub:d.plans.length?`${d.plans.length} plan${d.plans.length!==1?'s':''}`:null, empty:'Add a day out',section:'dayout'},
-    {color:'var(--green)', name:'Recipes',    sub:rec.items.length?`${rec.items.length} recipe${rec.items.length!==1?'s':''} saved`:null, empty:'Save your first',section:'recipes'},
-    {color:'var(--gold)',  name:'Music',      sub:music.playlists.length?`${music.playlists.length} playlist${music.playlists.length!==1?'s':''}${songCount?` · ${songCount} song${songCount!==1?'s':''}`:''}`:'', empty:'Create a playlist',section:'music'},
+  const c=closetData();
+  const spent=home.rooms.reduce((s,r)=>s+(r.items||[]).reduce((a,i)=>a+(i.price||0),0)+(r.photos||[]).filter(p=>!p.archived).reduce((a,p)=>a+(p.price||0),0),0);
+  const n=(k,w)=>`${k} ${w}${k!==1?'s':''}`;
+  const tiles=[
+    {a:'house',color:'var(--ink)',sub:home.rooms.length?n(home.rooms.length,'room')+(spent?` · ${clMoney(spent)}`:''):'Rooms, budgets & floor plan'},
+    {a:'closet',color:'var(--plum)',sub:c.items.length?n(c.items.length,'piece')+(c.outfits.length?` · ${n(c.outfits.length,'outfit')}`:''):'Wardrobe, outfits & packing'},
+    {a:'other',color:'var(--gold)',sub:'Wedding · Honeymoon · Days Out · Recipes · Music'},
   ];
-
-  const recent=[];
-  home.rooms.forEach(r=>(r.photos||[]).filter(p=>p.date&&!p.archived).forEach(p=>recent.push({label:p.note||'Home photo',tag:r.name,date:p.date,section:'home'})));
-  (w.inspo||[]).filter(p=>p.date&&!p.archived).forEach(p=>recent.push({label:p.note||'Wedding photo',tag:'Wedding',date:p.date,section:'wedding'}));
-  (h.inspo||[]).filter(p=>p.date&&!p.archived).forEach(p=>recent.push({label:p.note||'Honeymoon photo',tag:'Honeymoon',date:p.date,section:'honeymoon'}));
-  rec.items.forEach(i=>recent.push({label:i.title||'Recipe',tag:'Recipes',date:i.date||0,section:'recipes'}));
-  music.playlists.forEach(pl=>(pl.songs||[]).forEach(s=>recent.push({label:s.title,tag:pl.name,date:s.date||0,section:'music'})));
-  recent.sort((a,b)=>b.date-a.date);
-  const top=recent.slice(0,4);
-
-  const recentHtml=top.length?top.map(r=>`<div class="dash-recent-row" onclick="showSection('${r.section}')" style="cursor:pointer"><div><div class="dash-recent-label">${r.label}</div><div class="dash-recent-meta">${timeAgo(r.date)}</div></div><div class="dash-recent-tag">${r.tag}</div></div>`).join(''):`<div style="font-size:13px;color:var(--muted);font-style:italic;padding:16px 0">Nothing added yet — tap a section to get started.</div>`;
-
   const firstName=currentUserName?currentUserName.split(' ')[0]:'';
-  main.innerHTML=`<div style="max-width:600px">
-    <div style="margin-bottom:28px;padding-bottom:16px;border-bottom:1px solid var(--bone)">
-      <div style="font-size:9px;letter-spacing:.45em;text-transform:uppercase;color:var(--warm);font-family:'Cormorant Garamond',serif">Welcome back${firstName?', '+firstName:''}</div>
-    </div>
-    <div class="dash-grid">${cards.map((c,i)=>`<div class="dash-card" style="border-top-color:${c.color}" onclick="showSection('${c.section}')"><div class="dash-card-num" style="color:${c.color}">${String(i+1).padStart(2,'0')}</div><div class="dash-card-name">${c.name}</div>${c.sub?`<div class="dash-card-sub">${c.sub}</div>`:`<div class="dash-card-empty">${c.empty}</div>`}</div>`).join('')}</div>
-    ${top.length?`<div style="font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);font-family:'Cormorant Garamond',serif;margin-bottom:2px">Recently Added</div>${recentHtml}`:''}
-  </div>`;
+  main.innerHTML=`<div class="home-greet">Welcome back${firstName?', '+escHtml(firstName):''}</div>
+    <div class="home-tiles">${tiles.map((t,i)=>`<button class="home-tile" style="border-top-color:${t.color}" onclick="showSection('area_${t.a}')"><div><div class="home-tile-num" style="color:${t.color}">${String(i+1).padStart(2,'0')}</div><div class="home-tile-name">${AREAS[t.a].name}</div><div class="home-tile-sub">${t.sub}</div></div><span class="area-chev">›</span></button>`).join('')}</div>`;
 }
 
 // ── MUSIC ──
@@ -1795,11 +2030,632 @@ function deleteSong(playlistId,songId){
   if(pl){pl.songs=(pl.songs||[]).filter(s=>s.id!==songId);saveData('music',m);}showSection('music');
 }
 
+// ── CLOSET ──
+// Own data key (`closet`) and own photo store — deliberately separate from the Maison photo gallery.
+// Item records keep only a tiny thumbnail inline; the full image lives in IndexedDB (+ Drive mirror) under the item id.
+const CLOSET_CATS=['Tops','Bottoms','Dresses','Outerwear','Shoes','Bags','Accessories'];
+const CLOSET_TABS=[['wardrobe','Wardrobe'],['outfits','Outfits'],['calendar','Calendar'],['shuffle','Shuffle'],['stats','Stats'],['packing','Packing']];
+// Flat-lay slots per category: x/y/w are % of the board, h is the max height (% of board) the piece may take.
+const CL_DEFAULT_POS={Tops:{x:29,y:4,w:42,h:34},Bottoms:{x:31,y:38,w:38,h:36},Dresses:{x:28,y:6,w:44,h:62},Outerwear:{x:3,y:6,w:46,h:42},Shoes:{x:30,y:77,w:26,h:18},Bags:{x:68,y:40,w:26,h:26},Accessories:{x:70,y:8,w:20,h:18}};
+function clDefaultPlace(it,same){
+  const d=CL_DEFAULT_POS[it.cat]||{x:35,y:35,w:30,h:30},ar=it.ar||1;
+  const w=Math.min(d.w,d.h*(4/3)*ar);
+  return{x:+clClamp(d.x+(d.w-w)/2+same*6,0,100-w).toFixed(1),y:+clClamp(d.y+same*5,0,88).toFixed(1),w:+w.toFixed(1)};
+}
+let closetTab='wardrobe',closetFilter='all',closetOutfitId=null,closetPackId=null,closetCalMonth=null,closetStatsSort='best';
+let closetQueue=[],closetDraft=null,closetSensTimer=null,outfitDraft=null,obSel=null,obDrag=null,obCat='all',obNameTimer=null;
+let shuffleState={idx:{},lock:{},favOnly:false,busy:false};
+const closetURLs=new Map(),closetMissing=new Map();
+function closetData(){const c=userData('closet',null)||{};return{items:c.items||[],outfits:c.outfits||[],calendar:c.calendar||{},packing:c.packing||[]};}
+function saveCloset(c){saveData('closet',c);}
+function clItem(c,id){return c.items.find(i=>i.id===id);}
+function clMoney(n){return'£'+(Number(n)||0).toLocaleString('en-GB',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function clClamp(v,a,b){return Math.max(a,Math.min(b,v));}
+function clKey(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function clToast(msg){let t=document.getElementById('cl-toast');if(!t){t=document.createElement('div');t.id='cl-toast';document.body.appendChild(t);}t.textContent=msg;t.classList.add('show');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('show'),2200);}
+function clOutfitItemIds(c,o){return Array.from(new Set((o.items||[]).map(x=>x.itemId))).filter(id=>clItem(c,id));}
+function clWearStats(c){
+  const wears={},last={};let total=0;
+  Object.keys(c.calendar).forEach(date=>(c.calendar[date]||[]).forEach(e=>{
+    if(!e.worn)return;total++;
+    new Set(e.items||[]).forEach(id=>{wears[id]=(wears[id]||0)+1;if(!last[id]||date>last[id])last[id]=date;});
+  }));
+  return{wears,last,total};
+}
+// Full-size image for an item (from IndexedDB, or pulled from Drive on demand); thumbnails are shown until it arrives.
+async function closetImgURL(id){
+  if(closetURLs.has(id))return closetURLs.get(id);
+  if(Date.now()-(closetMissing.get(id)||0)<30000)return null;
+  let blob=await idbGetPhoto(id).catch(()=>null);
+  if(!blob)blob=await ensurePhotoLocal(id);
+  if(!blob){closetMissing.set(id,Date.now());return null;}
+  const url=URL.createObjectURL(blob);closetURLs.set(id,url);return url;
+}
+function closetDropURL(id){const u=closetURLs.get(id);if(u){URL.revokeObjectURL(u);closetURLs.delete(id);}}
+function hydrateClosetImgs(root){
+  if(!root)return;
+  root.querySelectorAll('img[data-cimg]').forEach(async img=>{
+    const id=img.dataset.cimg;const url=await closetImgURL(id);
+    if(url&&img.isConnected&&img.dataset.cimg===id)img.src=url;
+  });
+}
+
+// ── Background removal (no AI/model download — works best on a plain background) ──
+// Samples the photo's border for the background colour(s), flood-fills inwards from the edges while pixels stay
+// within the sensitivity threshold, drops stray specks, softens the edge and trims the result.
+function clCutBackground(src,sens){
+  const w=src.width,h=src.height,n=w*h;
+  const d=src.getContext('2d').getImageData(0,0,w,h).data;
+  const t=Math.max(2,Math.round(Math.min(w,h)*.012));
+  const bins=new Map();let ring=0;
+  const add=(x,y)=>{const i=(y*w+x)*4;const k=((d[i]>>4)<<8)|((d[i+1]>>4)<<4)|(d[i+2]>>4);let b=bins.get(k);if(!b){b={n:0,r:0,g:0,b:0};bins.set(k,b);}b.n++;b.r+=d[i];b.g+=d[i+1];b.b+=d[i+2];ring++;};
+  for(let y=0;y<h;y++){if(y<t||y>=h-t){for(let x=0;x<w;x++)add(x,y);}else{for(let x=0;x<t;x++)add(x,y);for(let x=w-t;x<w;x++)add(x,y);}}
+  const all=Array.from(bins.values()).sort((a,b)=>b.n-a.n);
+  let refs=all.filter(b=>b.n>=ring*.1).slice(0,3);if(!refs.length)refs=[all[0]];
+  refs=refs.map(b=>[b.r/b.n,b.g/b.n,b.b/b.n]);
+  // A pixel is background if it is close to a border colour, or if it is only a small step from the background
+  // pixel it is spreading from (so soft gradients/shadows are followed) while staying within a looser limit.
+  const thr2=Math.pow(sens*2.2,2),loc2=Math.pow(Math.max(6,sens*.5),2),max2=Math.pow(sens*3.2,2);
+  const near2=(r,g,b)=>{let m=1e9;for(let k=0;k<refs.length;k++){const q=refs[k],dr=r-q[0],dg=g-q[1],db=b-q[2],v=dr*dr+dg*dg+db*db;if(v<m)m=v;}return m;};
+  const bg=new Uint8Array(n),stack=new Int32Array(n);let sp=0;
+  const push=(i,from)=>{
+    if(bg[i])return;
+    const p=i*4,r=d[p],g=d[p+1],b=d[p+2],nd=near2(r,g,b);
+    let ok=nd<=thr2;
+    if(!ok&&from>=0&&nd<=max2){const f=from*4,dr=r-d[f],dg=g-d[f+1],db=b-d[f+2];ok=dr*dr+dg*dg+db*db<=loc2;}
+    if(ok){bg[i]=1;stack[sp++]=i;}
+  };
+  for(let x=0;x<w;x++){push(x,-1);push((h-1)*w+x,-1);}
+  for(let y=0;y<h;y++){push(y*w,-1);push(y*w+w-1,-1);}
+  while(sp){const i=stack[--sp],x=i%w;if(x>0)push(i-1,i);if(x<w-1)push(i+1,i);if(i>=w)push(i-w,i);if(i<n-w)push(i+w,i);}
+  // keep only the main pieces: drop foreground specks far smaller than the biggest blob
+  const lab=new Int32Array(n),sizes=[0];let nl=0;
+  for(let s=0;s<n;s++){
+    if(bg[s]||lab[s])continue;
+    nl++;let cnt=0;sp=0;stack[sp++]=s;lab[s]=nl;
+    while(sp){const i=stack[--sp],x=i%w;cnt++;
+      if(x>0&&!bg[i-1]&&!lab[i-1]){lab[i-1]=nl;stack[sp++]=i-1;}
+      if(x<w-1&&!bg[i+1]&&!lab[i+1]){lab[i+1]=nl;stack[sp++]=i+1;}
+      if(i>=w&&!bg[i-w]&&!lab[i-w]){lab[i-w]=nl;stack[sp++]=i-w;}
+      if(i<n-w&&!bg[i+w]&&!lab[i+w]){lab[i+w]=nl;stack[sp++]=i+w;}
+    }
+    sizes.push(cnt);
+  }
+  let maxS=0;for(let k=1;k<sizes.length;k++)if(sizes[k]>maxS)maxS=sizes[k];
+  if(maxS<n*.01)return null;
+  const minKeep=maxS*.05;
+  for(let i=0;i<n;i++)if(!bg[i]&&sizes[lab[i]]<minKeep)bg[i]=1;
+  // erode 1px (removes the background-coloured fringe), soften the next ring
+  const er=new Uint8Array(n);
+  for(let y=0;y<h;y++)for(let x=0;x<w;x++){const i=y*w+x;if(bg[i])continue;if((x>0&&bg[i-1])||(x<w-1&&bg[i+1])||(y>0&&bg[i-w])||(y<h-1&&bg[i+w]))er[i]=1;}
+  const out=new ImageData(w,h),o=out.data;let x0=w,y0=h,x1=-1,y1=-1,kept=0;
+  for(let y=0;y<h;y++)for(let x=0;x<w;x++){
+    const i=y*w+x;if(bg[i]||er[i])continue;
+    const soft=(x>0&&er[i-1])||(x<w-1&&er[i+1])||(y>0&&er[i-w])||(y<h-1&&er[i+w]);
+    const p=i*4;o[p]=d[p];o[p+1]=d[p+1];o[p+2]=d[p+2];o[p+3]=soft?190:255;kept++;
+    if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;if(y>y1)y1=y;
+  }
+  if(x1<0)return null;
+  const full=document.createElement('canvas');full.width=w;full.height=h;full.getContext('2d').putImageData(out,0,0);
+  const pad=Math.round(Math.max(w,h)*.015);
+  x0=Math.max(0,x0-pad);y0=Math.max(0,y0-pad);x1=Math.min(w-1,x1+pad);y1=Math.min(h-1,y1+pad);
+  const c=document.createElement('canvas');c.width=x1-x0+1;c.height=y1-y0+1;
+  c.getContext('2d').drawImage(full,x0,y0,c.width,c.height,0,0,c.width,c.height);
+  c._frac=kept/n;
+  return c;
+}
+// Start at a normal sensitivity; if that eats most of the piece (item close in colour to the background), back off.
+function clAutoCut(orig){
+  for(const s of [38,26,16,10]){const c=clCutBackground(orig,s);if(c&&c._frac>=.06)return{cut:c,sens:s};}
+  return{cut:null,sens:38};
+}
+function clBlob(cv,type,q){return new Promise(res=>cv.toBlob(b=>res(b),type,q));}
+function clMakeThumb(cv,alpha){
+  const s=scaleDims(cv.width,cv.height,240),c=drawToCanvas(cv,s.w,s.h);
+  if(alpha){let u=c.toDataURL('image/webp',.7);if(u.indexOf('data:image/webp')!==0)u=c.toDataURL('image/png');return u;}
+  return c.toDataURL('image/jpeg',.62);
+}
+
+// ── Adding photos (camera / upload) ──
+function closetCamera(){const el=document.getElementById('closet-cam');if(el)el.click();}
+function closetLibrary(){const el=document.getElementById('closet-lib');if(el)el.click();}
+function closetFilesPicked(input){
+  const files=Array.from(input.files||[]);input.value='';
+  if(!files.length)return;
+  // The add dialog can be dismissed by tapping outside it, so check the DOM rather than trusting leftover state.
+  if(document.getElementById('cl-prev')){closetQueue=closetQueue.concat(files);}
+  else{closetDraft=null;closetQueue=files;clNext();}
+}
+async function clNext(){
+  const f=closetQueue.shift();
+  if(!f){closetDraft=null;closeModal();return;}
+  try{
+    const dataURL=await new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsDataURL(f);});
+    const im=await loadImageFromDataURL(dataURL);
+    const s=scaleDims(im.naturalWidth,im.naturalHeight,900);
+    const orig=drawToCanvas(im,s.w,s.h),auto=clAutoCut(orig);
+    closetDraft={orig,cut:auto.cut,useCut:!!auto.cut,sens:auto.sens};
+    clOpenAddModal();
+  }catch(e){closetDraft=null;alert('Could not read that photo.');if(closetQueue.length)clNext();}
+}
+function clRunCut(){const d=closetDraft;if(!d)return;try{d.cut=clCutBackground(d.orig,d.sens);}catch(e){d.cut=null;}}
+function clFieldsHTML(p,v){
+  return`<label class="field-label">Name</label><input id="${p}-name" class="field-input" placeholder="e.g. Navy linen shirt" value="${escHtml(v.name||'')}"/>
+    <label class="field-label">Category</label><select id="${p}-cat" class="field-input">${CLOSET_CATS.map(x=>`<option${v.cat===x?' selected':''}>${x}</option>`).join('')}</select>
+    <label class="field-label">Price paid (£)</label><input id="${p}-price" class="field-input" type="number" min="0" step="0.01" inputmode="decimal" placeholder="0.00" value="${v.price>0?v.price:''}"/>
+    <label class="field-label">Notes (optional)</label><input id="${p}-notes" class="field-input" placeholder="Brand, size, where it's from…" value="${escHtml(v.notes||'')}"/>`;
+}
+function clOpenAddModal(){
+  const d=closetDraft,more=closetQueue.length;
+  openModal(`<div class="modal-head"><div class="modal-title">Add to Closet${more?` <span style="font-size:13px;color:var(--muted);font-style:italic;text-transform:none">(${more} more waiting)</span>`:''}</div><button class="modal-close" onclick="clCancelAdd()">×</button></div>
+    <div class="cl-checker"><canvas id="cl-prev"></canvas></div>
+    <label class="cl-check"><input type="checkbox" id="cl-usecut" ${d.useCut?'checked':''} onchange="clToggleCut(this.checked)"/> Remove background</label>
+    <div id="cl-sens-wrap" style="${d.useCut?'':'display:none'}"><label class="field-label">Sensitivity <span id="cl-sens-val">${d.sens}</span></label><input type="range" id="cl-sens" min="8" max="100" value="${d.sens}" style="width:100%" oninput="clSens(this.value)"/>
+      <p class="cl-hint">Works best on a plain background — lay the piece flat on a bed, floor or door. Raise it if background is left behind; lower it if the piece is being eaten away.</p></div>
+    <p id="cl-msg" class="cl-hint" style="color:var(--red)"></p>
+    ${clFieldsHTML('ca',{cat:'Tops'})}
+    <div class="modal-row"><button class="btn-solid sm" onclick="clSaveItem()">Save to Closet</button><button class="btn-ghost" onclick="clSkipAdd()">${more?'Skip':'Cancel'}</button></div>`);
+  clDrawPreview();
+}
+function clDrawPreview(){
+  const d=closetDraft,cv=document.getElementById('cl-prev');if(!d||!cv)return;
+  const src=(d.useCut&&d.cut)?d.cut:d.orig;cv.width=src.width;cv.height=src.height;cv.getContext('2d').drawImage(src,0,0);
+  const m=document.getElementById('cl-msg');if(m)m.textContent=(d.useCut&&!d.cut)?'Could not separate the piece from the background — try a different sensitivity, or untick Remove background.':'';
+}
+function clToggleCut(on){const d=closetDraft;if(!d)return;d.useCut=on;document.getElementById('cl-sens-wrap').style.display=on?'':'none';if(on&&!d.cut)clRunCut();clDrawPreview();}
+function clSens(v){
+  const d=closetDraft;if(!d)return;d.sens=+v;document.getElementById('cl-sens-val').textContent=v;
+  clearTimeout(closetSensTimer);closetSensTimer=setTimeout(()=>{clRunCut();clDrawPreview();},50);
+}
+function clCancelAdd(){closetQueue=[];closetDraft=null;closeModal();}
+function clSkipAdd(){if(closetQueue.length)clNext();else clCancelAdd();}
+async function clSaveItem(){
+  const d=closetDraft;if(!d)return;
+  const c=closetData();
+  const cat=document.getElementById('ca-cat').value;
+  const name=document.getElementById('ca-name').value.trim()||`${cat} ${c.items.filter(i=>i.cat===cat).length+1}`;
+  const price=parseFloat(document.getElementById('ca-price').value)||0;
+  const notes=document.getElementById('ca-notes').value.trim();
+  const useCut=d.useCut&&!!d.cut,cv=useCut?d.cut:d.orig,id=uid();
+  const blob=await clBlob(cv,useCut?'image/png':'image/jpeg',.88);
+  await idbPutPhoto(id,blob);
+  c.items.push({id,name,cat,price,notes,fav:false,date:Date.now(),cut:useCut,ar:+(cv.width/cv.height).toFixed(3),thumb:clMakeThumb(cv,useCut)});
+  saveCloset(c);syncPhotosSoon();
+  clToast('Added to closet');
+  if(closetQueue.length)clNext();
+  else{closetDraft=null;closeModal();closetTab='wardrobe';showSection('closet');}
+}
+
+// ── Wardrobe: the closet's own photo store (favourite + delete) ──
+function clWardrobeHTML(c){
+  if(!c.items.length)return`<div class="empty">Your closet is empty.<br/>Tap the camera button below to photograph your first piece.</div>`;
+  const chips=[['all','All'],['fav','Favourites']].concat(CLOSET_CATS.map(x=>[x,x]));
+  const list=c.items.filter(i=>closetFilter==='all'||(closetFilter==='fav'?i.fav:i.cat===closetFilter)).sort((a,b)=>(b.date||0)-(a.date||0));
+  return`<div class="tag-row">${chips.map(([k,l])=>`<button class="tag-pill${closetFilter===k?' active':''}" onclick="clSetFilter('${k}')">${l}</button>`).join('')}</div>
+    <div class="of-meta" style="margin-bottom:10px">${list.length} piece${list.length!==1?'s':''}</div>
+    ${list.length?`<div class="cl-grid">${list.map(i=>`<div class="cl-card" onclick="clOpenItem('${i.id}')"><img src="${i.thumb}" alt="" loading="lazy"/><button class="cl-del" title="Delete" onclick="event.stopPropagation();clDeleteItem('${i.id}')">×</button><button class="cl-fav${i.fav?' on':''}" title="Favourite" onclick="event.stopPropagation();clToggleFav('${i.id}')">♥</button><div class="cl-cap">${escHtml(i.name)}</div></div>`).join('')}</div>`:`<div class="empty" style="padding:32px 0">Nothing here yet.</div>`}`;
+}
+function clSetFilter(k){closetFilter=k;showSection('closet');}
+function clToggleFav(id,reopen){
+  const c=closetData();const it=clItem(c,id);if(!it)return;
+  it.fav=!it.fav;saveCloset(c);
+  showSection('closet');if(reopen)clOpenItem(id);
+}
+function clOpenItem(id){
+  const c=closetData(),it=clItem(c,id);if(!it)return;
+  const st=clWearStats(c),w=st.wears[id]||0,cpw=(it.price>0&&w>0)?it.price/w:null;
+  const inOut=c.outfits.filter(o=>o.items.some(x=>x.itemId===id)).length;
+  const lastTxt=st.last[id]?new Date(st.last[id]+'T12:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'—';
+  openModal(`<div class="modal-head"><div class="modal-title">${escHtml(it.name)}</div><button class="modal-close" onclick="closeModal()">×</button></div>
+    <div class="cl-detail-img"><img data-cimg="${id}" src="${it.thumb}" alt=""/></div>
+    <div class="cl-facts">
+      <div><span>Category</span>${escHtml(it.cat)}</div>
+      <div><span>Price</span>${it.price>0?clMoney(it.price):'—'}</div>
+      <div><span>Worn</span>${w} time${w!==1?'s':''}</div>
+      <div><span>Cost per wear</span>${cpw!=null?clMoney(cpw):(it.price>0?'Not worn yet':'—')}</div>
+      <div><span>Last worn</span>${lastTxt}</div>
+      <div><span>In outfits</span>${inOut}</div>
+    </div>
+    ${it.notes?`<p style="font-size:14px;color:var(--muted);font-style:italic;margin-bottom:14px">${escHtml(it.notes)}</p>`:''}
+    <div class="modal-row"><button class="btn-ghost" onclick="clToggleFav('${id}',true)">${it.fav?'Remove favourite':'Add to favourites'}</button><button class="btn-ghost" onclick="clEditItem('${id}')">Edit</button><button class="btn-ghost danger" onclick="clDeleteItem('${id}')">Delete</button></div>`);
+  hydrateClosetImgs(document.getElementById('modal-box'));
+}
+function clEditItem(id){
+  const it=clItem(closetData(),id);if(!it)return;
+  openModal(`<div class="modal-head"><div class="modal-title">Edit piece</div><button class="modal-close" onclick="closeModal()">×</button></div>
+    ${clFieldsHTML('ce',it)}
+    <div class="modal-row"><button class="btn-solid sm" onclick="clSaveEdit('${id}')">Save</button><button class="btn-ghost" onclick="clOpenItem('${id}')">Cancel</button></div>`);
+}
+function clSaveEdit(id){
+  const c=closetData(),it=clItem(c,id);if(!it)return;
+  it.cat=document.getElementById('ce-cat').value;
+  it.name=document.getElementById('ce-name').value.trim()||it.cat;
+  it.price=parseFloat(document.getElementById('ce-price').value)||0;
+  it.notes=document.getElementById('ce-notes').value.trim();
+  saveCloset(c);showSection('closet');clOpenItem(id);
+}
+function clDeleteItem(id){
+  const c=closetData(),it=clItem(c,id);if(!it)return;
+  const used=c.outfits.filter(o=>o.items.some(x=>x.itemId===id)).length;
+  if(!confirm(used?`Delete "${it.name}"? It will also be removed from ${used} outfit${used!==1?'s':''}.`:`Delete "${it.name}" from your closet?`))return;
+  c.items=c.items.filter(i=>i.id!==id);
+  c.outfits.forEach(o=>{o.items=o.items.filter(x=>x.itemId!==id);});
+  c.packing.forEach(p=>{p.extraItemIds=(p.extraItemIds||[]).filter(x=>x!==id);if(p.checked)delete p.checked[id];});
+  if(outfitDraft)outfitDraft.items=outfitDraft.items.filter(x=>x.itemId!==id);
+  saveCloset(c);closetDropURL(id);
+  idbDeletePhoto(id).catch(()=>{});deleteRemotePhoto(id).catch(()=>{});
+  closeModal();showSection('closet');
+}
+
+// ── Section shell ──
+function clSetTab(t){clFinishEditor();closetPackId=null;closetTab=t;showSection('closet');window.scrollTo(0,0);}
+function renderCloset(main){
+  const c=closetData();
+  const editing=closetTab==='outfits'&&closetOutfitId&&outfitDraft,inPack=closetTab==='packing'&&closetPackId;
+  let body;
+  if(closetTab==='wardrobe')body=clWardrobeHTML(c);
+  else if(closetTab==='outfits')body=closetOutfitId&&outfitDraft?clEditorHTML(c):clOutfitsHTML(c);
+  else if(closetTab==='calendar')body=clCalendarHTML(c);
+  else if(closetTab==='shuffle')body=clShuffleHTML(c);
+  else if(closetTab==='stats')body=clStatsHTML(c);
+  else body=closetPackId?clPackDetailHTML(c):clPackingHTML(c);
+  const title=(CLOSET_TABS.find(t=>t[0]===closetTab)||[0,'Closet'])[1];
+  const actions=closetTab==='wardrobe'?`${quickNotesBtn('closet')}<button class="btn-ghost" onclick="closetLibrary()">Upload</button>`:'';
+  const head=(editing||inPack)?'':`<div class="section-rule"><div class="section-title">${title}</div><div class="flex-center">${actions}</div></div>`;
+  main.innerHTML=head+body;
+  if(closetTab==='outfits'&&closetOutfitId&&outfitDraft){bindOutfitBoard();hydrateClosetImgs(document.getElementById('ob-board'));}
+  if(closetTab==='shuffle')hydrateClosetImgs(document.getElementById('sh-area'));
+}
+
+// ── Outfits: drag-and-drop boards ──
+function clMiniBoard(c,o){
+  return`<div class="mini-board">${(o.items||[]).map((x,i)=>{const it=clItem(c,x.itemId);return it?`<img src="${it.thumb}" alt="" style="left:${x.x}%;top:${x.y}%;width:${x.w}%;z-index:${i+1}"/>`:'';}).join('')}</div>`;
+}
+function clOutfitsHTML(c){
+  const wornBy={};Object.values(c.calendar).forEach(arr=>arr.forEach(e=>{if(e.worn&&e.outfitId)wornBy[e.outfitId]=(wornBy[e.outfitId]||0)+1;}));
+  const head=`<div class="flex-between mb14"><div class="section-sub" style="margin:0">Build flat-lay outfits from your closet.</div><button class="btn-solid sm" onclick="clNewOutfit()">+ New Outfit</button></div>`;
+  if(!c.items.length)return head+`<div class="empty">Add some clothes in <b>Wardrobe</b> first, then build outfits here.</div>`;
+  if(!c.outfits.length)return head+`<div class="empty">No outfits yet.<br/>Tap <b>+ New Outfit</b>, or try the <b>Shuffle</b> tab.</div>`;
+  const btn='padding:4px 10px;font-size:10px';
+  return head+`<div class="of-grid">${c.outfits.map(o=>{const n=clOutfitItemIds(c,o).length,w=wornBy[o.id]||0;return`<div class="of-card"><div style="cursor:pointer" onclick="clEditOutfit('${o.id}')">${clMiniBoard(c,o)}</div><div class="of-body"><div class="of-name">${escHtml(o.name)}</div><div class="of-meta">${n} piece${n!==1?'s':''} · worn ${w}×</div><div class="flex-center" style="margin-top:8px;gap:6px"><button class="btn-ghost" style="${btn}" onclick="clEditOutfit('${o.id}')">Edit</button><button class="btn-ghost" style="${btn}" onclick="clWearToday('${o.id}')">Wear today</button><button class="btn-ghost danger" style="${btn}" onclick="clDeleteOutfit('${o.id}')">×</button></div></div></div>`;}).join('')}</div>`;
+}
+function clNewOutfit(){
+  const c=closetData();if(!c.items.length){clToast('Add some clothes first');return;}
+  const o={id:uid(),name:'New outfit',items:[],date:Date.now()};c.outfits.push(o);saveCloset(c);clEditOutfit(o.id);
+}
+function clEditOutfit(id){
+  const o=closetData().outfits.find(x=>x.id===id);if(!o)return;
+  outfitDraft=JSON.parse(JSON.stringify(o));obSel=null;obCat='all';closetOutfitId=id;closetTab='outfits';showSection('closet');
+}
+function clSaveDraft(){
+  if(!outfitDraft)return;
+  const c=closetData(),i=c.outfits.findIndex(x=>x.id===outfitDraft.id);
+  if(i>=0){c.outfits[i]=outfitDraft;saveCloset(c);}
+}
+function clFinishEditor(){
+  clearTimeout(obNameTimer);
+  if(outfitDraft){
+    if(!outfitDraft.items.length){const c=closetData();c.outfits=c.outfits.filter(o=>o.id!==outfitDraft.id);saveCloset(c);}
+    else clSaveDraft();
+  }
+  closetOutfitId=null;outfitDraft=null;obSel=null;obDrag=null;
+}
+function clCloseEditor(){clFinishEditor();showSection('closet');}
+function clOutfitName(v){if(!outfitDraft)return;outfitDraft.name=v.trim()||'Outfit';clearTimeout(obNameTimer);obNameTimer=setTimeout(clSaveDraft,400);}
+function clEditorHTML(c){
+  return`<div style="text-align:right" class="mb14"><button class="btn-solid sm" onclick="clCloseEditor()">Done</button></div>
+    <input id="ob-name" class="field-input" value="${escHtml(outfitDraft.name)}" placeholder="Outfit name" oninput="clOutfitName(this.value)"/>
+    <div id="ob-board" class="ob-board">${clBoardInner(c)}</div>
+    <div id="ob-tools">${clToolsHTML()}</div>
+    <div class="field-label">Add pieces</div>
+    <div id="ob-add">${clAddStripHTML(c)}</div>`;
+}
+function clBoardInner(c){
+  if(!outfitDraft)return'';
+  const parts=outfitDraft.items.map((x,i)=>{const it=clItem(c,x.itemId);return it?`<div class="ob-item${x.iid===obSel?' sel':''}" data-iid="${x.iid}" style="left:${x.x}%;top:${x.y}%;width:${x.w}%;z-index:${i+1}"><img data-cimg="${it.id}" src="${it.thumb}" alt="" draggable="false"/><div class="ob-handle"></div></div>`:'';}).join('');
+  return parts||`<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:24px;text-align:center;color:var(--muted);font-style:italic;font-size:14px;pointer-events:none">Tap a piece below to add it to the board</div>`;
+}
+function clToolsHTML(){
+  if(!obSel)return`<p class="cl-hint" style="text-align:center">Tap a piece to select it · drag to move · drag the gold dot to resize</p>`;
+  return`<div class="ob-tools">${[['smaller','Smaller'],['bigger','Larger'],['back','Send back'],['forward','Bring forward'],['remove','Remove']].map(([k,l])=>`<button class="btn-ghost${k==='remove'?' danger':''}" onclick="clObAction('${k}')">${l}</button>`).join('')}</div>`;
+}
+function clAddStripHTML(c){
+  const chips=[['all','All']].concat(CLOSET_CATS.map(x=>[x,x]));
+  const list=c.items.filter(i=>obCat==='all'||i.cat===obCat).sort((a,b)=>(b.date||0)-(a.date||0));
+  return`<div class="tag-row">${chips.map(([k,l])=>`<button class="tag-pill${obCat===k?' active':''}" onclick="clObCat('${k}')">${l}</button>`).join('')}</div>
+    ${list.length?`<div class="ob-strip">${list.map(i=>`<button title="${escHtml(i.name)}" onclick="clAddToBoard('${i.id}')"><img src="${i.thumb}" alt=""/></button>`).join('')}</div>`:`<div class="cl-hint">No ${obCat==='all'?'pieces':obCat.toLowerCase()} yet.</div>`}`;
+}
+function clObCat(k){obCat=k;document.getElementById('ob-add').innerHTML=clAddStripHTML(closetData());}
+function clRefreshBoard(){
+  const b=document.getElementById('ob-board');if(!b)return;
+  b.innerHTML=clBoardInner(closetData());hydrateClosetImgs(b);
+  const t=document.getElementById('ob-tools');if(t)t.innerHTML=clToolsHTML();
+}
+function clAddToBoard(itemId){
+  const c=closetData(),it=clItem(c,itemId);if(!it||!outfitDraft)return;
+  const same=outfitDraft.items.filter(x=>{const i2=clItem(c,x.itemId);return i2&&i2.cat===it.cat;}).length;
+  const iid=uid(),p=clDefaultPlace(it,same);
+  outfitDraft.items.push({iid,itemId,x:p.x,y:p.y,w:p.w});
+  obSel=iid;clSaveDraft();clRefreshBoard();
+}
+function clObSelect(iid){
+  obSel=iid;
+  document.querySelectorAll('#ob-board .ob-item').forEach(e=>e.classList.toggle('sel',e.dataset.iid===iid));
+  const t=document.getElementById('ob-tools');if(t)t.innerHTML=clToolsHTML();
+}
+function clObAction(k){
+  const o=outfitDraft;if(!o||!obSel)return;
+  const i=o.items.findIndex(x=>x.iid===obSel);if(i<0)return;const it=o.items[i];
+  if(k==='bigger')it.w=Math.min(100,it.w*1.12);
+  else if(k==='smaller')it.w=Math.max(8,it.w/1.12);
+  else if(k==='forward'){if(i<o.items.length-1)[o.items[i],o.items[i+1]]=[o.items[i+1],o.items[i]];}
+  else if(k==='back'){if(i>0)[o.items[i],o.items[i-1]]=[o.items[i-1],o.items[i]];}
+  else if(k==='remove'){o.items.splice(i,1);obSel=null;}
+  clSaveDraft();clRefreshBoard();
+}
+function bindOutfitBoard(){
+  const b=document.getElementById('ob-board');if(!b)return;
+  b.onpointerdown=obDown;b.onpointermove=obMove;b.onpointerup=obUp;b.onpointercancel=obUp;
+}
+function obDown(e){
+  const b=e.currentTarget,el=e.target.closest('.ob-item');
+  if(!el){clObSelect(null);return;}
+  const it=outfitDraft&&outfitDraft.items.find(x=>x.iid===el.dataset.iid);if(!it)return;
+  clObSelect(it.iid);
+  obDrag={mode:e.target.classList.contains('ob-handle')?'resize':'move',it,el,sx:e.clientX,sy:e.clientY,x0:it.x,y0:it.y,w0:it.w,rect:b.getBoundingClientRect(),moved:false};
+  try{b.setPointerCapture(e.pointerId);}catch(err){}
+  e.preventDefault();
+}
+function obMove(e){
+  const g=obDrag;if(!g)return;
+  const dx=e.clientX-g.sx,dy=e.clientY-g.sy;
+  if(Math.abs(dx)+Math.abs(dy)>2)g.moved=true;
+  if(g.mode==='move'){
+    g.it.x=clClamp(g.x0+dx/g.rect.width*100,-g.it.w*.4,100-g.it.w*.6);
+    g.it.y=clClamp(g.y0+dy/g.rect.height*100,-8,94);
+    g.el.style.left=g.it.x+'%';g.el.style.top=g.it.y+'%';
+  }else{
+    g.it.w=clClamp(g.w0+(Math.abs(dx)>=Math.abs(dy)?dx:dy)/g.rect.width*100,8,100);
+    g.el.style.width=g.it.w+'%';
+  }
+}
+function obUp(){const g=obDrag;obDrag=null;if(g&&g.moved)clSaveDraft();}
+function clDeleteOutfit(id){
+  const c=closetData(),o=c.outfits.find(x=>x.id===id);if(!o)return;
+  const pinned=Object.values(c.calendar).reduce((s,arr)=>s+arr.filter(e=>e.outfitId===id).length,0);
+  if(!confirm(`Delete "${o.name}"?${pinned?` It is pinned on ${pinned} calendar day${pinned!==1?'s':''} — those days keep their wear history but lose the picture.`:''}`))return;
+  c.outfits=c.outfits.filter(x=>x.id!==id);
+  c.packing.forEach(p=>{p.outfitIds=(p.outfitIds||[]).filter(x=>x!==id);});
+  saveCloset(c);showSection('closet');
+}
+function clWearToday(oid){
+  const c=closetData(),o=c.outfits.find(x=>x.id===oid);if(!o)return;
+  const k=clKey(new Date());(c.calendar[k]=c.calendar[k]||[]).push({id:uid(),outfitId:oid,name:o.name,items:clOutfitItemIds(c,o),worn:true});
+  saveCloset(c);clToast('Logged as worn today');
+}
+
+// ── Calendar ──
+function clCalendarHTML(c){
+  if(!closetCalMonth){const n=new Date();closetCalMonth=n.getFullYear()+'-'+String(n.getMonth()+1).padStart(2,'0');}
+  const[y,m]=closetCalMonth.split('-').map(Number);
+  const days=new Date(y,m,0).getDate(),startDow=(new Date(y,m-1,1).getDay()+6)%7,todayKey=clKey(new Date());
+  const label=new Date(y,m-1,1).toLocaleDateString('en-GB',{month:'long',year:'numeric'});
+  let cells='',worn=0,planned=0;
+  for(let i=0;i<startDow;i++)cells+='<div class="cal-cell blank"></div>';
+  for(let d=1;d<=days;d++){
+    const key=`${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const arr=c.calendar[key]||[];arr.forEach(e=>{if(e.worn)worn++;else planned++;});
+    const e0=arr[0],o0=e0&&c.outfits.find(o=>o.id===e0.outfitId);
+    cells+=`<button class="cal-cell${key===todayKey?' today':''}" onclick="clOpenDay('${key}')"><span class="cal-num">${d}</span>${o0?clMiniBoard(c,o0):(e0?`<span class="cal-txt">${escHtml(e0.name||'')}</span>`:'')}${arr.length>1?`<span class="cal-badge">+${arr.length-1}</span>`:''}${arr.some(e=>e.worn)?'<span class="cal-worn">✓</span>':''}</button>`;
+  }
+  return`<div class="cal-head"><button class="cal-nav" onclick="clCalNav(-1)">‹</button><div class="cal-title">${label}</div><button class="cal-nav" onclick="clCalNav(1)">›</button></div>
+    <div class="cal-grid">${['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map(x=>`<div class="cal-dow">${x}</div>`).join('')}${cells}</div>
+    <p class="cl-hint" style="margin-top:14px;text-align:center">${worn} worn · ${planned} planned this month.<br/>Tap a day to pin an outfit. A ✓ means you wore it — that's what drives cost-per-wear.</p>
+    <div style="text-align:center"><button class="btn-ghost" onclick="clCalToday()">Today</button></div>`;
+}
+function clCalNav(delta){const[y,m]=closetCalMonth.split('-').map(Number);const d=new Date(y,m-1+delta,1);closetCalMonth=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');showSection('closet');}
+function clCalToday(){closetCalMonth=null;showSection('closet');}
+function clOpenDay(key){
+  const c=closetData(),arr=c.calendar[key]||[];
+  const title=new Date(key+'T12:00:00').toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'});
+  const future=key>clKey(new Date());
+  const rows=arr.map(e=>{const o=c.outfits.find(x=>x.id===e.outfitId);return`<div class="pk-row" style="cursor:default"><div class="cl-mini56">${o?clMiniBoard(c,o):''}</div><div style="flex:1;min-width:0"><div class="of-name">${escHtml(e.name||'Outfit')}</div><div class="of-meta">${e.worn?'Worn ✓':'Planned'}</div></div><button class="btn-ghost" style="padding:5px 10px" onclick="clToggleWorn('${key}','${e.id}')">${e.worn?'Undo worn':'Mark worn'}</button><button class="btn-ghost danger" style="padding:5px 10px" onclick="clUnpin('${key}','${e.id}')">×</button></div>`;}).join('');
+  const picks=c.outfits.length?`<div class="of-grid sm">${c.outfits.map(o=>`<div class="of-pick" onclick="clPin('${key}','${o.id}')">${clMiniBoard(c,o)}<div class="of-name" style="font-size:12px;margin-top:3px">${escHtml(o.name)}</div></div>`).join('')}</div>`:`<p class="cl-hint">Build an outfit first (Outfits tab), then pin it to a day here.</p>`;
+  openModal(`<div class="modal-head"><div class="modal-title">${title}</div><button class="modal-close" onclick="closeModal()">×</button></div>
+    ${rows||`<p class="cl-hint">Nothing pinned for this day yet.</p>`}
+    <div class="field-label" style="margin-top:18px">Pin an outfit</div>
+    <p class="cl-hint" style="margin:0">${future?'This is a future day, so it is saved as a plan — tap Mark worn once you have worn it.':'Outfits pinned to today or earlier are logged as worn.'}</p>
+    ${picks}`);
+}
+function clPin(key,oid){
+  const c=closetData(),o=c.outfits.find(x=>x.id===oid);if(!o)return;
+  (c.calendar[key]=c.calendar[key]||[]).push({id:uid(),outfitId:oid,name:o.name,items:clOutfitItemIds(c,o),worn:key<=clKey(new Date())});
+  saveCloset(c);showSection('closet');clOpenDay(key);
+}
+function clToggleWorn(key,id){
+  const c=closetData(),e=(c.calendar[key]||[]).find(x=>x.id===id);if(!e)return;
+  e.worn=!e.worn;
+  const o=c.outfits.find(x=>x.id===e.outfitId);if(o){e.items=clOutfitItemIds(c,o);e.name=o.name;}
+  saveCloset(c);showSection('closet');clOpenDay(key);
+}
+function clUnpin(key,id){
+  const c=closetData();c.calendar[key]=(c.calendar[key]||[]).filter(x=>x.id!==id);
+  if(!c.calendar[key].length)delete c.calendar[key];
+  saveCloset(c);showSection('closet');clOpenDay(key);
+}
+
+// ── Shuffle (Clueless-style) ──
+const SHUFFLE_CATS=['Tops','Bottoms','Shoes'];
+function clShufflePool(c,cat){return c.items.filter(i=>i.cat===cat&&(!shuffleState.favOnly||i.fav));}
+function clShuffleCur(c,cat){const pool=clShufflePool(c,cat);if(!pool.length)return null;const n=pool.length,k=(((shuffleState.idx[cat]||0)%n)+n)%n;shuffleState.idx[cat]=k;return{pool,n,k};}
+function clShuffleInner(c){
+  return SHUFFLE_CATS.map(cat=>{
+    const cur=clShuffleCur(c,cat);
+    if(!cur)return`<div class="sh-row"><div class="sh-row-head"><span class="field-label" style="margin:0">${cat}</span></div><div class="cl-hint" style="padding:14px 0;margin:0">No ${cat.toLowerCase()}${shuffleState.favOnly?' in your favourites':''} yet — add some in Wardrobe.</div></div>`;
+    const{pool,n,k}=cur,it=pool[k],prev=pool[(k-1+n)%n],next=pool[(k+1)%n],locked=!!shuffleState.lock[cat];
+    return`<div class="sh-row"><div class="sh-row-head"><span class="field-label" style="margin:0">${cat} <span class="of-meta">${k+1} / ${n}</span></span><button class="tag-pill${locked?' active':''}" onclick="clShuffleLock('${cat}')">${locked?'Locked':'Lock'}</button></div>
+      <div class="sh-stage"><button class="sh-arrow" onclick="clShuffleStep('${cat}',-1)">‹</button><div class="sh-slot">${n>1?`<img class="sh-side" src="${prev.thumb}" alt=""/>`:''}<img class="sh-main" data-cimg="${it.id}" src="${it.thumb}" alt=""/>${n>1?`<img class="sh-side" src="${next.thumb}" alt=""/>`:''}</div><button class="sh-arrow" onclick="clShuffleStep('${cat}',1)">›</button></div>
+      <div class="sh-name">${escHtml(it.name)}</div></div>`;
+  }).join('');
+}
+function clShuffleHTML(c){
+  if(!c.items.length)return`<div class="empty">Add some tops, bottoms and shoes in <b>Wardrobe</b>, then come back to shuffle them together.</div>`;
+  return`<div class="flex-between mb14"><div class="section-sub" style="margin:0">Spin tops, bottoms and shoes into a surprise look.</div><button class="tag-pill${shuffleState.favOnly?' active':''}" onclick="clShuffleFav()">Favourites only</button></div>
+    <div id="sh-area">${clShuffleInner(c)}</div>
+    <div class="modal-row" style="justify-content:center;margin-top:16px"><button class="btn-solid sm" onclick="clShuffleGo()">Shuffle</button><button class="btn-ghost" onclick="clShuffleSave(false)">Save as outfit</button><button class="btn-ghost" onclick="clShuffleSave(true)">Save &amp; wear today</button></div>`;
+}
+function clShuffleRender(){const a=document.getElementById('sh-area');if(!a)return;a.innerHTML=clShuffleInner(closetData());hydrateClosetImgs(a);}
+function clShuffleStep(cat,dir){shuffleState.idx[cat]=(shuffleState.idx[cat]||0)+dir;clShuffleRender();}
+function clShuffleLock(cat){shuffleState.lock[cat]=!shuffleState.lock[cat];clShuffleRender();}
+function clShuffleFav(){shuffleState.favOnly=!shuffleState.favOnly;showSection('closet');}
+function clShuffleGo(){
+  if(shuffleState.busy)return;shuffleState.busy=true;let n=0;
+  const tick=()=>{
+    const c=closetData();
+    SHUFFLE_CATS.forEach(cat=>{if(shuffleState.lock[cat])return;const pool=clShufflePool(c,cat);if(pool.length>1)shuffleState.idx[cat]=Math.floor(Math.random()*pool.length);});
+    clShuffleRender();
+    if(++n<9)setTimeout(tick,60+n*22);else shuffleState.busy=false;
+  };
+  tick();
+}
+function clShuffleSave(wear){
+  const c=closetData();
+  const picks=SHUFFLE_CATS.map(cat=>{const cur=clShuffleCur(c,cat);return cur?cur.pool[cur.k]:null;}).filter(Boolean);
+  if(!picks.length){clToast('Nothing to save yet');return;}
+  const o={id:uid(),name:'Shuffle look '+new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short'}),date:Date.now(),items:picks.map(it=>{const p=clDefaultPlace(it,0);return{iid:uid(),itemId:it.id,x:p.x,y:p.y,w:p.w};})};
+  c.outfits.push(o);
+  if(wear){const k=clKey(new Date());(c.calendar[k]=c.calendar[k]||[]).push({id:uid(),outfitId:o.id,name:o.name,items:clOutfitItemIds(c,o),worn:true});}
+  saveCloset(c);clToast(wear?'Saved & logged as worn today':'Saved to Outfits');
+}
+
+// ── Stats: cost per wear & closet utilisation ──
+function clBars(rows,cls){
+  const max=Math.max(1,...rows.map(r=>r.val));
+  return`<div class="st-bars">${rows.map(r=>`<div class="st-bar-row">${r.thumb?`<img class="st-bar-thumb" src="${r.thumb}" alt=""/>`:''}<div class="st-bar-main"><div class="st-bar-label"><span>${escHtml(r.label)}</span><span class="st-bar-right">${r.right}</span></div><div class="st-bar-track"><div class="st-bar-fill ${cls||''}" style="width:${Math.max(2,r.val/max*100)}%"></div></div></div></div>`).join('')}</div>`;
+}
+function clSetStatsSort(k){closetStatsSort=k;showSection('closet');}
+function clAgo(dateKey){
+  const days=Math.floor((Date.now()-new Date(dateKey+'T12:00:00').getTime())/86400000);
+  if(days<1)return'today';if(days<60)return days+' day'+(days!==1?'s':'')+' ago';
+  const m=Math.floor(days/30);return m+' month'+(m!==1?'s':'')+' ago';
+}
+function clStatsHTML(c){
+  if(!c.items.length)return`<div class="empty">Add clothes and log outfits on the calendar to see your wardrobe analytics.</div>`;
+  const st=clWearStats(c),W=i=>st.wears[i.id]||0;
+  const total=c.items.reduce((s,i)=>s+(i.price||0),0);
+  const worn=c.items.filter(i=>W(i)>0),unworn=c.items.filter(i=>!W(i));
+  const wornCost=worn.reduce((s,i)=>s+(i.price||0),0),totalWears=worn.reduce((s,i)=>s+W(i),0);
+  const unwornCost=unworn.reduce((s,i)=>s+(i.price||0),0);
+  const util=Math.round(worn.length/c.items.length*100);
+  const tile=(n,l)=>`<div class="st-tile"><div class="st-num">${n}</div><div class="st-lbl">${l}</div></div>`;
+  const cpw=worn.filter(i=>i.price>0).map(i=>({i,v:i.price/W(i)})).sort(closetStatsSort==='best'?(a,b)=>a.v-b.v:(a,b)=>b.v-a.v).slice(0,10);
+  const most=worn.slice().sort((a,b)=>W(b)-W(a)).slice(0,8);
+  const least=c.items.slice().sort((a,b)=>W(a)-W(b)||(a.date||0)-(b.date||0)).slice(0,8);
+  const underused=c.items.filter(i=>st.last[i.id]?(Date.now()-new Date(st.last[i.id]+'T12:00:00').getTime())>90*86400000:(Date.now()-(i.date||0))>14*86400000).sort((a,b)=>(st.last[a.id]||'').localeCompare(st.last[b.id]||'')).slice(0,12);
+  const byCat=CLOSET_CATS.map(cat=>{const its=c.items.filter(i=>i.cat===cat);return{cat,n:its.length,sum:its.reduce((s,i)=>s+(i.price||0),0)};}).filter(x=>x.n).sort((a,b)=>b.sum-a.sum);
+  const thumbRow=i=>({label:i.name,thumb:i.thumb});
+  return`<div class="st-tiles">${tile(clMoney(total),'Total wardrobe cost')}${tile(c.items.length,'Pieces')}${tile(totalWears?clMoney(wornCost/totalWears):'—','Avg cost per wear')}${tile(util+'%','Closet utilisation')}${tile(st.total,'Outfit wears logged')}${tile(clMoney(unwornCost),'Tied up in unworn')}</div>
+    <div class="st-h"><span>Cost per wear</span><span class="flex-center" style="gap:6px"><button class="tag-pill${closetStatsSort==='best'?' active':''}" onclick="clSetStatsSort('best')">Best value</button><button class="tag-pill${closetStatsSort==='worst'?' active':''}" onclick="clSetStatsSort('worst')">Most expensive</button></span></div>
+    ${cpw.length?clBars(cpw.map(x=>Object.assign(thumbRow(x.i),{val:x.v,right:`${clMoney(x.v)} · ${W(x.i)}×`})),closetStatsSort==='best'?'green':'red'):`<p class="cl-hint">Log outfits as worn on the Calendar (and add prices to your pieces) to see cost per wear.</p>`}
+    <div class="st-h"><span>Most worn</span></div>
+    ${most.length?clBars(most.map(i=>Object.assign(thumbRow(i),{val:W(i),right:`${W(i)}×`})),'gold'):`<p class="cl-hint">Nothing worn yet.</p>`}
+    <div class="st-h"><span>Least worn</span></div>
+    ${clBars(least.map(i=>Object.assign(thumbRow(i),{val:W(i),right:W(i)?`${W(i)}×`:'never'})),'plum')}
+    <div class="st-h"><span>Underused</span><span class="of-meta" style="text-transform:none;letter-spacing:0">never worn, or not worn in 90+ days</span></div>
+    ${underused.length?`<div style="margin-bottom:26px">${underused.map(i=>`<div class="pk-row" style="cursor:pointer" onclick="clOpenItem('${i.id}')"><img class="pk-thumb" src="${i.thumb}" alt=""/><div style="flex:1;min-width:0"><div class="of-name">${escHtml(i.name)}</div><div class="of-meta">${st.last[i.id]?'Last worn '+clAgo(st.last[i.id]):'Never worn'}</div></div><div class="of-meta">${i.price>0?clMoney(i.price):''}</div></div>`).join('')}</div>`:`<p class="cl-hint">Nothing underused — nice.</p>`}
+    <div class="st-h"><span>Spend by category</span></div>
+    ${clBars(byCat.map(x=>({label:x.cat,val:x.sum,right:`${clMoney(x.sum)} · ${x.n}`})),'plum')}`;
+}
+
+// ── Packing lists ──
+function clPackItems(c,p){
+  const map=new Map();
+  (p.outfitIds||[]).forEach(oid=>{const o=c.outfits.find(x=>x.id===oid);if(!o)return;clOutfitItemIds(c,o).forEach(id=>{const e=map.get(id)||{id,n:0};e.n++;map.set(id,e);});});
+  (p.extraItemIds||[]).forEach(id=>{const e=map.get(id)||{id,n:0};e.extra=true;map.set(id,e);});
+  return Array.from(map.values()).filter(e=>clItem(c,e.id)).map(e=>Object.assign({},e,{item:clItem(c,e.id)}));
+}
+function clPackProgress(c,p){
+  const its=clPackItems(c,p),chk=p.checked||{},cu=p.custom||[];
+  return{done:its.filter(e=>chk[e.id]).length+cu.filter(x=>x.done).length,tot:its.length+cu.length,pieces:its.length};
+}
+function clPackingHTML(c){
+  const head=`<div class="flex-between mb14"><div class="section-sub" style="margin:0">Trips &amp; seasonal capsules — add outfits and the suitcase list writes itself.</div><button class="btn-solid sm" onclick="clNewPackModal()">+ New List</button></div>`;
+  if(!c.packing.length)return head+`<div class="empty">No packing lists yet.</div>`;
+  return head+`<div class="of-grid">${c.packing.map(p=>{const pr=clPackProgress(c,p);return`<div class="of-card" style="cursor:pointer" onclick="clOpenPack('${p.id}')"><div class="of-body"><div class="of-tag">${p.type==='capsule'?'Capsule':'Trip'}</div><div class="of-name">${escHtml(p.name)}</div><div class="of-meta">${(p.outfitIds||[]).length} outfit${(p.outfitIds||[]).length!==1?'s':''} · ${pr.pieces} piece${pr.pieces!==1?'s':''}</div><div class="st-bar-track" style="margin:8px 0 4px"><div class="st-bar-fill green" style="width:${pr.tot?pr.done/pr.tot*100:0}%"></div></div><div class="of-meta">${pr.done} of ${pr.tot} packed</div></div></div>`;}).join('')}</div>`;
+}
+function clPackDetailHTML(c){
+  const p=c.packing.find(x=>x.id===closetPackId);if(!p){closetPackId=null;return clPackingHTML(c);}
+  const its=clPackItems(c,p),chk=p.checked||{},cu=p.custom||[],pr=clPackProgress(c,p);
+  const outs=(p.outfitIds||[]).map(id=>c.outfits.find(o=>o.id===id)).filter(Boolean);
+  const itemRow=e=>`<label class="pk-row"><input type="checkbox" ${chk[e.id]?'checked':''} onchange="clPackCheck('${p.id}','${e.id}',this.checked)"/><img class="pk-thumb" src="${e.item.thumb}" alt=""/><div style="flex:1;min-width:0"><div class="of-name">${escHtml(e.item.name)}</div><div class="of-meta">${e.n?`In ${e.n} outfit${e.n!==1?'s':''}`:'Added on its own'}</div></div>${e.extra?`<button type="button" class="btn-ghost danger" style="padding:3px 9px" onclick="event.preventDefault();clPackRemoveExtra('${p.id}','${e.id}')">×</button>`:''}</label>`;
+  const groups=CLOSET_CATS.map(cat=>{const es=its.filter(e=>e.item.cat===cat);return es.length?`<div class="st-h" style="margin-top:14px"><span>${cat}</span><span>${es.length}</span></div>${es.map(itemRow).join('')}`:'';}).join('');
+  const customRows=cu.map(x=>`<label class="pk-row"><input type="checkbox" ${x.done?'checked':''} onchange="clPackCustomCheck('${p.id}','${x.id}',this.checked)"/><div style="flex:1;min-width:0;font-size:15px">${escHtml(x.text)}</div><button type="button" class="btn-ghost danger" style="padding:3px 9px" onclick="event.preventDefault();clPackRemoveCustom('${p.id}','${x.id}')">×</button></label>`).join('');
+  return`<div style="text-align:right" class="mb14"><button class="btn-ghost danger" onclick="clDeletePack('${p.id}')">Delete list</button></div>
+    <div class="of-tag">${p.type==='capsule'?'Capsule':'Trip'}</div>
+    <div class="section-title" style="font-size:24px">${escHtml(p.name)}</div>
+    <div class="st-bar-track" style="margin:10px 0 4px"><div class="st-bar-fill green" style="width:${pr.tot?pr.done/pr.tot*100:0}%"></div></div>
+    <div class="of-meta" style="margin-bottom:18px">${pr.done} of ${pr.tot} packed · ${pr.pieces} piece${pr.pieces!==1?'s':''} from ${outs.length} outfit${outs.length!==1?'s':''}</div>
+    <div class="st-h"><span>Outfits</span><button class="btn-ghost" style="padding:4px 10px" onclick="clPackOutfitsModal('${p.id}')">+ Add outfits</button></div>
+    ${outs.length?`<div class="of-grid sm" style="margin-bottom:18px">${outs.map(o=>`<div class="of-pick">${clMiniBoard(c,o)}<div class="flex-between" style="flex-wrap:nowrap;gap:4px;margin-top:3px"><div class="of-name" style="font-size:12px">${escHtml(o.name)}</div><button class="btn-ghost danger" style="padding:0 6px;font-size:12px" onclick="clPackRemoveOutfit('${p.id}','${o.id}')">×</button></div></div>`).join('')}</div>`:`<p class="cl-hint">Add your pre-made outfits and every piece you need to pack is listed automatically.</p>`}
+    <div class="st-h"><span>Pack these</span><span class="flex-center" style="gap:6px"><button class="btn-ghost" style="padding:4px 10px" onclick="clPackPieceModal('${p.id}')">+ Add a piece</button>${pr.done?`<button class="btn-ghost" style="padding:4px 10px" onclick="clPackUncheck('${p.id}')">Reset ticks</button>`:''}</span></div>
+    ${groups||`<p class="cl-hint">No pieces yet.</p>`}
+    <div class="st-h" style="margin-top:22px"><span>Everything else</span></div>
+    ${customRows}
+    <div class="flex-center" style="margin-top:10px;flex-wrap:nowrap"><input id="pk-custom" class="field-input" style="margin:0;flex:1" placeholder="Passport, chargers, swimwear…" onkeydown="if(event.key==='Enter')clPackAddCustom('${p.id}')"/><button class="btn-ghost" onclick="clPackAddCustom('${p.id}')">Add</button></div>`;
+}
+function clNewPackModal(){
+  openModal(`<div class="modal-head"><div class="modal-title">New Packing List</div><button class="modal-close" onclick="closeModal()">×</button></div>
+    <label class="field-label">Name</label><input id="pk-name" class="field-input" placeholder="e.g. Honeymoon in Santorini"/>
+    <label class="field-label">Type</label><select id="pk-type" class="field-input"><option value="trip">Trip</option><option value="capsule">Seasonal capsule</option></select>
+    <div class="modal-row"><button class="btn-solid sm" onclick="clSavePack()">Create</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);
+}
+function clSavePack(){
+  const name=document.getElementById('pk-name').value.trim();if(!name)return;
+  const c=closetData(),p={id:uid(),name,type:document.getElementById('pk-type').value,outfitIds:[],extraItemIds:[],custom:[],checked:{},date:Date.now()};
+  c.packing.push(p);saveCloset(c);closetPackId=p.id;closeModal();showSection('closet');
+}
+function clOpenPack(id){closetPackId=id;showSection('closet');}
+function clClosePack(){closetPackId=null;showSection('closet');}
+function clPackMutate(pid,fn,reopen){const c=closetData(),p=c.packing.find(x=>x.id===pid);if(!p)return;fn(p,c);saveCloset(c);showSection('closet');if(reopen)reopen(pid);}
+function clPackCheck(pid,id,on){clPackMutate(pid,p=>{p.checked=p.checked||{};if(on)p.checked[id]=true;else delete p.checked[id];});}
+function clPackCustomCheck(pid,cid,on){clPackMutate(pid,p=>{const x=(p.custom||[]).find(y=>y.id===cid);if(x)x.done=on;});}
+function clPackAddCustom(pid){const el=document.getElementById('pk-custom'),t=el&&el.value.trim();if(!t)return;clPackMutate(pid,p=>{p.custom=p.custom||[];p.custom.push({id:uid(),text:t,done:false});});}
+function clPackRemoveCustom(pid,cid){clPackMutate(pid,p=>{p.custom=(p.custom||[]).filter(x=>x.id!==cid);});}
+function clPackRemoveExtra(pid,id){clPackMutate(pid,p=>{p.extraItemIds=(p.extraItemIds||[]).filter(x=>x!==id);});}
+function clPackRemoveOutfit(pid,oid){clPackMutate(pid,p=>{p.outfitIds=(p.outfitIds||[]).filter(x=>x!==oid);});}
+function clPackUncheck(pid){clPackMutate(pid,p=>{p.checked={};(p.custom||[]).forEach(x=>{x.done=false;});});}
+function clDeletePack(pid){
+  const c=closetData(),p=c.packing.find(x=>x.id===pid);if(!p||!confirm(`Delete the packing list "${p.name}"?`))return;
+  c.packing=c.packing.filter(x=>x.id!==pid);saveCloset(c);closetPackId=null;showSection('closet');
+}
+function clPackOutfitsModal(pid){
+  const c=closetData(),p=c.packing.find(x=>x.id===pid);if(!p)return;
+  const sel=new Set(p.outfitIds||[]);
+  openModal(`<div class="modal-head"><div class="modal-title">Add outfits</div><button class="modal-close" onclick="closeModal()">×</button></div>
+    ${c.outfits.length?`<p class="cl-hint" style="margin-top:0">Tap outfits to add or remove them. Every piece in them is added to the list.</p><div class="of-grid sm">${c.outfits.map(o=>`<div class="of-pick${sel.has(o.id)?' on':''}" onclick="clPackToggleOutfit('${pid}','${o.id}')">${clMiniBoard(c,o)}<div class="of-name" style="font-size:12px;margin-top:3px">${escHtml(o.name)}</div></div>`).join('')}</div>`:`<p class="cl-hint">You have not built any outfits yet — make some in the Outfits tab.</p>`}
+    <div class="modal-row" style="margin-top:16px"><button class="btn-solid sm" onclick="closeModal()">Done</button></div>`);
+}
+function clPackToggleOutfit(pid,oid){clPackMutate(pid,p=>{p.outfitIds=p.outfitIds||[];const i=p.outfitIds.indexOf(oid);if(i>=0)p.outfitIds.splice(i,1);else p.outfitIds.push(oid);},clPackOutfitsModal);}
+function clPackPieceModal(pid){
+  const c=closetData(),p=c.packing.find(x=>x.id===pid);if(!p)return;
+  const have=new Set(clPackItems(c,p).map(e=>e.id)),list=c.items.filter(i=>!have.has(i.id));
+  openModal(`<div class="modal-head"><div class="modal-title">Add a piece</div><button class="modal-close" onclick="closeModal()">×</button></div>
+    ${list.length?`<div class="of-grid sm">${list.map(i=>`<div class="of-pick" onclick="clPackAddPiece('${pid}','${i.id}')"><div class="mini-board" style="aspect-ratio:1"><img src="${i.thumb}" alt="" style="left:6%;top:6%;width:88%"/></div><div class="of-name" style="font-size:12px;margin-top:3px">${escHtml(i.name)}</div></div>`).join('')}</div>`:`<p class="cl-hint">Every piece in your closet is already on this list.</p>`}
+    <div class="modal-row" style="margin-top:16px"><button class="btn-solid sm" onclick="closeModal()">Done</button></div>`);
+}
+function clPackAddPiece(pid,id){clPackMutate(pid,p=>{p.extraItemIds=p.extraItemIds||[];if(p.extraItemIds.indexOf(id)<0)p.extraItemIds.push(id);},clPackPieceModal);}
+
 // ── WALLPAPER ──
+// Wallpaper pages: the home screen + area lists count as 'dashboard'; mood boards count as their area's main page.
+function wpKey(s){
+  if(s==='dashboard'||s.indexOf('area_')===0)return'dashboard';
+  if(s==='moodboards')return mbArea==='house'?'home':mbArea==='closet'?'closet':'wedding';
+  return s;
+}
 function applyWallpaper(){
   const wp=userData('wallpaper',null);
   const pages=wp&&wp.pages||{};
-  const active=wp&&wp.img&&(pages.all||pages[currentSection]);
+  const active=wp&&wp.img&&(pages.all||pages[wpKey(currentSection)]);
   if(active){
     document.body.style.backgroundImage=`url(${wp.img})`;
     document.body.style.backgroundSize='cover';
@@ -1814,7 +2670,7 @@ function applyWallpaper(){
 function openWallpaperSettings(){
   const wp=userData('wallpaper',null);
   const pages=wp&&wp.pages||{};
-  const sects=[['dashboard','Dashboard'],['home','Our Home'],['wedding','Wedding'],['honeymoon','Honeymoon'],['dayout','Days Out'],['recipes','Recipes'],['music','Music']];
+  const sects=[['dashboard','Home screen'],['home','House Planning'],['wedding','Wedding'],['honeymoon','Honeymoon'],['dayout','Days Out'],['recipes','Recipes'],['music','Music'],['closet','Closet']];
   openModal(`<div class="modal-head"><div class="modal-title">Wallpaper</div><button class="modal-close" onclick="closeModal()">×</button></div>
     <div id="wp-preview-wrap" style="margin-bottom:14px">${wp&&wp.img?`<img id="wp-preview" src="${wp.img}" style="width:100%;height:130px;object-fit:cover;display:block;border:1px solid var(--bone)"/>`:`<div style="height:80px;border:1px dashed var(--warm);display:flex;align-items:center;justify-content:center;color:var(--muted);font-style:italic;font-size:13px">No wallpaper set</div>`}</div>
     <input type="file" id="wp-file" accept="image/*" style="display:none" onchange="previewWallpaper(this)"/>
@@ -1838,7 +2694,7 @@ function previewWallpaper(input){
   const f=input.files[0];if(!f)return;
   const r=new FileReader();
   r.onload=async ev=>{
-    _wpTemp=await compressSingleImage(ev.target.result,1600,.82);
+    _wpTemp=await compressSingleImage(ev.target.result,1200,.7);   // it sits behind a cream wash, so it can be small
     const wrap=document.getElementById('wp-preview-wrap');
     if(wrap)wrap.innerHTML=`<img id="wp-preview" src="${_wpTemp}" style="width:100%;height:130px;object-fit:cover;display:block;border:1px solid var(--bone)"/>`;
     const btn=document.getElementById('wp-upload-btn');if(btn)btn.textContent='Change Photo';
@@ -1848,7 +2704,7 @@ function previewWallpaper(input){
 function saveWallpaper(){
   const existing=userData('wallpaper',null)||{};
   if(_wpTemp){existing.img=_wpTemp;_wpTemp=null;}
-  const sects=['dashboard','home','wedding','honeymoon','dayout','recipes','music'];
+  const sects=['dashboard','home','wedding','honeymoon','dayout','recipes','music','closet'];
   const allChk=document.getElementById('wp-all');
   const pages={all:allChk?allChk.checked:false};
   sects.forEach(s=>{const el=document.getElementById('wp-'+s);pages[s]=el?el.checked:false;});
@@ -1941,9 +2797,25 @@ function openSettings(){
     </div>
     <hr class="divider"/>
     <div>
-      <div class="field-label" style="margin-bottom:8px">Data</div>
+      <div class="field-label" style="margin-bottom:8px">Storage</div>
+      <div id="storage-info" class="cl-hint" style="margin-top:0">Checking…</div>
       <button class="btn-ghost danger" onclick="clearData()">Clear All My Data</button>
     </div>`);
+  updateStorageInfo();
+}
+// How full is the browser's ~5MB app-data limit? (Photos' full-size copies live elsewhere and are far roomier.)
+const LS_BUDGET=5000000;
+function localDataChars(){let n=0;for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.indexOf('maison_')===0)n+=k.length+(localStorage.getItem(k)||'').length;}return n;}
+async function updateStorageInfo(){
+  const el=document.getElementById('storage-info');if(!el)return;
+  const used=localDataChars(),pct=Math.min(100,Math.round(used/LS_BUDGET*100));
+  const mb=n=>(n/1048576).toFixed(n<10485760?1:0)+' MB';
+  let full='';
+  try{if(navigator.storage&&navigator.storage.estimate){const e=await navigator.storage.estimate();if(e&&e.usage)full=`<div class="of-meta" style="margin-top:4px">Total on this device incl. full-size photos: ${mb(e.usage)}</div>`;}}catch(e){}
+  if(!document.getElementById('storage-info'))return;
+  el.innerHTML=`<div class="st-bar-track" style="margin:2px 0 6px"><div class="st-bar-fill ${pct>85?'red':pct>65?'gold':'green'}" style="width:${Math.max(2,pct)}%"></div></div>
+    <div class="of-meta">${mb(used)} of about ${mb(LS_BUDGET)} used (${pct}%)</div>
+    ${pct>85?`<div style="color:var(--red);font-size:12px;font-style:italic;margin-top:4px">Nearly full — delete photos you no longer need so new ones keep saving.</div>`:''}${full}`;
 }
 function signOut(){localStorage.removeItem('maison_sess');localStorage.removeItem('maison_drive_tok');localStorage.removeItem('maison_bkdrive_tok');currentUser=null;capturedDataURL=null;activeRoomId=null;driveAccessToken=null;driveFileId=null;if(driveSyncTimer){clearTimeout(driveSyncTimer);driveSyncTimer=null;}if(bkBackupTimer){clearTimeout(bkBackupTimer);bkBackupTimer=null;}document.getElementById('app').classList.remove('visible');document.getElementById('auth-screen').style.display='flex';google.accounts.id.disableAutoSelect();closeModal();}
 function clearData(){
