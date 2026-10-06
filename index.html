@@ -247,7 +247,7 @@ main{max-width:980px;margin:0 auto;padding:var(--section-pad);width:100%;flex:1}
 /* CLOSET */
 .cl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:10px}
 .cl-card{position:relative;background:var(--bone);border:1px solid rgba(28,20,10,.07);aspect-ratio:4/5;cursor:pointer;overflow:hidden}
-.cl-card img{width:100%;height:100%;object-fit:contain;padding:8px 8px 22px;display:block;transition:transform .25s}
+.cl-card img{width:100%;height:100%;object-fit:contain;padding:8px 8px 38px;display:block;transition:transform .25s}
 .cl-card:hover img{transform:scale(1.04)}
 .cl-fav,.cl-del{position:absolute;top:4px;width:26px;height:26px;border:none;background:rgba(247,243,237,.88);color:var(--muted);font-size:14px;line-height:1;display:flex;align-items:center;justify-content:center;cursor:pointer;font-family:serif}
 .cl-fav{right:4px}.cl-del{left:4px;font-size:17px}
@@ -509,6 +509,7 @@ body.has-player #main-content{padding-bottom:80px}
 .cal-dow{font-size:12.5px}
 .cal-nav{border-radius:50%;border-color:var(--line)}
 .cl-cap{font-size:13px;font-weight:500}
+.cl-cap-tags{display:block;font-size:11.5px;font-weight:400;color:var(--muted);overflow:hidden;text-overflow:ellipsis}
 .hdr-back,.header-btn{font-family:var(--sans)}
 /* modals & panel */
 .modal-box{border-top:none;border-radius:18px;padding:30px 28px}
@@ -2312,7 +2313,7 @@ function mpRefresh(){
 // Item records keep only a tiny thumbnail inline; the full image lives in IndexedDB (+ Drive mirror) under the item id.
 const CLOSET_CATS=['Tops','Bottoms','Skirts','Dresses','Outerwear','Shoes','Headscarves','Bags','Accessories'];
 // Two separate tag groups on every piece (and outfit): occasion and season. "Tween" = in-between weather.
-const CL_OCC=[['meeting','Meeting'],['casual','Casual']];
+const CL_OCC=[['meeting','Meeting'],['casual','Casual'],['pyjamas','Pyjamas']];
 const CL_SEASONS=[['summer','Summer'],['winter','Winter'],['tween','Tween']];
 function clTagLabel(list,k){const f=list.find(x=>x[0]===k);return f?f[1]:k;}
 function clChipsHTML(id,list,sel,onchange){return`<div class="cl-chips" id="${id}">${list.map(([k,l])=>`<label class="cl-chip"><input type="checkbox" value="${k}"${(sel||[]).indexOf(k)>=0?' checked':''}${onchange?` onchange="${onchange}"`:''}/><span>${l}</span></label>`).join('')}</div>`;}
@@ -2630,7 +2631,7 @@ function clWardrobeHTML(c){
   const list=c.items.filter(i=>closetFilter==='all'||(closetFilter==='fav'?i.fav:i.cat===closetFilter)).sort((a,b)=>(b.date||0)-(a.date||0));
   return`<div class="tag-row">${chips.map(([k,l])=>`<button class="tag-pill${closetFilter===k?' active':''}" onclick="clSetFilter('${k}')">${l}</button>`).join('')}</div>
     <div class="of-meta" style="margin-bottom:10px">${list.length} piece${list.length!==1?'s':''}</div>
-    ${list.length?`<div class="cl-grid">${list.map(i=>`<div class="cl-card" onclick="clOpenItem('${i.id}')"><img src="${i.thumb}" alt="" loading="lazy"/><button class="cl-del" title="Delete" onclick="event.stopPropagation();clDeleteItem('${i.id}')">×</button><button class="cl-fav${i.fav?' on':''}" title="Favourite" onclick="event.stopPropagation();clToggleFav('${i.id}')">♥</button><div class="cl-cap">${escHtml(i.name)}</div></div>`).join('')}</div>`:`<div class="empty" style="padding:32px 0">Nothing here yet.</div>`}`;
+    ${list.length?`<div class="cl-grid">${list.map(i=>`<div class="cl-card" onclick="clOpenItem('${i.id}')"><img src="${i.thumb}" alt="" loading="lazy"/><button class="cl-del" title="Delete" onclick="event.stopPropagation();clDeleteItem('${i.id}')">×</button><button class="cl-fav${i.fav?' on':''}" title="Favourite" onclick="event.stopPropagation();clToggleFav('${i.id}')">♥</button><div class="cl-cap">${escHtml(i.name)}${clTagsText(i.occ,i.seasons)?`<span class="cl-cap-tags">${clTagsText(i.occ,i.seasons)}</span>`:''}</div></div>`).join('')}</div>`:`<div class="empty" style="padding:32px 0">Nothing here yet.</div>`}`;
 }
 function clSetFilter(k){closetFilter=k;showSection('closet');}
 function clToggleFav(id,reopen){
