@@ -2311,9 +2311,9 @@ function mpRefresh(){
 // ── CLOSET ──
 // Own data key (`closet`) and own photo store — deliberately separate from the Maison photo gallery.
 // Item records keep only a tiny thumbnail inline; the full image lives in IndexedDB (+ Drive mirror) under the item id.
-const CLOSET_CATS=['Tops','Bottoms','Skirts','Dresses','Outerwear','Shoes','Headscarves','Bags','Accessories'];
+const CLOSET_CATS=['Tops','Bottoms','Skirts','Dresses','Outerwear','Shoes','Headscarves','Pyjamas','Bags','Accessories'];
 // Two separate tag groups on every piece (and outfit): occasion and season. "Tween" = in-between weather.
-const CL_OCC=[['meeting','Meeting'],['casual','Casual'],['pyjamas','Pyjamas']];
+const CL_OCC=[['meeting','Meeting'],['casual','Casual']];
 const CL_SEASONS=[['summer','Summer'],['winter','Winter'],['tween','Tween']];
 function clTagLabel(list,k){const f=list.find(x=>x[0]===k);return f?f[1]:k;}
 function clChipsHTML(id,list,sel,onchange){return`<div class="cl-chips" id="${id}">${list.map(([k,l])=>`<label class="cl-chip"><input type="checkbox" value="${k}"${(sel||[]).indexOf(k)>=0?' checked':''}${onchange?` onchange="${onchange}"`:''}/><span>${l}</span></label>`).join('')}</div>`;}
@@ -2328,7 +2328,7 @@ function clOutfitTags(c,o){
 }
 const CLOSET_TABS=[['wardrobe','Wardrobe'],['outfits','Outfits'],['calendar','Calendar'],['shuffle','Shuffle'],['stats','Stats'],['packing','Packing']];
 // Flat-lay slots per category: x/y/w are % of the board, h is the max height (% of board) the piece may take.
-const CL_DEFAULT_POS={Tops:{x:29,y:4,w:42,h:34},Bottoms:{x:31,y:38,w:38,h:36},Skirts:{x:30,y:38,w:40,h:32},Headscarves:{x:62,y:2,w:26,h:18},Dresses:{x:28,y:6,w:44,h:62},Outerwear:{x:3,y:6,w:46,h:42},Shoes:{x:30,y:77,w:26,h:18},Bags:{x:68,y:40,w:26,h:26},Accessories:{x:70,y:8,w:20,h:18}};
+const CL_DEFAULT_POS={Tops:{x:29,y:4,w:42,h:34},Bottoms:{x:31,y:38,w:38,h:36},Skirts:{x:30,y:38,w:40,h:32},Headscarves:{x:62,y:2,w:26,h:18},Pyjamas:{x:28,y:8,w:44,h:56},Dresses:{x:28,y:6,w:44,h:62},Outerwear:{x:3,y:6,w:46,h:42},Shoes:{x:30,y:77,w:26,h:18},Bags:{x:68,y:40,w:26,h:26},Accessories:{x:70,y:8,w:20,h:18}};
 function clDefaultPlace(it,same){
   const d=CL_DEFAULT_POS[it.cat]||{x:35,y:35,w:30,h:30},ar=it.ar||1;
   const w=Math.min(d.w,d.h*(4/3)*ar);
@@ -2339,7 +2339,14 @@ let closetTab='wardrobe',closetFilter='all',closetOutfitId=null,closetPackId=nul
 let closetQueue=[],closetDraft=null,closetSensTimer=null,outfitDraft=null,obSel=null,obDrag=null,obCat='all',obNameTimer=null;
 let shuffleState={idx:{},lock:{},favOnly:false,busy:false};
 const closetURLs=new Map(),closetMissing=new Map();
-function closetData(){const c=userData('closet',null)||{};return{items:c.items||[],outfits:c.outfits||[],calendar:c.calendar||{},packing:c.packing||[]};}
+function closetData(){
+  const c=userData('closet',null)||{};
+  const d={items:c.items||[],outfits:c.outfits||[],calendar:c.calendar||{},packing:c.packing||[]};
+  // "Pyjamas" was briefly an occasion tag; it is a category. Convert any piece tagged that way (saved on the next change).
+  d.items.forEach(i=>{if((i.occ||[]).indexOf('pyjamas')>=0){i.occ=i.occ.filter(k=>k!=='pyjamas');i.cat='Pyjamas';}});
+  d.outfits.forEach(o=>{if((o.occ||[]).indexOf('pyjamas')>=0)o.occ=o.occ.filter(k=>k!=='pyjamas');});
+  return d;
+}
 function saveCloset(c){saveData('closet',c);}
 function clItem(c,id){return c.items.find(i=>i.id===id);}
 function clMoney(n){return'£'+(Number(n)||0).toLocaleString('en-GB',{minimumFractionDigits:2,maximumFractionDigits:2});}
