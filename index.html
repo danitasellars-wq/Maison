@@ -473,6 +473,28 @@ textarea.field-input{border:1px solid var(--line);border-radius:8px;padding:10px
 .of-name{font-size:15px;font-weight:500}
 .of-meta{font-size:13px}
 .song-num{font-size:15px;color:var(--muted)}
+/* photos and suggestions */
+.ev-ph-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.ev-ph{position:relative;aspect-ratio:1;padding:0;border:none;border-radius:8px;overflow:hidden;background:var(--bone);cursor:pointer}
+.ev-ph img{display:block;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .25s}
+.ev-ph img.ready{opacity:1}
+.ev-ph-strip{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 2px}
+.ev-ph-strip .ev-ph{width:64px;height:64px;aspect-ratio:auto}
+.ev-ph-big{background:var(--bone);border-radius:10px;overflow:hidden;min-height:140px;display:flex;align-items:center;justify-content:center}
+.ev-ph-big img{display:block;max-width:100%;max-height:60vh;opacity:0;transition:opacity .25s}
+.ev-ph-big img.ready{opacity:1}
+.ev-addph{background:none;border:none;padding:4px 0;margin-top:2px;font-family:var(--sans);font-size:12.5px;color:var(--muted);text-decoration:underline;cursor:pointer}
+.ev-sug{padding:16px 0;border-top:1px solid var(--line)}
+.ev-sug:last-child{border-bottom:1px solid var(--line)}
+.ev-sug-title{font-family:var(--serif);font-size:24px;line-height:1.15;color:var(--ink)}
+.ev-sug-text{font-size:14.5px;line-height:1.5;margin-top:4px;white-space:pre-wrap}
+.ev-sug-meta{font-size:12.5px;color:var(--muted);margin-top:8px}
+.ev-sug-actions{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:10px}
+.ev-sug-actions .btn-ghost.sm{padding:4px 11px;font-size:12.5px}
+.ev-votes{display:inline-flex;gap:6px}
+.ev-vote{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;background:none;color:var(--ink);padding:5px 12px;font-family:var(--sans);font-size:14px;cursor:pointer}
+.ev-vote b{font-weight:500;min-width:8px}
+.ev-vote.on{background:var(--ink);border-color:var(--ink);color:var(--cream)}
 /* checklists inside a day */
 .ev-list{margin:0 0 26px}
 .ev-list-head{display:flex;align-items:center;gap:8px;margin-bottom:8px}
@@ -1058,6 +1080,7 @@ function referencedPhotoIds(){
   const rec=userData('recipes',{items:[]});rec.items.forEach(it=>{if(it.img&&it.id)ids.push(it.id);(it.photos||[]).forEach(push);});
   ['wedding','home','honeymoon','closet'].forEach(ctx=>{userData(`moodboards_${ctx}`,[]).forEach(b=>(b.tiles||[]).forEach(push));});
   ((userData('closet',null)||{}).items||[]).forEach(push);
+  const evd=userData('events',null)||{};(evd.events||[]).forEach(e=>(e.photos||[]).forEach(p=>{if(p&&p.id&&p.mid===(e.me||{}).id)ids.push(p.id);}));
   return ids.concat(referencedAudioIds());
 }
 // Uploaded songs ride the same IndexedDB + Drive file mirror as photos, keyed by song id. Unlike photos they are
@@ -2147,15 +2170,16 @@ function evData(){const d=userData('events',null)||{};return{events:d.events||[]
 function evSave(d){return saveData('events',d);}
 function evFind(d,id){return d.events.find(e=>e.id===id);}
 // Device-only bookkeeping (not Drive-synced): queued writes not yet sent, and which keys we last saw in the cloud copy.
-function evBoot(){const b=getStore('maison_evq_'+currentUser,null)||{};return{q:b.q||{},sk:b.sk||{}};}
+function evBoot(){const b=getStore('maison_evq_'+currentUser,null)||{};return{q:b.q||{},sk:b.sk||{},pq:b.pq||{}};}
 function evBootSave(b){setStore('maison_evq_'+currentUser,b);}
 function evMeta(ev){return{name:ev.name,location:ev.location||'',notes:ev.notes||'',days:ev.days||[],startTime:ev.startTime||'09:00',owner:ev.owner||null,deleted:!!ev.deleted,upd:ev.upd||0};}
-function evAllKeys(ev){const m={meta:evMeta(ev)};(ev.acts||[]).forEach(a=>{m['a_'+a.id]=a;});(ev.todos||[]).forEach(t=>{m['k_'+t.id]=t;});(ev.lists||[]).forEach(l=>{m['l_'+l.id]=l;});(ev.people||[]).forEach(p=>{m['p_'+p.id]=p;});Object.keys(ev.dinfo||{}).forEach(day=>{m['d_'+day.replace(/-/g,'')]=ev.dinfo[day];});return m;}
+function evAllKeys(ev){const m={meta:evMeta(ev)};(ev.acts||[]).forEach(a=>{m['a_'+a.id]=a;});(ev.todos||[]).forEach(t=>{m['k_'+t.id]=t;});(ev.lists||[]).forEach(l=>{m['l_'+l.id]=l;});(ev.sugs||[]).forEach(s=>{m['s_'+s.id]=s;});(ev.votes||[]).forEach(v=>{m['v_'+v.id]=v;});(ev.photos||[]).forEach(p=>{m['ph_'+p.id]=p;});(ev.people||[]).forEach(p=>{m['p_'+p.id]=p;});Object.keys(ev.dinfo||{}).forEach(day=>{m['d_'+day.replace(/-/g,'')]=ev.dinfo[day];});return m;}
 function evApply(ev,key,val){
   if(key==='meta'){if(val){ev.name=val.name;ev.location=val.location||'';ev.notes=val.notes||'';ev.days=val.days||[];ev.startTime=val.startTime||'09:00';ev.owner=val.owner||ev.owner||null;ev.deleted=!!val.deleted;ev.upd=val.upd||ev.upd||0;}return;}
-  if(key[0]==='d'){const id=key.slice(2),day=id.slice(0,4)+'-'+id.slice(4,6)+'-'+id.slice(6,8);ev.dinfo=ev.dinfo||{};if(val==null)delete ev.dinfo[day];else ev.dinfo[day]=val;return;}
-  const list=key[0]==='a'?'acts':key[0]==='k'?'todos':key[0]==='p'?'people':key[0]==='l'?'lists':null;if(!list)return;
-  const id=key.slice(2),arr=ev[list]=ev[list]||[],i=arr.findIndex(x=>x.id===id);
+  const us=key.indexOf('_'),pre=key.slice(0,us),id=key.slice(us+1);
+  if(pre==='d'){const day=id.slice(0,4)+'-'+id.slice(4,6)+'-'+id.slice(6,8);ev.dinfo=ev.dinfo||{};if(val==null)delete ev.dinfo[day];else ev.dinfo[day]=val;return;}
+  const list={a:'acts',k:'todos',p:'people',l:'lists',s:'sugs',v:'votes',ph:'photos'}[pre];if(!list)return;
+  const arr=ev[list]=ev[list]||[],i=arr.findIndex(x=>x.id===id);
   if(val==null){if(i>=0)arr.splice(i,1);}else if(i>=0)arr[i]=val;else arr.push(val);
 }
 // The one way to change an event: fn(ev, put, meta). put(key,value|null) edits one field; meta(patch) edits the event's details.
@@ -2183,6 +2207,7 @@ async function evFlushAll(){
   finally{evFlushing=false;}
 }
 async function evFlush(evId){
+  if(!(await evUploadPhotos(evId)))return false;   // pictures always go up before the records that point at them
   const batch=(evBoot().q[evId]||[]).slice();if(!batch.length)return true;
   const fields={},mask=[];
   batch.forEach(x=>{mask.push('updateMask.fieldPaths='+encodeURIComponent(x.k));if(x.v!=null)fields[x.k]={stringValue:JSON.stringify(x.v)};});
@@ -2349,7 +2374,7 @@ function renderEvent(main){
   if(!ev){main.innerHTML=`<div class="empty">That event is not here any more.<br/><button class="btn-ghost" style="margin-top:12px" onclick="showSection('dayout')">Back to days out</button></div>`;return;}
   if(evDay&&ev.days.indexOf(evDay)<0)evDay=null;
   main.innerHTML=evDay?evDayHTML(ev):evHomeHTML(ev);
-  wxEnsure(ev);
+  wxEnsure(ev);evHydratePhotos(main);
   if(ev.shared&&evCloudOn()&&!evPoll)evStartPoll();
   evUpdStatus();
 }
@@ -2377,6 +2402,7 @@ function evHomeHTML(ev){
     <div class="evc">${evCalHTML(ev)}</div>
     <p class="cl-hint" style="text-align:center">Tap a day to see and edit its plan.</p>
     <div class="ev-stats"><div><b>${(ev.acts||[]).length}</b><span>Activities</span></div><div><b>${(ev.people||[]).length}</b><span>${(ev.people||[]).length===1?'Person':'People'}</span></div><div><b>${evMoney(total)}</b><span>Total${ppl>1&&total?' · '+evMoney(total/ppl)+' each':''}</span></div></div>
+    ${evSugsHTML(ev)}
     <div class="ev-block"><div class="flex-between mb14"><div class="ev-strip-title">People</div><button class="btn-ghost" onclick="openEventSettings()">${ev.shared?'Invite':'Share'}</button></div>
       <div class="ev-people">${(ev.people||[]).map(p=>`<span class="ev-person"><i>${escHtml(evInitials(p.name))}</i>${escHtml(p.name)}${p.guest?'<em>guest</em>':''}</span>`).join('')||'<span class="of-meta">Just you so far</span>'}</div></div>`;
 }
@@ -2401,7 +2427,7 @@ function evRowsHTML(ev,acts){
   let prevEnd=-1;
   return acts.map(a=>{
     const s=doToMin(a.time),e=s==null?null:s+doMins(a),clash=s!=null&&prevEnd>s;if(e!=null)prevEnd=Math.max(prevEnd,e);const lk=safeLink(a.link);
-    return`<div class="item-row do-row${clash?' clash':''}"><div class="do-time">${s==null?'<span class="do-notime">No time</span>':doFmt(s)+'<span>'+doFmt(e)+'</span>'}</div><div class="item-body"><span class="cat-badge">${escHtml(a.cat||'Other')}</span><div class="item-name">${escHtml(a.name)}</div>${a.where?`<a class="item-link" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(a.where)}" target="_blank" rel="noopener">${escHtml(a.where)}</a>`:''}${a.notes?`<div class="of-meta">${escHtml(a.notes)}</div>`:''}${clash?'<div class="do-clash">Overlaps the activity before it</div>':''}${lk?`<a class="item-link" href="${escHtml(lk)}" target="_blank" rel="noopener">${escHtml(a.link)}</a>`:''}${a.by?`<div class="ev-by">Added by ${escHtml(a.by)}</div>`:''}</div>${a.price?`<div class="item-price">${evMoney(a.price)}</div>`:''}<button class="btn-ghost" style="padding:4px 10px;font-size:12px" onclick="evActForm('${a.id}')">Edit</button><button class="icon-btn" title="Delete" onclick="evDelAct('${a.id}')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg></button></div>`;
+    return`<div class="item-row do-row${clash?' clash':''}"><div class="do-time">${s==null?'<span class="do-notime">No time</span>':doFmt(s)+'<span>'+doFmt(e)+'</span>'}</div><div class="item-body"><span class="cat-badge">${escHtml(a.cat||'Other')}</span><div class="item-name">${escHtml(a.name)}</div>${a.where?`<a class="item-link" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(a.where)}" target="_blank" rel="noopener">${escHtml(a.where)}</a>`:''}${a.notes?`<div class="of-meta">${escHtml(a.notes)}</div>`:''}${clash?'<div class="do-clash">Overlaps the activity before it</div>':''}${lk?`<a class="item-link" href="${escHtml(lk)}" target="_blank" rel="noopener">${escHtml(a.link)}</a>`:''}${a.by?`<div class="ev-by">Added by ${escHtml(a.by)}</div>`:''}${evActPhotosHTML(ev,a)}</div>${a.price?`<div class="item-price">${evMoney(a.price)}</div>`:''}<button class="btn-ghost" style="padding:4px 10px;font-size:12px" onclick="evActForm('${a.id}')">Edit</button><button class="icon-btn" title="Delete" onclick="evDelAct('${a.id}')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg></button></div>`;
   }).join('');
 }
 function evSectionHTML(ev,part){
@@ -2444,6 +2470,7 @@ function evDayHTML(ev){
     <datalist id="ev-ppl">${(ev.people||[]).map(p=>`<option value="${escHtml(p.name)}"></option>`).join('')}</datalist>
     ${evSectionHTML(ev,'day')}
     ${evSectionHTML(ev,'eve')}
+    ${evDayPhotosHTML(ev,evDay)}
     ${total?`<div class="ev-daytotal"><span>Day total</span><b>${evMoney(total)}</b>${going.length>1?`<span>${evMoney(each)} each for ${going.length}</span>`:''}</div>`:''}
     <div class="ev-block"><a class="btn-ghost ev-link" href="${escHtml(evGcalDay(ev,evDay))}" target="_blank" rel="noopener">Add this day to Google Calendar</a></div>
     <span id="ev-status" class="of-meta" style="display:block;margin-top:10px"></span>`;
@@ -2597,10 +2624,10 @@ function evDayTextSoon(field,el){
 }
 
 // ── activities ──
-function evActForm(actId,part){
+function evActForm(actId,part,pre){
   const ev=evFind(evData(),activeEventId);if(!ev)return;
   const a=actId?(ev.acts||[]).find(x=>x.id===actId):null;if(actId&&!a)return;
-  const v=a||{cat:'Activity',day:evDay,part:part==='eve'?'eve':'day'},pt=(v.part||'day');
+  const v=a||Object.assign({cat:'Activity',day:evDay||evDaysSorted(ev)[0],part:part==='eve'?'eve':'day'},pre||{}),pt=(v.part||'day');
   openModal(`<div class="modal-head"><div class="modal-title">${a?'Edit activity':'Add activity'}</div><button class="modal-close" onclick="closeModal()">×</button></div>
     <label class="field-label">Name</label><input id="ea-name" class="field-input" value="${escHtml(v.name||'')}" placeholder="e.g. Lunch at The Seafood Bar…"/>
     <label class="field-label">Part of the day</label><select id="ea-part" class="field-input"><option value="day"${pt==='day'?' selected':''}>Day out</option><option value="eve"${pt==='eve'?' selected':''}>Evening</option></select>
@@ -2627,7 +2654,7 @@ function evSaveAct(actId){
 function evDelAct(id){
   const ev=evFind(evData(),activeEventId),a=ev&&(ev.acts||[]).find(x=>x.id===id);if(!a)return;
   if(!confirm('Delete "'+a.name+'"?'))return;
-  evMutate(activeEventId,(e,put)=>{put('a_'+id,null);});showSection('event');
+  evMutate(activeEventId,(e,put)=>{put('a_'+id,null);(e.photos||[]).filter(p=>p.act===id).forEach(p=>put('ph_'+p.id,null));});showSection('event');
 }
 // Fills in a time for each activity without one, in list order from that part's start time, skipping past anything with a fixed time.
 function evArrange(part){
@@ -2715,6 +2742,200 @@ function wxDayHTML(ev,day){
     <div class="wx-top"><b>${escHtml(WX_CODES[d.code]||'Mixed')}</b><span>High ${d.hi}° · Low ${d.lo}° · Wind ${d.wind} mph</span></div>
     <div class="wx-parts"><div><span>Day out</span>${escHtml(wxText(d.day))||'—'}</div><div><span>Evening</span>${escHtml(wxText(d.eve))||'—'}</div></div>${credit}</div>`;
 }
+// ── photos (days, activities, suggestions) ──
+// A photo is a small record in the event (`ph_<id>`: which day / activity / suggestion it belongs to, who added it) plus the picture itself.
+// The picture is kept in this device's IndexedDB under the plain id (so your OWN photos also ride your Drive mirror, see referencedPhotoIds) and,
+// for shared events, in its own small Firestore document events/{eventId}/photos/{photoId} (a ~1200px JPEG as base64, well under the 1MB limit)
+// which other people's apps fetch the first time they look at it. Uploads are queued (`pq` in the device-only event bookkeeping) so they survive
+// being offline, and always go up BEFORE the record that points at them.
+function evPhotoDocURL(evId,id){return evDocURL(evId)+'/photos/'+id;}
+const evPhUrls={};
+function evBlobToB64(blob){return new Promise((res,rej)=>{const fr=new FileReader();fr.onload=()=>res(String(fr.result).split(',')[1]||'');fr.onerror=rej;fr.readAsDataURL(blob);});}
+function evB64ToBlob(b64){const bin=atob(b64),a=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)a[i]=bin.charCodeAt(i);return new Blob([a],{type:'image/jpeg'});}
+// Shrinks a picked photo to something that is quick to share: up to ~1200px, JPEG, kept under ~420KB.
+async function evPhotoProcess(file){
+  const dataURL=await new Promise((res,rej)=>{const fr=new FileReader();fr.onload=()=>res(fr.result);fr.onerror=rej;fr.readAsDataURL(file);});
+  const im=await loadImageFromDataURL(dataURL);
+  let max=1200,q=.72,blob=null,s=null;
+  for(let i=0;i<4;i++){
+    s=scaleDims(im.naturalWidth,im.naturalHeight,max);
+    blob=await canvasBlob(drawToCanvas(im,s.w,s.h),q);
+    if(blob&&blob.size<=420000)break;
+    max=Math.round(max*.8);q=Math.max(.5,q-.07);
+  }
+  if(!blob)throw new Error('could not read photo');
+  return{blob,w:s.w,h:s.h};
+}
+function evPickPhotos(target){
+  const inp=document.createElement('input');inp.type='file';inp.accept='image/*';inp.multiple=true;
+  inp.onchange=()=>{const files=Array.from(inp.files||[]);if(files.length)evAddPhotos(files,target||{});};
+  inp.click();
+}
+async function evAddPhotos(files,target){
+  const evId=activeEventId,metas=[];
+  clToast('Adding '+Math.min(files.length,12)+' photo'+(files.length!==1?'s':'')+'…');
+  for(const f of files.slice(0,12)){
+    try{
+      const pr=await evPhotoProcess(f),id=uid();
+      if(!(await idbPutPhoto(id,pr.blob)))continue;
+      metas.push({id,day:target.day||'',act:target.act||'',sug:target.sug||'',w:pr.w,h:pr.h});
+    }catch(e){}
+  }
+  if(!metas.length){clToast('Could not add that photo');return;}
+  evMutate(evId,(ev,put)=>{const me=ev.me||{};metas.forEach(m=>put('ph_'+m.id,Object.assign({},m,{by:me.name||'',mid:me.id,upd:Date.now()})));});
+  const ev2=evFind(evData(),evId);
+  if(ev2&&ev2.shared){const b=evBoot();b.pq[evId]=(b.pq[evId]||[]).concat(metas.map(m=>m.id));evBootSave(b);evFlushSoon();}
+  if(currentSection==='event')showSection('event');
+}
+async function evUploadPhotos(evId){
+  let b=evBoot();const ids=(b.pq[evId]||[]).slice();if(!ids.length)return true;
+  const hd=await evHeaders(true);if(!hd){evStatus=fbNeed?'signin':'offline';evUpdStatus();return false;}
+  for(const id of ids){
+    const blob=await idbGetPhoto(id).catch(()=>null);
+    if(blob){
+      try{
+        const r=await fetch(evPhotoDocURL(evId,id)+'?key='+encodeURIComponent(EV_CLOUD.apiKey),{method:'PATCH',headers:hd,body:JSON.stringify({fields:{d:{stringValue:await evBlobToB64(blob)}}})});
+        if(r.status===401||r.status===403){if(r.status===401)fbExpire();evStatus=r.status===401?'signin':'denied';evUpdStatus();return false;}
+        if(!r.ok)throw new Error('HTTP '+r.status);
+      }catch(e){evStatus='offline';evUpdStatus();return false;}
+    }
+    b=evBoot();b.pq[evId]=(b.pq[evId]||[]).filter(x=>x!==id);evBootSave(b);   // uploaded (or the picture is gone), so it is no longer waiting
+  }
+  return true;
+}
+// The picture for a photo: this device first, then the shared event, then (for your own photos) your Drive mirror.
+async function evPhotoBlob(evId,id){
+  let blob=await idbGetPhoto(id).catch(()=>null);if(blob)return blob;
+  const ev=evFind(evData(),evId);
+  if(ev&&ev.shared&&evCloudOn()){
+    const hd=await evHeaders(false);
+    if(hd){try{
+      const r=await fetch(evPhotoDocURL(evId,id)+'?key='+encodeURIComponent(EV_CLOUD.apiKey),{headers:hd});
+      if(r.ok){const j=await r.json(),s=j.fields&&j.fields.d&&j.fields.d.stringValue;if(s){blob=evB64ToBlob(s);await idbPutPhoto(id,blob);return blob;}}
+    }catch(e){}}
+  }
+  const p=ev&&(ev.photos||[]).find(x=>x.id===id);
+  if(p&&p.mid===(ev.me||{}).id){blob=await ensurePhotoLocal(id);if(blob)return blob;}
+  return null;
+}
+// Fills in the pictures after a screen is drawn (a few at a time, from cache when possible).
+async function evHydratePhotos(root){
+  const imgs=Array.from((root||document).querySelectorAll('img[data-evph]'));if(!imgs.length)return;
+  const evId=activeEventId;let i=0;
+  const worker=async()=>{
+    while(i<imgs.length){
+      const img=imgs[i++],id=img.dataset.evph;
+      try{
+        let url=evPhUrls[id];
+        if(!url){const blob=await evPhotoBlob(evId,id);if(blob){url=URL.createObjectURL(blob);evPhUrls[id]=url;}}
+        if(url&&img.isConnected){img.src=url;img.classList.add('ready');}
+      }catch(e){}
+    }
+  };
+  await Promise.all([worker(),worker(),worker()]);
+}
+function evPhotoThumbs(ev,filter){
+  return(ev.photos||[]).filter(filter).sort((a,b)=>(a.upd||0)-(b.upd||0)).map(p=>`<button class="ev-ph" onclick="evPhotoOpen('${p.id}')" aria-label="Open photo"><img data-evph="${p.id}" alt=""/></button>`).join('');
+}
+function evActPhotosHTML(ev,a){
+  const th=evPhotoThumbs(ev,p=>p.act===a.id);
+  return`${th?`<div class="ev-ph-strip">${th}</div>`:''}<button class="ev-addph" onclick="evPickPhotos({day:'${a.day}',act:'${a.id}'})">+ Photo</button>`;
+}
+function evDayPhotosHTML(ev,day){
+  const th=evPhotoThumbs(ev,p=>p.day===day&&!p.act&&!p.sug);
+  return`<div class="ev-block"><div class="flex-between mb14"><div class="ev-strip-title">Photos</div><button class="btn-ghost" onclick="evPickPhotos({day:'${day}'})">+ Add photos</button></div>
+    ${th?`<div class="ev-ph-grid">${th}</div>`:`<p class="cl-hint" style="margin-top:0">Add photos from this day. Everyone on the event can see them.</p>`}</div>`;
+}
+function evPhotoOpen(id){
+  const ev=evFind(evData(),activeEventId),p=ev&&(ev.photos||[]).find(x=>x.id===id);if(!p)return;
+  const can=p.mid===(ev.me||{}).id||ev.creator;
+  openModal(`<div class="modal-head"><div class="modal-title">Photo</div><button class="modal-close" onclick="closeModal()">×</button></div>
+    <div class="ev-ph-big"><img data-evph="${id}" alt=""/></div>
+    <p class="cl-hint">${p.by?'Added by '+escHtml(p.by):''}</p>
+    <div class="modal-row"><button class="btn-ghost" onclick="closeModal()">Close</button>${can?`<button class="btn-ghost danger" onclick="evPhotoDelete('${id}')">Delete photo</button>`:''}</div>`);
+  evHydratePhotos(document.getElementById('modal-box'));
+}
+function evPhotoDelete(id){
+  if(!confirm('Delete this photo?'))return;
+  evMutate(activeEventId,(ev,put)=>{put('ph_'+id,null);});
+  const b=evBoot();b.pq[activeEventId]=(b.pq[activeEventId]||[]).filter(x=>x!==id);evBootSave(b);
+  idbDeletePhoto(id).catch(()=>{});delete evPhUrls[id];
+  closeModal();showSection('event');
+}
+
+// ── suggestions ──
+// Anyone can suggest something (words, a link, photos) and everyone can vote it up or down. A suggestion is `s_<id>`; each person's vote is its
+// own field `v_<suggestionId>_<personId>` so two people voting at the same moment never overwrite each other.
+const EV_THUMB_UP='<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>';
+const EV_THUMB_DOWN='<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"/></svg>';
+function evVoteTally(ev,sid){let up=0,down=0;(ev.votes||[]).forEach(v=>{if(v.s===sid){if(v.v>0)up++;else if(v.v<0)down++;}});return{up,down};}
+function evMyVote(ev,sid){const me=(ev.me||{}).id,v=(ev.votes||[]).find(x=>x.s===sid&&x.p===me);return v?v.v:0;}
+function evVote(sid,val){
+  evMutate(activeEventId,(ev,put)=>{
+    const me=(ev.me||{}).id;if(!me)return;
+    const id=sid+'_'+me,cur=(ev.votes||[]).find(x=>x.id===id);
+    if(cur&&cur.v===val)put('v_'+id,null);else put('v_'+id,{id,s:sid,p:me,v:val,upd:Date.now()});
+  });
+  showSection('event');
+}
+function evSugCardHTML(ev,s){
+  const t=evVoteTally(ev,s.id),mine=evMyVote(ev,s.id),me=(ev.me||{}).id,canEdit=!!(s.by&&s.by.id===me),canDel=canEdit||ev.creator;
+  const th=evPhotoThumbs(ev,p=>p.sug===s.id),lk=safeLink(s.link);
+  let host=lk;try{host=new URL(lk).hostname.replace(/^www\./,'');}catch(e){}
+  return`<div class="ev-sug">
+    <div class="ev-sug-title">${escHtml(s.title)}</div>
+    ${s.text?`<div class="ev-sug-text">${escHtml(s.text)}</div>`:''}
+    ${lk?`<a class="item-link" href="${escHtml(lk)}" target="_blank" rel="noopener">${escHtml(host)}</a>`:''}
+    ${th?`<div class="ev-ph-strip">${th}</div>`:''}
+    <div class="ev-sug-meta">Suggested by ${escHtml((s.by&&s.by.name)||'someone')}${s.day&&ev.days.indexOf(s.day)>=0?' · for '+escHtml(evShort(s.day)):''}</div>
+    <div class="ev-sug-actions">
+      <span class="ev-votes"><button class="ev-vote${mine>0?' on':''}" aria-pressed="${mine>0}" aria-label="Thumbs up" onclick="evVote('${s.id}',1)">${EV_THUMB_UP}<b>${t.up}</b></button><button class="ev-vote down${mine<0?' on':''}" aria-pressed="${mine<0}" aria-label="Thumbs down" onclick="evVote('${s.id}',-1)">${EV_THUMB_DOWN}<b>${t.down}</b></button></span>
+      <button class="btn-ghost sm" onclick="evPickPhotos({sug:'${s.id}'})">Add photo</button>
+      <button class="btn-ghost sm" onclick="evSugToActivity('${s.id}')">Add to schedule</button>
+      ${canEdit?`<button class="btn-ghost sm" onclick="evSugModal('${s.id}')">Edit</button>`:''}${canDel?`<button class="btn-ghost sm danger" onclick="evSugDelete('${s.id}')">Delete</button>`:''}
+    </div></div>`;
+}
+function evSugsHTML(ev){
+  const list=(ev.sugs||[]).slice().sort((a,b)=>{const x=evVoteTally(ev,a.id),y=evVoteTally(ev,b.id);return(y.up-y.down)-(x.up-x.down)||(b.upd||0)-(a.upd||0);});
+  return`<div class="ev-block"><div class="flex-between mb14"><div class="ev-strip-title">Suggestions</div><button class="btn-ghost" onclick="evSugModal(null)">+ Suggest</button></div>
+    ${list.length?list.map(s=>evSugCardHTML(ev,s)).join(''):`<p class="cl-hint" style="margin-top:0">Got an idea? Add a few words, a link or photos, and everyone can vote it up or down.</p>`}</div>`;
+}
+function evSugModal(sid){
+  const ev=evFind(evData(),activeEventId);if(!ev)return;
+  const s=sid?(ev.sugs||[]).find(x=>x.id===sid):null;if(sid&&!s)return;
+  openModal(`<div class="modal-head"><div class="modal-title">${s?'Edit suggestion':'New suggestion'}</div><button class="modal-close" onclick="closeModal()">×</button></div>
+    <label class="field-label">What is your idea?</label><input id="es-sug-title" class="field-input" value="${escHtml(s?s.title:'')}" placeholder="e.g. Boat trip to the seals" autocomplete="off"/>
+    <label class="field-label">A few words (optional)</label><textarea id="es-sug-text" class="field-input" rows="3" placeholder="Why it's a good idea, cost, how long…">${escHtml(s?s.text:'')}</textarea>
+    <label class="field-label">Link (optional)</label><input id="es-sug-link" class="field-input" type="url" value="${escHtml(s?s.link:'')}" placeholder="https://…" autocomplete="off"/>
+    <label class="field-label">For which day (optional)</label><select id="es-sug-day" class="field-input"><option value="">Any day</option>${evDaysSorted(ev).map(k=>`<option value="${k}"${s&&s.day===k?' selected':''}>${escHtml(evLong(k))}</option>`).join('')}</select>
+    <p class="cl-hint">You can add photos from the suggestion once it is saved.</p>
+    <div class="modal-row"><button class="btn-solid sm teal" onclick="evSugSave(${s?`'${s.id}'`:'null'})">${s?'Save':'Suggest'}</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);
+}
+function evSugSave(sid){
+  const title=document.getElementById('es-sug-title').value.trim();if(!title){clToast('Give your idea a name');return;}
+  const text=document.getElementById('es-sug-text').value.trim(),link=document.getElementById('es-sug-link').value.trim(),day=document.getElementById('es-sug-day').value;
+  evMutate(activeEventId,(ev,put)=>{
+    const cur=sid?(ev.sugs||[]).find(x=>x.id===sid):null,id=cur?cur.id:uid(),me=ev.me||{};
+    put('s_'+id,{id,title,text,link,day,by:cur?cur.by:{id:me.id,name:me.name},upd:Date.now()});
+  });
+  closeModal();showSection('event');
+}
+function evSugDelete(sid){
+  const ev=evFind(evData(),activeEventId),s=ev&&(ev.sugs||[]).find(x=>x.id===sid);if(!s)return;
+  if(!confirm('Delete "'+s.title+'"?'))return;
+  evMutate(activeEventId,(e,put)=>{
+    put('s_'+sid,null);
+    (e.votes||[]).filter(v=>v.s===sid).forEach(v=>put('v_'+v.id,null));
+    (e.photos||[]).filter(p=>p.sug===sid).forEach(p=>put('ph_'+p.id,null));
+  });
+  showSection('event');
+}
+// Turns a suggestion into a real activity: opens the add-activity form filled in, so you only choose the day and time.
+function evSugToActivity(sid){
+  const ev=evFind(evData(),activeEventId),s=ev&&(ev.sugs||[]).find(x=>x.id===sid);if(!s)return;
+  evActForm(null,'day',{name:s.title,link:s.link||'',notes:(s.text||'').slice(0,200),day:(s.day&&ev.days.indexOf(s.day)>=0)?s.day:evDaysSorted(ev)[0]});
+}
+
 // ── calendar export ──
 function evGcalDay(ev,day){
   const n=evDateObj(day);n.setDate(n.getDate()+1);
@@ -2791,6 +3012,7 @@ function evSaveDays(){
   if((lost.length||lostLists)&&!confirm('Removing '+gone.length+' day'+(gone.length!==1?'s':'')+' also deletes '+lost.length+' planned activit'+(lost.length!==1?'ies':'y')+(lostLists?' and '+lostLists+' checklist'+(lostLists!==1?'s':''):'')+'. Continue?'))return;
   evMutate(activeEventId,(e,put,meta)=>{
     lost.forEach(a=>put('a_'+a.id,null));
+    (e.photos||[]).filter(p=>p.day&&gone.indexOf(p.day)>=0).forEach(p=>put('ph_'+p.id,null));
     (e.lists||[]).filter(l=>gone.indexOf(l.day)>=0).forEach(l=>{(e.todos||[]).filter(t=>t.list===l.id).forEach(t=>put('k_'+t.id,null));put('l_'+l.id,null);});
     e.privLists=(e.privLists||[]).filter(l=>gone.indexOf(l.day)<0);
     meta({days:keep});
@@ -2802,7 +3024,7 @@ async function evShareOn(){
   if(EV_AUTH&&!(await fbToken())){evReauth(()=>evShareOn());return;}
   if(!driveAccessToken&&!confirm('Cloud Sync is off, so MAISON cannot keep a backup of this event in your Google Drive. Share it anyway?\n\nOK = share anyway, Cancel = go back (turn on Cloud Sync in Settings first).'))return;
   ev.shared=true;ev.creator=true;if(!evSave(d))return;
-  const b=evBoot();b.q[ev.id]=Object.entries(evAllKeys(ev)).map(([k,v])=>({k,v:JSON.parse(JSON.stringify(v))}));b.sk[ev.id]=[];evBootSave(b);
+  const b=evBoot();b.q[ev.id]=Object.entries(evAllKeys(ev)).map(([k,v])=>({k,v:JSON.parse(JSON.stringify(v))}));b.sk[ev.id]=[];b.pq[ev.id]=(ev.photos||[]).map(p=>p.id);evBootSave(b);
   clToast('Turning on sharing…');
   const ok=await evFlush(ev.id);
   if(!ok){
@@ -2896,12 +3118,15 @@ async function evRestore(fileId){
   if(!s||!s.name||!Array.isArray(s.days)){clToast('That backup could not be read');return;}
   evMutate(activeEventId,(ev,put,meta)=>{
     meta({name:s.name,location:s.location||'',notes:s.notes||'',days:s.days,startTime:s.startTime||'09:00'});
-    const keep=new Set();
-    (s.acts||[]).forEach(a=>{put('a_'+a.id,a);keep.add('a_'+a.id);});
-    (s.todos||[]).forEach(t=>{put('k_'+t.id,t);keep.add('k_'+t.id);});(s.lists||[]).forEach(l=>{put('l_'+l.id,l);keep.add('l_'+l.id);});
-    (s.people||[]).forEach(p=>{if(!(ev.people||[]).some(x=>x.id===p.id))put('p_'+p.id,p);});   // people who joined since stay
-    (ev.acts||[]).slice().forEach(a=>{if(!keep.has('a_'+a.id))put('a_'+a.id,null);});
-    (ev.todos||[]).slice().forEach(t=>{if(!keep.has('k_'+t.id))put('k_'+t.id,null);});(ev.lists||[]).slice().forEach(l=>{if(!keep.has('l_'+l.id))put('l_'+l.id,null);});
+    // Every kind of record (activities, checklists, day details, photos, suggestions, votes…) goes back to the snapshot; anything newer is removed.
+    // People are the exception: anyone who joined since stays.
+    const target=evAllKeys(s),keep=new Set();
+    Object.keys(target).forEach(k=>{
+      if(k==='meta')return;
+      if(k.indexOf('p_')===0){if(!(ev.people||[]).some(x=>'p_'+x.id===k))put(k,target[k]);return;}
+      put(k,target[k]);keep.add(k);
+    });
+    Object.keys(evAllKeys(ev)).forEach(k=>{if(k==='meta'||k.indexOf('p_')===0||keep.has(k))return;put(k,null);});
   });
   closeModal();evDay=null;evCalMonth=null;showSection('event');clToast('Backup restored');
 }
@@ -4299,6 +4524,10 @@ function copyFeedback(){
 // "-rgb" variables feed the translucent tints. Non-default schemes use one accent colour everywhere; Maison keeps its gold / teal / plum mix.
 const SCHEMES=[
   {id:'maison',name:'Maison',v:{cream:'#f7f3ed',bone:'#ede4d5',ink:'#1c140a',muted:'#8a7a68',warm:'#c9b89a',line:'#dccfba',gold:'#b8962e',teal:'#2a7070',plum:'#6b4a5e',red:'#a82020',green:'#2a5f3f'}},
+  {id:'paper',name:'Paper',v:{cream:'#f7f3ee',bone:'#efe7da',ink:'#201810',muted:'#8b7d6b',warm:'#cdbfa8',line:'#e6dccb',gold:'#a85c32',teal:'#a85c32',plum:'#a85c32',red:'#a82020',green:'#2a5f3f'}},
+  {id:'cream',name:'Cream',v:{cream:'#fbf5e6',bone:'#f1e8d0',ink:'#2b2417',muted:'#8c7f62',warm:'#d8c9a3',line:'#e8dcbd',gold:'#b08a2a',teal:'#b08a2a',plum:'#b08a2a',red:'#a82020',green:'#2a5f3f'}},
+  {id:'grey',name:'Grey',v:{cream:'#e9e9e9',bone:'#dcdcdc',ink:'#1f1f1f',muted:'#707070',warm:'#bdbdbd',line:'#d2d2d2',gold:'#4a4a4a',teal:'#4a4a4a',plum:'#4a4a4a',red:'#a82020',green:'#2a5f3f'}},
+  {id:'black',name:'Black',v:{cream:'#0a0a0a',bone:'#1a1a1a',ink:'#f2f2f2',muted:'#8f8f8f',warm:'#444444',line:'#2a2a2a',gold:'#e5e5e5',teal:'#e5e5e5',plum:'#e5e5e5',red:'#e0675f',green:'#6fbf8f'}},
   {id:'midnight',name:'Midnight',v:{cream:'#12141c',bone:'#1d2130',ink:'#e8e6df',muted:'#8a8fa3',warm:'#4a5066',line:'#2a2e3d',gold:'#d4a95a',teal:'#d4a95a',plum:'#d4a95a',red:'#e0675f',green:'#6fbf8f'}},
   {id:'sage',name:'Sage',v:{cream:'#eef1ea',bone:'#e0e7d8',ink:'#22301f',muted:'#74846c',warm:'#b4c2a8',line:'#d8e0d0',gold:'#4f7350',teal:'#4f7350',plum:'#4f7350',red:'#a82020',green:'#2a5f3f'}},
   {id:'blush',name:'Blush',v:{cream:'#f9f0ef',bone:'#f1e1df',ink:'#33201f',muted:'#a07f7c',warm:'#dfc3c0',line:'#eddcda',gold:'#b95d68',teal:'#b95d68',plum:'#b95d68',red:'#a82020',green:'#2a5f3f'}},
@@ -4324,15 +4553,23 @@ function applyAppearance(a){
   const m=document.querySelector('meta[name=theme-color]');if(m)m.content=v.cream;
 }
 function schemeBlockHTML(){
-  const a=appearanceData(),c=a.custom||{};
+  const a=appearanceData(),c=a.custom||{},sv=schemeVars(a);
+  // The pickers are always shown. They start from whatever scheme is on now, so tweaking a colour never jumps to something unrelated.
+  const pv=a.theme==='custom'?{bg:c.bg,ink:c.ink,accent:c.accent}:{bg:sv.cream,ink:sv.ink,accent:sv.gold};
   return`<div class="theme-grid">${SCHEMES.map(t=>`<button class="theme-swatch${a.theme===t.id?' on':''}" onclick="setScheme('${t.id}')"><span class="ts-dots"><span style="background:${t.v.cream}"></span><span style="background:${t.v.ink}"></span><span style="background:${t.v.gold}"></span></span><span class="ts-name">${t.name}</span></button>`).join('')}
     <button class="theme-swatch${a.theme==='custom'?' on':''}" onclick="setScheme('custom')"><span class="ts-dots"><span style="background:${escHtml(c.bg)}"></span><span style="background:${escHtml(c.ink)}"></span><span style="background:${escHtml(c.accent)}"></span></span><span class="ts-name">Custom</span></button></div>
-    ${a.theme==='custom'?`<div class="custom-colors"><label class="cc-item"><input type="color" value="${escHtml(c.bg)}" oninput="previewCustomScheme('bg',this.value)" onchange="setCustomScheme('bg',this.value)"/>Page</label><label class="cc-item"><input type="color" value="${escHtml(c.ink)}" oninput="previewCustomScheme('ink',this.value)" onchange="setCustomScheme('ink',this.value)"/>Text</label><label class="cc-item"><input type="color" value="${escHtml(c.accent)}" oninput="previewCustomScheme('accent',this.value)" onchange="setCustomScheme('accent',this.value)"/>Accent</label></div>`:''}`;
+    <div class="field-label" style="margin:6px 0 8px">Or pick your own colours</div>
+    <div class="custom-colors"><label class="cc-item"><input type="color" value="${escHtml(pv.bg)}" oninput="previewCustomScheme('bg',this.value)" onchange="setCustomScheme('bg',this.value)"/>Page</label><label class="cc-item"><input type="color" value="${escHtml(pv.ink)}" oninput="previewCustomScheme('ink',this.value)" onchange="setCustomScheme('ink',this.value)"/>Text</label><label class="cc-item"><input type="color" value="${escHtml(pv.accent)}" oninput="previewCustomScheme('accent',this.value)" onchange="setCustomScheme('accent',this.value)"/>Accent</label></div>`;
+}
+// Editing a colour switches to Custom, starting from the colours of the scheme that was on.
+function customFromCurrent(a){
+  if(a.theme!=='custom'){const v=schemeVars(a);a.custom={bg:v.cream,ink:v.ink,accent:v.gold};}
+  a.theme='custom';a.custom=Object.assign({},a.custom);return a;
 }
 function refreshSchemeBlock(){const b=document.getElementById('scheme-block');if(b)b.innerHTML=schemeBlockHTML();}
 function setScheme(id){const a=appearanceData();a.theme=id;saveData('appearance',a);applyAppearance();refreshSchemeBlock();}
-function previewCustomScheme(k,val){const a=appearanceData();a.theme='custom';a.custom=Object.assign({},a.custom);a.custom[k]=val;applyAppearance(a);}   // live, not saved until the colour is chosen
-function setCustomScheme(k,val){const a=appearanceData();a.theme='custom';a.custom=Object.assign({},a.custom);a.custom[k]=val;saveData('appearance',a);applyAppearance();refreshSchemeBlock();}
+function previewCustomScheme(k,val){const a=customFromCurrent(appearanceData());a.custom[k]=val;applyAppearance(a);}   // live, not saved until the colour is chosen
+function setCustomScheme(k,val){const a=customFromCurrent(appearanceData());a.custom[k]=val;saveData('appearance',a);applyAppearance();refreshSchemeBlock();}
 
 function openSettings(){
   openModal(`<div class="modal-head"><div class="modal-title">Settings</div><button class="modal-close" onclick="closeModal()">×</button></div>
