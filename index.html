@@ -473,6 +473,60 @@ textarea.field-input{border:1px solid var(--line);border-radius:8px;padding:10px
 .of-name{font-size:15px;font-weight:500}
 .of-meta{font-size:13px}
 .song-num{font-size:15px;color:var(--muted)}
+/* events */
+.ev-strip{margin:4px 0 22px}
+.ev-strip-title{font-family:var(--sans);font-size:16px;color:var(--muted)}
+.ev-cards{display:flex;flex-direction:column;margin-top:8px}
+.ev-card{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:none;border:none;border-top:1px solid var(--line);padding:14px 2px;cursor:pointer;font-family:var(--sans);color:var(--ink)}
+.ev-cards .ev-card:last-child{border-bottom:1px solid var(--line)}
+.ev-card-main{flex:1;min-width:0}
+.ev-card-name{font-family:var(--serif);font-size:24px;line-height:1.15;color:var(--ink)}
+.ev-card-sub{font-size:13px;color:var(--muted);margin-top:2px}
+.ev-live{font-size:11.5px;color:var(--teal);border:1px solid var(--teal);border-radius:999px;padding:1px 9px;flex-shrink:0}
+.home-pins{margin-top:26px}
+.ev-meta{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px;margin:-4px 0 14px}
+.ev-count{font-family:var(--sans);font-size:15px;font-weight:500;color:var(--teal)}
+.ev-notes{font-size:14px;color:var(--ink);margin:0 0 14px;line-height:1.5}
+.evc,.evp-wrap{margin-bottom:6px}
+.evp-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.evp-title{font-family:var(--serif);font-size:24px}
+.evp-head .icon-btn{font-size:24px;line-height:1;padding:4px 12px}
+.evp-dow{display:grid;grid-template-columns:repeat(7,1fr);text-align:center;font-size:11.5px;color:var(--muted);margin-bottom:4px}
+.evp-grid,.evc-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.evp-day{aspect-ratio:1;border:1px solid transparent;border-radius:50%;background:none;font-family:var(--sans);font-size:15px;color:var(--ink);cursor:pointer;padding:0}
+.evp-day.today{border-color:var(--warm)}
+.evp-day.on{background:var(--ink);color:var(--cream);border-color:var(--ink)}
+.evc-day{aspect-ratio:1/1.08;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;border-radius:10px;font-family:var(--sans);background:none;border:1px solid transparent;padding:0}
+.evc-day b{font-weight:400;font-size:15px}
+.evc-day i{font-style:normal;font-size:10px;color:var(--muted);line-height:1.1}
+.evc-day.off{color:#b9ad9a}
+.evc-day.has{background:var(--ink);color:var(--cream);cursor:pointer}
+.evc-day.has i{color:var(--warm)}
+.evc-day.today{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold) inset}
+.ev-stats{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin:14px 0 22px}
+.ev-stats div{padding:12px 4px;text-align:center}
+.ev-stats b{display:block;font-family:var(--serif);font-size:26px;font-weight:500;line-height:1.1}
+.ev-stats span{font-size:12px;color:var(--muted)}
+.ev-block{margin:22px 0}
+.ev-add{display:flex;gap:8px;align-items:center;margin-bottom:6px}
+.ev-add .field-input{margin:0;flex:1}
+.ev-todo{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:9px 0;border-bottom:1px solid var(--bone)}
+.ev-todo label{display:flex;align-items:center;gap:10px;font-size:15px;cursor:pointer;flex:1;min-width:0}
+.ev-todo input{width:19px;height:19px;accent-color:var(--ink);flex-shrink:0}
+.ev-todo.done span{color:var(--muted);text-decoration:line-through}
+.ev-people{display:flex;flex-wrap:wrap;gap:8px}
+.ev-person{display:inline-flex;align-items:center;gap:8px;font-size:14px;border:1px solid var(--line);border-radius:999px;padding:4px 12px 4px 4px}
+.ev-person i{font-style:normal;width:26px;height:26px;border-radius:50%;background:var(--ink);color:var(--cream);display:inline-flex;align-items:center;justify-content:center;font-size:11.5px}
+.ev-daynav{display:flex;justify-content:space-between;gap:8px;margin:-4px 0 18px}
+.ev-daynav .btn-ghost[disabled]{opacity:.35;pointer-events:none}
+.ev-by{font-size:12px;color:var(--muted);margin-top:2px}
+.ev-daytotal{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;padding:12px 0;font-size:13px;color:var(--muted)}
+.ev-daytotal b{font-family:var(--serif);font-size:24px;color:var(--ink);font-weight:500}
+.ev-link{display:inline-block;text-decoration:none}
+.ev-set-block{margin-top:20px;padding-top:16px;border-top:1px solid var(--line)}
+.ev-switch{display:flex;align-items:center;gap:10px;font-size:15px;margin-top:8px;cursor:pointer}
+.ev-switch input{width:20px;height:20px;accent-color:var(--ink)}
+.ev-invite{padding:8px 0 4px}
 /* days out schedule */
 .do-row{align-items:center;padding-left:10px}
 .do-time{min-width:52px;font-family:var(--sans);font-size:15px;font-weight:500;color:var(--ink);line-height:1.25;flex-shrink:0}
@@ -759,6 +813,14 @@ function handleGoogleLogin(response){
   setupFileInputs();showSection('dashboard');updatePanelBadge();
   if(!driveBoot())bkDriveBoot();
   bootStorageAndMigration();
+  evBootSync();
+}
+// After sign-in: send any event changes that were waiting, refresh shared events, and open an invitation link if one was used.
+function evBootSync(){
+  try{
+    if(evCloudOn()){evFlushAll();evData().events.filter(e=>e.shared).forEach(e=>evPull(e.id));}
+    evHandleHash();
+  }catch(e){}
 }
 window.addEventListener('load',()=>{
   checkDriveRedirect();
@@ -772,6 +834,7 @@ window.addEventListener('load',()=>{
       setupFileInputs();showSection('dashboard');updatePanelBadge();
       if(!driveBoot())bkDriveBoot();
       bootStorageAndMigration();
+      evBootSync();
       return;
     }
   }catch(e){}
@@ -1221,7 +1284,7 @@ const AREAS={
   closet:{name:'Closet',short:'Closet',sub:'Wardrobe, outfits, calendar & packing.'},
   other:{name:'Other',short:'Other',sub:'Wedding, honeymoon, days out, recipes & music.'},
 };
-const SECTION_AREA={home:'house',closet:'closet',wedding:'other',honeymoon:'other',dayout:'other',recipes:'other',music:'other'};
+const SECTION_AREA={home:'house',closet:'closet',wedding:'other',honeymoon:'other',dayout:'other',event:'other',recipes:'other',music:'other'};
 let lastShown=null,mbArea='house';
 const ICON_CAM=`<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>`;
 const ICON_PHOTOS=`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>`;
@@ -1234,6 +1297,7 @@ function areaOf(s){
 }
 function showSection(s){
   const changed=s!==lastShown;lastShown=s;currentSection=s;
+  if(s!=='event')evStopPoll();
   applyWallpaper();
   const main=document.getElementById('main-content');
   if(s==='dashboard')renderDashboard(main);
@@ -1243,6 +1307,7 @@ function showSection(s){
   else if(s==='wedding')renderWedding(main);
   else if(s==='honeymoon')renderHoneymoon(main);
   else if(s==='dayout')renderDayOut(main);
+  else if(s==='event')renderEvent(main);
   else if(s==='recipes')renderRecipes(main);
   else if(s==='music')renderMusic(main);
   else if(s==='closet')renderCloset(main);
@@ -1255,6 +1320,7 @@ function backLabel(){
   if(s==='dashboard')return null;
   if(s.indexOf('area_')===0)return'Home';
   if(s==='closet'){if(closetOutfitId&&outfitDraft)return'Outfits';if(closetTab==='packing'&&closetPackId)return'Packing';}
+  if(s==='event')return evDay?'Calendar':'Days out';
   const a=areaOf(s);return a?AREAS[a].short:'Home';
 }
 function renderHeaderNav(){
@@ -1266,6 +1332,7 @@ function goBack(){
   const s=currentSection;
   if(s==='dashboard')return;
   if(s.indexOf('area_')===0){showSection('dashboard');return;}
+  if(s==='event'){if(evDay){evDay=null;showSection('event');window.scrollTo(0,0);}else{activeEventId=null;showSection('dayout');}return;}
   if(s==='closet'){
     if(closetOutfitId&&outfitDraft){clCloseEditor();return;}
     if(closetTab==='packing'&&closetPackId){clClosePack();return;}
@@ -1826,7 +1893,7 @@ function deleteItem(roomId,itemId){const home=userData('home',{rooms:[]});const 
 // ── DAYS OUT ──
 function renderDayOut(main){
   const d=userData('dayout',{plans:[]});
-  if(!d.plans.length){main.innerHTML=`<div class="section-rule"><div><div class="section-title">Days out</div><div class="section-sub">Plan trips, days out &amp; adventures.</div></div><button class="btn-solid sm teal" onclick="openAddDayOutPlan()">+ Add plan</button></div><div class="empty"><div class="empty-icon">🗺️</div>No plans yet. Add your first day out!</div>`;return;}
+  if(!d.plans.length){main.innerHTML=`<div class="section-rule"><div><div class="section-title">Days out</div><div class="section-sub">Plan trips, days out &amp; adventures.</div></div><button class="btn-solid sm teal" onclick="openAddDayOutPlan()">+ Add plan</button></div>${evStripHTML()}<div class="empty"><div class="empty-icon">🗺️</div>No plans yet. Add your first day out!</div>`;return;}
   if(!activeDayOutId||!d.plans.find(p=>p.id===activeDayOutId))activeDayOutId=d.plans[0].id;
   const plan=d.plans.find(p=>p.id===activeDayOutId);
   const photos=plan.photos||[],items=plan.items||[];
@@ -1836,6 +1903,7 @@ function renderDayOut(main){
   const sorted=doSorted(items);let prevEnd=-1;
   const itemsHtml=sorted.length?sorted.map(it=>{const s=doToMin(it.time),e=s==null?null:s+doMins(it),clash=s!=null&&prevEnd>s;if(e!=null)prevEnd=Math.max(prevEnd,e);const lk=safeLink(it.link);return`<div class="item-row do-row${clash?' clash':''}"><div class="do-time">${s==null?'<span class="do-notime">No time</span>':doFmt(s)+'<span>'+doFmt(e)+'</span>'}</div><div class="item-body"><span class="cat-badge">${escHtml(it.cat||'Other')}</span><div class="item-name">${escHtml(it.name)}</div>${it.notes?`<div class="of-meta">${escHtml(it.notes)}</div>`:''}${clash?'<div class="do-clash">Overlaps the activity before it</div>':''}${lk?`<a class="item-link" href="${escHtml(lk)}" target="_blank" rel="noopener">${escHtml(it.link)}</a>`:''}</div>${it.price?`<div class="item-price">£${it.price.toLocaleString(undefined,{minimumFractionDigits:2})}</div>`:''}<button class="btn-ghost" style="padding:4px 10px;font-size:12px" onclick="openDayOutItem('${plan.id}','${it.id}')">Edit</button><button class="icon-btn" title="Delete" onclick="deleteDayOutItem('${plan.id}','${it.id}')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg></button></div>`;}).join(''):`<div class="empty" style="padding:20px 0;font-size:13px">No activities yet. Add one, give it a time, and your day lays itself out here.</div>`;
   main.innerHTML=`<div class="section-rule"><div><div class="section-title">Days out</div><div class="section-sub">Plan trips, days out &amp; adventures.</div></div><button class="btn-solid sm teal" onclick="openAddDayOutPlan()">+ Add plan</button></div>
+    ${evStripHTML()}
     <div class="room-tabs-row">${tabs}</div>
     ${plan.date||plan.location?`<div style="font-size:13px;color:var(--muted);margin-bottom:16px;">${plan.date?`📅 ${new Date(plan.date+'T00:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})}`:''} ${plan.location?`📍 ${escHtml(plan.location)}`:''}</div>`:''}
     <div class="budget-block"><div class="budget-row"><div><div class="budget-label">${escHtml(plan.name)} budget</div><div class="budget-amount${over?' over':''}">£${spent.toLocaleString(undefined,{minimumFractionDigits:2})} <span style="font-size:14px;color:var(--muted)">/ £${budget.toLocaleString()}</span></div></div><div class="flex-center"><button class="btn-ghost" onclick="editDayOutPlan('${plan.id}')">Edit details</button><button class="btn-ghost danger" onclick="deleteDayOutPlan('${plan.id}')">Delete</button></div></div><div class="bar-track"><div class="bar-fill${over?' over':''}" style="width:${pct}%"></div></div><div class="bar-note${over?' over':''}">${over?'Over budget':'Remaining: £'+(budget-spent).toLocaleString(undefined,{minimumFractionDigits:2})}</div></div>
@@ -1913,6 +1981,482 @@ function saveDayOutItem(planId,itemId){
   pl.items=doSorted(pl.items);saveData('dayout',d);closeModal();showSection('dayout');
 }
 function deleteDayOutItem(planId,itemId){const d=userData('dayout',{plans:[]});const pl=d.plans.find(p=>p.id===planId);if(pl){pl.items=(pl.items||[]).filter(i=>i.id!==itemId);saveData('dayout',d);}showSection('dayout');}
+
+// ── EVENTS (shared days out) ──
+// An event is a set of chosen days, each with a schedule like a day out. It is private to this device until you turn on sharing.
+// Shared events live in one Firestore document per event, reached by the event's long random id in the link (guests don't need to sign in).
+// The document is stored as many small fields — `meta`, `a_<id>` activities, `k_<id>` checklist items, `p_<id>` people — so two people
+// editing different things at once never overwrite each other. Every member's app also keeps a full local copy, which MAISON's normal
+// Google Drive sync backs up. Sharing switches on once EV_CLOUD is filled in (see CLAUDE.md, "Shared events setup").
+const EV_CLOUD={projectId:'maison-events-e64b0',apiKey:'AIzaSyDvK1T9wyjajKd84iVGVzQRBT3CdH1zlwY'};
+function evCloudOn(){return!!(EV_CLOUD.projectId&&EV_CLOUD.apiKey);}
+function evDocURL(id){return`https://firestore.googleapis.com/v1/projects/${EV_CLOUD.projectId}/databases/(default)/documents/events/${id}`;}
+let activeEventId=null,evDay=null,evCalMonth=null,evPoll=null,evPick=null,evStatus='',evDirty=false,evLastPull={};
+function evNewId(){const a=new Uint8Array(16);crypto.getRandomValues(a);return Array.from(a,b=>b.toString(16).padStart(2,'0')).join('');}
+function evLink(id){return location.origin+location.pathname+'#event='+id;}
+
+// ── data ──
+function evData(){const d=userData('events',null)||{};return{events:d.events||[],pins:d.pins||[]};}
+function evSave(d){return saveData('events',d);}
+function evFind(d,id){return d.events.find(e=>e.id===id);}
+// Device-only bookkeeping (not Drive-synced): queued writes not yet sent, and which keys we last saw in the cloud copy.
+function evBoot(){const b=getStore('maison_evq_'+currentUser,null)||{};return{q:b.q||{},sk:b.sk||{}};}
+function evBootSave(b){setStore('maison_evq_'+currentUser,b);}
+function evMeta(ev){return{name:ev.name,location:ev.location||'',notes:ev.notes||'',days:ev.days||[],startTime:ev.startTime||'09:00',owner:ev.owner||null,deleted:!!ev.deleted,upd:ev.upd||0};}
+function evAllKeys(ev){const m={meta:evMeta(ev)};(ev.acts||[]).forEach(a=>{m['a_'+a.id]=a;});(ev.todos||[]).forEach(t=>{m['k_'+t.id]=t;});(ev.people||[]).forEach(p=>{m['p_'+p.id]=p;});return m;}
+function evApply(ev,key,val){
+  if(key==='meta'){if(val){ev.name=val.name;ev.location=val.location||'';ev.notes=val.notes||'';ev.days=val.days||[];ev.startTime=val.startTime||'09:00';ev.owner=val.owner||ev.owner||null;ev.deleted=!!val.deleted;ev.upd=val.upd||ev.upd||0;}return;}
+  const list=key[0]==='a'?'acts':key[0]==='k'?'todos':key[0]==='p'?'people':null;if(!list)return;
+  const id=key.slice(2),arr=ev[list]=ev[list]||[],i=arr.findIndex(x=>x.id===id);
+  if(val==null){if(i>=0)arr.splice(i,1);}else if(i>=0)arr[i]=val;else arr.push(val);
+}
+// The one way to change an event: fn(ev, put, meta). put(key,value|null) edits one field; meta(patch) edits the event's details.
+function evMutate(evId,fn){
+  const d=evData(),ev=evFind(d,evId);if(!ev)return null;
+  const puts=[];
+  const put=(key,val)=>{evApply(ev,key,val);puts.push({k:key,v:val==null?null:JSON.parse(JSON.stringify(val))});};
+  const meta=patch=>{Object.assign(ev,patch);puts.push({k:'meta',v:evMeta(ev)});};
+  fn(ev,put,meta);ev.upd=Date.now();
+  if(!evSave(d))return null;
+  if(ev.shared&&puts.length){
+    const last={};puts.forEach(p=>{last[p.k]=p;});
+    const b=evBoot();b.q[evId]=(b.q[evId]||[]).filter(x=>!last[x.k]).concat(Object.values(last));evBootSave(b);
+    evFlushSoon();
+  }
+  return ev;
+}
+
+// ── cloud sync (shared events only) ──
+let evFlushTimer=null,evFlushing=false;
+function evFlushSoon(){clearTimeout(evFlushTimer);evFlushTimer=setTimeout(evFlushAll,400);}
+async function evFlushAll(){
+  if(!evCloudOn()||evFlushing||!currentUser)return;evFlushing=true;
+  try{const b=evBoot();for(const id of Object.keys(b.q)){if((b.q[id]||[]).length)await evFlush(id);}}
+  finally{evFlushing=false;}
+}
+async function evFlush(evId){
+  const batch=(evBoot().q[evId]||[]).slice();if(!batch.length)return true;
+  const fields={},mask=[];
+  batch.forEach(x=>{mask.push('updateMask.fieldPaths='+encodeURIComponent(x.k));if(x.v!=null)fields[x.k]={stringValue:JSON.stringify(x.v)};});
+  try{
+    const r=await fetch(evDocURL(evId)+'?'+mask.join('&')+'&key='+encodeURIComponent(EV_CLOUD.apiKey),{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({fields})});
+    if(!r.ok)throw new Error('HTTP '+r.status);
+  }catch(e){evStatus='offline';evUpdStatus();return false;}
+  const b=evBoot();   // drop what was sent, unless it was changed again while sending
+  b.q[evId]=(b.q[evId]||[]).filter(x=>!batch.some(s=>s.k===x.k&&JSON.stringify(s.v)===JSON.stringify(x.v)));
+  const sk=b.sk[evId]=b.sk[evId]||[];
+  batch.forEach(x=>{const i=sk.indexOf(x.k);if(x.v==null){if(i>=0)sk.splice(i,1);}else if(i<0)sk.push(x.k);});
+  evBootSave(b);evStatus='';evUpdStatus();return true;
+}
+async function evFetchRemote(id){
+  try{
+    const r=await fetch(evDocURL(id)+'?key='+encodeURIComponent(EV_CLOUD.apiKey));
+    if(r.status===404)return{ok:false,code:404};
+    if(!r.ok)return{ok:false,code:r.status};
+    const j=await r.json(),remote={};
+    Object.entries(j.fields||{}).forEach(([k,v])=>{try{remote[k]=JSON.parse(v.stringValue);}catch(e){}});
+    return{ok:true,remote};
+  }catch(e){return{ok:false,code:'net'};}
+}
+function evMetaNorm(v){return JSON.stringify({name:v.name,location:v.location||'',notes:v.notes||'',days:v.days||[],startTime:v.startTime||'09:00',owner:v.owner||null,deleted:!!v.deleted,upd:v.upd||0});}
+async function evPull(evId){
+  if(!evCloudOn())return false;
+  const ev0=evFind(evData(),evId);if(!ev0||!ev0.shared)return false;
+  const res=await evFetchRemote(evId);
+  if(!res.ok){evStatus=res.code===404?'missing':'offline';evUpdStatus();return false;}
+  const remote=res.remote,d=evData(),ev=evFind(d,evId);if(!ev)return false;
+  const b=evBoot(),pending=new Set((b.q[evId]||[]).map(x=>x.k));
+  const have=evAllKeys(ev);let changed=false;
+  Object.keys(remote).forEach(k=>{
+    if(pending.has(k))return;
+    const same=k==='meta'?(have.meta&&evMetaNorm(have.meta)===evMetaNorm(remote.meta)):JSON.stringify(have[k])===JSON.stringify(remote[k]);
+    if(!same){evApply(ev,k,remote[k]);changed=true;}
+  });
+  const known=new Set(b.sk[evId]||Object.keys(have));   // first pull on this device: trust what we have
+  Object.keys(have).forEach(k=>{if(k!=='meta'&&!pending.has(k)&&!(k in remote)&&known.has(k)){evApply(ev,k,null);changed=true;}});
+  b.sk[evId]=Object.keys(remote);evBootSave(b);
+  evLastPull[evId]=Date.now();evStatus='';
+  if(ev.deleted&&!ev.creator){
+    evRemoveLocal(evId);clToast('"'+ev.name+'" was deleted by its owner');
+    if(currentSection==='event'&&activeEventId===evId){activeEventId=null;showSection('dayout');}return true;
+  }
+  if(changed){evSave(d);if(currentSection==='event'&&activeEventId===evId)evSoftRefresh();else if(currentSection==='dayout'||currentSection==='dashboard')showSection(currentSection);}
+  evUpdStatus();return true;
+}
+function evSoftRefresh(){
+  const m=document.getElementById('modal'),a=document.activeElement;
+  if((m&&m.style.display==='flex')||(a&&/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName))){evDirty=true;return;}
+  evDirty=false;showSection('event');
+}
+function evStartPoll(){
+  evStopPoll();
+  evPoll=setInterval(()=>{
+    if(document.hidden||currentSection!=='event'||!activeEventId)return;
+    if(evDirty)evSoftRefresh();
+    evPull(activeEventId).then(()=>evFlushAll());
+  },6000);
+}
+function evStopPoll(){if(evPoll){clearInterval(evPoll);evPoll=null;}}
+function evUpdStatus(){
+  const el=document.getElementById('ev-status');if(!el)return;
+  const ev=evFind(evData(),activeEventId);if(!ev){el.textContent='';return;}
+  if(!ev.shared){el.textContent='Private to you';return;}
+  const pend=(evBoot().q[ev.id]||[]).length;
+  if(evStatus==='offline')el.textContent='Offline. Changes are saved and will send when you are back online';
+  else if(evStatus==='missing')el.textContent='This shared event could not be found online';
+  else if(pend)el.textContent='Sending changes…';
+  else{const t=evLastPull[ev.id];el.textContent='Shared and live'+(t?' · checked '+new Date(t).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}):'');}
+}
+function evRemoveLocal(id){
+  const d=evData();d.events=d.events.filter(e=>e.id!==id);d.pins=d.pins.filter(x=>x!==id);evSave(d);
+  const b=evBoot();delete b.q[id];delete b.sk[id];evBootSave(b);
+}
+
+// ── dates ──
+function evDateObj(k){return new Date(k+'T12:00:00');}
+function evShort(k){return evDateObj(k).toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'});}
+function evLong(k){return evDateObj(k).toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'});}
+function evDaysSorted(ev){return(ev.days||[]).slice().sort();}
+function evRange(ev){
+  const d=evDaysSorted(ev);if(!d.length)return'No days chosen';
+  const f=evDateObj(d[0]).toLocaleDateString('en-GB',{day:'numeric',month:'short'}),l=evDateObj(d[d.length-1]).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+  return d.length===1?evDateObj(d[0]).toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',year:'numeric'}):f+' to '+l+' · '+d.length+' days';
+}
+function evCountdown(ev){
+  const d=evDaysSorted(ev);if(!d.length)return'';
+  const t=clKey(new Date()),diff=k=>Math.round((evDateObj(k)-evDateObj(t))/864e5);
+  if(t<d[0]){const n=diff(d[0]);return n===1?'Tomorrow':'In '+n+' days';}
+  if(d.indexOf(t)>=0)return d.length>1?'Today · day '+(d.indexOf(t)+1)+' of '+d.length:'Today';
+  const next=d.find(k=>k>t);
+  return next?'Next day: '+evShort(next):'Finished';
+}
+function evInitials(n){return(n||'?').split(/\s+/).filter(Boolean).slice(0,2).map(w=>w[0].toUpperCase()).join('')||'?';}
+
+// ── list strips (Days out page, home screen) ──
+function evCardHTML(ev){
+  const n=(ev.acts||[]).length;
+  return`<button class="ev-card" onclick="openEvent('${ev.id}')"><div class="ev-card-main"><div class="ev-card-name">${escHtml(ev.name)}</div><div class="ev-card-sub">${escHtml(evRange(ev))}</div><div class="ev-card-sub">${escHtml(evCountdown(ev))}${n?' · '+n+' activit'+(n!==1?'ies':'y'):''}</div></div>${ev.shared?'<span class="ev-live">Shared</span>':''}<span class="area-chev">→</span></button>`;
+}
+function evStripHTML(){
+  const list=evData().events.slice().sort((a,b)=>(evDaysSorted(a)[0]||'9').localeCompare(evDaysSorted(b)[0]||'9'));
+  return`<div class="ev-strip"><div class="flex-between"><div class="ev-strip-title">Events</div><button class="btn-solid sm teal" onclick="openAddEvent()">+ Add event</button></div>
+    ${list.length?`<div class="ev-cards">${list.map(evCardHTML).join('')}</div>`:`<p class="cl-hint">Plan a trip or a party with other people. Choose the days, send a link, and everyone sees the same calendar.</p>`}</div>`;
+}
+function evPinnedHTML(){
+  const d=evData(),list=d.pins.map(id=>evFind(d,id)).filter(Boolean);
+  return list.length?`<div class="ev-strip home-pins"><div class="ev-strip-title">Events</div><div class="ev-cards">${list.map(evCardHTML).join('')}</div></div>`:'';
+}
+function openEvent(id){
+  activeEventId=id;evDay=null;evCalMonth=null;evStatus='';showSection('event');
+  const ev=evFind(evData(),id);if(ev&&ev.shared)evPull(id).then(()=>evFlushAll());
+}
+
+// ── day picker (multi-select calendar) ──
+function evPickerHTML(){
+  const p=evPick,first=new Date(p.y,p.m,1),lead=(first.getDay()+6)%7,dim=new Date(p.y,p.m+1,0).getDate(),today=clKey(new Date());
+  let cells='';for(let i=0;i<lead;i++)cells+='<span></span>';
+  for(let d=1;d<=dim;d++){const k=p.y+'-'+String(p.m+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');cells+=`<button type="button" class="evp-day${p.sel.indexOf(k)>=0?' on':''}${k===today?' today':''}" onclick="evPickToggle('${k}')">${d}</button>`;}
+  const sel=p.sel.slice().sort(),txt=sel.length?sel.length+' day'+(sel.length!==1?'s':'')+' chosen: '+sel.slice(0,4).map(k=>evDateObj(k).toLocaleDateString('en-GB',{day:'numeric',month:'short'})).join(', ')+(sel.length>4?' …':''):'Tap one or more days';
+  return`<div class="evp-head"><button type="button" class="icon-btn" onclick="evPickNav(-1)" aria-label="Previous month">‹</button><div class="evp-title">${first.toLocaleDateString('en-GB',{month:'long',year:'numeric'})}</div><button type="button" class="icon-btn" onclick="evPickNav(1)" aria-label="Next month">›</button></div>
+    <div class="evp-dow"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div><div class="evp-grid">${cells}</div><div class="cl-hint" style="margin:8px 0 0">${txt}</div>`;
+}
+function evPickRefresh(){const e=document.getElementById('ev-picker');if(e)e.innerHTML=evPickerHTML();}
+function evPickToggle(k){const i=evPick.sel.indexOf(k);if(i>=0)evPick.sel.splice(i,1);else evPick.sel.push(k);evPickRefresh();}
+function evPickNav(n){const d=new Date(evPick.y,evPick.m+n,1);evPick.y=d.getFullYear();evPick.m=d.getMonth();evPickRefresh();}
+function evPickStart(sel){
+  const first=sel.length?evDateObj(sel.slice().sort()[0]):new Date();
+  evPick={y:first.getFullYear(),m:first.getMonth(),sel:sel.slice()};
+}
+
+// ── add event ──
+function openAddEvent(){
+  evPickStart([]);
+  openModal(`<div class="modal-head"><div class="modal-title">New event</div><button class="modal-close" onclick="closeModal()">×</button></div>
+    <label class="field-label">Name</label><input id="ev-name" class="field-input" placeholder="e.g. Cornwall weekend, Hen do, Birthday…"/>
+    <label class="field-label">Where (optional)</label><input id="ev-loc" class="field-input" placeholder="e.g. St Ives"/>
+    <label class="field-label">Which days?</label><div id="ev-picker">${evPickerHTML()}</div>
+    <div class="modal-row"><button class="btn-solid sm teal" onclick="saveNewEvent()">Create event</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);
+}
+function saveNewEvent(){
+  const name=document.getElementById('ev-name').value.trim();
+  if(!name){clToast('Give the event a name');return;}
+  if(!evPick.sel.length){clToast('Choose at least one day');return;}
+  const me={id:uid(),name:currentUserName||'Me'};
+  const ev={id:evNewId(),name,location:document.getElementById('ev-loc').value.trim(),notes:'',days:evPick.sel.slice().sort(),startTime:'09:00',owner:{name:me.name},creator:true,shared:false,me,acts:[],todos:[],people:[{id:me.id,name:me.name,out:[]}],upd:Date.now(),created:Date.now()};
+  const d=evData();d.events.push(ev);if(!evSave(d))return;
+  closeModal();openEvent(ev.id);
+}
+
+// ── event page ──
+function renderEvent(main){
+  const d=evData(),ev=evFind(d,activeEventId);
+  if(!ev){main.innerHTML=`<div class="empty">That event is not here any more.<br/><button class="btn-ghost" style="margin-top:12px" onclick="showSection('dayout')">Back to days out</button></div>`;return;}
+  if(evDay&&ev.days.indexOf(evDay)<0)evDay=null;
+  main.innerHTML=evDay?evDayHTML(ev):evHomeHTML(ev);
+  if(ev.shared&&evCloudOn()&&!evPoll)evStartPoll();
+  evUpdStatus();
+}
+function evCalHTML(ev){
+  const m=evCalMonth,first=new Date(m.y,m.m,1),lead=(first.getDay()+6)%7,dim=new Date(m.y,m.m+1,0).getDate(),today=clKey(new Date());
+  const counts={};(ev.acts||[]).forEach(a=>{counts[a.day]=(counts[a.day]||0)+1;});
+  let cells='';for(let i=0;i<lead;i++)cells+='<span></span>';
+  for(let d=1;d<=dim;d++){
+    const k=m.y+'-'+String(m.m+1).padStart(2,'0')+'-'+String(d).padStart(2,'0'),has=ev.days.indexOf(k)>=0,n=counts[k]||0;
+    cells+=has?`<button class="evc-day has${k===today?' today':''}" onclick="evOpenDay('${k}')"><b>${d}</b><i>${n?n+(n===1?' thing':' things'):'free'}</i></button>`:`<span class="evc-day off${k===today?' today':''}"><b>${d}</b></span>`;
+  }
+  return`<div class="evp-head"><button class="icon-btn" onclick="evCalNav(-1)" aria-label="Previous month">‹</button><div class="evp-title">${first.toLocaleDateString('en-GB',{month:'long',year:'numeric'})}</div><button class="icon-btn" onclick="evCalNav(1)" aria-label="Next month">›</button></div>
+    <div class="evp-dow"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div><div class="evc-grid">${cells}</div>`;
+}
+function evCalNav(n){const d=new Date(evCalMonth.y,evCalMonth.m+n,1);evCalMonth={y:d.getFullYear(),m:d.getMonth()};showSection('event');}
+function evOpenDay(k){evDay=k;showSection('event');window.scrollTo(0,0);}
+function evGoing(ev,day){return(ev.people||[]).filter(p=>(p.out||[]).indexOf(day)<0);}
+function evMoney(n){return'£'+(Number(n)||0).toLocaleString('en-GB',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function evHomeHTML(ev){
+  const days=evDaysSorted(ev);
+  if(!evCalMonth){const t=clKey(new Date()),f=days.find(k=>k>=t)||days[0],dt=evDateObj(f);evCalMonth={y:dt.getFullYear(),m:dt.getMonth()};}
+  const total=(ev.acts||[]).reduce((s,a)=>s+(a.price||0),0),ppl=Math.max(1,(ev.people||[]).length);
+  const todos=ev.todos||[],done=todos.filter(t=>t.done).length;
+  return`<div class="section-rule"><div><div class="section-title">${escHtml(ev.name)}</div><div class="section-sub">${escHtml(evRange(ev))}${ev.location?' · '+escHtml(ev.location):''}</div></div><button class="btn-ghost" onclick="openEventSettings()">Settings</button></div>
+    <div class="ev-meta"><span class="ev-count">${escHtml(evCountdown(ev))}</span><span id="ev-status" class="of-meta"></span></div>
+    ${ev.notes?`<p class="ev-notes">${escHtml(ev.notes)}</p>`:''}
+    <div class="evc">${evCalHTML(ev)}</div>
+    <p class="cl-hint" style="text-align:center">Tap a day to see and edit its plan.</p>
+    <div class="ev-stats"><div><b>${(ev.acts||[]).length}</b><span>Activities</span></div><div><b>${(ev.people||[]).length}</b><span>${(ev.people||[]).length===1?'Person':'People'}</span></div><div><b>${evMoney(total)}</b><span>Total${ppl>1&&total?' · '+evMoney(total/ppl)+' each':''}</span></div></div>
+    <div class="ev-block"><div class="flex-between mb14"><div class="ev-strip-title">Checklist${todos.length?` <span class="of-meta">${done} of ${todos.length} done</span>`:''}</div></div>
+      <div class="ev-add"><input id="ev-todo" class="field-input" placeholder="Add something to bring or do…" onkeydown="if(event.key==='Enter')evAddTodo()"/><button class="btn-ghost" onclick="evAddTodo()">Add</button></div>
+      ${todos.slice().sort((a,b)=>(a.done?1:0)-(b.done?1:0)||(a.upd||0)-(b.upd||0)).map(t=>`<div class="ev-todo${t.done?' done':''}"><label><input type="checkbox" ${t.done?'checked':''} onchange="evToggleTodo('${t.id}')"/><span>${escHtml(t.text)}</span></label><button class="icon-btn" title="Remove" onclick="evDelTodo('${t.id}')">×</button></div>`).join('')}</div>
+    <div class="ev-block"><div class="flex-between mb14"><div class="ev-strip-title">People</div><button class="btn-ghost" onclick="openEventSettings()">${ev.shared?'Invite':'Share'}</button></div>
+      <div class="ev-people">${(ev.people||[]).map(p=>`<span class="ev-person"><i>${escHtml(evInitials(p.name))}</i>${escHtml(p.name)}</span>`).join('')||'<span class="of-meta">Just you so far</span>'}</div></div>`;
+}
+function evDayNav(dir){
+  const ev=evFind(evData(),activeEventId);if(!ev)return;
+  const d=evDaysSorted(ev),i=d.indexOf(evDay),n=d[i+dir];if(n){evDay=n;showSection('event');window.scrollTo(0,0);}
+}
+function evDayHTML(ev){
+  const days=evDaysSorted(ev),i=days.indexOf(evDay),acts=doSorted((ev.acts||[]).filter(a=>a.day===evDay));
+  const going=evGoing(ev,evDay),me=(ev.people||[]).find(p=>p.id===(ev.me||{}).id),imGoing=me?(me.out||[]).indexOf(evDay)<0:true;
+  const total=acts.reduce((s,a)=>s+(a.price||0),0),each=total/Math.max(1,going.length);
+  let prevEnd=-1;
+  const rows=acts.length?acts.map(a=>{
+    const s=doToMin(a.time),e=s==null?null:s+doMins(a),clash=s!=null&&prevEnd>s;if(e!=null)prevEnd=Math.max(prevEnd,e);const lk=safeLink(a.link);
+    return`<div class="item-row do-row${clash?' clash':''}"><div class="do-time">${s==null?'<span class="do-notime">No time</span>':doFmt(s)+'<span>'+doFmt(e)+'</span>'}</div><div class="item-body"><span class="cat-badge">${escHtml(a.cat||'Other')}</span><div class="item-name">${escHtml(a.name)}</div>${a.notes?`<div class="of-meta">${escHtml(a.notes)}</div>`:''}${clash?'<div class="do-clash">Overlaps the activity before it</div>':''}${lk?`<a class="item-link" href="${escHtml(lk)}" target="_blank" rel="noopener">${escHtml(a.link)}</a>`:''}${a.by?`<div class="ev-by">Added by ${escHtml(a.by)}</div>`:''}</div>${a.price?`<div class="item-price">${evMoney(a.price)}</div>`:''}<button class="btn-ghost" style="padding:4px 10px;font-size:12px" onclick="evActForm('${a.id}')">Edit</button><button class="icon-btn" title="Delete" onclick="evDelAct('${a.id}')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg></button></div>`;
+  }).join(''):`<div class="empty" style="padding:20px 0;font-size:13px">Nothing planned for this day yet.</div>`;
+  return`<div class="section-rule"><div><div class="section-title">${escHtml(evLong(evDay))}</div><div class="section-sub">${escHtml(ev.name)} · day ${i+1} of ${days.length}</div></div></div>
+    <div class="ev-daynav"><button class="btn-ghost" ${i<=0?'disabled':''} onclick="evDayNav(-1)">Previous day</button><button class="btn-ghost" ${i>=days.length-1?'disabled':''} onclick="evDayNav(1)">Next day</button></div>
+    <div class="ev-block" style="margin-top:0"><div class="flex-between mb14"><div class="ev-strip-title">Who is going</div><button class="btn-ghost" onclick="evToggleGoing()">${imGoing?'I can\'t make it':'I\'m going'}</button></div>
+      <div class="ev-people">${going.map(p=>`<span class="ev-person"><i>${escHtml(evInitials(p.name))}</i>${escHtml(p.name)}</span>`).join('')||'<span class="of-meta">Nobody yet</span>'}</div></div>
+    <div class="flex-between mb14" style="margin-top:22px"><div class="ev-strip-title">Schedule</div><div class="flex-center"><button class="btn-ghost" onclick="evArrange()">Arrange my day</button><button class="btn-ghost" onclick="evActForm(null)">+ Add</button></div></div>
+    <p class="cl-hint" style="margin-top:-6px">Day starts at ${doFmt(doToMin(ev.startTime)==null?540:doToMin(ev.startTime))}. Give activities a time, or tap Arrange my day to fill in the rest in order.</p>
+    ${rows}
+    ${total?`<div class="ev-daytotal"><span>Day total</span><b>${evMoney(total)}</b>${going.length>1?`<span>${evMoney(each)} each for ${going.length}</span>`:''}</div>`:''}
+    <div class="ev-block"><a class="btn-ghost ev-link" href="${escHtml(evGcalDay(ev,evDay))}" target="_blank" rel="noopener">Add this day to Google Calendar</a></div>
+    <span id="ev-status" class="of-meta" style="display:block;margin-top:10px"></span>`;
+}
+
+// ── checklist, going ──
+function evAddTodo(){
+  const inp=document.getElementById('ev-todo'),text=inp&&inp.value.trim();if(!text)return;
+  evMutate(activeEventId,(ev,put)=>{const id=uid();put('k_'+id,{id,text,done:false,by:(ev.me||{}).name||'',upd:Date.now()});});
+  showSection('event');const n=document.getElementById('ev-todo');if(n)n.focus();
+}
+function evToggleTodo(id){evMutate(activeEventId,(ev,put)=>{const t=ev.todos.find(x=>x.id===id);if(t)put('k_'+id,Object.assign({},t,{done:!t.done,upd:Date.now()}));});showSection('event');}
+function evDelTodo(id){evMutate(activeEventId,(ev,put)=>{put('k_'+id,null);});showSection('event');}
+function evToggleGoing(){
+  evMutate(activeEventId,(ev,put)=>{
+    let p=(ev.people||[]).find(x=>x.id===(ev.me||{}).id);
+    if(!p)p={id:ev.me.id,name:ev.me.name,out:[]};else p=Object.assign({},p,{out:(p.out||[]).slice()});
+    const i=p.out.indexOf(evDay);if(i>=0)p.out.splice(i,1);else p.out.push(evDay);
+    put('p_'+p.id,p);
+  });
+  showSection('event');
+}
+
+// ── activities ──
+function evActForm(actId){
+  const ev=evFind(evData(),activeEventId);if(!ev)return;
+  const a=actId?(ev.acts||[]).find(x=>x.id===actId):null;if(actId&&!a)return;
+  const v=a||{cat:'Activity',day:evDay};
+  openModal(`<div class="modal-head"><div class="modal-title">${a?'Edit activity':'Add activity'}</div><button class="modal-close" onclick="closeModal()">×</button></div>
+    <label class="field-label">Name</label><input id="ea-name" class="field-input" value="${escHtml(v.name||'')}" placeholder="e.g. Lunch at The Seafood Bar…"/>
+    <label class="field-label">Category</label><select id="ea-cat" class="field-input">${Object.keys(DO_CAT_MINS).concat(v.cat&&!DO_CAT_MINS[v.cat]?[v.cat]:[]).map(c=>`<option${v.cat===c?' selected':''}>${escHtml(c)}</option>`).join('')}</select>
+    <label class="field-label">Day</label><select id="ea-day" class="field-input">${evDaysSorted(ev).map(k=>`<option value="${k}"${v.day===k?' selected':''}>${escHtml(evLong(k))}</option>`).join('')}</select>
+    <label class="field-label">Start time (leave empty to let Arrange my day choose)</label><input id="ea-time" class="field-input" type="time" value="${escHtml(v.time||'')}"/>
+    <label class="field-label">How long (minutes)</label><input id="ea-mins" class="field-input" type="number" min="5" step="5" value="${v.mins||''}" placeholder="Usual length for this kind of activity"/>
+    <label class="field-label">Link</label><input id="ea-link" class="field-input" type="url" value="${escHtml(v.link||'')}" placeholder="https://…"/>
+    <label class="field-label">Price (for the whole group)</label><input id="ea-price" class="field-input" type="number" value="${v.price||''}" placeholder="0.00" min="0" step="0.01"/>
+    <label class="field-label">Notes (optional)</label><input id="ea-notes" class="field-input" value="${escHtml(v.notes||'')}" placeholder="Booking reference, what to bring…"/>
+    <div class="modal-row"><button class="btn-solid sm teal" onclick="evSaveAct(${actId?`'${actId}'`:'null'})">${a?'Save':'Add'}</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);
+}
+function evSaveAct(actId){
+  const name=document.getElementById('ea-name').value.trim();if(!name){clToast('Give it a name');return;}
+  const rec={name,cat:document.getElementById('ea-cat').value,day:document.getElementById('ea-day').value,time:document.getElementById('ea-time').value||'',mins:parseInt(document.getElementById('ea-mins').value,10)||0,link:document.getElementById('ea-link').value.trim(),price:parseFloat(document.getElementById('ea-price').value)||0,notes:document.getElementById('ea-notes').value.trim()};
+  const moved=rec.day!==evDay;
+  evMutate(activeEventId,(ev,put)=>{
+    const cur=actId?(ev.acts||[]).find(x=>x.id===actId):null,id=cur?cur.id:uid();
+    put('a_'+id,Object.assign({},cur||{by:(ev.me||{}).name||''},rec,{id,upd:Date.now()}));
+  });
+  closeModal();showSection('event');if(moved)clToast('Saved on '+evShort(rec.day));
+}
+function evDelAct(id){
+  const ev=evFind(evData(),activeEventId),a=ev&&(ev.acts||[]).find(x=>x.id===id);if(!a)return;
+  if(!confirm('Delete "'+a.name+'"?'))return;
+  evMutate(activeEventId,(e,put)=>{put('a_'+id,null);});showSection('event');
+}
+function evArrange(){
+  const ev=evFind(evData(),activeEventId);if(!ev)return;
+  const acts=(ev.acts||[]).filter(a=>a.day===evDay),flex=acts.filter(a=>doToMin(a.time)==null);
+  if(!acts.length){clToast('Add some activities first');return;}
+  if(!flex.length){clToast('Every activity already has a time');return;}
+  const fixed=acts.filter(a=>doToMin(a.time)!=null).map(a=>[doToMin(a.time),doToMin(a.time)+doMins(a)]);
+  let cur=doToMin(ev.startTime);if(cur==null)cur=540;
+  const out=[];
+  flex.forEach(a=>{const len=doMins(a);let moved=true;while(moved){moved=false;fixed.forEach(f=>{if(cur<f[1]&&cur+len>f[0]){cur=f[1];moved=true;}});}out.push([a,doFmt(cur)]);cur+=len;});
+  evMutate(activeEventId,(e,put)=>{out.forEach(([a,t])=>put('a_'+a.id,Object.assign({},a,{time:t,upd:Date.now()})));});
+  showSection('event');clToast(cur>1440?'Day arranged, but it runs past midnight':'Day arranged');
+}
+
+// ── calendar export ──
+function evGcalDay(ev,day){
+  const acts=doSorted((ev.acts||[]).filter(a=>a.day===day)),n=evDateObj(day);n.setDate(n.getDate()+1);
+  const details=acts.map(a=>(a.time?a.time+' ':'')+a.name+(a.notes?' - '+a.notes:'')).join('\n');
+  return'https://calendar.google.com/calendar/render?action=TEMPLATE&text='+encodeURIComponent(ev.name)+'&dates='+day.replace(/-/g,'')+'/'+clKey(n).replace(/-/g,'')+'&details='+encodeURIComponent(details)+(ev.location?'&location='+encodeURIComponent(ev.location):'');
+}
+function evIcsText(s){return String(s||'').replace(/\\/g,'\\\\').replace(/;/g,'\\;').replace(/,/g,'\\,').replace(/\r?\n/g,'\\n');}
+function evDownloadIcs(){
+  const ev=evFind(evData(),activeEventId);if(!ev)return;
+  const L=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//MAISON//Events//EN','CALSCALE:GREGORIAN'],stamp=new Date().toISOString().replace(/[-:]/g,'').replace(/\.\d+/,'');
+  const add=(uid2,start,end,title,desc,allDay)=>{L.push('BEGIN:VEVENT','UID:'+uid2+'@maison','DTSTAMP:'+stamp,allDay?'DTSTART;VALUE=DATE:'+start:'DTSTART:'+start,allDay?'DTEND;VALUE=DATE:'+end:'DTEND:'+end,'SUMMARY:'+evIcsText(title));if(desc)L.push('DESCRIPTION:'+evIcsText(desc));if(ev.location)L.push('LOCATION:'+evIcsText(ev.location));L.push('END:VEVENT');};
+  evDaysSorted(ev).forEach(day=>{
+    const acts=doSorted((ev.acts||[]).filter(a=>a.day===day)),d0=day.replace(/-/g,''),nx=evDateObj(day);nx.setDate(nx.getDate()+1);
+    const timed=acts.filter(a=>doToMin(a.time)!=null);
+    const untimed=acts.filter(a=>doToMin(a.time)==null);
+    if(!timed.length||untimed.length)add(ev.id+day,d0,clKey(nx).replace(/-/g,''),ev.name,untimed.map(a=>a.name).join(', '),true);   // all-day banner, listing anything without a time
+    timed.forEach(a=>{const s=doToMin(a.time),e=s+doMins(a),f=m=>String(Math.floor(m/60)%24).padStart(2,'0')+String(m%60).padStart(2,'0')+'00';add(ev.id+a.id,d0+'T'+f(s),d0+'T'+f(e),a.name+' ('+ev.name+')',a.notes,false);});
+  });
+  L.push('END:VCALENDAR');
+  const blob=new Blob([L.join('\r\n')],{type:'text/calendar'}),a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);a.download=(ev.name.replace(/[^\w]+/g,'-')||'event')+'.ics';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000);
+}
+
+// ── settings, sharing ──
+function openEventSettings(){
+  const d=evData(),ev=evFind(d,activeEventId);if(!ev)return;
+  const pinned=d.pins.indexOf(ev.id)>=0;
+  const share=ev.shared
+    ?`<p class="cl-hint">Anyone who opens this link can see and edit the event, so only send it to people you trust.</p>
+      <input class="field-input" readonly value="${escHtml(evLink(ev.id))}" onfocus="this.select()"/>
+      <div class="modal-row" style="margin-top:10px"><button class="btn-solid sm teal" onclick="evCopyLink()">Copy link</button><button class="btn-ghost" onclick="evSendLink()">Send link</button></div>`
+    :evCloudOn()
+      ?`<p class="cl-hint">Only you can see this event. Turn on sharing to get a link. Anyone you send it to can open it, see the calendar and edit it, and changes show up live for everyone.</p><button class="btn-solid sm teal" onclick="evShareOn()">Turn on sharing</button>`
+      :`<p class="cl-hint">Sharing is not switched on for this copy of MAISON yet. It needs the shared event database to be set up once (a free Firebase project). The steps are in CLAUDE.md under "Shared events setup". Until then events work normally on this device and back up to your Google Drive.</p>`;
+  openModal(`<div class="modal-head"><div class="modal-title">Event settings</div><button class="modal-close" onclick="closeModal()">×</button></div>
+    <label class="field-label">Name</label><input id="es-name" class="field-input" value="${escHtml(ev.name)}"/>
+    <label class="field-label">Where</label><input id="es-loc" class="field-input" value="${escHtml(ev.location||'')}"/>
+    <label class="field-label">Notes for everyone</label><input id="es-notes" class="field-input" value="${escHtml(ev.notes||'')}" placeholder="Meeting point, dress code…"/>
+    <label class="field-label">Day starts at</label><input id="es-start" class="field-input" type="time" value="${escHtml(ev.startTime||'09:00')}"/>
+    <label class="field-label">Your name in this event</label><input id="es-me" class="field-input" value="${escHtml((ev.me||{}).name||'')}"/>
+    <div class="modal-row"><button class="btn-solid sm teal" onclick="evSaveDetails()">Save</button><button class="btn-ghost" onclick="evChangeDays()">Change days</button></div>
+    <div class="ev-set-block"><div class="ev-strip-title">Share</div>${share}</div>
+    <div class="ev-set-block"><div class="ev-strip-title">On your home screen</div>
+      <label class="ev-switch"><input type="checkbox" ${pinned?'checked':''} onchange="evTogglePin(this.checked)"/><span>Show this event on my MAISON home screen</span></label></div>
+    <div class="ev-set-block"><div class="ev-strip-title">Calendar and backup</div>
+      <div class="modal-row" style="margin-top:0"><button class="btn-ghost" onclick="evDownloadIcs()">Download calendar file</button></div>
+      <p class="cl-hint">A full copy of this event is kept in your Google Drive with the rest of your MAISON data (turn that on in Settings, Cloud sync).</p></div>
+    <div class="ev-set-block"><button class="btn-ghost danger" onclick="evDeleteEvent()">${ev.creator||!ev.shared?'Delete event':'Leave event'}</button></div>`);
+}
+function evSaveDetails(){
+  const name=document.getElementById('es-name').value.trim();if(!name){clToast('Give it a name');return;}
+  const meName=document.getElementById('es-me').value.trim();
+  evMutate(activeEventId,(ev,put,meta)=>{
+    meta({name,location:document.getElementById('es-loc').value.trim(),notes:document.getElementById('es-notes').value.trim(),startTime:document.getElementById('es-start').value||'09:00'});
+    if(meName&&ev.me&&meName!==ev.me.name){ev.me.name=meName;const p=(ev.people||[]).find(x=>x.id===ev.me.id);if(p)put('p_'+p.id,Object.assign({},p,{name:meName}));}
+  });
+  closeModal();showSection('event');
+}
+function evChangeDays(){
+  const ev=evFind(evData(),activeEventId);if(!ev)return;
+  evPickStart(ev.days);
+  openModal(`<div class="modal-head"><div class="modal-title">Change days</div><button class="modal-close" onclick="closeModal()">×</button></div>
+    <div id="ev-picker">${evPickerHTML()}</div>
+    <div class="modal-row"><button class="btn-solid sm teal" onclick="evSaveDays()">Save days</button><button class="btn-ghost" onclick="openEventSettings()">Back</button></div>`);
+}
+function evSaveDays(){
+  const ev=evFind(evData(),activeEventId);if(!ev)return;
+  if(!evPick.sel.length){clToast('Choose at least one day');return;}
+  const keep=evPick.sel.slice().sort(),gone=(ev.days||[]).filter(k=>keep.indexOf(k)<0),lost=(ev.acts||[]).filter(a=>gone.indexOf(a.day)>=0);
+  if(lost.length&&!confirm('Removing '+gone.length+' day'+(gone.length!==1?'s':'')+' also deletes '+lost.length+' planned activit'+(lost.length!==1?'ies':'y')+'. Continue?'))return;
+  evMutate(activeEventId,(e,put,meta)=>{lost.forEach(a=>put('a_'+a.id,null));meta({days:keep});});
+  evCalMonth=null;closeModal();showSection('event');
+}
+async function evShareOn(){
+  const d=evData(),ev=evFind(d,activeEventId);if(!ev||!evCloudOn())return;
+  ev.shared=true;ev.creator=true;if(!evSave(d))return;
+  const b=evBoot();b.q[ev.id]=Object.entries(evAllKeys(ev)).map(([k,v])=>({k,v:JSON.parse(JSON.stringify(v))}));b.sk[ev.id]=[];evBootSave(b);
+  clToast('Turning on sharing…');
+  const ok=await evFlush(ev.id);
+  if(!ok){
+    const d2=evData(),e2=evFind(d2,ev.id);if(e2){e2.shared=false;evSave(d2);}
+    const b2=evBoot();delete b2.q[ev.id];delete b2.sk[ev.id];evBootSave(b2);
+    clToast('Could not reach the shared database. Check your connection and the setup.');openEventSettings();return;
+  }
+  evStartPoll();openEventSettings();showSection('event');
+}
+function evCopyLink(){
+  const l=evLink(activeEventId);
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(l).then(()=>clToast('Link copied'),()=>prompt('Copy this link:',l));
+  else prompt('Copy this link:',l);
+}
+function evSendLink(){
+  const ev=evFind(evData(),activeEventId);if(!ev)return;
+  const l=evLink(ev.id);
+  if(navigator.share)navigator.share({title:ev.name,text:'Join "'+ev.name+'" on MAISON',url:l}).catch(()=>{});else evCopyLink();
+}
+function evTogglePin(on){
+  const d=evData(),id=activeEventId,i=d.pins.indexOf(id);
+  if(on&&i<0)d.pins.push(id);if(!on&&i>=0)d.pins.splice(i,1);
+  evSave(d);clToast(on?'Added to your home screen':'Removed from your home screen');
+}
+async function evDeleteEvent(){
+  const d=evData(),ev=evFind(d,activeEventId);if(!ev)return;
+  const everyone=ev.shared&&ev.creator;
+  if(!confirm(everyone?'Delete "'+ev.name+'" for everyone? It will disappear from every person\'s app.':ev.shared?'Leave "'+ev.name+'"? It will be removed from your app, but stays for everyone else.':'Delete "'+ev.name+'"?'))return;
+  if(ev.shared&&evCloudOn()){
+    if(everyone)evMutate(ev.id,(e,put,meta)=>{meta({deleted:true});});
+    else evMutate(ev.id,(e,put)=>{if(ev.me)put('p_'+ev.me.id,null);});
+    await evFlush(ev.id);
+  }
+  evRemoveLocal(ev.id);evStopPoll();activeEventId=null;evDay=null;closeModal();showSection('dayout');
+}
+
+// ── joining from a link ──
+function evHandleHash(){
+  const m=/[#&]event=([0-9a-f]{32})/.exec(location.hash||'');if(!m||!currentUser)return;
+  const id=m[1];try{history.replaceState(null,'',location.pathname+location.search);}catch(e){}
+  if(evFind(evData(),id)){openEvent(id);return;}
+  if(!evCloudOn()){openModal(`<div class="modal-head"><div class="modal-title">Event invitation</div><button class="modal-close" onclick="closeModal()">×</button></div><p class="cl-hint">This link is for a shared event, but sharing is not set up in this copy of MAISON yet.</p>`);return;}
+  openModal(`<div class="modal-head"><div class="modal-title">Event invitation</div><button class="modal-close" onclick="closeModal()">×</button></div><p class="cl-hint">Opening the event…</p>`);
+  evFetchRemote(id).then(res=>{
+    if(!res.ok||!res.remote.meta||res.remote.meta.deleted){
+      openModal(`<div class="modal-head"><div class="modal-title">Event invitation</div><button class="modal-close" onclick="closeModal()">×</button></div><p class="cl-hint">${res.code==='net'?'Could not reach the event. Check your connection and open the link again.':'This event could not be found. It may have been deleted.'}</p>`);return;
+    }
+    const meta=res.remote.meta;
+    window.__evJoin={id,remote:res.remote};
+    openModal(`<div class="modal-head"><div class="modal-title">You're invited</div><button class="modal-close" onclick="closeModal()">×</button></div>
+      <div class="ev-invite"><div class="ev-card-name">${escHtml(meta.name)}</div><div class="ev-card-sub">${escHtml(evRange({days:meta.days}))}${meta.location?' · '+escHtml(meta.location):''}</div>${meta.owner?`<div class="ev-card-sub">From ${escHtml(meta.owner.name)}</div>`:''}</div>
+      <label class="field-label">Your name in this event</label><input id="ej-name" class="field-input" value="${escHtml(currentUserName||'')}"/>
+      <div class="modal-row"><button class="btn-solid sm teal" onclick="evJoin()">Join event</button><button class="btn-ghost" onclick="closeModal()">Not now</button></div>`);
+  });
+}
+function evJoin(){
+  const j=window.__evJoin;if(!j)return;
+  const name=document.getElementById('ej-name').value.trim()||currentUserName||'Guest';
+  const ev={id:j.id,shared:true,creator:false,me:{id:uid(),name},acts:[],todos:[],people:[],upd:Date.now(),created:Date.now()};
+  Object.keys(j.remote).forEach(k=>evApply(ev,k,j.remote[k]));
+  const d=evData();d.events.push(ev);if(!evSave(d))return;
+  const b=evBoot();b.sk[j.id]=Object.keys(j.remote);b.q[j.id]=[];evBootSave(b);
+  evMutate(j.id,(e,put)=>{put('p_'+ev.me.id,{id:ev.me.id,name,out:[]});});
+  window.__evJoin=null;closeModal();openEvent(j.id);
+}
 
 // ── WEDDING ──
 let weddingTab='inspo';
@@ -2173,7 +2717,7 @@ function renderDashboard(main){
   ];
   const firstName=currentUserName?currentUserName.split(' ')[0]:'';
   main.innerHTML=`<div class="home-greet">Welcome back${firstName?', '+escHtml(firstName):''}</div>
-    <div class="home-tiles">${tiles.map((t,i)=>`<button class="home-tile" style="border-top-color:${t.color}" onclick="showSection('area_${t.a}')"><div><div class="home-tile-num" style="color:${t.color}">${String(i+1).padStart(2,'0')}</div><div class="home-tile-name">${AREAS[t.a].name}</div><div class="home-tile-sub">${t.sub}</div></div><span class="area-chev">→</span></button>`).join('')}</div>`;
+    <div class="home-tiles">${tiles.map((t,i)=>`<button class="home-tile" style="border-top-color:${t.color}" onclick="showSection('area_${t.a}')"><div><div class="home-tile-num" style="color:${t.color}">${String(i+1).padStart(2,'0')}</div><div class="home-tile-name">${AREAS[t.a].name}</div><div class="home-tile-sub">${t.sub}</div></div><span class="area-chev">→</span></button>`).join('')}</div>${evPinnedHTML()}`;
 }
 
 // ── MUSIC ──
@@ -3159,6 +3703,7 @@ function clPackAddPiece(pid,id){clPackMutate(pid,p=>{p.extraItemIds=p.extraItemI
 function wpKey(s){
   if(s==='dashboard'||s.indexOf('area_')===0)return'dashboard';
   if(s==='moodboards')return mbArea==='house'?'home':mbArea==='closet'?'closet':'wedding';
+  if(s==='event')return'dayout';
   return s;
 }
 function applyWallpaper(){
@@ -3326,13 +3871,14 @@ async function updateStorageInfo(){
     <div class="of-meta">${mb(used)} of about ${mb(LS_BUDGET)} used (${pct}%)</div>
     ${pct>85?`<div style="color:var(--red);font-size:12px;margin-top:4px">Nearly full — delete photos you no longer need so new ones keep saving.</div>`:''}${full}`;
 }
-function signOut(){mpStop();localStorage.removeItem('maison_sess');localStorage.removeItem('maison_drive_tok');localStorage.removeItem('maison_bkdrive_tok');currentUser=null;capturedDataURL=null;activeRoomId=null;driveAccessToken=null;driveFileId=null;if(driveSyncTimer){clearTimeout(driveSyncTimer);driveSyncTimer=null;}if(bkBackupTimer){clearTimeout(bkBackupTimer);bkBackupTimer=null;}document.getElementById('app').classList.remove('visible');document.getElementById('auth-screen').style.display='flex';google.accounts.id.disableAutoSelect();closeModal();}
+function signOut(){mpStop();evStopPoll();activeEventId=null;evDay=null;localStorage.removeItem('maison_sess');localStorage.removeItem('maison_drive_tok');localStorage.removeItem('maison_bkdrive_tok');currentUser=null;capturedDataURL=null;activeRoomId=null;driveAccessToken=null;driveFileId=null;if(driveSyncTimer){clearTimeout(driveSyncTimer);driveSyncTimer=null;}if(bkBackupTimer){clearTimeout(bkBackupTimer);bkBackupTimer=null;}document.getElementById('app').classList.remove('visible');document.getElementById('auth-screen').style.display='flex';google.accounts.id.disableAutoSelect();closeModal();}
 function clearData(){
   if(!confirm('Permanently delete all your data?'))return;
   mpStop();
   const photoIds=referencedPhotoIds();
   photoIds.forEach(id=>{idbDeletePhoto(id).catch(()=>{});deleteRemotePhoto(id).catch(()=>{});});
   Object.keys(localStorage).filter(k=>k.startsWith(`maison_${currentUser}_`)).forEach(k=>localStorage.removeItem(k));
+  localStorage.removeItem('maison_evq_'+currentUser);
   if(driveAccessToken&&driveFileId){fetch(`https://www.googleapis.com/drive/v3/files/${driveFileId}`,{method:'DELETE',headers:{Authorization:'Bearer '+driveAccessToken}});driveFileId=null;}
   closeModal();alert('Data cleared.');showSection('dashboard');
 }
