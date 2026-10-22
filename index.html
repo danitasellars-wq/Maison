@@ -473,6 +473,13 @@ textarea.field-input{border:1px solid var(--line);border-radius:8px;padding:10px
 .of-name{font-size:15px;font-weight:500}
 .of-meta{font-size:13px}
 .song-num{font-size:15px;color:var(--muted)}
+/* checklists inside a day */
+.ev-list{margin:0 0 26px}
+.ev-list-head{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.ev-list-title{flex:1;min-width:0;font-family:var(--serif);font-size:26px;line-height:1.1;color:var(--ink)}
+.ev-list-title .of-meta{font-family:var(--sans);font-size:12.5px;margin-left:4px}
+.ev-vis{flex-shrink:0;font-family:var(--sans);font-size:11.5px;border:1px solid var(--line);border-radius:999px;padding:1px 9px;color:var(--muted)}
+.ev-vis.shared{color:var(--teal);border-color:var(--teal)}
 /* inside an event day: editable title, overview box, people */
 .ev-dayhead{margin:0 0 14px}
 .ev-day-title{display:block;width:100%;font-family:var(--serif);font-size:38px;font-weight:500;line-height:1.05;letter-spacing:-.01em;color:var(--ink);background:transparent;border:none;border-bottom:1px solid transparent;border-radius:0;padding:2px 0;outline:none}
@@ -2143,11 +2150,11 @@ function evFind(d,id){return d.events.find(e=>e.id===id);}
 function evBoot(){const b=getStore('maison_evq_'+currentUser,null)||{};return{q:b.q||{},sk:b.sk||{}};}
 function evBootSave(b){setStore('maison_evq_'+currentUser,b);}
 function evMeta(ev){return{name:ev.name,location:ev.location||'',notes:ev.notes||'',days:ev.days||[],startTime:ev.startTime||'09:00',owner:ev.owner||null,deleted:!!ev.deleted,upd:ev.upd||0};}
-function evAllKeys(ev){const m={meta:evMeta(ev)};(ev.acts||[]).forEach(a=>{m['a_'+a.id]=a;});(ev.todos||[]).forEach(t=>{m['k_'+t.id]=t;});(ev.people||[]).forEach(p=>{m['p_'+p.id]=p;});Object.keys(ev.dinfo||{}).forEach(day=>{m['d_'+day.replace(/-/g,'')]=ev.dinfo[day];});return m;}
+function evAllKeys(ev){const m={meta:evMeta(ev)};(ev.acts||[]).forEach(a=>{m['a_'+a.id]=a;});(ev.todos||[]).forEach(t=>{m['k_'+t.id]=t;});(ev.lists||[]).forEach(l=>{m['l_'+l.id]=l;});(ev.people||[]).forEach(p=>{m['p_'+p.id]=p;});Object.keys(ev.dinfo||{}).forEach(day=>{m['d_'+day.replace(/-/g,'')]=ev.dinfo[day];});return m;}
 function evApply(ev,key,val){
   if(key==='meta'){if(val){ev.name=val.name;ev.location=val.location||'';ev.notes=val.notes||'';ev.days=val.days||[];ev.startTime=val.startTime||'09:00';ev.owner=val.owner||ev.owner||null;ev.deleted=!!val.deleted;ev.upd=val.upd||ev.upd||0;}return;}
   if(key[0]==='d'){const id=key.slice(2),day=id.slice(0,4)+'-'+id.slice(4,6)+'-'+id.slice(6,8);ev.dinfo=ev.dinfo||{};if(val==null)delete ev.dinfo[day];else ev.dinfo[day]=val;return;}
-  const list=key[0]==='a'?'acts':key[0]==='k'?'todos':key[0]==='p'?'people':null;if(!list)return;
+  const list=key[0]==='a'?'acts':key[0]==='k'?'todos':key[0]==='p'?'people':key[0]==='l'?'lists':null;if(!list)return;
   const id=key.slice(2),arr=ev[list]=ev[list]||[],i=arr.findIndex(x=>x.id===id);
   if(val==null){if(i>=0)arr.splice(i,1);}else if(i>=0)arr[i]=val;else arr.push(val);
 }
@@ -2364,16 +2371,12 @@ function evHomeHTML(ev){
   const days=evDaysSorted(ev);
   if(!evCalMonth){const t=clKey(new Date()),f=days.find(k=>k>=t)||days[0],dt=evDateObj(f);evCalMonth={y:dt.getFullYear(),m:dt.getMonth()};}
   const total=(ev.acts||[]).reduce((s,a)=>s+(a.price||0),0),ppl=Math.max(1,(ev.people||[]).length);
-  const todos=ev.todos||[],done=todos.filter(t=>t.done).length;
   return`<div class="section-rule"><div><div class="section-title">${escHtml(ev.name)}</div><div class="section-sub">${escHtml(evRange(ev))}${ev.location?' · '+escHtml(ev.location):''}</div></div><button class="btn-ghost" onclick="openEventSettings()">Settings</button></div>
     <div class="ev-meta"><span class="ev-count">${escHtml(evCountdown(ev))}</span><span id="ev-status" class="of-meta"></span></div>
     ${ev.notes?`<p class="ev-notes">${escHtml(ev.notes)}</p>`:''}
     <div class="evc">${evCalHTML(ev)}</div>
     <p class="cl-hint" style="text-align:center">Tap a day to see and edit its plan.</p>
     <div class="ev-stats"><div><b>${(ev.acts||[]).length}</b><span>Activities</span></div><div><b>${(ev.people||[]).length}</b><span>${(ev.people||[]).length===1?'Person':'People'}</span></div><div><b>${evMoney(total)}</b><span>Total${ppl>1&&total?' · '+evMoney(total/ppl)+' each':''}</span></div></div>
-    <div class="ev-block"><div class="flex-between mb14"><div class="ev-strip-title">Checklist${todos.length?` <span class="of-meta">${done} of ${todos.length} done</span>`:''}</div></div>
-      <div class="ev-add"><input id="ev-todo" class="field-input" placeholder="Add something to bring or do…" onkeydown="if(event.key==='Enter')evAddTodo()"/><button class="btn-ghost" onclick="evAddTodo()">Add</button></div>
-      ${todos.slice().sort((a,b)=>(a.done?1:0)-(b.done?1:0)||(a.upd||0)-(b.upd||0)).map(t=>`<div class="ev-todo${t.done?' done':''}"><label><input type="checkbox" ${t.done?'checked':''} onchange="evToggleTodo('${t.id}')"/><span>${escHtml(t.text)}</span></label><button class="icon-btn" title="Remove" onclick="evDelTodo('${t.id}')">×</button></div>`).join('')}</div>
     <div class="ev-block"><div class="flex-between mb14"><div class="ev-strip-title">People</div><button class="btn-ghost" onclick="openEventSettings()">${ev.shared?'Invite':'Share'}</button></div>
       <div class="ev-people">${(ev.people||[]).map(p=>`<span class="ev-person"><i>${escHtml(evInitials(p.name))}</i>${escHtml(p.name)}${p.guest?'<em>guest</em>':''}</span>`).join('')||'<span class="of-meta">Just you so far</span>'}</div></div>`;
 }
@@ -2398,7 +2401,7 @@ function evRowsHTML(ev,acts){
   let prevEnd=-1;
   return acts.map(a=>{
     const s=doToMin(a.time),e=s==null?null:s+doMins(a),clash=s!=null&&prevEnd>s;if(e!=null)prevEnd=Math.max(prevEnd,e);const lk=safeLink(a.link);
-    return`<div class="item-row do-row${clash?' clash':''}"><div class="do-time">${s==null?'<span class="do-notime">No time</span>':doFmt(s)+'<span>'+doFmt(e)+'</span>'}</div><div class="item-body"><span class="cat-badge">${escHtml(a.cat||'Other')}</span><div class="item-name">${escHtml(a.name)}</div>${a.notes?`<div class="of-meta">${escHtml(a.notes)}</div>`:''}${clash?'<div class="do-clash">Overlaps the activity before it</div>':''}${lk?`<a class="item-link" href="${escHtml(lk)}" target="_blank" rel="noopener">${escHtml(a.link)}</a>`:''}${a.by?`<div class="ev-by">Added by ${escHtml(a.by)}</div>`:''}</div>${a.price?`<div class="item-price">${evMoney(a.price)}</div>`:''}<button class="btn-ghost" style="padding:4px 10px;font-size:12px" onclick="evActForm('${a.id}')">Edit</button><button class="icon-btn" title="Delete" onclick="evDelAct('${a.id}')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg></button></div>`;
+    return`<div class="item-row do-row${clash?' clash':''}"><div class="do-time">${s==null?'<span class="do-notime">No time</span>':doFmt(s)+'<span>'+doFmt(e)+'</span>'}</div><div class="item-body"><span class="cat-badge">${escHtml(a.cat||'Other')}</span><div class="item-name">${escHtml(a.name)}</div>${a.where?`<a class="item-link" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(a.where)}" target="_blank" rel="noopener">${escHtml(a.where)}</a>`:''}${a.notes?`<div class="of-meta">${escHtml(a.notes)}</div>`:''}${clash?'<div class="do-clash">Overlaps the activity before it</div>':''}${lk?`<a class="item-link" href="${escHtml(lk)}" target="_blank" rel="noopener">${escHtml(a.link)}</a>`:''}${a.by?`<div class="ev-by">Added by ${escHtml(a.by)}</div>`:''}</div>${a.price?`<div class="item-price">${evMoney(a.price)}</div>`:''}<button class="btn-ghost" style="padding:4px 10px;font-size:12px" onclick="evActForm('${a.id}')">Edit</button><button class="icon-btn" title="Delete" onclick="evDelAct('${a.id}')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg></button></div>`;
   }).join('');
 }
 function evSectionHTML(ev,part){
@@ -2436,6 +2439,7 @@ function evDayHTML(ev){
     <div class="ev-overview"><label for="ev-day-overview">Overview</label><textarea id="ev-day-overview" rows="4" placeholder="A quick summary of the day: the plan, meeting points, anything people should know…" oninput="evDayTextSoon('overview',this)" onchange="evDayField('overview',this.value.trim())">${escHtml(info.overview)}</textarea></div>
     ${wxDayHTML(ev,evDay)}
     ${evPeopleHTML(ev,evDay)}
+    ${evListsHTML(ev,evDay)}
     <datalist id="ev-dress">${EV_DRESS.map(x=>`<option value="${escHtml(x)}"></option>`).join('')}</datalist>
     <datalist id="ev-ppl">${(ev.people||[]).map(p=>`<option value="${escHtml(p.name)}"></option>`).join('')}</datalist>
     ${evSectionHTML(ev,'day')}
@@ -2445,14 +2449,107 @@ function evDayHTML(ev){
     <span id="ev-status" class="of-meta" style="display:block;margin-top:10px"></span>`;
 }
 
-// ── checklist, going ──
-function evAddTodo(){
-  const inp=document.getElementById('ev-todo'),text=inp&&inp.value.trim();if(!text)return;
-  evMutate(activeEventId,(ev,put)=>{const id=uid();put('k_'+id,{id,text,done:false,by:(ev.me||{}).name||'',upd:Date.now()});});
-  showSection('event');const n=document.getElementById('ev-todo');if(n)n.focus();
+// ── checklists (inside each day) ──
+// A checklist belongs to one day and is either SHARED (a header `l_<id>` plus items `k_<id>` in the shared event, so everyone sees and ticks it)
+// or PRIVATE (kept only in this person's own copy, `ev.privLists`, never sent to the shared event; it still rides their own Drive backup).
+// Items from before checklists were per-day have no `list`; they show as one shared list called "Checklist" on the first day, so nothing is lost.
+function evListsFor(ev,day){
+  const todos=ev.todos||[],out=[];
+  (ev.lists||[]).filter(l=>l.day===day).forEach(l=>out.push({id:l.id,title:l.title,shared:true,mine:!!(l.owner&&l.owner.id===(ev.me||{}).id),items:todos.filter(t=>t.list===l.id),at:l.upd||0}));
+  const legacy=todos.filter(t=>!t.list||t.list==='legacy');
+  if(day===evDaysSorted(ev)[0]&&legacy.length)out.push({id:'legacy',title:'Checklist',shared:true,mine:false,legacy:true,items:legacy,at:0});
+  (ev.privLists||[]).filter(l=>l.day===day).forEach(l=>out.push({id:l.id,title:l.title,shared:false,mine:true,items:l.items||[],at:l.upd||0}));
+  return out.sort((a,b)=>a.at-b.at);
 }
-function evToggleTodo(id){evMutate(activeEventId,(ev,put)=>{const t=ev.todos.find(x=>x.id===id);if(t)put('k_'+id,Object.assign({},t,{done:!t.done,upd:Date.now()}));});showSection('event');}
-function evDelTodo(id){evMutate(activeEventId,(ev,put)=>{put('k_'+id,null);});showSection('event');}
+function evListCardHTML(l){
+  const done=l.items.filter(t=>t.done).length;
+  const items=l.items.slice().sort((a,b)=>(a.done?1:0)-(b.done?1:0)||(a.upd||0)-(b.upd||0)).map(t=>`<div class="ev-todo${t.done?' done':''}"><label><input type="checkbox" ${t.done?'checked':''} onchange="evToggleItem('${l.id}','${t.id}')"/><span>${escHtml(t.text)}</span></label><button class="icon-btn" title="Remove" aria-label="Remove ${escHtml(t.text)}" onclick="evDelItem('${l.id}','${t.id}')">×</button></div>`).join('');
+  return`<div class="ev-list"><div class="ev-list-head"><div class="ev-list-title">${escHtml(l.title)}${l.items.length?` <span class="of-meta">${done} of ${l.items.length}</span>`:''}</div><span class="ev-vis ${l.shared?'shared':'private'}">${l.shared?'Shared':'Only you'}</span>${l.mine&&!l.legacy?`<button class="btn-ghost" style="padding:3px 10px;font-size:12px" onclick="evListModal('${l.id}')">Edit</button>`:''}</div>
+    <div class="ev-add"><input id="evi-${l.id}" class="field-input" placeholder="Add something to bring or do…" autocomplete="off" onkeydown="if(event.key==='Enter')evAddItem('${l.id}')"/><button class="btn-ghost" onclick="evAddItem('${l.id}')">Add</button></div>
+    ${items}</div>`;
+}
+function evListsHTML(ev,day){
+  const lists=evListsFor(ev,day);
+  return`<div class="ev-block"><div class="flex-between mb14"><div class="ev-strip-title">Checklists</div><button class="btn-ghost" onclick="evListModal(null)">+ New list</button></div>
+    ${lists.length?lists.map(evListCardHTML).join(''):`<p class="cl-hint" style="margin-top:0">Make a list of things to bring or do on this day. Keep it to yourself or share it with everyone.</p>`}</div>`;
+}
+function evAddItem(listId){
+  const inp=document.getElementById('evi-'+listId),text=inp&&inp.value.trim();if(!text)return;
+  evMutate(activeEventId,(ev,put)=>{
+    const id=uid(),pl=(ev.privLists||[]).find(l=>l.id===listId);
+    if(pl){pl.items=(pl.items||[]).concat([{id,text,done:false,upd:Date.now()}]);return;}
+    put('k_'+id,{id,list:listId,text,done:false,by:(ev.me||{}).name||'',upd:Date.now()});
+  });
+  showSection('event');const n=document.getElementById('evi-'+listId);if(n)n.focus();
+}
+function evToggleItem(listId,itemId){
+  evMutate(activeEventId,(ev,put)=>{
+    const pl=(ev.privLists||[]).find(l=>l.id===listId);
+    if(pl){const t=(pl.items||[]).find(x=>x.id===itemId);if(t){t.done=!t.done;t.upd=Date.now();}return;}
+    const t=(ev.todos||[]).find(x=>x.id===itemId);if(t)put('k_'+itemId,Object.assign({},t,{done:!t.done,upd:Date.now()}));
+  });
+  showSection('event');
+}
+function evDelItem(listId,itemId){
+  evMutate(activeEventId,(ev,put)=>{
+    const pl=(ev.privLists||[]).find(l=>l.id===listId);
+    if(pl){pl.items=(pl.items||[]).filter(x=>x.id!==itemId);return;}
+    put('k_'+itemId,null);
+  });
+  showSection('event');
+}
+function evListModal(listId){
+  const ev=evFind(evData(),activeEventId);if(!ev)return;
+  const l=listId?evListsFor(ev,evDay).find(x=>x.id===listId):null;if(listId&&!l)return;
+  const shared=l?l.shared:true;
+  openModal(`<div class="modal-head"><div class="modal-title">${l?'Edit checklist':'New checklist'}</div><button class="modal-close" onclick="closeModal()">×</button></div>
+    <label class="field-label">Name</label><input id="el-title" class="field-input" value="${escHtml(l?l.title:'')}" placeholder="e.g. Things to bring" autocomplete="off"/>
+    <label class="field-label">Who can see it</label>
+    <div class="cl-chips"><label class="cl-chip"><input type="radio" name="el-vis" value="shared"${shared?' checked':''}/><span>Shared with everyone</span></label><label class="cl-chip"><input type="radio" name="el-vis" value="private"${shared?'':' checked'}/><span>Private, just me</span></label></div>
+    <p class="cl-hint">A private list stays on your own devices and in your own Google Drive backup. Nobody else on the event can see it.</p>
+    <div class="modal-row"><button class="btn-solid sm teal" onclick="evListSave(${l?`'${l.id}'`:'null'})">${l?'Save':'Create'}</button><button class="btn-ghost" onclick="closeModal()">Cancel</button>${l?`<button class="btn-ghost danger" onclick="evListDelete('${l.id}')">Delete list</button>`:''}</div>`);
+}
+function evListSave(listId){
+  const title=document.getElementById('el-title').value.trim()||'Checklist';
+  const vis=((document.querySelector('input[name=el-vis]:checked')||{}).value==='private')?'private':'shared',day=evDay;
+  if(!listId){
+    evMutate(activeEventId,(ev,put)=>{
+      const id=uid(),me=ev.me||{};
+      if(vis==='private')ev.privLists=(ev.privLists||[]).concat([{id,day,title,items:[],upd:Date.now()}]);
+      else put('l_'+id,{id,day,title,owner:{id:me.id,name:me.name},upd:Date.now()});
+    });
+  }else{
+    const ev0=evFind(evData(),activeEventId),cur=ev0&&evListsFor(ev0,day).find(x=>x.id===listId);if(!cur)return;
+    if(cur.shared&&vis==='private'&&!confirm('Make this list private? Everyone else on the event will stop seeing it.'))return;
+    if(!cur.shared&&vis==='shared'&&!confirm('Share this list with everyone on the event?'))return;
+    evMutate(activeEventId,(ev,put)=>{
+      const me=ev.me||{};
+      if(cur.shared&&vis==='shared'){const l=(ev.lists||[]).find(x=>x.id===listId);if(l)put('l_'+listId,Object.assign({},l,{title}));}
+      else if(!cur.shared&&vis==='private'){const pl=(ev.privLists||[]).find(x=>x.id===listId);if(pl)pl.title=title;}
+      else if(cur.shared){   // shared -> private: take it (and its items) out of the shared event
+        const l=(ev.lists||[]).find(x=>x.id===listId),items=(ev.todos||[]).filter(t=>t.list===listId);
+        ev.privLists=(ev.privLists||[]).concat([{id:listId,day,title,items:items.map(t=>({id:t.id,text:t.text,done:!!t.done,upd:t.upd||0})),upd:(l&&l.upd)||Date.now()}]);
+        put('l_'+listId,null);items.forEach(t=>put('k_'+t.id,null));
+      }else{                 // private -> shared
+        const pl=(ev.privLists||[]).find(x=>x.id===listId);if(!pl)return;
+        ev.privLists=ev.privLists.filter(x=>x.id!==listId);
+        put('l_'+listId,{id:listId,day,title,owner:{id:me.id,name:me.name},upd:pl.upd||Date.now()});
+        (pl.items||[]).forEach(t=>put('k_'+t.id,{id:t.id,list:listId,text:t.text,done:!!t.done,by:me.name||'',upd:t.upd||Date.now()}));
+      }
+    });
+  }
+  closeModal();showSection('event');
+}
+function evListDelete(listId){
+  const ev0=evFind(evData(),activeEventId),cur=ev0&&evListsFor(ev0,evDay).find(x=>x.id===listId);if(!cur)return;
+  if(!confirm('Delete "'+cur.title+'"'+(cur.items.length?' and its '+cur.items.length+' item'+(cur.items.length!==1?'s':''):'')+'?'))return;
+  evMutate(activeEventId,(ev,put)=>{
+    if((ev.privLists||[]).some(l=>l.id===listId)){ev.privLists=ev.privLists.filter(l=>l.id!==listId);return;}
+    (ev.todos||[]).filter(t=>t.list===listId).forEach(t=>put('k_'+t.id,null));put('l_'+listId,null);
+  });
+  closeModal();showSection('event');
+}
+
 // Who is going on a day = people whose `out` list does not include that day. Removing someone adds the day to their `out`; adding takes it off.
 // A guest (someone without MAISON) who is removed from their last day is deleted.
 function evDayRemove(pid){
@@ -2508,6 +2605,7 @@ function evActForm(actId,part){
     <label class="field-label">Name</label><input id="ea-name" class="field-input" value="${escHtml(v.name||'')}" placeholder="e.g. Lunch at The Seafood Bar…"/>
     <label class="field-label">Part of the day</label><select id="ea-part" class="field-input"><option value="day"${pt==='day'?' selected':''}>Day out</option><option value="eve"${pt==='eve'?' selected':''}>Evening</option></select>
     <label class="field-label">Category</label><select id="ea-cat" class="field-input">${Object.keys(DO_CAT_MINS).concat(v.cat&&!DO_CAT_MINS[v.cat]?[v.cat]:[]).map(c=>`<option${v.cat===c?' selected':''}>${escHtml(c)}</option>`).join('')}</select>
+    <label class="field-label">Location</label><input id="ea-where" class="field-input" value="${escHtml(v.where||'')}" placeholder="e.g. The Seafood Bar, St Ives" autocomplete="off"/>
     <label class="field-label">Day</label><select id="ea-day" class="field-input">${evDaysSorted(ev).map(k=>`<option value="${k}"${v.day===k?' selected':''}>${escHtml(evLong(k))}</option>`).join('')}</select>
     <label class="field-label">Start time (leave empty to let Arrange times choose)</label><input id="ea-time" class="field-input" type="time" value="${escHtml(v.time||'')}"/>
     <label class="field-label">How long (minutes)</label><input id="ea-mins" class="field-input" type="number" min="5" step="5" value="${v.mins||''}" placeholder="Usual length for this kind of activity"/>
@@ -2518,7 +2616,7 @@ function evActForm(actId,part){
 }
 function evSaveAct(actId){
   const name=document.getElementById('ea-name').value.trim();if(!name){clToast('Give it a name');return;}
-  const rec={name,part:document.getElementById('ea-part').value==='eve'?'eve':'day',cat:document.getElementById('ea-cat').value,day:document.getElementById('ea-day').value,time:document.getElementById('ea-time').value||'',mins:parseInt(document.getElementById('ea-mins').value,10)||0,link:document.getElementById('ea-link').value.trim(),price:parseFloat(document.getElementById('ea-price').value)||0,notes:document.getElementById('ea-notes').value.trim()};
+  const rec={name,where:document.getElementById('ea-where').value.trim(),part:document.getElementById('ea-part').value==='eve'?'eve':'day',cat:document.getElementById('ea-cat').value,day:document.getElementById('ea-day').value,time:document.getElementById('ea-time').value||'',mins:parseInt(document.getElementById('ea-mins').value,10)||0,link:document.getElementById('ea-link').value.trim(),price:parseFloat(document.getElementById('ea-price').value)||0,notes:document.getElementById('ea-notes').value.trim()};
   const moved=rec.day!==evDay;
   evMutate(activeEventId,(ev,put)=>{
     const cur=actId?(ev.acts||[]).find(x=>x.id===actId):null,id=cur?cur.id:uid();
@@ -2620,7 +2718,7 @@ function wxDayHTML(ev,day){
 // ── calendar export ──
 function evGcalDay(ev,day){
   const n=evDateObj(day);n.setDate(n.getDate()+1);
-  const info=evDayInfo(ev,day),lines=p=>doSorted((ev.acts||[]).filter(a=>a.day===day&&(a.part||'day')===p)).map(a=>(a.time?a.time+' ':'')+a.name+(a.notes?' - '+a.notes:''));
+  const info=evDayInfo(ev,day),lines=p=>doSorted((ev.acts||[]).filter(a=>a.day===day&&(a.part||'day')===p)).map(a=>(a.time?a.time+' ':'')+a.name+(a.where?' at '+a.where:'')+(a.notes?' - '+a.notes:''));
   const blocks=[],d1=lines('day'),d2=lines('eve');
   if(d1.length||info.dressDay)blocks.push(['Day out'+(info.dressDay?' - dress code: '+info.dressDay:'')].concat(d1).join('\n'));
   if(d2.length||info.dressEve||info.mealHost||info.nightHost)blocks.push(['Evening'+(info.dressEve?' - dress code: '+info.dressEve:'')].concat(info.mealHost?['Meal host: '+info.mealHost]:[],info.nightHost?['Night-time host: '+info.nightHost]:[],d2).join('\n'));
@@ -2631,13 +2729,13 @@ function evIcsText(s){return String(s||'').replace(/\\/g,'\\\\').replace(/;/g,'\
 function evDownloadIcs(){
   const ev=evFind(evData(),activeEventId);if(!ev)return;
   const L=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//MAISON//Events//EN','CALSCALE:GREGORIAN'],stamp=new Date().toISOString().replace(/[-:]/g,'').replace(/\.\d+/,'');
-  const add=(uid2,start,end,title,desc,allDay)=>{L.push('BEGIN:VEVENT','UID:'+uid2+'@maison','DTSTAMP:'+stamp,allDay?'DTSTART;VALUE=DATE:'+start:'DTSTART:'+start,allDay?'DTEND;VALUE=DATE:'+end:'DTEND:'+end,'SUMMARY:'+evIcsText(title));if(desc)L.push('DESCRIPTION:'+evIcsText(desc));if(ev.location)L.push('LOCATION:'+evIcsText(ev.location));L.push('END:VEVENT');};
+  const add=(uid2,start,end,title,desc,allDay,loc)=>{loc=loc||ev.location;L.push('BEGIN:VEVENT','UID:'+uid2+'@maison','DTSTAMP:'+stamp,allDay?'DTSTART;VALUE=DATE:'+start:'DTSTART:'+start,allDay?'DTEND;VALUE=DATE:'+end:'DTEND:'+end,'SUMMARY:'+evIcsText(title));if(desc)L.push('DESCRIPTION:'+evIcsText(desc));if(loc)L.push('LOCATION:'+evIcsText(loc));L.push('END:VEVENT');};
   evDaysSorted(ev).forEach(day=>{
     const acts=doSorted((ev.acts||[]).filter(a=>a.day===day)),d0=day.replace(/-/g,''),nx=evDateObj(day);nx.setDate(nx.getDate()+1);
     const timed=acts.filter(a=>doToMin(a.time)!=null);
     const untimed=acts.filter(a=>doToMin(a.time)==null);
     if(!timed.length||untimed.length)add(ev.id+day,d0,clKey(nx).replace(/-/g,''),ev.name,untimed.map(a=>a.name).join(', '),true);   // all-day banner, listing anything without a time
-    timed.forEach(a=>{const s=doToMin(a.time),e=s+doMins(a),f=m=>String(Math.floor(m/60)%24).padStart(2,'0')+String(m%60).padStart(2,'0')+'00';add(ev.id+a.id,d0+'T'+f(s),d0+'T'+f(e),a.name+' ('+ev.name+')',a.notes,false);});
+    timed.forEach(a=>{const s=doToMin(a.time),e=s+doMins(a),f=m=>String(Math.floor(m/60)%24).padStart(2,'0')+String(m%60).padStart(2,'0')+'00';add(ev.id+a.id,d0+'T'+f(s),d0+'T'+f(e),a.name+' ('+ev.name+')',a.notes,false,a.where);});
   });
   L.push('END:VCALENDAR');
   const blob=new Blob([L.join('\r\n')],{type:'text/calendar'}),a=document.createElement('a');
@@ -2689,8 +2787,14 @@ function evSaveDays(){
   const ev=evFind(evData(),activeEventId);if(!ev)return;
   if(!evPick.sel.length){clToast('Choose at least one day');return;}
   const keep=evPick.sel.slice().sort(),gone=(ev.days||[]).filter(k=>keep.indexOf(k)<0),lost=(ev.acts||[]).filter(a=>gone.indexOf(a.day)>=0);
-  if(lost.length&&!confirm('Removing '+gone.length+' day'+(gone.length!==1?'s':'')+' also deletes '+lost.length+' planned activit'+(lost.length!==1?'ies':'y')+'. Continue?'))return;
-  evMutate(activeEventId,(e,put,meta)=>{lost.forEach(a=>put('a_'+a.id,null));meta({days:keep});});
+  const lostLists=(ev.lists||[]).filter(l=>gone.indexOf(l.day)>=0).length+(ev.privLists||[]).filter(l=>gone.indexOf(l.day)>=0).length;
+  if((lost.length||lostLists)&&!confirm('Removing '+gone.length+' day'+(gone.length!==1?'s':'')+' also deletes '+lost.length+' planned activit'+(lost.length!==1?'ies':'y')+(lostLists?' and '+lostLists+' checklist'+(lostLists!==1?'s':''):'')+'. Continue?'))return;
+  evMutate(activeEventId,(e,put,meta)=>{
+    lost.forEach(a=>put('a_'+a.id,null));
+    (e.lists||[]).filter(l=>gone.indexOf(l.day)>=0).forEach(l=>{(e.todos||[]).filter(t=>t.list===l.id).forEach(t=>put('k_'+t.id,null));put('l_'+l.id,null);});
+    e.privLists=(e.privLists||[]).filter(l=>gone.indexOf(l.day)<0);
+    meta({days:keep});
+  });
   evCalMonth=null;closeModal();showSection('event');
 }
 async function evShareOn(){
@@ -2794,10 +2898,10 @@ async function evRestore(fileId){
     meta({name:s.name,location:s.location||'',notes:s.notes||'',days:s.days,startTime:s.startTime||'09:00'});
     const keep=new Set();
     (s.acts||[]).forEach(a=>{put('a_'+a.id,a);keep.add('a_'+a.id);});
-    (s.todos||[]).forEach(t=>{put('k_'+t.id,t);keep.add('k_'+t.id);});
+    (s.todos||[]).forEach(t=>{put('k_'+t.id,t);keep.add('k_'+t.id);});(s.lists||[]).forEach(l=>{put('l_'+l.id,l);keep.add('l_'+l.id);});
     (s.people||[]).forEach(p=>{if(!(ev.people||[]).some(x=>x.id===p.id))put('p_'+p.id,p);});   // people who joined since stay
     (ev.acts||[]).slice().forEach(a=>{if(!keep.has('a_'+a.id))put('a_'+a.id,null);});
-    (ev.todos||[]).slice().forEach(t=>{if(!keep.has('k_'+t.id))put('k_'+t.id,null);});
+    (ev.todos||[]).slice().forEach(t=>{if(!keep.has('k_'+t.id))put('k_'+t.id,null);});(ev.lists||[]).slice().forEach(l=>{if(!keep.has('l_'+l.id))put('l_'+l.id,null);});
   });
   closeModal();evDay=null;evCalMonth=null;showSection('event');clToast('Backup restored');
 }
