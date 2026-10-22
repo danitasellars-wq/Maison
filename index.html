@@ -473,6 +473,25 @@ textarea.field-input{border:1px solid var(--line);border-radius:8px;padding:10px
 .of-name{font-size:15px;font-weight:500}
 .of-meta{font-size:13px}
 .song-num{font-size:15px;color:var(--muted)}
+/* inside an event day: editable title, overview box, people */
+.ev-dayhead{margin:0 0 14px}
+.ev-day-title{display:block;width:100%;font-family:var(--serif);font-size:38px;font-weight:500;line-height:1.05;letter-spacing:-.01em;color:var(--ink);background:transparent;border:none;border-bottom:1px solid transparent;border-radius:0;padding:2px 0;outline:none}
+.ev-day-title::placeholder{color:var(--ink);opacity:.92}
+.ev-day-title:focus{border-bottom-color:var(--line)}
+@media(max-width:520px){.ev-day-title{font-size:34px}}
+.ev-day-sub{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:6px;font-family:var(--sans);font-size:13.5px;color:var(--muted)}
+.ev-hint{font-size:12.5px;color:var(--muted);margin-top:4px}
+.ev-arrows{display:flex;gap:6px;flex-shrink:0}
+.ev-arrow{width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:none;color:var(--ink);display:inline-flex;align-items:center;justify-content:center;padding:0}
+.ev-arrow[disabled]{opacity:.3;pointer-events:none}
+.ev-overview{margin:0 0 22px}
+.ev-overview label{display:block;font-family:var(--sans);font-size:12.5px;color:var(--muted);margin-bottom:6px}
+.ev-overview textarea{display:block;width:100%;font-family:var(--sans);font-size:15.5px;line-height:1.5;color:var(--ink);background:rgba(var(--ink-rgb),.035);border:1px solid var(--line);border-radius:12px;padding:12px 14px;resize:none;outline:none}
+.ev-overview textarea:focus{border-color:var(--ink)}
+.ev-person em{font-style:normal;font-size:11.5px;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:0 7px;margin-left:2px}
+.ev-x{background:none;border:none;color:var(--muted);font-size:18px;line-height:1;padding:0 2px 0 4px;margin-left:2px;cursor:pointer}
+.ev-person.add{cursor:pointer;background:none;color:var(--ink);font-family:var(--sans);font-size:14px}
+.ev-person.add b{font-weight:400;color:var(--muted);font-size:17px;margin-left:2px}
 /* sub-headings on the Days out page (Events, Plans): same look as the page title, a step smaller */
 .section-rule.sub{margin-top:34px;margin-bottom:14px}
 .section-rule.sub .section-title{font-size:32px}
@@ -2351,13 +2370,12 @@ function evHomeHTML(ev){
     ${ev.notes?`<p class="ev-notes">${escHtml(ev.notes)}</p>`:''}
     <div class="evc">${evCalHTML(ev)}</div>
     <p class="cl-hint" style="text-align:center">Tap a day to see and edit its plan.</p>
-    ${wxHomeHTML(ev)}
     <div class="ev-stats"><div><b>${(ev.acts||[]).length}</b><span>Activities</span></div><div><b>${(ev.people||[]).length}</b><span>${(ev.people||[]).length===1?'Person':'People'}</span></div><div><b>${evMoney(total)}</b><span>Total${ppl>1&&total?' · '+evMoney(total/ppl)+' each':''}</span></div></div>
     <div class="ev-block"><div class="flex-between mb14"><div class="ev-strip-title">Checklist${todos.length?` <span class="of-meta">${done} of ${todos.length} done</span>`:''}</div></div>
       <div class="ev-add"><input id="ev-todo" class="field-input" placeholder="Add something to bring or do…" onkeydown="if(event.key==='Enter')evAddTodo()"/><button class="btn-ghost" onclick="evAddTodo()">Add</button></div>
       ${todos.slice().sort((a,b)=>(a.done?1:0)-(b.done?1:0)||(a.upd||0)-(b.upd||0)).map(t=>`<div class="ev-todo${t.done?' done':''}"><label><input type="checkbox" ${t.done?'checked':''} onchange="evToggleTodo('${t.id}')"/><span>${escHtml(t.text)}</span></label><button class="icon-btn" title="Remove" onclick="evDelTodo('${t.id}')">×</button></div>`).join('')}</div>
     <div class="ev-block"><div class="flex-between mb14"><div class="ev-strip-title">People</div><button class="btn-ghost" onclick="openEventSettings()">${ev.shared?'Invite':'Share'}</button></div>
-      <div class="ev-people">${(ev.people||[]).map(p=>`<span class="ev-person"><i>${escHtml(evInitials(p.name))}</i>${escHtml(p.name)}</span>`).join('')||'<span class="of-meta">Just you so far</span>'}</div></div>`;
+      <div class="ev-people">${(ev.people||[]).map(p=>`<span class="ev-person"><i>${escHtml(evInitials(p.name))}</i>${escHtml(p.name)}${p.guest?'<em>guest</em>':''}</span>`).join('')||'<span class="of-meta">Just you so far</span>'}</div></div>`;
 }
 function evDayNav(dir){
   const ev=evFind(evData(),activeEventId);if(!ev)return;
@@ -2366,10 +2384,10 @@ function evDayNav(dir){
 // Each day has two parts: the day out and the evening. Per-day details (start times, dress codes, hosts) live in one small field per day, `d_YYYYMMDD`.
 function evDayInfo(ev,day){
   const i=(ev.dinfo||{})[day]||{};
-  return{start:i.start||ev.startTime||'09:00',eveStart:i.eveStart||'18:00',dressDay:i.dressDay||'',dressEve:i.dressEve||'',mealHost:i.mealHost||'',nightHost:i.nightHost||''};
+  return{start:i.start||ev.startTime||'09:00',eveStart:i.eveStart||'18:00',dressDay:i.dressDay||'',dressEve:i.dressEve||'',mealHost:i.mealHost||'',nightHost:i.nightHost||'',title:i.title||'',overview:i.overview||''};
 }
-function evDayField(field,val){
-  const day=evDay;if(!day)return;
+function evDayField(field,val,forDay){
+  const day=forDay||evDay;if(!day)return;
   evMutate(activeEventId,(ev,put)=>{
     const cur=(ev.dinfo||{})[day]||{};
     put('d_'+day.replace(/-/g,''),Object.assign({},cur,{day,upd:Date.now()},{[field]:val}));
@@ -2385,7 +2403,8 @@ function evRowsHTML(ev,acts){
 }
 function evSectionHTML(ev,part){
   const eve=part==='eve',info=evDayInfo(ev,evDay);
-  const acts=doSorted((ev.acts||[]).filter(a=>(a.part||'day')===part));
+  // only this day's activities for this part of the day
+  const acts=doSorted((ev.acts||[]).filter(a=>a.day===evDay&&(a.part||'day')===part));
   const rows=acts.length?evRowsHTML(ev,acts):`<div class="empty" style="padding:16px 0;font-size:13px">${eve?'Nothing planned for the evening yet.':'Nothing planned for the day yet.'}</div>`;
   const inp=(label,field,val,opts)=>`<label class="ev-field${opts&&opts.grow?' grow':''}${opts&&opts.half?' half':''}"><span>${label}</span><input ${opts&&opts.type?`type="${opts.type}"`:'type="text"'}${opts&&opts.list?` list="${opts.list}"`:''} value="${escHtml(val)}"${opts&&opts.ph?` placeholder="${escHtml(opts.ph)}"`:''} autocomplete="off" onchange="evDayField('${field}',this.value${opts&&opts.type==='time'?'':'.trim()'})"/></label>`;
   return`<div class="ev-sec">
@@ -2398,15 +2417,25 @@ function evSectionHTML(ev,part){
     ${rows}
   </div>`;
 }
+// Who is going on this particular day. Anyone can add or remove anyone (including people who don't use MAISON, added as guests).
+function evPeopleHTML(ev,day){
+  const going=evGoing(ev,day);
+  return`<div class="ev-block" style="margin-top:0"><div class="flex-between mb14"><div class="ev-strip-title">Who is going <span class="of-meta">${going.length}</span></div><button class="btn-ghost" onclick="evPeopleModal()">+ Add</button></div>
+    <div class="ev-people">${going.map(p=>`<span class="ev-person"><i>${escHtml(evInitials(p.name))}</i>${escHtml(p.name)}${p.guest?'<em>guest</em>':''}<button class="ev-x" aria-label="Remove ${escHtml(p.name)} from this day" onclick="evDayRemove('${p.id}')">×</button></span>`).join('')||'<span class="of-meta">Nobody yet. Tap Add.</span>'}</div></div>`;
+}
 function evDayHTML(ev){
   const days=evDaysSorted(ev),i=days.indexOf(evDay),all=(ev.acts||[]).filter(a=>a.day===evDay);
-  const going=evGoing(ev,evDay),me=(ev.people||[]).find(p=>p.id===(ev.me||{}).id),imGoing=me?(me.out||[]).indexOf(evDay)<0:true;
+  const going=evGoing(ev,evDay),info=evDayInfo(ev,evDay);
   const total=all.reduce((s,a)=>s+(a.price||0),0),each=total/Math.max(1,going.length);
-  return`<div class="section-rule"><div><div class="section-title">${escHtml(evLong(evDay))}</div><div class="section-sub">${escHtml(ev.name)} · day ${i+1} of ${days.length}</div></div></div>
-    <div class="ev-daynav"><button class="btn-ghost" ${i<=0?'disabled':''} onclick="evDayNav(-1)">Previous day</button><button class="btn-ghost" ${i>=days.length-1?'disabled':''} onclick="evDayNav(1)">Next day</button></div>
+  const arrow=(dir,off,label,d)=>`<button class="ev-arrow" ${off?'disabled':''} onclick="evDayNav(${dir})" aria-label="${label}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="${d}"/></svg></button>`;
+  return`<div class="ev-dayhead">
+      <input id="ev-day-title" class="ev-day-title" type="text" value="${escHtml(info.title)}" placeholder="${escHtml(evLong(evDay))}" maxlength="80" autocomplete="off" aria-label="Title for this day" oninput="evDayTextSoon('title',this)" onchange="evDayField('title',this.value.trim())"/>
+      <div class="ev-day-sub"><span>${info.title?escHtml(evLong(evDay))+' · ':''}${escHtml(ev.name)} · day ${i+1} of ${days.length}</span><span class="ev-arrows">${arrow(-1,i<=0,'Previous day','M15 18l-6-6 6-6')}${arrow(1,i>=days.length-1,'Next day','M9 18l6-6-6-6')}</span></div>
+      ${info.title?'':'<div class="ev-hint">Tap the heading to give this day a title.</div>'}
+    </div>
+    <div class="ev-overview"><label for="ev-day-overview">Overview</label><textarea id="ev-day-overview" rows="4" placeholder="A quick summary of the day: the plan, meeting points, anything people should know…" oninput="evDayTextSoon('overview',this)" onchange="evDayField('overview',this.value.trim())">${escHtml(info.overview)}</textarea></div>
     ${wxDayHTML(ev,evDay)}
-    <div class="ev-block" style="margin-top:0"><div class="flex-between mb14"><div class="ev-strip-title">Who is going</div><button class="btn-ghost" onclick="evToggleGoing()">${imGoing?'I can\'t make it':'I\'m going'}</button></div>
-      <div class="ev-people">${going.map(p=>`<span class="ev-person"><i>${escHtml(evInitials(p.name))}</i>${escHtml(p.name)}</span>`).join('')||'<span class="of-meta">Nobody yet</span>'}</div></div>
+    ${evPeopleHTML(ev,evDay)}
     <datalist id="ev-dress">${EV_DRESS.map(x=>`<option value="${escHtml(x)}"></option>`).join('')}</datalist>
     <datalist id="ev-ppl">${(ev.people||[]).map(p=>`<option value="${escHtml(p.name)}"></option>`).join('')}</datalist>
     ${evSectionHTML(ev,'day')}
@@ -2424,14 +2453,50 @@ function evAddTodo(){
 }
 function evToggleTodo(id){evMutate(activeEventId,(ev,put)=>{const t=ev.todos.find(x=>x.id===id);if(t)put('k_'+id,Object.assign({},t,{done:!t.done,upd:Date.now()}));});showSection('event');}
 function evDelTodo(id){evMutate(activeEventId,(ev,put)=>{put('k_'+id,null);});showSection('event');}
-function evToggleGoing(){
+// Who is going on a day = people whose `out` list does not include that day. Removing someone adds the day to their `out`; adding takes it off.
+// A guest (someone without MAISON) who is removed from their last day is deleted.
+function evDayRemove(pid){
+  const day=evDay;
   evMutate(activeEventId,(ev,put)=>{
-    let p=(ev.people||[]).find(x=>x.id===(ev.me||{}).id);
-    if(!p)p={id:ev.me.id,name:ev.me.name,out:[]};else p=Object.assign({},p,{out:(p.out||[]).slice()});
-    const i=p.out.indexOf(evDay);if(i>=0)p.out.splice(i,1);else p.out.push(evDay);
-    put('p_'+p.id,p);
+    const p=(ev.people||[]).find(x=>x.id===pid);if(!p)return;
+    const out=(p.out||[]).slice();if(out.indexOf(day)<0)out.push(day);
+    if(p.guest&&(ev.days||[]).every(d=>out.indexOf(d)>=0)){put('p_'+pid,null);return;}
+    put('p_'+pid,Object.assign({},p,{out}));
   });
   showSection('event');
+}
+function evDayAdd(pid){
+  const day=evDay;
+  evMutate(activeEventId,(ev,put)=>{
+    const p=(ev.people||[]).find(x=>x.id===pid);if(!p)return;
+    put('p_'+pid,Object.assign({},p,{out:(p.out||[]).filter(d=>d!==day)}));
+  });
+  showSection('event');evPeopleModal();
+}
+function evDayAddGuest(){
+  const inp=document.getElementById('ev-guest'),name=inp&&inp.value.trim();if(!name){clToast('Type a name first');return;}
+  const day=evDay;
+  evMutate(activeEventId,(ev,put)=>{
+    const id=uid();
+    put('p_'+id,{id,name,guest:true,out:(ev.days||[]).filter(d=>d!==day),by:(ev.me||{}).name||''});
+  });
+  showSection('event');evPeopleModal();
+}
+function evPeopleModal(){
+  const ev=evFind(evData(),activeEventId);if(!ev)return;
+  const away=(ev.people||[]).filter(p=>(p.out||[]).indexOf(evDay)>=0);
+  openModal(`<div class="modal-head"><div class="modal-title">Who is going</div><button class="modal-close" onclick="closeModal()">×</button></div>
+    <p class="cl-hint" style="margin-top:0">${escHtml(evLong(evDay))}</p>
+    ${away.length?`<label class="field-label">Not on this day. Tap to add</label><div class="ev-people" style="margin-bottom:18px">${away.map(p=>`<button class="ev-person add" onclick="evDayAdd('${p.id}')"><i>${escHtml(evInitials(p.name))}</i>${escHtml(p.name)}${p.guest?'<em>guest</em>':''}<b>+</b></button>`).join('')}</div>`:''}
+    <label class="field-label">Add someone new (they don't need MAISON)</label>
+    <div class="ev-add"><input id="ev-guest" class="field-input" placeholder="Name" autocomplete="off" onkeydown="if(event.key==='Enter')evDayAddGuest()"/><button class="btn-solid sm teal" onclick="evDayAddGuest()">Add</button></div>
+    <div class="modal-row"><button class="btn-ghost" onclick="closeModal()">Done</button></div>`);
+}
+// Title and overview are saved a moment after you stop typing (and straight away when you leave the box), without redrawing the page.
+let evTextTimers={};
+function evDayTextSoon(field,el){
+  const day=evDay;clearTimeout(evTextTimers[field]);
+  evTextTimers[field]=setTimeout(()=>evDayField(field,el.value.trim(),day),800);
 }
 
 // ── activities ──
@@ -2499,7 +2564,9 @@ function wxWindow(ev,today){
 async function wxEnsure(ev,force){
   if(wxWindow(ev)!=='on'||!ev.location||wxBusy[ev.id])return;
   const c=getStore(wxKey(ev.id),null);
-  if(!force&&c&&c.loc===ev.location&&!c.fail&&Date.now()-c.at<3*3600*1000)return;
+  // Days of the event that have already passed are included too, so each day keeps its weather until the whole event is over.
+  const first=evDaysSorted(ev)[0],past=Math.max(0,Math.min(60,Math.round((evDateObj(clKey(new Date()))-evDateObj(first))/864e5)));
+  if(!force&&c&&c.loc===ev.location&&!c.fail&&(c.past||0)>=past&&Date.now()-c.at<3*3600*1000)return;
   wxBusy[ev.id]=true;
   try{
     let geo=c&&c.loc===ev.location&&c.lat!=null?{lat:c.lat,lon:c.lon,label:c.label}:null;
@@ -2509,9 +2576,9 @@ async function wxEnsure(ev,force){
       if(!x){setStore(wxKey(ev.id),{at:Date.now(),loc:ev.location,fail:'place'});wxRefresh(ev.id);return;}
       geo={lat:x.latitude,lon:x.longitude,label:[x.name,x.admin1,x.country].filter(Boolean).join(', ')};
     }
-    const w=await(await fetch('https://api.open-meteo.com/v1/forecast?latitude='+geo.lat+'&longitude='+geo.lon+'&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,wind_speed_10m_max&hourly=temperature_2m,precipitation_probability,weather_code&timezone=auto&forecast_days=16&wind_speed_unit=mph')).json();
+    const w=await(await fetch('https://api.open-meteo.com/v1/forecast?latitude='+geo.lat+'&longitude='+geo.lon+'&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,wind_speed_10m_max&hourly=temperature_2m,precipitation_probability,weather_code&timezone=auto&forecast_days=16&past_days='+past+'&wind_speed_unit=mph')).json();
     if(!w||!w.daily||!w.hourly)throw new Error('no forecast');
-    setStore(wxKey(ev.id),{at:Date.now(),loc:ev.location,lat:geo.lat,lon:geo.lon,label:geo.label,days:wxParse(w)});
+    setStore(wxKey(ev.id),{at:Date.now(),loc:ev.location,lat:geo.lat,lon:geo.lon,label:geo.label,past,days:wxParse(w)});
     wxRefresh(ev.id);
   }catch(e){/* offline or the service is down: keep whatever was cached */}
   finally{wxBusy[ev.id]=false;}
@@ -2534,34 +2601,22 @@ function wxParse(w){
 }
 function wxRefresh(id){if(currentSection==='event'&&activeEventId===id)evSoftRefresh();}
 function wxText(o){return o?(WX_CODES[o.code]||'Mixed')+' · '+(o.temp!=null?o.temp:o.hi)+'° · '+o.rain+'% rain':'';}
-// The forecast block for one day (day view). '' when the forecast is off.
+// The weather block inside a day. It appears 14 days before the event, stays on every day right to the end of the event, then goes. Not shown on the main event screen.
 function wxDayHTML(ev,day){
   const st=wxWindow(ev),today=clKey(new Date());
-  if(st!=='on'||day<today)return'';
-  const credit='<div class="wx-credit">Forecast by Open-Meteo</div>';
-  if(!ev.location)return`<div class="wx"><div class="ev-strip-title">Forecast</div><p class="cl-hint">Add where this is in Settings to see the forecast for each day.</p></div>`;
+  if(st==='over')return'';
+  const head='<div class="ev-strip-title">Weather</div>',credit='<div class="wx-credit">Forecast by Open-Meteo</div>';
+  if(st==='early')return`<div class="wx">${head}<p class="cl-hint">The forecast switches on 2 weeks before the event, from ${escHtml(evShort(evAddDays(evDaysSorted(ev)[0],-14)))}.</p></div>`;
+  if(!ev.location)return`<div class="wx">${head}<p class="cl-hint">Add where this is in Settings to see the weather for each day.</p></div>`;
   const c=getStore(wxKey(ev.id),null);
-  if(!c||c.loc!==ev.location)return`<div class="wx"><div class="ev-strip-title">Forecast</div><p class="cl-hint">Loading the forecast…</p></div>`;
-  if(c.fail==='place')return`<div class="wx"><div class="ev-strip-title">Forecast</div><p class="cl-hint">Could not find "${escHtml(ev.location)}". Try a town or city name in Settings.</p></div>`;
+  if(!c||c.loc!==ev.location)return`<div class="wx">${head}<p class="cl-hint">Loading the weather…</p></div>`;
+  if(c.fail==='place')return`<div class="wx">${head}<p class="cl-hint">Could not find "${escHtml(ev.location)}". Try a town or city name in Settings.</p></div>`;
   const d=(c.days||{})[day];
-  if(!d)return`<div class="wx"><div class="ev-strip-title">Forecast</div><p class="cl-hint">The forecast for this day appears closer to the date.</p></div>`;
-  return`<div class="wx"><div class="flex-between"><div class="ev-strip-title">Forecast</div><span class="of-meta">${escHtml(c.label||'')}</span></div>
+  if(!d)return`<div class="wx">${head}<p class="cl-hint">${day>today?'The forecast for this day appears on '+escHtml(evShort(evAddDays(day,-15)))+'.':'No weather record for this day.'}</p></div>`;
+  return`<div class="wx"><div class="flex-between">${head}<span class="of-meta">${escHtml(c.label||'')}</span></div>
     <div class="wx-top"><b>${escHtml(WX_CODES[d.code]||'Mixed')}</b><span>High ${d.hi}° · Low ${d.lo}° · Wind ${d.wind} mph</span></div>
     <div class="wx-parts"><div><span>Day out</span>${escHtml(wxText(d.day))||'—'}</div><div><span>Evening</span>${escHtml(wxText(d.eve))||'—'}</div></div>${credit}</div>`;
 }
-// A compact forecast list for the event page: each coming day on one line.
-function wxHomeHTML(ev){
-  const st=wxWindow(ev),days=evDaysSorted(ev),today=clKey(new Date());
-  if(st==='over')return'';
-  if(st==='early')return`<div class="wx"><div class="ev-strip-title">Forecast</div><p class="cl-hint">The forecast switches on 2 weeks before the event, from ${escHtml(evShort(evAddDays(days[0],-14)))}.</p></div>`;
-  if(!ev.location)return`<div class="wx"><div class="ev-strip-title">Forecast</div><p class="cl-hint">Add where this is in Settings to see the forecast for each day.</p></div>`;
-  const c=getStore(wxKey(ev.id),null);
-  if(!c||c.loc!==ev.location)return`<div class="wx"><div class="ev-strip-title">Forecast</div><p class="cl-hint">Loading the forecast…</p></div>`;
-  if(c.fail==='place')return`<div class="wx"><div class="ev-strip-title">Forecast</div><p class="cl-hint">Could not find "${escHtml(ev.location)}". Try a town or city name in Settings.</p></div>`;
-  const rows=days.filter(k=>k>=today).map(k=>{const d=(c.days||{})[k];return`<button class="wx-row" onclick="evOpenDay('${k}')"><span class="wx-day">${escHtml(evShort(k))}</span><span class="wx-sum">${d?escHtml((WX_CODES[d.code]||'Mixed')+' · '+d.hi+'° / '+d.lo+'° · '+d.rain+'% rain'):'Appears closer to the date'}</span></button>`;}).join('');
-  return`<div class="wx"><div class="flex-between"><div class="ev-strip-title">Forecast</div><span class="of-meta">${escHtml(c.label||'')}</span></div>${rows}<div class="wx-credit">Forecast by Open-Meteo</div></div>`;
-}
-
 // ── calendar export ──
 function evGcalDay(ev,day){
   const n=evDateObj(day);n.setDate(n.getDate()+1);
