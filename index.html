@@ -12,7 +12,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-:root{--ink-rgb:28,20,10;--cream-rgb:247,243,237;--bone-rgb:237,228,213;--serif:'Cormorant Garamond',Georgia,serif;--sans:'DM Sans',system-ui,-apple-system,'Segoe UI',sans-serif;--ink:#1c140a;--cream:#f7f3ed;--bone:#ede4d5;--warm:#c9b89a;--muted:#8a7a68;--red:#a82020;--green:#2a5f3f;--gold:#b8962e;--teal:#2a7070;--plum:#6b4a5e;--section-pad:28px 20px 160px;}
+:root{--night:#3f4c84;--ink-rgb:28,20,10;--cream-rgb:247,243,237;--bone-rgb:237,228,213;--serif:'Cormorant Garamond',Georgia,serif;--sans:'DM Sans',system-ui,-apple-system,'Segoe UI',sans-serif;--ink:#1c140a;--cream:#f7f3ed;--bone:#ede4d5;--warm:#c9b89a;--muted:#8a7a68;--red:#a82020;--green:#2a5f3f;--gold:#b8962e;--teal:#2a7070;--plum:#6b4a5e;--section-pad:28px 20px 160px;}
 body{font-family:var(--sans);background:var(--cream);color:var(--ink);min-height:100vh;overflow-x:hidden}
 ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:var(--warm);border-radius:2px}
 input,textarea,select{font-family:var(--sans);font-size:16px;background:transparent}
@@ -473,6 +473,47 @@ textarea.field-input{border:1px solid var(--line);border-radius:8px;padding:10px
 .of-name{font-size:15px;font-weight:500}
 .of-meta{font-size:13px}
 .song-num{font-size:15px;color:var(--muted)}
+/* map, headings, weather symbols, overnight */
+.ev-map-wrap{margin:2px 0 16px}
+.ev-map{height:240px;border-radius:16px;overflow:hidden;background:var(--bone);border:1px solid var(--line)}
+.ev-map.small{height:180px}
+.ev-map-off{padding:70px 16px;text-align:center;font-size:13px;color:var(--muted)}
+.ev-map-legend{display:flex;flex-wrap:wrap;gap:12px;margin-top:8px;font-size:12.5px;color:var(--muted)}
+.ev-map-legend i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px}
+.leaflet-container{font-family:var(--sans)}
+.evm-tiles{filter:saturate(.8) contrast(.95)}
+.evm-tiles-dark{filter:invert(1) hue-rotate(180deg) brightness(.85) contrast(.9) saturate(.7)}
+.evm-wrap{background:none;border:none}
+.evm{position:relative;width:34px;height:34px;margin:6px;border-radius:50%;background:var(--c);border:3px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.35);display:flex;align-items:center;justify-content:center;color:#fff;font-family:var(--sans);font-size:14px;font-weight:600}
+.evm b{font-weight:600}
+.evm.evm-ph{width:44px;height:44px;margin:1px;border-width:3px;border-color:var(--c);background:var(--bone)}
+.evm.evm-ph img{width:100%;height:100%;border-radius:50%;object-fit:cover;opacity:0;transition:opacity .25s}
+.evm.evm-ph img.ready{opacity:1}
+.evm.evm-ph b{position:absolute;right:-6px;top:-6px;min-width:19px;height:19px;border-radius:50%;background:var(--c);border:2px solid #fff;font-size:11px;display:flex;align-items:center;justify-content:center}
+.ev-seg-row{display:flex;justify-content:flex-end;margin:0 0 12px}
+.ev-seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;padding:3px;gap:2px}
+.ev-seg button{border:none;background:none;border-radius:999px;padding:5px 14px;font-family:var(--sans);font-size:13px;color:var(--muted);cursor:pointer}
+.ev-seg button.on{background:var(--ink);color:var(--cream)}
+.evd-list{display:flex;flex-direction:column;gap:10px;margin-bottom:6px}
+.evd-row{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:rgba(var(--ink-rgb),.035);border:1px solid var(--line);border-radius:14px;padding:12px;cursor:pointer;font-family:var(--sans);color:var(--ink)}
+.evd-row.today{border-color:var(--ink)}
+.evd-tag{flex-shrink:0;color:#fff;font-size:12.5px;font-weight:600;border-radius:999px;padding:3px 10px}
+.evd-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+.evd-title{font-family:var(--serif);font-size:21px;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.evd-sub{font-size:12.5px;color:var(--muted)}
+.evd-wx{flex-shrink:0;color:var(--muted);display:inline-flex}
+.evd-ph{display:flex;flex-shrink:0;gap:3px}
+.evd-ph img{width:34px;height:34px;border-radius:8px;object-fit:cover;background:var(--bone);opacity:0;transition:opacity .25s}
+.evd-ph img.ready{opacity:1}
+.ev-sum{font-size:13px;color:var(--muted);margin:6px 0 14px}
+.wx2{display:flex;align-items:center;gap:22px;margin:0 0 18px;padding:2px 0 0;color:var(--ink)}
+.wx2-i{display:inline-flex;align-items:center;gap:8px}
+.wx2-i em{font-style:normal;font-size:13px;color:var(--muted)}
+.wx2 .wx-credit{margin:0 0 0 auto;font-size:10.5px;opacity:.7}
+.wx-note{margin:0 0 16px}
+.ev-night{margin-top:28px;padding:14px 16px 8px;border-radius:14px;border-top:none;border-left:3px solid var(--night);background:color-mix(in srgb,var(--night) 12%,transparent)}
+.ev-night .ev-sec-title{color:var(--night)}
+.ev-night .ev-field input:focus{border-bottom-color:var(--night)}
 /* who can see what */
 .ev-perm{margin:12px 0 4px;padding-top:12px;border-top:1px solid var(--bone)}
 .ev-perm-name{display:flex;align-items:center;gap:8px;font-size:15px;margin-bottom:8px}
@@ -496,7 +537,7 @@ textarea.field-input{border:1px solid var(--line);border-radius:8px;padding:10px
 .ev-ph-big{background:var(--bone);border-radius:10px;overflow:hidden;min-height:140px;display:flex;align-items:center;justify-content:center}
 .ev-ph-big img{display:block;max-width:100%;max-height:60vh;opacity:0;transition:opacity .25s}
 .ev-ph-big img.ready{opacity:1}
-.ev-addph{background:none;border:none;padding:4px 0;margin-top:2px;font-family:var(--sans);font-size:12.5px;color:var(--muted);text-decoration:underline;cursor:pointer}
+.ev-addph{display:block;background:none;border:none;padding:4px 0;margin-top:2px;font-family:var(--sans);font-size:12.5px;color:var(--muted);text-decoration:underline;cursor:pointer}
 .ev-sug{padding:16px 0;border-top:1px solid var(--line)}
 .ev-sug:last-child{border-bottom:1px solid var(--line)}
 .ev-sug-title{font-family:var(--serif);font-size:24px;line-height:1.15;color:var(--ink)}
@@ -1416,7 +1457,7 @@ document.addEventListener('focusout',()=>{if(!pendingSectionRefresh)return;setTi
 function showSection(s){
   const changed=s!==lastShown;lastShown=s;currentSection=s;
   applyAppearance();
-  if(s!=='event')evStopPoll();
+  if(s!=='event'){evStopPoll();evMapDestroy();}
   applyWallpaper();
   const main=document.getElementById('main-content');
   if(s==='dashboard')renderDashboard(main);
@@ -2387,7 +2428,7 @@ function renderEvent(main){
   if(!ev){main.innerHTML=`<div class="empty">That event is not here any more.<br/><button class="btn-ghost" style="margin-top:12px" onclick="showSection('dayout')">Back to days out</button></div>`;return;}
   if(evDay&&ev.days.indexOf(evDay)<0)evDay=null;
   main.innerHTML=evDay?evDayHTML(ev):evHomeHTML(ev);
-  wxEnsure(ev);evHydratePhotos(main);
+  wxEnsure(ev);evHydratePhotos(main);evMapInit();
   if(ev.shared&&evCloudOn()&&!evPoll)evStartPoll();
   evUpdStatus();
 }
@@ -2412,9 +2453,10 @@ function evHomeHTML(ev){
   return`<div class="section-rule"><div><div class="section-title">${escHtml(ev.name)}</div><div class="section-sub">${escHtml(evRange(ev))}${ev.location?' · '+escHtml(ev.location):''}</div></div><button class="btn-ghost" onclick="openEventSettings()">Settings</button></div>
     <div class="ev-meta"><span class="ev-count">${escHtml(evCountdown(ev))}</span><span id="ev-status" class="of-meta"></span></div>
     ${ev.notes?`<p class="ev-notes">${escHtml(ev.notes)}</p>`:''}
-    <div class="evc">${evCalHTML(ev)}</div>
-    <p class="cl-hint" style="text-align:center">Tap a day to see and edit its plan.</p>
-    ${evStatsHTML(ev)}
+    ${evMapHTML(ev,null)}
+    <div class="ev-seg-row"><div class="ev-seg" role="group" aria-label="How to show the days"><button class="${evViewMode()==='cal'?'on':''}" onclick="evSetView('cal')">Calendar</button><button class="${evViewMode()==='days'?'on':''}" onclick="evSetView('days')">Headings</button></div></div>
+    ${evViewMode()==='days'?evDaysViewHTML(ev):`<div class="evc">${evCalHTML(ev)}</div>`}
+    ${evSummaryHTML(ev)}
     ${evHiddenNote(ev)}
     ${evCan(ev,'suggestions')?evSugsHTML(ev):''}
     ${evCan(ev,'people')?`<div class="ev-block"><div class="flex-between mb14"><div class="ev-strip-title">People</div>${ev.creator?`<button class="btn-ghost" onclick="openEventSettings()">${ev.shared?'Invite':'Share'}</button>`:''}</div>
@@ -2435,13 +2477,6 @@ function evHiddenNote(ev){
   if(ev.creator)return'';
   const x=(ev.perms||[]).find(p=>p.id===(ev.me||{}).id);
   return x&&(x.hide||[]).length?`<p class="cl-hint">The organiser has hidden some parts of this event for you.</p>`:'';
-}
-function evStatsHTML(ev){
-  const total=(ev.acts||[]).reduce((s,a)=>s+(a.price||0),0),ppl=Math.max(1,(ev.people||[]).length),tiles=[];
-  if(evCan(ev,'schedule'))tiles.push(`<div><b>${(ev.acts||[]).length}</b><span>Activities</span></div>`);
-  if(evCan(ev,'people'))tiles.push(`<div><b>${(ev.people||[]).length}</b><span>${(ev.people||[]).length===1?'Person':'People'}</span></div>`);
-  if(evCan(ev,'schedule')&&evCan(ev,'costs'))tiles.push(`<div><b>${evMoney(total)}</b><span>Total${ppl>1&&total?' · '+evMoney(total/ppl)+' each':''}</span></div>`);
-  return tiles.length?`<div class="ev-stats">${tiles.join('')}</div>`:'';
 }
 function evPermsHTML(ev){
   if(!ev.creator)return'';
@@ -2481,7 +2516,7 @@ function evRowsHTML(ev,acts){
   let prevEnd=-1;
   return acts.map(a=>{
     const s=doToMin(a.time),e=s==null?null:s+doMins(a),clash=s!=null&&prevEnd>s;if(e!=null)prevEnd=Math.max(prevEnd,e);const lk=safeLink(a.link);
-    return`<div class="item-row do-row${clash?' clash':''}"><div class="do-time">${s==null?'<span class="do-notime">No time</span>':doFmt(s)+'<span>'+doFmt(e)+'</span>'}</div><div class="item-body"><span class="cat-badge">${escHtml(a.cat||'Other')}</span><div class="item-name">${escHtml(a.name)}</div>${a.where?`<a class="item-link" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(a.where)}" target="_blank" rel="noopener">${escHtml(a.where)}</a>`:''}${a.notes?`<div class="of-meta">${escHtml(a.notes)}</div>`:''}${clash?'<div class="do-clash">Overlaps the activity before it</div>':''}${lk?`<a class="item-link" href="${escHtml(lk)}" target="_blank" rel="noopener">${escHtml(a.link)}</a>`:''}${evCan(ev,'photos')?evActPhotosHTML(ev,a):''}</div>${a.price&&evCan(ev,'costs')?`<div class="item-price">${evMoney(a.price)}</div>`:''}<button class="btn-ghost" style="padding:4px 10px;font-size:12px" onclick="evActForm('${a.id}')">Edit</button><button class="icon-btn" title="Delete" onclick="evDelAct('${a.id}')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg></button></div>`;
+    return`<div class="item-row do-row${clash?' clash':''}"><div class="do-time">${s==null?'<span class="do-notime">No time</span>':doFmt(s)+'<span>'+doFmt(e)+'</span>'}</div><div class="item-body"><span class="cat-badge">${escHtml(a.cat||'Other')}</span><div class="item-name">${escHtml(a.name)}</div>${a.where?`<a class="item-link" href="${escHtml(evMapsUrl(a))}" target="_blank" rel="noopener">${escHtml(a.where)}</a>`:''}${a.notes?`<div class="of-meta">${escHtml(a.notes)}</div>`:''}${clash?'<div class="do-clash">Overlaps the activity before it</div>':''}${lk?`<a class="item-link" href="${escHtml(lk)}" target="_blank" rel="noopener">${escHtml(a.link)}</a>`:''}${evCan(ev,'photos')?evActPhotosHTML(ev,a):''}</div>${a.price&&evCan(ev,'costs')?`<div class="item-price">${evMoney(a.price)}</div>`:''}<button class="icon-btn" title="Edit" aria-label="Edit ${escHtml(a.name)}" onclick="evActForm('${a.id}')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></button><button class="icon-btn" title="Delete" onclick="evDelAct('${a.id}')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg></button></div>`;
   }).join('');
 }
 function evSectionHTML(ev,part){
@@ -2495,7 +2530,7 @@ function evSectionHTML(ev,part){
     <div class="ev-fields">
       ${inp(eve?'Evening starts':'Day starts',eve?'eveStart':'start',eve?info.eveStart:info.start,{type:'time'})}
       ${inp('Dress code',eve?'dressEve':'dressDay',eve?info.dressEve:info.dressDay,{list:'ev-dress',ph:'e.g. Smart casual',grow:true})}
-      ${eve?inp('Meal host','mealHost',info.mealHost,{list:'ev-ppl',ph:'Dinner',half:true})+inp('Night-time host','nightHost',info.nightHost,{list:'ev-ppl',ph:'After dinner',half:true}):''}
+      ${eve?inp('Meal host','mealHost',info.mealHost,{list:'ev-ppl',ph:'Who is hosting dinner?',grow:true}):''}
     </div>
     ${rows}
   </div>`;
@@ -2514,10 +2549,10 @@ function evDayHTML(ev){
   return`<div class="ev-dayhead">
       <input id="ev-day-title" class="ev-day-title" type="text" value="${escHtml(info.title)}" placeholder="${escHtml(evLong(evDay))}" maxlength="80" autocomplete="off" aria-label="Title for this day" oninput="evDayTextSoon('title',this)" onchange="evDayField('title',this.value.trim())"/>
       <div class="ev-day-sub"><span>${info.title?escHtml(evLong(evDay))+' · ':''}${escHtml(ev.name)} · day ${i+1} of ${days.length}</span><span class="ev-arrows">${arrow(-1,i<=0,'Previous day','M15 18l-6-6 6-6')}${arrow(1,i>=days.length-1,'Next day','M9 18l6-6-6-6')}</span></div>
-      ${info.title?'':'<div class="ev-hint">Tap the heading to give this day a title.</div>'}
     </div>
-    <div class="ev-overview"><label for="ev-day-overview">Overview</label><textarea id="ev-day-overview" rows="4" placeholder="A quick summary of the day: the plan, meeting points, anything people should know…" oninput="evDayTextSoon('overview',this)" onchange="evDayField('overview',this.value.trim())">${escHtml(info.overview)}</textarea></div>
+    <div class="ev-overview"><label for="ev-day-overview">Overview</label><textarea id="ev-day-overview" rows="3" placeholder="What is the plan for the day?" oninput="evDayTextSoon('overview',this)" onchange="evDayField('overview',this.value.trim())">${escHtml(info.overview)}</textarea></div>
     ${evCan(ev,'weather')?wxDayHTML(ev,evDay):''}
+    ${evMapHTML(ev,evDay)}
     ${evCan(ev,'people')?evPeopleHTML(ev,evDay):''}
     ${evCan(ev,'checklists')?evListsHTML(ev,evDay):''}
     <datalist id="ev-dress">${EV_DRESS.map(x=>`<option value="${escHtml(x)}"></option>`).join('')}</datalist>
@@ -2525,6 +2560,7 @@ function evDayHTML(ev){
     ${evCan(ev,'schedule')?evSectionHTML(ev,'day')+evSectionHTML(ev,'eve'):''}
     ${evCan(ev,'photos')?evDayPhotosHTML(ev,evDay):''}
     ${total&&evCan(ev,'schedule')&&evCan(ev,'costs')?`<div class="ev-daytotal"><span>Day total</span><b>${evMoney(total)}</b>${going.length>1?`<span>${evMoney(each)} each for ${going.length}</span>`:''}</div>`:''}
+    ${evNightHTML(ev)}
     ${evCan(ev,'schedule')?`<div class="ev-block"><a class="btn-ghost ev-link" href="${escHtml(evGcalDay(ev,evDay))}" target="_blank" rel="noopener">Add this day to Google Calendar</a></div>`:''}
     <span id="ev-status" class="of-meta" style="display:block;margin-top:10px"></span>`;
 }
@@ -2551,7 +2587,7 @@ function evListCardHTML(l){
 function evListsHTML(ev,day){
   const lists=evListsFor(ev,day);
   return`<div class="ev-block"><div class="flex-between mb14"><div class="ev-strip-title">Checklists</div><button class="btn-ghost" onclick="evListModal(null)">+ New list</button></div>
-    ${lists.length?lists.map(evListCardHTML).join(''):`<p class="cl-hint" style="margin-top:0">Make a list of things to bring or do on this day. Keep it to yourself or share it with everyone.</p>`}</div>`;
+    ${lists.map(evListCardHTML).join('')}</div>`;
 }
 function evAddItem(listId){
   const inp=document.getElementById('evi-'+listId),text=inp&&inp.value.trim();if(!text)return;
@@ -2686,7 +2722,9 @@ function evActForm(actId,part,pre){
     <label class="field-label">Name</label><input id="ea-name" class="field-input" value="${escHtml(v.name||'')}" placeholder="e.g. Lunch at The Seafood Bar…"/>
     <label class="field-label">Part of the day</label><select id="ea-part" class="field-input"><option value="day"${pt==='day'?' selected':''}>Day out</option><option value="eve"${pt==='eve'?' selected':''}>Evening</option></select>
     <label class="field-label">Category</label><select id="ea-cat" class="field-input">${Object.keys(DO_CAT_MINS).concat(v.cat&&!DO_CAT_MINS[v.cat]?[v.cat]:[]).map(c=>`<option${v.cat===c?' selected':''}>${escHtml(c)}</option>`).join('')}</select>
-    <label class="field-label">Location</label><input id="ea-where" class="field-input" value="${escHtml(v.where||'')}" placeholder="e.g. The Seafood Bar, St Ives" autocomplete="off"/>
+    <label class="field-label">Location</label><input id="ea-where" class="field-input" value="${escHtml(v.where||'')}" placeholder="A place name, or paste a Google Maps link" autocomplete="off"/>
+    <label class="ev-switch" style="margin:-6px 0 6px"><input type="checkbox" id="ea-pin"${v.pin===false?'':' checked'}/><span>Show on the map</span></label>
+    ${v.where&&v.pin!==false?`<p class="cl-hint" style="margin-top:0">${v.lat!=null?'Pinned on the map.':'No pin yet: that place was not found. Add the town, or paste a Google Maps link.'}</p>`:''}
     <label class="field-label">Day</label><select id="ea-day" class="field-input">${evDaysSorted(ev).map(k=>`<option value="${k}"${v.day===k?' selected':''}>${escHtml(evLong(k))}</option>`).join('')}</select>
     <label class="field-label">Start time (leave empty to let Arrange times choose)</label><input id="ea-time" class="field-input" type="time" value="${escHtml(v.time||'')}"/>
     <label class="field-label">How long (minutes)</label><input id="ea-mins" class="field-input" type="number" min="5" step="5" value="${v.mins||''}" placeholder="Usual length for this kind of activity"/>
@@ -2695,16 +2733,26 @@ function evActForm(actId,part,pre){
     <label class="field-label">Notes (optional)</label><input id="ea-notes" class="field-input" value="${escHtml(v.notes||'')}" placeholder="Booking reference, what to bring…"/>
     <div class="modal-row"><button class="btn-solid sm teal" onclick="evSaveAct(${actId?`'${actId}'`:'null'})">${a?'Save':'Add'}</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);
 }
-function evSaveAct(actId){
+async function evSaveAct(actId){
   const name=document.getElementById('ea-name').value.trim();if(!name){clToast('Give it a name');return;}
   const rec={name,where:document.getElementById('ea-where').value.trim(),part:document.getElementById('ea-part').value==='eve'?'eve':'day',cat:document.getElementById('ea-cat').value,day:document.getElementById('ea-day').value,time:document.getElementById('ea-time').value||'',mins:parseInt(document.getElementById('ea-mins').value,10)||0,link:document.getElementById('ea-link').value.trim(),price:parseFloat((document.getElementById('ea-price')||{}).value)||0,notes:document.getElementById('ea-notes').value.trim()};
   if(!document.getElementById('ea-price'))delete rec.price;   // costs are hidden from this person: keep the price that is already there
   const moved=rec.day!==evDay;
+  // Map pin: the place is looked up once, when it changes (or when it has no pin yet). A pasted Google Maps link is read directly.
+  const evNow=evFind(evData(),activeEventId),curAct=actId&&evNow?(evNow.acts||[]).find(x=>x.id===actId):null,wantPin=(document.getElementById('ea-pin')||{checked:true}).checked;
+  rec.pin=wantPin;let missed=false;
+  if(!rec.where||!wantPin){rec.lat=null;rec.lon=null;rec.mapUrl='';}
+  else if(curAct&&curAct.where===rec.where&&curAct.lat!=null){rec.lat=curAct.lat;rec.lon=curAct.lon;rec.mapUrl=curAct.mapUrl||'';}
+  else{
+    const btn=document.querySelector('#modal-box .btn-solid');if(btn){btn.disabled=true;btn.textContent='Finding the place…';}
+    const g=await evGeocode(rec.where,evNow&&evNow.location);
+    if(g){rec.lat=g.lat;rec.lon=g.lon;rec.mapUrl=g.mapUrl||'';if(g.fromUrl&&g.name)rec.where=g.name;}else{rec.lat=null;rec.lon=null;rec.mapUrl='';missed=true;}
+  }
   evMutate(activeEventId,(ev,put)=>{
     const cur=actId?(ev.acts||[]).find(x=>x.id===actId):null,id=cur?cur.id:uid();
     put('a_'+id,Object.assign({},cur||{by:(ev.me||{}).name||''},rec,{id,upd:Date.now()}));
   });
-  closeModal();showSection('event');if(moved)clToast('Saved on '+evShort(rec.day));
+  closeModal();showSection('event');if(missed)clToast('Saved, but that place could not be found for the map');else if(moved)clToast('Saved on '+evShort(rec.day));
 }
 function evDelAct(id){
   const ev=evFind(evData(),activeEventId),a=ev&&(ev.acts||[]).find(x=>x.id===id);if(!a)return;
@@ -2780,23 +2828,161 @@ function wxParse(w){
   return days;
 }
 function wxRefresh(id){if(currentSection==='event'&&activeEventId===id)evSoftRefresh();}
-function wxText(o){return o?(WX_CODES[o.code]||'Mixed')+' · '+(o.temp!=null?o.temp:o.hi)+'° · '+o.rain+'% rain':'';}
-// The weather block inside a day. It appears 14 days before the event, stays on every day right to the end of the event, then goes. Not shown on the main event screen.
-function wxDayHTML(ev,day){
-  const st=wxWindow(ev),today=clKey(new Date());
-  if(st==='over')return'';
-  const head='<div class="ev-strip-title">Weather</div>',credit='<div class="wx-credit">Forecast by Open-Meteo</div>';
-  if(st==='early')return`<div class="wx">${head}<p class="cl-hint">The forecast switches on 2 weeks before the event, from ${escHtml(evShort(evAddDays(evDaysSorted(ev)[0],-14)))}.</p></div>`;
-  if(!ev.location)return`<div class="wx">${head}<p class="cl-hint">Add where this is in Settings to see the weather for each day.</p></div>`;
-  const c=getStore(wxKey(ev.id),null);
-  if(!c||c.loc!==ev.location)return`<div class="wx">${head}<p class="cl-hint">Loading the weather…</p></div>`;
-  if(c.fail==='place')return`<div class="wx">${head}<p class="cl-hint">Could not find "${escHtml(ev.location)}". Try a town or city name in Settings.</p></div>`;
-  const d=(c.days||{})[day];
-  if(!d)return`<div class="wx">${head}<p class="cl-hint">${day>today?'The forecast for this day appears on '+escHtml(evShort(evAddDays(day,-15)))+'.':'No weather record for this day.'}</p></div>`;
-  return`<div class="wx"><div class="flex-between">${head}<span class="of-meta">${escHtml(c.label||'')}</span></div>
-    <div class="wx-top"><b>${escHtml(WX_CODES[d.code]||'Mixed')}</b><span>High ${d.hi}° · Low ${d.lo}° · Wind ${d.wind} mph</span></div>
-    <div class="wx-parts"><div><span>Day out</span>${escHtml(wxText(d.day))||'—'}</div><div><span>Evening</span>${escHtml(wxText(d.eve))||'—'}</div></div>${credit}</div>`;
+// ── map, day colours, headings view ──
+// Each day gets a colour (used on the map pins, the route lines and the day rows) so the plan reads at a glance. Pins come from activities that have
+// a location AND "Show on the map" ticked: the location is looked up once, when the activity is saved (a pasted Google Maps link is read directly).
+// The map is Leaflet on free OpenStreetMap-based tiles (no key); a pin shows the first photo of its activity when there is one.
+const EV_COLORS=['#e4572e','#2e86de','#e5a100','#2fa66b','#8e5bd8','#17a2b8','#d6457f','#5c6b7a'];
+function evDayColor(ev,day){const i=evDaysSorted(ev).indexOf(day);return EV_COLORS[(i<0?0:i)%EV_COLORS.length];}
+function evActFirstPhoto(ev,a){return(ev.photos||[]).filter(p=>p.act===a.id).sort((x,y)=>(x.upd||0)-(y.upd||0))[0]||null;}
+function evPins(ev,onlyDay){
+  const out=[];
+  evDaysSorted(ev).forEach(day=>{
+    if(onlyDay&&day!==onlyDay)return;
+    doSorted((ev.acts||[]).filter(a=>a.day===day&&a.lat!=null&&a.lon!=null)).forEach((a,i)=>out.push({a,n:i+1,day,color:evDayColor(ev,day),photo:evCan(ev,'photos')?evActFirstPhoto(ev,a):null}));
+  });
+  return out;
 }
+function evMapsUrl(a){return a.mapUrl||('https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(a.lat!=null?a.lat+','+a.lon:(a.where||a.name)));}
+// Coordinates (and a place name) from a pasted Google Maps link. Short links (maps.app.goo.gl) can't be read without a server, so they give null.
+function evCoordsFromMapsUrl(u){
+  let m=/@(-?\d+\.\d+),(-?\d+\.\d+)/.exec(u)||/!3d(-?\d+\.\d+)!4d(-?\d+\.\d+)/.exec(u)||/[?&](?:q|ll|query|destination|center)=(-?\d+\.\d+)(?:,|%2C)(-?\d+\.\d+)/i.exec(u);
+  if(!m)return null;
+  const n=/\/maps\/place\/([^/@?]+)/.exec(u);let name='';
+  try{if(n)name=decodeURIComponent(n[1].replace(/\+/g,' '));}catch(e){}
+  return{lat:parseFloat(m[1]),lon:parseFloat(m[2]),name,mapUrl:u,fromUrl:true};
+}
+// Looks a place up (OpenStreetMap's free search). Tries the place together with the event's own location first, since "The Seafood Bar" alone is ambiguous.
+async function evGeocode(text,near){
+  const u=(text||'').trim();if(!u)return null;
+  if(/^https?:\/\//i.test(u))return evCoordsFromMapsUrl(u);
+  const tries=[];if(near&&u.toLowerCase().indexOf(near.toLowerCase())<0)tries.push(u+', '+near);tries.push(u);
+  for(const q of tries){
+    try{
+      const ctl=new AbortController(),t=setTimeout(()=>ctl.abort(),6000);
+      const r=await fetch('https://nominatim.openstreetmap.org/search?format=json&limit=1&q='+encodeURIComponent(q),{signal:ctl.signal,headers:{Accept:'application/json'}});
+      clearTimeout(t);
+      const j=await r.json();if(j&&j[0])return{lat:parseFloat(j[0].lat),lon:parseFloat(j[0].lon)};
+    }catch(e){}
+  }
+  return null;
+}
+let evLeafletP=null,evMapObj=null;
+function loadLeaflet(){
+  if(window.L&&L.map)return Promise.resolve();
+  if(evLeafletP)return evLeafletP;
+  const css=new Promise((res,rej)=>{const l=document.createElement('link');l.rel='stylesheet';l.href='https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css';l.onload=()=>res();l.onerror=()=>rej(new Error('css'));document.head.appendChild(l);});
+  const js=new Promise((res,rej)=>{const s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js';s.onload=()=>res();s.onerror=()=>rej(new Error('js'));document.head.appendChild(s);});
+  evLeafletP=Promise.all([css,js]).then(()=>{},e=>{evLeafletP=null;throw e;});
+  return evLeafletP;
+}
+function evMapHTML(ev,onlyDay){
+  if(!evCan(ev,'schedule'))return'';
+  const pins=evPins(ev,onlyDay);if(!pins.length)return'';
+  const days=Array.from(new Set(pins.map(p=>p.day)));
+  const legend=!onlyDay&&days.length>1?`<div class="ev-map-legend">${days.map(d=>`<span><i style="background:${evDayColor(ev,d)}"></i>Day ${evDaysSorted(ev).indexOf(d)+1}</span>`).join('')}</div>`:'';
+  return`<div class="ev-map-wrap"><div id="ev-map" class="ev-map${onlyDay?' small':''}" role="img" aria-label="Map of the planned places"></div>${legend}</div>`;
+}
+function evMapDestroy(){if(evMapObj){try{evMapObj.remove();}catch(e){}evMapObj=null;}}
+async function evMapInit(){
+  evMapDestroy();
+  const el=document.getElementById('ev-map');if(!el)return;
+  const ev=evFind(evData(),activeEventId);if(!ev)return;
+  const pins=evPins(ev,evDay);if(!pins.length)return;
+  try{await loadLeaflet();}catch(e){el.innerHTML='<div class="ev-map-off">The map could not load. Check your connection.</div>';return;}
+  if(document.getElementById('ev-map')!==el)return;   // the screen changed while the map library was loading
+  const dark=(()=>{const c=hexRgb(schemeVars().cream);return(c[0]*.3+c[1]*.59+c[2]*.11)<110;})();
+  const map=L.map(el,{zoomControl:false,scrollWheelZoom:false}).setView([pins[0].a.lat,pins[0].a.lon],13);
+  L.control.zoom({position:'bottomright'}).addTo(map);
+  // OpenStreetMap's own free tiles (fine for light, personal use; CARTO's now need a key). Dark schemes darken them with a CSS filter.
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,className:dark?'evm-tiles-dark':'evm-tiles',attribution:'&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors'}).addTo(map);
+  const byDay={};pins.forEach(p=>{(byDay[p.day]=byDay[p.day]||[]).push(p);});
+  Object.keys(byDay).forEach(day=>{const pts=byDay[day].map(p=>[p.a.lat,p.a.lon]);if(pts.length>1)L.polyline(pts,{color:byDay[day][0].color,weight:3,opacity:.75,dashArray:'7 7'}).addTo(map);});
+  const all=[];
+  pins.forEach(p=>{
+    const html=p.photo?`<div class="evm evm-ph" style="--c:${p.color}"><img data-evph="${p.photo.id}" alt=""/><b>${p.n}</b></div>`:`<div class="evm" style="--c:${p.color}"><b>${p.n}</b></div>`;
+    const m=L.marker([p.a.lat,p.a.lon],{zIndexOffset:p.photo?500:0,icon:L.divIcon({html,className:'evm-wrap',iconSize:[46,46],iconAnchor:[23,23],popupAnchor:[0,-22]})}).addTo(map);
+    m.bindPopup(`<b>${escHtml(p.a.name)}</b><br>${escHtml(evShort(p.day))}${p.a.time?' · '+escHtml(p.a.time):''}<br><a href="${escHtml(evMapsUrl(p.a))}" target="_blank" rel="noopener">Open in Google Maps</a>`);
+    all.push([p.a.lat,p.a.lon]);
+  });
+  if(all.length>1)map.fitBounds(all,{padding:[44,44],maxZoom:15});else map.setView(all[0],14);
+  evMapObj=map;evHydratePhotos(el);
+  setTimeout(()=>{if(evMapObj===map)map.invalidateSize();},200);
+}
+
+// Calendar / Headings switch (remembered on this device). Headings = one row per day, like the day list in a trip planner: coloured day tag,
+// the day's title, how many things are planned, the weather symbol and a few photos.
+function evViewMode(){try{return localStorage.getItem('maison_evview')==='days'?'days':'cal';}catch(e){return'cal';}}
+function evSetView(m){try{localStorage.setItem('maison_evview',m);}catch(e){}showSection('event');}
+function evDayThumbIds(ev,day){
+  const ids=[];
+  doSorted((ev.acts||[]).filter(a=>a.day===day)).forEach(a=>{const p=evActFirstPhoto(ev,a);if(p)ids.push(p.id);});
+  (ev.photos||[]).filter(p=>p.day===day&&!p.act&&!p.sug).sort((a,b)=>(a.upd||0)-(b.upd||0)).forEach(p=>ids.push(p.id));
+  return ids.slice(0,4);
+}
+function evDaysViewHTML(ev){
+  const days=evDaysSorted(ev),today=clKey(new Date());
+  return`<div class="evd-list">${days.map((k,i)=>{
+    const info=evDayInfo(ev,k),n=(ev.acts||[]).filter(a=>a.day===k).length,col=evDayColor(ev,k);
+    const ph=evCan(ev,'photos')?evDayThumbIds(ev,k):[],wx=evCan(ev,'weather')?wxMiniIcon(ev,k):'';
+    return`<button class="evd-row${k===today?' today':''}" onclick="evOpenDay('${k}')"><span class="evd-tag" style="background:${col}">Day ${i+1}</span><span class="evd-main"><span class="evd-title">${escHtml(info.title||evShort(k))}</span><span class="evd-sub">${info.title?escHtml(evShort(k))+(evCan(ev,'schedule')?' · ':''):''}${evCan(ev,'schedule')?n+(n===1?' thing':' things'):''}</span></span>${wx}${ph.length?`<span class="evd-ph">${ph.map(id=>`<img data-evph="${id}" alt=""/>`).join('')}</span>`:''}</button>`;
+  }).join('')}</div>`;
+}
+// One quiet line instead of a row of stat boxes.
+function evSummaryHTML(ev){
+  const bits=[],n=(ev.acts||[]).length,ppl=(ev.people||[]).length,total=(ev.acts||[]).reduce((s,a)=>s+(a.price||0),0);
+  if(evCan(ev,'schedule'))bits.push(n+(n===1?' activity':' activities'));
+  if(evCan(ev,'people'))bits.push(ppl+(ppl===1?' person':' people'));
+  if(evCan(ev,'schedule')&&evCan(ev,'costs')&&total)bits.push(evMoney(total)+(ppl>1?' ('+evMoney(total/Math.max(1,ppl))+' each)':''));
+  return bits.length?`<p class="ev-sum">${bits.join(' · ')}</p>`:'';
+}
+// Overnight host: its own coloured section at the bottom of the day.
+function evNightHTML(ev){
+  if(!evCan(ev,'schedule'))return'';
+  const info=evDayInfo(ev,evDay);
+  return`<div class="ev-sec ev-night"><div class="ev-sec-head"><div class="ev-sec-title">Overnight</div></div><div class="ev-fields"><label class="ev-field grow"><span>Overnight host</span><input type="text" list="ev-ppl" value="${escHtml(info.nightHost)}" placeholder="Who is hosting overnight?" autocomplete="off" onchange="evDayField('nightHost',this.value.trim())"/></label></div></div>`;
+}
+
+// ── weather symbols ──
+const WX_SVG={
+  sun:'<circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/>',
+  suncloud:'<circle cx="8.5" cy="8.5" r="3"/><path d="M8.5 2.6v1.3M2.6 8.5h1.3M4.3 4.3l.9.9M12.7 4.3l-.9.9"/><path d="M8 20h9a3.5 3.5 0 0 0 .4-7A5 5 0 0 0 8 14a3 3 0 0 0 0 6z"/>',
+  cloud:'<path d="M7 19h10a4 4 0 0 0 .5-8A6 6 0 0 0 6 12.5 3.3 3.3 0 0 0 7 19z"/>',
+  rain:'<path d="M7 15h10a4 4 0 0 0 .5-8A6 6 0 0 0 6 8.5 3.3 3.3 0 0 0 7 15z"/><path d="M8 18l-1 3M12 18l-1 3M16 18l-1 3"/>',
+  snow:'<path d="M7 15h10a4 4 0 0 0 .5-8A6 6 0 0 0 6 8.5 3.3 3.3 0 0 0 7 15z"/><path d="M8 18.5h.01M12 19.5h.01M16 18.5h.01M10 21.5h.01M14 21.5h.01" stroke-width="2.4"/>',
+  storm:'<path d="M7 14h10a4 4 0 0 0 .5-8A6 6 0 0 0 6 7.5 3.3 3.3 0 0 0 7 14z"/><path d="M12.5 14l-2.5 4h3.5l-2 4"/>',
+  fog:'<path d="M5 10h14M3 14h18M6 18h12"/>',
+  wind:'<path d="M3 8h10a2.5 2.5 0 1 0-2.5-2.5M3 12h15a3 3 0 1 1-3 3M3 16h7a2 2 0 1 1-2 2"/>'
+};
+const WX_LABEL={sun:'Sunny',suncloud:'Sunny spells',cloud:'Cloudy',rain:'Rain',snow:'Snow',storm:'Thunderstorm',fog:'Fog',wind:'Windy'};
+function wxIcon(kind,size){return`<svg class="wxi" width="${size||28}" height="${size||28}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${WX_SVG[kind]||WX_SVG.cloud}</svg>`;}
+function wxKind(code,wind){
+  const c=+code;
+  let k=c<=1?'sun':c===2?'suncloud':c===3?'cloud':(c===45||c===48)?'fog':((c>=51&&c<=67)||(c>=80&&c<=82))?'rain':((c>=71&&c<=77)||c===85||c===86)?'snow':c>=95?'storm':'cloud';
+  if((wind||0)>=25&&(k==='sun'||k==='suncloud'||k==='cloud'))k='wind';
+  return k;
+}
+function wxMiniIcon(ev,day){
+  if(wxWindow(ev)!=='on')return'';
+  const c=getStore(wxKey(ev.id),null),d=c&&c.loc===ev.location&&c.days&&c.days[day];if(!d)return'';
+  const k=wxKind(d.code,d.wind);return`<span class="evd-wx" title="${WX_LABEL[k]}" aria-label="${WX_LABEL[k]}">${wxIcon(k,24)}</span>`;
+}
+// The weather inside a day: just symbols (day out, evening), no numbers. Appears 14 days before the event and stays through to its last day.
+function wxDayHTML(ev,day){
+  const st=wxWindow(ev);
+  if(st==='over')return'';
+  const note=t=>`<p class="cl-hint wx-note">${t}</p>`;
+  if(st==='early')return note('Weather appears 2 weeks before the event, from '+escHtml(evShort(evAddDays(evDaysSorted(ev)[0],-14)))+'.');
+  if(!ev.location)return note('Add a place in Settings to see the weather.');
+  const c=getStore(wxKey(ev.id),null);
+  if(!c||c.loc!==ev.location)return note('Loading the weather…');
+  if(c.fail==='place')return note('Could not find "'+escHtml(ev.location)+'". Try a town or city name in Settings.');
+  const d=(c.days||{})[day],today=clKey(new Date());
+  if(!d)return note(day>today?'Weather for this day appears on '+escHtml(evShort(evAddDays(day,-15)))+'.':'No weather record for this day.');
+  const part=(label,o,wind)=>{const k=wxKind(o?o.code:d.code,wind);return`<span class="wx2-i" title="${label}: ${WX_LABEL[k]}" aria-label="${label}: ${WX_LABEL[k]}">${wxIcon(k,30)}<em>${label}</em></span>`;};
+  return`<div class="wx2">${part('Day out',d.day,d.wind)}${part('Evening',d.eve,0)}<span class="wx-credit">Weather by Open-Meteo</span></div>`;
+}
+
 // ── photos (days, activities, suggestions) ──
 // A photo is a small record in the event (`ph_<id>`: which day / activity / suggestion it belongs to, who added it) plus the picture itself.
 // The picture is kept in this device's IndexedDB under the plain id (so your OWN photos also ride your Drive mirror, see referencedPhotoIds) and,
@@ -2899,7 +3085,7 @@ function evActPhotosHTML(ev,a){
 function evDayPhotosHTML(ev,day){
   const th=evPhotoThumbs(ev,p=>p.day===day&&!p.act&&!p.sug);
   return`<div class="ev-block"><div class="flex-between mb14"><div class="ev-strip-title">Photos</div><button class="btn-ghost" onclick="evPickPhotos({day:'${day}'})">+ Add photos</button></div>
-    ${th?`<div class="ev-ph-grid">${th}</div>`:`<p class="cl-hint" style="margin-top:0">Add photos from this day. Everyone on the event can see them.</p>`}</div>`;
+    ${th?`<div class="ev-ph-grid">${th}</div>`:''}</div>`;
 }
 function evPhotoOpen(id){
   const ev=evFind(evData(),activeEventId),p=ev&&(ev.photos||[]).find(x=>x.id===id);if(!p)return;
@@ -2953,7 +3139,7 @@ function evSugCardHTML(ev,s){
 function evSugsHTML(ev){
   const list=(ev.sugs||[]).slice().sort((a,b)=>{const x=evVoteTally(ev,a.id),y=evVoteTally(ev,b.id);return(y.up-y.down)-(x.up-x.down)||(b.upd||0)-(a.upd||0);});
   return`<div class="ev-block"><div class="flex-between mb14"><div class="ev-strip-title">Suggestions</div><button class="btn-ghost" onclick="evSugModal(null)">+ Suggest</button></div>
-    ${list.length?list.map(s=>evSugCardHTML(ev,s)).join(''):`<p class="cl-hint" style="margin-top:0">Got an idea? Add a few words, a link or photos, and everyone can vote it up or down.</p>`}</div>`;
+    ${list.map(s=>evSugCardHTML(ev,s)).join('')}</div>`;
 }
 function evSugModal(sid){
   const ev=evFind(evData(),activeEventId);if(!ev)return;
@@ -2997,7 +3183,7 @@ function evGcalDay(ev,day){
   const info=evDayInfo(ev,day),lines=p=>doSorted((ev.acts||[]).filter(a=>a.day===day&&(a.part||'day')===p)).map(a=>(a.time?a.time+' ':'')+a.name+(a.where?' at '+a.where:'')+(a.notes?' - '+a.notes:''));
   const blocks=[],d1=lines('day'),d2=lines('eve');
   if(d1.length||info.dressDay)blocks.push(['Day out'+(info.dressDay?' - dress code: '+info.dressDay:'')].concat(d1).join('\n'));
-  if(d2.length||info.dressEve||info.mealHost||info.nightHost)blocks.push(['Evening'+(info.dressEve?' - dress code: '+info.dressEve:'')].concat(info.mealHost?['Meal host: '+info.mealHost]:[],info.nightHost?['Night-time host: '+info.nightHost]:[],d2).join('\n'));
+  if(d2.length||info.dressEve||info.mealHost)blocks.push(['Evening'+(info.dressEve?' - dress code: '+info.dressEve:'')].concat(info.mealHost?['Meal host: '+info.mealHost]:[],d2).join('\n'));
   const details=blocks.join('\n\n');
   return'https://calendar.google.com/calendar/render?action=TEMPLATE&text='+encodeURIComponent(ev.name)+'&dates='+day.replace(/-/g,'')+'/'+clKey(n).replace(/-/g,'')+'&details='+encodeURIComponent(details)+(ev.location?'&location='+encodeURIComponent(ev.location):'');
 }
@@ -3032,6 +3218,7 @@ function openEventSettings(){
   openModal(`<div class="modal-head"><div class="modal-title">Event settings</div><button class="modal-close" onclick="closeModal()">×</button></div>
     <label class="field-label">Name</label><input id="es-name" class="field-input" value="${escHtml(ev.name)}"/>
     <label class="field-label">Where</label><input id="es-loc" class="field-input" value="${escHtml(ev.location||'')}"/>
+    ${(()=>{const c=getStore(wxKey(ev.id),null);return c&&c.loc===ev.location&&c.label?`<p class="cl-hint" style="margin-top:-10px">Weather for ${escHtml(c.label)}</p>`:'';})()}
     <label class="field-label">Notes for everyone</label><input id="es-notes" class="field-input" value="${escHtml(ev.notes||'')}" placeholder="Meeting point, dress code…"/>
     <label class="field-label">Your name in this event</label><input id="es-me" class="field-input" value="${escHtml((ev.me||{}).name||'')}"/>
     <div class="modal-row"><button class="btn-solid sm teal" onclick="evSaveDetails()">Save</button><button class="btn-ghost" onclick="evChangeDays()">Change days</button></div>
@@ -4624,6 +4811,7 @@ function schemeVars(a){
 function applyAppearance(a){
   const v=schemeVars(a),r=document.documentElement.style;
   ['cream','bone','ink','muted','warm','line','gold','teal','plum','red','green'].forEach(k=>r.setProperty('--'+k,v[k]));
+  {const c=hexRgb(v.cream);r.setProperty('--night',(c[0]*.3+c[1]*.59+c[2]*.11)<110?'#a9b6ff':'#3f4c84');}
   r.setProperty('--ink-rgb',hexRgb(v.ink).join(','));r.setProperty('--cream-rgb',hexRgb(v.cream).join(','));r.setProperty('--bone-rgb',hexRgb(v.bone).join(','));
   const m=document.querySelector('meta[name=theme-color]');if(m)m.content=v.cream;
 }
