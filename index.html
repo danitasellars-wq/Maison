@@ -2937,6 +2937,7 @@ async function evResolve(inputId,text,prev,near){
   const pk=evForm.picked[inputId];if(pk&&pk.name===text)return{lat:pk.lat,lon:pk.lon,mapUrl:pk.mapUrl||''};
   if(prev&&prev.text===text&&prev.lat!=null)return{lat:prev.lat,lon:prev.lon,mapUrl:prev.mapUrl||''};
   const g=await evGeocode(text,near);
+  if(g&&g.failed)return{lat:null,lon:null,mapUrl:g.mapUrl||'',name:g.name||'',missed:true,short:!!g.short};
   return g?{lat:g.lat,lon:g.lon,mapUrl:g.mapUrl||'',name:(g.fromUrl&&g.name)?g.name:''}:{lat:null,lon:null,mapUrl:'',missed:true};
 }
 async function evSaveAct(actId){
@@ -2949,7 +2950,7 @@ async function evSaveAct(actId){
   const he=document.getElementById('ea-hideg');if(he)rec.hideGuests=he.checked;
   const moved=rec.day!==evDay;
   const evNow=evFind(evData(),activeEventId),cur=actId&&evNow?(evNow.acts||[]).find(x=>x.id===actId):null,near=evNow&&evNow.location;
-  let missed=false;
+  let missed=false,short=false;
   const btn=document.querySelector('#modal-box .btn-solid');
   const busy=()=>{if(btn){btn.disabled=true;btn.textContent='Finding the places…';}};
   if(isJ){
@@ -2969,14 +2970,14 @@ async function evSaveAct(actId){
     else{
       if(!(cur&&cur.where===rec.where&&cur.lat!=null))busy();
       const g=await evResolve('ea-where',rec.where,cur&&{text:cur.where,lat:cur.lat,lon:cur.lon,mapUrl:cur.mapUrl},near);
-      rec.lat=g.lat;rec.lon=g.lon;rec.mapUrl=g.mapUrl||'';if(g.name)rec.where=g.name;if(g.missed)missed=true;
+      rec.lat=g.lat;rec.lon=g.lon;rec.mapUrl=g.mapUrl||'';if(g.name)rec.where=g.name;if(g.missed)missed=true;if(g.short)short=true;
     }
   }
   evMutate(activeEventId,(ev,put)=>{
     const c2=actId?(ev.acts||[]).find(x=>x.id===actId):null,id=c2?c2.id:uid();
     put('a_'+id,Object.assign({},c2||{by:(ev.me||{}).name||''},rec,{id,upd:Date.now()}));
   });
-  closeModal();showSection('event');if(missed)clToast('Saved, but a place could not be found for the map');else if(moved)clToast('Saved on '+evShort(rec.day));
+  closeModal();showSection('event');if(short)clToast('Saved, but that short Google link cannot be read. Type the place name, or paste the long link from a computer.');else if(missed)clToast('Saved, but a place could not be found for the map');else if(moved)clToast('Saved on '+evShort(rec.day));
 }
 // Move an activity to another day (and/or between Day out and Evening) in one tap.
 function evMoveModal(actId){
@@ -3110,30 +3111,49 @@ function evMapsUrl(a){
   }
   return a.mapUrl||('https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(a.where||(a.lat!=null?a.lat+','+a.lon:a.name)));
 }
-// Coordinates (and a place name) from a pasted Google Maps link. Short links (maps.app.goo.gl) can't be read without a server, so they give null.
-function evCoordsFromMapsUrl(u){
-  let m=/@(-?\d+\.\d+),(-?\d+\.\d+)/.exec(u)||/!3d(-?\d+\.\d+)!4d(-?\d+\.\d+)/.exec(u)||/[?&](?:q|ll|query|destination|center)=(-?\d+\.\d+)(?:,|%2C)(-?\d+\.\d+)/i.exec(u);
-  if(!m)return null;
-  const n=/\/maps\/place\/([^/@?]+)/.exec(u);let name='';
-  try{if(n)name=decodeURIComponent(n[1].replace(/\+/g,' '));}catch(e){}
-  return{lat:parseFloat(m[1]),lon:parseFloat(m[2]),name,mapUrl:u,fromUrl:true};
+// What a pasted Google Maps link can tell us without a server. A full link usually carries coordinates (@lat,lon, !3d..!4d.., ?q=lat,lon) and/or a place name
+// (/place/Name, /search/Name, ?q=Name). Short links (maps.app.goo.gl, goo.gl/maps) hide everything behind a redirect the browser is not allowed to follow.
+function evMapsLink(u){
+  let m=/@(-?\d+\.\d+),(-?\d+\.\d+)/.exec(u)||/!3d(-?\d+\.\d+)!4d(-?\d+\.\d+)/.exec(u)||/[?&](?:q|ll|sll|query|destination|daddr|center)=(?:loc:)?(-?\d+\.\d+)(?:,|%2C|\+)(-?\d+\.\d+)/i.exec(u)||/\/maps\/(?:place|search|dir)\/(-?\d+\.\d+),\+?(-?\d+\.\d+)/.exec(u);
+  let name='';
+  const dec=s=>{try{return decodeURIComponent(s.replace(/\+/g,' ')).trim();}catch(e){return s.replace(/\+/g,' ').trim();}};
+  const n=/\/maps\/(?:place|search)\/([^/@?]+)/.exec(u)||/[?&](?:q|query|destination|daddr)=([^&]+)/i.exec(u);
+  if(n){name=dec(n[1]);if(/^(-?\d+\.\d+)[, ]+(-?\d+\.\d+)$/.test(name))name='';}
+  const short=/(?:maps\.app\.goo\.gl|goo\.gl\/maps|g\.co\/kgs|share\.google)/i.test(u);
+  return{lat:m?parseFloat(m[1]):null,lon:m?parseFloat(m[2]):null,name,short};
 }
-// Looks a place up (OpenStreetMap's free search). Tries the place together with the event's own location first, since "The Seafood Bar" alone is ambiguous.
-async function evGeocode(text,near){
-  const u=(text||'').trim();if(!u)return null;
-  if(/^https?:\/\//i.test(u))return evCoordsFromMapsUrl(u);
-  const tries=[];if(near&&u.toLowerCase().indexOf(near.toLowerCase())<0)tries.push(u+', '+near);tries.push(u);
-  for(const q of tries){
-    try{
-      const ctl=new AbortController(),t=setTimeout(()=>ctl.abort(),6000);
-      const r=await fetch('https://nominatim.openstreetmap.org/search?format=json&limit=1&q='+encodeURIComponent(q),{signal:ctl.signal,headers:{Accept:'application/json'}});
-      clearTimeout(t);
-      const j=await r.json();if(j&&j[0])return{lat:parseFloat(j[0].lat),lon:parseFloat(j[0].lon)};
-    }catch(e){}
-  }
+function evCoordsFromMapsUrl(u){const r=evMapsLink(u);return r.lat==null?null:{lat:r.lat,lon:r.lon,name:r.name,mapUrl:u,fromUrl:true};}
+async function evNominatim(q){
+  try{
+    const ctl=new AbortController(),t=setTimeout(()=>ctl.abort(),6000);
+    const r=await fetch('https://nominatim.openstreetmap.org/search?format=json&limit=1&q='+encodeURIComponent(q),{signal:ctl.signal,headers:{Accept:'application/json'}});
+    clearTimeout(t);
+    const j=await r.json();if(j&&j[0])return{lat:parseFloat(j[0].lat),lon:parseFloat(j[0].lon)};
+  }catch(e){}
   return null;
 }
-let evLeafletP=null,evMapObj=null;
+// Looks a place up (OpenStreetMap's free search). Accepts a plain place name, a Google Maps link, or what Google Maps' Share button gives you (the place's
+// name and address followed by a link). Tries the place together with the event's own location first, since "The Seafood Bar" alone is ambiguous.
+async function evGeocode(text,near){
+  const raw=(text||'').trim();if(!raw)return null;
+  const um=/https?:\/\/\S+/i.exec(raw),url=um?um[0]:'';
+  const rest=raw.replace(/https?:\/\/\S+/ig,' ').split(/\r?\n|\s{2,}/).map(s=>s.trim()).filter(Boolean);
+  if(url){
+    const info=evMapsLink(url),first=rest[0]||'',all=rest.join(', ');
+    const name=first||info.name;
+    if(info.lat!=null)return{lat:info.lat,lon:info.lon,name,mapUrl:url,fromUrl:true};
+    const tries=[];
+    if(all)tries.push(all);
+    if(info.name&&tries.indexOf(info.name)<0)tries.push(info.name);
+    if(first&&tries.indexOf(first)<0)tries.push(first);
+    const more=[];tries.forEach(q=>{if(near&&q.toLowerCase().indexOf(near.toLowerCase())<0)more.push(q+', '+near);});
+    for(const q of tries.concat(more)){const g=await evNominatim(q);if(g)return{lat:g.lat,lon:g.lon,name,mapUrl:url,fromUrl:true};}
+    return{lat:null,lon:null,name,mapUrl:url,fromUrl:true,failed:true,short:info.short&&!tries.length};
+  }
+  const tries=[];if(near&&raw.toLowerCase().indexOf(near.toLowerCase())<0)tries.push(raw+', '+near);tries.push(raw);
+  for(const q of tries){const g=await evNominatim(q);if(g)return g;}
+  return null;
+}let evLeafletP=null,evMapObj=null;
 function loadLeaflet(){
   if(window.L&&L.map)return Promise.resolve();
   if(evLeafletP)return evLeafletP;
