@@ -3799,7 +3799,7 @@ function evJoin(){
   Object.keys(j.remote).forEach(k=>evApply(ev,k,j.remote[k]));
   const d=evData();d.events.push(ev);if(!evSave(d))return;
   const b=evBoot();b.sk[j.id]=Object.keys(j.remote);b.q[j.id]=[];evBootSave(b);
-  evMutate(j.id,(e,put)=>{put('p_'+ev.me.id,{id:ev.me.id,name,out:[]});});
+  evMutate(j.id,(e,put)=>{put('p_'+ev.me.id,{id:ev.me.id,name,out:[]});put('h_'+ev.me.id,{id:ev.me.id,hide:['costs'],role:'guest',upd:Date.now()});});   // newcomers start as guests with costs hidden; the organiser can change this in Settings
   window.__evJoin=null;closeModal();openEvent(j.id);
 }
 
