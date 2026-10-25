@@ -2439,9 +2439,10 @@ function evRemoveLocal(id){
 function evDateObj(k){return new Date(k+'T12:00:00');}
 function evShort(k){return evDateObj(k).toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'});}
 function evLong(k){return evDateObj(k).toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'});}
-// A day the organiser has hidden from guests (title, plans, map pins, everything) is simply left out for guests, so every list of days skips it.
+// A day the organiser has hidden from guests still shows on their calendar, but nothing on it is filled in: no title, plans, weather or map.
 function evDayHidden(ev,day){return!!(((ev.dinfo||{})[day])||{}).hideGuests;}
-function evDaysSorted(ev){const g=evGuest(ev);return(ev.days||[]).filter(d=>!(g&&evDayHidden(ev,d))).sort();}
+function evDayBlank(ev,day){return evGuest(ev)&&evDayHidden(ev,day);}
+function evDaysSorted(ev){return(ev.days||[]).slice().sort();}
 function evRange(ev){
   const d=evDaysSorted(ev);if(!d.length)return'No days chosen';
   const f=evDateObj(d[0]).toLocaleDateString('en-GB',{day:'numeric',month:'short'}),l=evDateObj(d[d.length-1]).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
@@ -2595,7 +2596,7 @@ function evDayNav(dir){
 }
 // Each day has two parts: the day out and the evening. Per-day details (start times, dress codes, hosts) live in one small field per day, `d_YYYYMMDD`.
 function evDayInfo(ev,day){
-  const i=(ev.dinfo||{})[day]||{};
+  const i=evDayBlank(ev,day)?{hideGuests:true}:((ev.dinfo||{})[day]||{});
   return{start:i.start||ev.startTime||'09:00',eveStart:i.eveStart||'18:00',dressDay:i.dressDay||'',dressEve:i.dressEve||'',mealHost:i.mealHost||'',nightHost:i.nightHost||'',title:i.title||'',overview:i.overview||'',hideGuests:!!i.hideGuests};
 }
 function evDayField(field,val,forDay){
@@ -2640,6 +2641,10 @@ function evPeopleHTML(ev,day){
     <div class="ev-people">${going.map(p=>`<span class="ev-person"><i>${escHtml(evInitials(p.name))}</i>${escHtml(p.name)}${p.guest?'<em>guest</em>':''}<button class="ev-x" aria-label="Remove ${escHtml(p.name)} from this day" onclick="evDayRemove('${p.id}')">×</button></span>`).join('')||'<span class="of-meta">Nobody yet. Tap Add.</span>'}</div></div>`;
 }
 function evDayHTML(ev){
+  if(evDayBlank(ev,evDay)){
+    const days=evDaysSorted(ev),i=days.indexOf(evDay),arrow=(dir,off,label,d)=>`<button class="ev-arrow" ${off?'disabled':''} onclick="evDayNav(${dir})" aria-label="${label}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="${d}"/></svg></button>`;
+    return`<div class="ev-dayhead"><div class="ev-day-title">${escHtml(evLong(evDay))}</div><div class="ev-day-sub"><span>${escHtml(ev.name)} · day ${i+1} of ${days.length}</span><span class="ev-arrows">${arrow(-1,i<=0,'Previous day','M15 18l-6-6 6-6')}${arrow(1,i>=days.length-1,'Next day','M9 18l6-6-6-6')}</span></div></div><p class="cl-hint">Nothing here yet.</p>`;
+  }
   const days=evDaysSorted(ev),i=days.indexOf(evDay),all=evActsVis(ev).filter(a=>a.day===evDay);
   const going=evGoing(ev,evDay),info=evDayInfo(ev,evDay);
   const total=all.reduce((s,a)=>s+(a.price||0),0),each=total/Math.max(1,going.length);
@@ -2919,7 +2924,7 @@ function evActForm(actId,part,pre){
       <div class="ev-two"><div><label class="field-label">Starts</label><input id="ea-time" class="field-input" type="time" value="${escHtml(j?'':(v.time||''))}"/></div><div><label class="field-label">Minutes</label><input id="ea-mins" class="field-input" type="number" min="5" step="5" value="${j?'':(v.mins||'')}" placeholder="Usual length"/></div></div>
     </div>
     <label class="field-label">Which part of the day</label><select id="ea-part" class="field-input"><option value="day"${pt==='day'?' selected':''}>Day out</option><option value="eve"${pt==='eve'?' selected':''}>Evening</option></select>
-    <label class="field-label">Day</label><select id="ea-day" class="field-input">${evDaysSorted(ev).map(k=>`<option value="${k}"${v.day===k?' selected':''}>${escHtml(evLong(k))}</option>`).join('')}</select>
+    <label class="field-label">Day</label><select id="ea-day" class="field-input">${evDaysSorted(ev).filter(k=>!evDayBlank(ev,k)).map(k=>`<option value="${k}"${v.day===k?' selected':''}>${escHtml(evLong(k))}</option>`).join('')}</select>
     <label class="field-label">Link</label><input id="ea-link" class="field-input" type="url" value="${escHtml(v.link||'')}" placeholder="https://…"/>
     ${evCan(ev,'costs')?`<label class="field-label">Price (for the whole group)</label><input id="ea-price" class="field-input" type="number" value="${v.price||''}" placeholder="0.00" min="0" step="0.01"/>`:''}
     <label class="field-label">Notes</label><input id="ea-notes" class="field-input" value="${escHtml(v.notes||'')}" placeholder="Booking reference, what to bring…" autocomplete="off"/>
@@ -3192,9 +3197,9 @@ function evDayThumbIds(ev,day){
 function evDaysViewHTML(ev){
   const days=evDaysSorted(ev),today=clKey(new Date());
   return`<div class="evd-list">${days.map((k,i)=>{
-    const info=evDayInfo(ev,k),n=evActsVis(ev).filter(a=>a.day===k).length;
-    const ph=evCan(ev,'photos')?evDayThumbIds(ev,k):[],wx=evCan(ev,'weather')?wxMiniIcon(ev,k):'';
-    return`<button class="evd-row${k===today?' today':''}" onclick="evOpenDay('${k}')"><span class="evd-tag">Day ${i+1}</span><span class="evd-main"><span class="evd-title">${escHtml(info.title||evShort(k))}</span><span class="evd-sub">${ev.creator&&info.hideGuests?'Hidden from guests · ':''}${info.title?escHtml(evShort(k))+(evCan(ev,'schedule')?' · ':''):''}${evCan(ev,'schedule')?n+(n===1?' thing':' things'):''}</span></span>${wx}${ph.length?`<span class="evd-ph">${ph.map(id=>`<img data-evph="${id}" alt=""/>`).join('')}</span>`:''}</button>`;
+    const info=evDayInfo(ev,k),blank=evDayBlank(ev,k),n=evActsVis(ev).filter(a=>a.day===k).length;
+    const ph=evCan(ev,'photos')&&!blank?evDayThumbIds(ev,k):[],wx=evCan(ev,'weather')&&!blank?wxMiniIcon(ev,k):'';
+    return`<button class="evd-row${k===today?' today':''}" onclick="evOpenDay('${k}')"><span class="evd-tag">Day ${i+1}</span><span class="evd-main"><span class="evd-title">${escHtml(info.title||evShort(k))}</span><span class="evd-sub">${ev.creator&&info.hideGuests?'Hidden from guests · ':''}${info.title?escHtml(evShort(k))+(evCan(ev,'schedule')?' · ':''):''}${evCan(ev,'schedule')&&!blank?n+(n===1?' thing':' things'):''}</span></span>${wx}${ph.length?`<span class="evd-ph">${ph.map(id=>`<img data-evph="${id}" alt=""/>`).join('')}</span>`:''}</button>`;
   }).join('')}</div>`;
 }
 // One quiet line instead of a row of stat boxes.
