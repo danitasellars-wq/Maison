@@ -718,6 +718,7 @@ textarea.field-input{border:1px solid var(--line);border-radius:8px;padding:10px
 .ev-sugitem .ev-vote svg{width:14px;height:14px}
 .ev-add{display:flex;gap:8px;align-items:center;margin-top:8px}
 .ev-add .field-input{margin:0;flex:1}
+.ev-hideday{margin:-4px 0 14px;font-size:13.5px;color:var(--muted)}
 .ev-titles{margin:0 auto 0 0;font-size:13.5px;color:var(--muted)}
 .ev-titles input{width:17px;height:17px}
 .ev-seg-row{align-items:center}
@@ -2438,7 +2439,9 @@ function evRemoveLocal(id){
 function evDateObj(k){return new Date(k+'T12:00:00');}
 function evShort(k){return evDateObj(k).toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'});}
 function evLong(k){return evDateObj(k).toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'});}
-function evDaysSorted(ev){return(ev.days||[]).slice().sort();}
+// A day the organiser has hidden from guests (title, plans, map pins, everything) is simply left out for guests, so every list of days skips it.
+function evDayHidden(ev,day){return!!(((ev.dinfo||{})[day])||{}).hideGuests;}
+function evDaysSorted(ev){const g=evGuest(ev);return(ev.days||[]).filter(d=>!(g&&evDayHidden(ev,d))).sort();}
 function evRange(ev){
   const d=evDaysSorted(ev);if(!d.length)return'No days chosen';
   const f=evDateObj(d[0]).toLocaleDateString('en-GB',{day:'numeric',month:'short'}),l=evDateObj(d[d.length-1]).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
@@ -2513,7 +2516,7 @@ function saveNewEvent(){
 function renderEvent(main){
   const d=evData(),ev=evFind(d,activeEventId);
   if(!ev){main.innerHTML=`<div class="empty">That event is not here any more.<br/><button class="btn-ghost" style="margin-top:12px" onclick="showSection('dayout')">Back to days out</button></div>`;return;}
-  if(evDay&&ev.days.indexOf(evDay)<0)evDay=null;
+  if(evDay&&evDaysSorted(ev).indexOf(evDay)<0)evDay=null;
   main.innerHTML=evDay?evDayHTML(ev):evHomeHTML(ev);
   wxEnsure(ev);evHydratePhotos(main);evMapInit();
   if(ev.shared&&evCloudOn()&&!evPoll)evStartPoll();
@@ -2523,7 +2526,7 @@ function evCalHTML(ev){
   const m=evCalMonth,first=new Date(m.y,m.m,1),lead=(first.getDay()+6)%7,dim=new Date(m.y,m.m+1,0).getDate(),today=clKey(new Date());
   const showT=evShowTitles();let cells='';for(let i=0;i<lead;i++)cells+='<span></span>';
   for(let d=1;d<=dim;d++){
-    const k=m.y+'-'+String(m.m+1).padStart(2,'0')+'-'+String(d).padStart(2,'0'),has=ev.days.indexOf(k)>=0,wk=(lead+d-1)%7>=5?' wknd':'';
+    const k=m.y+'-'+String(m.m+1).padStart(2,'0')+'-'+String(d).padStart(2,'0'),has=evDaysSorted(ev).indexOf(k)>=0,wk=(lead+d-1)%7>=5?' wknd':'';
     const ttl=has&&showT?(evDayInfo(ev,k).title||''):'';
     cells+=has?`<button class="evc-day has${wk}${k===today?' today':''}${ttl?' titled':''}" onclick="evOpenDay('${k}')" aria-label="${escHtml(evLong(k)+(ttl?', '+ttl:''))}"><b>${d}</b>${ttl?`<em>${escHtml(ttl)}</em>`:''}</button>`:`<span class="evc-day off${wk}${k===today?' today':''}"><b>${d}</b></span>`;
   }
@@ -2593,7 +2596,7 @@ function evDayNav(dir){
 // Each day has two parts: the day out and the evening. Per-day details (start times, dress codes, hosts) live in one small field per day, `d_YYYYMMDD`.
 function evDayInfo(ev,day){
   const i=(ev.dinfo||{})[day]||{};
-  return{start:i.start||ev.startTime||'09:00',eveStart:i.eveStart||'18:00',dressDay:i.dressDay||'',dressEve:i.dressEve||'',mealHost:i.mealHost||'',nightHost:i.nightHost||'',title:i.title||'',overview:i.overview||''};
+  return{start:i.start||ev.startTime||'09:00',eveStart:i.eveStart||'18:00',dressDay:i.dressDay||'',dressEve:i.dressEve||'',mealHost:i.mealHost||'',nightHost:i.nightHost||'',title:i.title||'',overview:i.overview||'',hideGuests:!!i.hideGuests};
 }
 function evDayField(field,val,forDay){
   const day=forDay||evDay;if(!day)return;
@@ -2645,6 +2648,7 @@ function evDayHTML(ev){
       <input id="ev-day-title" class="ev-day-title" type="text" value="${escHtml(info.title)}" placeholder="${escHtml(evLong(evDay))}" maxlength="80" autocomplete="off" aria-label="Title for this day" oninput="evDayTextSoon('title',this)" onchange="evDayField('title',this.value.trim())"/>
       <div class="ev-day-sub"><span>${info.title?escHtml(evLong(evDay))+' · ':''}${escHtml(ev.name)} · day ${i+1} of ${days.length}</span><span class="ev-arrows">${arrow(-1,i<=0,'Previous day','M15 18l-6-6 6-6')}${arrow(1,i>=days.length-1,'Next day','M9 18l6-6-6-6')}</span></div>
     </div>
+    ${ev.creator?`<label class="ev-switch ev-hideday"><input type="checkbox" ${info.hideGuests?'checked':''} onchange="evDayField('hideGuests',this.checked)"/><span>Hide this whole day from guests</span></label>`:''}
     <div class="ev-overview"><label for="ev-day-overview">Overview</label><textarea id="ev-day-overview" rows="3" placeholder="What is the plan for the day?" oninput="evDayTextSoon('overview',this)" onchange="evDayField('overview',this.value.trim())">${escHtml(info.overview)}</textarea></div>
     ${evCan(ev,'weather')?wxDayHTML(ev,evDay):''}
     ${evMapHTML(ev,evDay)}
@@ -2835,7 +2839,7 @@ function evCatIcon(cat,mode,size){
 }
 // Guests: the creator marks people as hosts or guests in Settings; an activity can be hidden from guests.
 function evGuest(ev){if(ev.creator)return false;const x=(ev.perms||[]).find(p=>p.id===(ev.me||{}).id);return!!(x&&x.role==='guest');}
-function evVisAct(ev,a){return!(a.hideGuests&&evGuest(ev));}
+function evVisAct(ev,a){return!(evGuest(ev)&&(a.hideGuests||evDayHidden(ev,a.day)));}
 function evActsVis(ev){return(ev.acts||[]).filter(a=>evVisAct(ev,a));}
 
 // ── saved places (yours, kept across all your events) ──
@@ -3190,7 +3194,7 @@ function evDaysViewHTML(ev){
   return`<div class="evd-list">${days.map((k,i)=>{
     const info=evDayInfo(ev,k),n=evActsVis(ev).filter(a=>a.day===k).length;
     const ph=evCan(ev,'photos')?evDayThumbIds(ev,k):[],wx=evCan(ev,'weather')?wxMiniIcon(ev,k):'';
-    return`<button class="evd-row${k===today?' today':''}" onclick="evOpenDay('${k}')"><span class="evd-tag">Day ${i+1}</span><span class="evd-main"><span class="evd-title">${escHtml(info.title||evShort(k))}</span><span class="evd-sub">${info.title?escHtml(evShort(k))+(evCan(ev,'schedule')?' · ':''):''}${evCan(ev,'schedule')?n+(n===1?' thing':' things'):''}</span></span>${wx}${ph.length?`<span class="evd-ph">${ph.map(id=>`<img data-evph="${id}" alt=""/>`).join('')}</span>`:''}</button>`;
+    return`<button class="evd-row${k===today?' today':''}" onclick="evOpenDay('${k}')"><span class="evd-tag">Day ${i+1}</span><span class="evd-main"><span class="evd-title">${escHtml(info.title||evShort(k))}</span><span class="evd-sub">${ev.creator&&info.hideGuests?'Hidden from guests · ':''}${info.title?escHtml(evShort(k))+(evCan(ev,'schedule')?' · ':''):''}${evCan(ev,'schedule')?n+(n===1?' thing':' things'):''}</span></span>${wx}${ph.length?`<span class="evd-ph">${ph.map(id=>`<img data-evph="${id}" alt=""/>`).join('')}</span>`:''}</button>`;
   }).join('')}</div>`;
 }
 // One quiet line instead of a row of stat boxes.
@@ -3507,7 +3511,7 @@ function evSugCardHTML(ev,s){
     ${s.kind==='list'?evSugListHTML(ev,s):''}
     ${lk?`<a class="item-link" href="${escHtml(lk)}" target="_blank" rel="noopener">${escHtml(host)}</a>`:''}
     ${th?`<div class="ev-ph-strip">${th}</div>`:''}
-    <div class="ev-sug-meta">Suggested by ${escHtml((s.by&&s.by.name)||'someone')}${s.day&&ev.days.indexOf(s.day)>=0?' · for '+escHtml(evShort(s.day)):''}</div>
+    <div class="ev-sug-meta">Suggested by ${escHtml((s.by&&s.by.name)||'someone')}${s.day&&evDaysSorted(ev).indexOf(s.day)>=0?' · for '+escHtml(evShort(s.day)):''}</div>
     <div class="ev-sug-actions">
       ${s.kind==='list'?'':evVoteBtns(ev,s.id)}
       ${evCan(ev,'photos')?`<button class="btn-ghost sm" onclick="evPickPhotos({sug:'${s.id}'})">Add photo</button>`:''}
@@ -3556,7 +3560,7 @@ function evSugDelete(sid){
 // Turns a suggestion into a real activity: opens the add-activity form filled in, so you only choose the day and time.
 function evSugToActivity(sid){
   const ev=evFind(evData(),activeEventId),s=ev&&(ev.sugs||[]).find(x=>x.id===sid);if(!s)return;
-  evActForm(null,'day',{name:s.title,link:s.link||'',notes:(s.text||'').slice(0,200),day:(s.day&&ev.days.indexOf(s.day)>=0)?s.day:evDaysSorted(ev)[0]});
+  evActForm(null,'day',{name:s.title,link:s.link||'',notes:(s.text||'').slice(0,200),day:(s.day&&evDaysSorted(ev).indexOf(s.day)>=0)?s.day:evDaysSorted(ev)[0]});
 }
 
 // ── calendar export ──
