@@ -718,6 +718,19 @@ textarea.field-input{border:1px solid var(--line);border-radius:8px;padding:10px
 .ev-sugitem .ev-vote svg{width:14px;height:14px}
 .ev-add{display:flex;gap:8px;align-items:center;margin-top:8px}
 .ev-add .field-input{margin:0;flex:1}
+.cap-pick{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:6px 0 14px}
+.cap-big{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;min-height:92px;padding:16px 8px;border:1px solid var(--line);border-radius:14px;background:none;color:var(--ink);font-family:var(--sans);font-size:14px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.cap-big.primary{background:var(--ink);border-color:var(--ink);color:var(--cream)}
+.cap-big.off{opacity:.45;pointer-events:none}
+.cap-big input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;font-size:0}
+.cap-working{display:flex;align-items:center;justify-content:center;gap:12px;color:var(--muted);font-size:14px;padding:6px 0 4px}
+.cap-spin{width:18px;height:18px;border-radius:50%;border:2px solid rgba(var(--ink-rgb),.15);border-top-color:var(--ink);animation:capspin .8s linear infinite}
+@keyframes capspin{to{transform:rotate(360deg)}}
+.cap-more{margin:4px 0 12px}
+.cap-more>summary{cursor:pointer;font-size:14px;color:var(--muted);padding:8px 0;list-style:none}
+.cap-more>summary::-webkit-details-marker{display:none}
+.cap-more>summary::after{content:" +"}
+.cap-more[open]>summary::after{content:" −"}
 .ev-hideday{margin:-4px 0 14px;font-size:13.5px;color:var(--muted)}
 .ev-titles{margin:0 auto 0 0;font-size:13.5px;color:var(--muted)}
 .ev-titles input{width:17px;height:17px}
@@ -1869,9 +1882,18 @@ function capturePreselect(opts){
   const last=localStorage.getItem('maison_lastdest');
   return last&&has(last)?last:opts[0].v;
 }
+// The two big pick buttons are real <label>s around the file inputs, so a tap opens the camera / photo library natively (no script in between,
+// which is what phones are most reliable with). Used by both the House capture sheet and the Closet add sheet.
+function capPickHTML(onpick,multi){
+  return`<div class="cap-pick"><label class="cap-big primary">${ICON_CAM}<span>Take photo</span><input type="file" accept="image/*" capture="environment" onchange="${onpick}(this)"/></label><label class="cap-big">${ICON_PHOTOS}<span>${multi?'Choose photos':'Choose photo'}</span><input type="file" accept="image/*" ${multi?'multiple':''} onchange="${onpick}(this)"/></label></div>`;
+}
+function capBusy(msg){
+  const w=document.getElementById('cap-status');if(w)w.innerHTML=`<div class="cap-working"><span class="cap-spin"></span>${escHtml(msg)}</div>`;
+  document.querySelectorAll('.cap-big').forEach(l=>l.classList.add('off'));
+}
 function triggerCapture(){
   const area=areaOf(currentSection);
-  if(area==='closet'){closetCamera();return;}
+  if(area==='closet'){clAddSheet();return;}
   const home=userData('home',{rooms:[]}),d=userData('dayout',{plans:[]}),rec=userData('recipes',{items:[]});
   const opts=[];
   if(!area||area==='house')home.rooms.forEach(r=>opts.push({v:'home_'+r.id,label:r.name+' (Room)'}));
@@ -1886,54 +1908,82 @@ function triggerCapture(){
     openModal(`<div class="modal-head"><div class="modal-title">Add a room first</div><button class="modal-close" onclick="closeModal()">×</button></div><p class="cl-hint" style="margin-top:0">Photos in House planning are saved into a room. Create one, then use the camera.</p><div class="modal-row"><button class="btn-solid sm" onclick="closeModal();setHomeView('rooms');openAddRoom()">Add a room</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);
     return;
   }
+  capOpts=opts;
   const pre=capturePreselect(opts);
-  openModal(`<div class="modal-head"><div class="modal-title">Add photo</div><button class="modal-close" onclick="closeModal()">×</button></div>
-    ${opts.length>1?`<label class="field-label">Save to</label>`:`<p class="cl-hint" style="margin-top:0">Saving to <b>${escHtml(opts[0].label)}</b></p>`}
+  openModal(`<div class="modal-head"><div class="modal-title">Add photos</div><button class="modal-close" onclick="closeModal()">×</button></div>
+    ${opts.length>1?`<label class="field-label" style="margin-top:0">Save to</label>`:`<p class="cl-hint" style="margin-top:0">Saving to <b>${escHtml(opts[0].label)}</b></p>`}
     <select id="cap-dest" class="field-input"${opts.length>1?'':' style="display:none"'}>${opts.map(o=>`<option value="${o.v}"${o.v===pre?' selected':''}>${escHtml(o.label)}</option>`).join('')}</select>
-    <div class="modal-row" style="margin-top:4px">
-      <button class="btn-solid sm green" onclick="pickFile('camera')">Take photo</button>
-      <button class="btn-solid sm" onclick="pickFile('gallery')">From gallery</button>
-    </div>
-    <div id="cap-preview-wrap" style="margin-top:14px;display:none">
-      <img id="cap-preview" class="modal-preview"/>
-      <label class="field-label">Note / Caption</label><textarea id="cap-note" class="field-input" placeholder="Add a note…" rows="3"></textarea>
-      <label class="field-label">Link (optional)</label><input id="cap-link" class="field-input" placeholder="https://…" type="url"/>
-      <label class="field-label">Price — £ (optional)</label><input id="cap-price" class="field-input" placeholder="0.00" type="number" min="0" step="0.01"/>
-      <label class="field-label">Name (optional)</label><input id="cap-name" class="field-input" placeholder="e.g. IKEA Kallax"/>
-      <div class="modal-row" style="margin-top:8px">
-        <button class="btn-solid sm" onclick="saveCapture()">Save</button>
-        <button class="btn-ghost" onclick="closeModal()">Cancel</button>
-      </div>
-    </div>`);
+    ${capPickHTML('capFilesPicked',true)}
+    <div id="cap-status"></div>`);
 }
-let capturedFullBlob=null;
-function pickFile(src){
-  const dd=document.getElementById('cap-dest');
-  if(dd&&dd.value==='closet'){closeModal();if(src==='camera')closetCamera();else closetLibrary();return;}   // home-screen camera → new closet piece
-  const fi=src==='camera'?document.getElementById('file-input-camera'):document.getElementById('file-input');fi.onchange=e=>{const file=e.target.files[0];if(!file)return;const r=new FileReader();r.onload=async ev=>{
-  const raw=ev.target.result;
-  try{const{thumb,blob}=await processPhotoDataURL(raw);capturedDataURL=thumb;capturedFullBlob=blob;}
-  catch(err){capturedDataURL=raw;capturedFullBlob=null;}
-  const pw=document.getElementById('cap-preview-wrap');if(pw){pw.style.display='block';document.getElementById('cap-preview').src=capturedDataURL;}
-};r.readAsDataURL(file);fi.value='';};fi.click();}
-async function saveCapture(){
-  if(!capturedDataURL){alert('Please select a photo first.');return;}
-  const dest=document.getElementById('cap-dest').value;
-  const note=document.getElementById('cap-note').value.trim(),link=document.getElementById('cap-link').value.trim();
-  const price=parseFloat(document.getElementById('cap-price').value)||0,name=document.getElementById('cap-name').value.trim();
-  const blob=capturedFullBlob;
-  let newId=null;
-  const photo={id:uid(),img:capturedDataURL,note,link,price,name,date:Date.now(),liked:false,archived:false};
-  if(dest.startsWith('home_')){const home=userData('home',{rooms:[]});const room=home.rooms.find(r=>r.id===dest.replace('home_',''));if(room){room.photos=room.photos||[];room.photos.push(photo);saveData('home',home);newId=photo.id;}}
-  else if(dest==='wedding'){const w=userData('wedding',{inspo:[]});w.inspo.push(photo);saveData('wedding',w);newId=photo.id;}
-  else if(dest==='honeymoon'){const h=userData('honeymoon',{rooms:[],inspo:[],budget:0});if(!h.inspo)h.inspo=[];h.inspo.push(photo);saveData('honeymoon',h);newId=photo.id;}
-  else if(dest.startsWith('dayout_')){const d=userData('dayout',{plans:[]});const pl=d.plans.find(p=>p.id===dest.replace('dayout_',''));if(pl){pl.photos=pl.photos||[];pl.photos.push(photo);saveData('dayout',d);newId=photo.id;}}
-  else if(dest==='recipes_new'||dest==='recipes'){const r=userData('recipes',{items:[]});const rec={id:uid(),img:capturedDataURL,title:name||'New Recipe',tags:[],text:note,date:Date.now(),photos:[]};r.items.push(rec);saveData('recipes',r);newId=rec.id;}
-  else if(dest.startsWith('recipe_')){const recId=dest.replace('recipe_','');const r=userData('recipes',{items:[]});const ri=r.items.find(i=>i.id===recId);if(ri){const p2={id:uid(),img:capturedDataURL,note,date:Date.now(),liked:false,archived:false};ri.photos=ri.photos||[];ri.photos.push(p2);saveData('recipes',r);newId=p2.id;}}
-  if(blob&&newId)await idbPutPhoto(newId,blob);
+let capOpts=[],capLast=null;
+// Photos are saved the moment they are picked (several at once is fine); a note, price or name can be added afterwards if wanted.
+async function capFilesPicked(input){
+  const files=Array.from(input.files||[]);input.value='';if(!files.length)return;
+  const destEl=document.getElementById('cap-dest'),dest=destEl?destEl.value:'';
+  if(dest==='closet'){closetFilesPicked({files,value:''});return;}   // home-screen camera → new closet piece
+  capBusy(files.length>1?'Adding '+files.length+' photos…':'Adding your photo…');
+  const items=[];
+  for(const f of files){
+    try{
+      const raw=await new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=()=>rej(r.error);r.readAsDataURL(f);});
+      try{const{thumb,blob}=await processPhotoDataURL(raw);items.push({thumb,blob});}
+      catch(err){items.push({thumb:raw,blob:null});}
+    }catch(err){}
+  }
+  if(!items.length){const w=document.getElementById('cap-status');if(w)w.innerHTML='<p class="cl-hint">Could not read that photo. Try again.</p>';document.querySelectorAll('.cap-big').forEach(l=>l.classList.remove('off'));return;}
+  const res=capStore(dest,items);
+  if(!res){const w=document.getElementById('cap-status');if(w)w.innerHTML='<p class="cl-hint">Could not save that. Is the room still there?</p>';document.querySelectorAll('.cap-big').forEach(l=>l.classList.remove('off'));return;}
+  for(const x of res.blobs){if(x.blob)await idbPutPhoto(x.id,x.blob);}
   try{localStorage.setItem('maison_lastdest',dest);}catch(e){}
-  capturedDataURL=null;capturedFullBlob=null;closeModal();showSection(currentSection);updatePanelBadge();
-  syncPhotosSoon();
+  capLast={dest,ids:res.ids,n:items.length};
+  showSection(currentSection);updatePanelBadge();syncPhotosSoon();
+  capDoneHTML();
+}
+// Finds the stored list a destination keeps its photos in (rooms, wedding, honeymoon, a day out, a recipe) and how to save it again.
+function capTarget(dest){
+  if(dest.indexOf('home_')===0){const d=userData('home',{rooms:[]}),room=d.rooms.find(r=>r.id===dest.slice(5));return room?{photos:room.photos=room.photos||[],save:()=>saveData('home',d)}:null;}
+  if(dest==='wedding'){const d=userData('wedding',{inspo:[]});return{photos:d.inspo=d.inspo||[],save:()=>saveData('wedding',d)};}
+  if(dest==='honeymoon'){const d=userData('honeymoon',{rooms:[],inspo:[],budget:0});return{photos:d.inspo=d.inspo||[],save:()=>saveData('honeymoon',d)};}
+  if(dest.indexOf('dayout_')===0){const d=userData('dayout',{plans:[]}),pl=d.plans.find(p=>p.id===dest.slice(7));return pl?{photos:pl.photos=pl.photos||[],save:()=>saveData('dayout',d)}:null;}
+  if(dest.indexOf('recipe_')===0){const d=userData('recipes',{items:[]}),ri=d.items.find(i=>i.id===dest.slice(7));return ri?{photos:ri.photos=ri.photos||[],save:()=>saveData('recipes',d)}:null;}
+  if(dest==='recipes_new'||dest==='recipes'){const d=userData('recipes',{items:[]});return{recipes:d,save:()=>saveData('recipes',d)};}
+  return null;
+}
+function capStore(dest,items){
+  const t=capTarget(dest);if(!t)return null;
+  const mk=it=>({p:{id:uid(),img:it.thumb,note:'',link:'',price:0,name:'',date:Date.now(),liked:false,archived:false},blob:it.blob});
+  const list=items.map(mk);
+  if(t.recipes){
+    const first=list[0],rec={id:uid(),img:first.p.img,title:'New Recipe',tags:[],text:'',date:Date.now(),photos:list.slice(1).map(x=>({id:x.p.id,img:x.p.img,note:'',date:x.p.date,liked:false,archived:false}))};
+    t.recipes.items.push(rec);
+    if(!t.save())return null;
+    return{ids:[rec.id].concat(list.slice(1).map(x=>x.p.id)),blobs:[{id:rec.id,blob:first.blob}].concat(list.slice(1).map(x=>({id:x.p.id,blob:x.blob})))};
+  }
+  list.forEach(x=>t.photos.push(x.p));
+  if(!t.save())return null;
+  return{ids:list.map(x=>x.p.id),blobs:list.map(x=>({id:x.p.id,blob:x.blob}))};
+}
+function capDoneHTML(){
+  const c=capLast,o=capOpts.find(x=>x.v===c.dest),where=o?o.label:'';
+  openModal(`<div class="modal-head"><div class="modal-title">${c.n>1?c.n+' photos':'Photo'} saved</div><button class="modal-close" onclick="closeModal()">×</button></div>
+    ${where?`<p class="cl-hint" style="margin-top:0">Saved to <b>${escHtml(where)}</b></p>`:''}
+    ${c.n===1?`<details class="cap-more"><summary>Add a note, price or name</summary>
+      <label class="field-label">Name</label><input id="cap-name" class="field-input" placeholder="e.g. IKEA Kallax" autocomplete="off"/>
+      <label class="field-label">Note</label><textarea id="cap-note" class="field-input" rows="2" placeholder="Add a note…"></textarea>
+      <label class="field-label">Link</label><input id="cap-link" class="field-input" placeholder="https://…" type="url"/>
+      <label class="field-label">Price (£)</label><input id="cap-price" class="field-input" placeholder="0.00" type="number" min="0" step="0.01" inputmode="decimal"/>
+      <div class="modal-row"><button class="btn-solid sm" onclick="capSaveDetails()">Save details</button></div></details>`:''}
+    <div class="modal-row"><button class="btn-solid sm green" onclick="triggerCapture()">Add another</button><button class="btn-ghost" onclick="closeModal()">Done</button></div>`);
+}
+function capSaveDetails(){
+  const c=capLast;if(!c)return;
+  const v=id=>(document.getElementById(id)||{value:''}).value.trim();
+  const name=v('cap-name'),note=v('cap-note'),link=v('cap-link'),price=parseFloat(v('cap-price'))||0;
+  const t=capTarget(c.dest);if(!t)return;
+  if(t.recipes){const r=t.recipes.items.find(i=>i.id===c.ids[0]);if(r){if(name)r.title=name;r.text=note;}}
+  else{const p=t.photos.find(x=>x.id===c.ids[0]);if(p){p.note=note;p.link=link;p.price=price;p.name=name;}}
+  t.save();closeModal();showSection(currentSection);updatePanelBadge();clToast('Details saved');
 }
 
 // ── QUICK NOTES ──
@@ -2401,8 +2451,24 @@ async function evPull(evId){
     evRemoveLocal(evId);clToast('"'+ev.name+'" was deleted by its owner');
     if(currentSection==='event'&&activeEventId===evId){activeEventId=null;showSection('dayout');}return true;
   }
+  if(!ev.creator&&ev.me&&known.has('p_'+ev.me.id)&&!(('p_'+ev.me.id) in remote)&&!pending.has('p_'+ev.me.id)){   // the organiser removed this person
+    evRemoveLocal(evId);clToast('You were removed from "'+ev.name+'"');
+    if(currentSection==='event'&&activeEventId===evId){activeEventId=null;showSection('dayout');}return true;
+  }
   if(changed){evSave(d);if(ev.creator)evSnapSoon(evId);if(currentSection==='event'&&activeEventId===evId)evSoftRefresh();else if(currentSection==='dayout'||currentSection==='dashboard')showSection(currentSection);}
   evUpdStatus();return true;
+}
+// The organiser can take anyone out of the whole event (not just one day): their person record, what they could see, their votes, and any bed they were assigned.
+function evRemovePerson(pid){
+  const ev=evFind(evData(),activeEventId),p=ev&&(ev.people||[]).find(x=>x.id===pid);
+  if(!ev||!ev.creator||!p||pid===(ev.me||{}).id)return;
+  if(!confirm('Remove '+p.name+' from this event? They will no longer see it.'))return;
+  evMutate(activeEventId,(e,put)=>{
+    put('p_'+pid,null);put('h_'+pid,null);
+    (e.votes||[]).filter(v=>v.p===pid).forEach(v=>put('v_'+v.id,null));
+    (e.stays||[]).filter(s=>(s.guests||[]).indexOf(pid)>=0).forEach(s=>put('o_'+s.id,Object.assign({},s,{guests:s.guests.filter(g=>g!==pid),upd:Date.now()})));
+  });
+  showSection('event');clToast(p.name+' removed');
 }
 function evSoftRefresh(){
   const m=document.getElementById('modal'),a=document.activeElement;
@@ -2554,7 +2620,7 @@ function evHomeHTML(ev){
     ${evHiddenNote(ev)}
     ${evCan(ev,'suggestions')?evSugsHTML(ev):''}
     ${evCan(ev,'people')?`<div class="ev-block"><div class="flex-between mb14"><div class="ev-strip-title">People</div>${ev.creator?`<button class="btn-ghost" onclick="openEventSettings()">${ev.shared?'Invite':'Share'}</button>`:''}</div>
-      <div class="ev-people">${(ev.people||[]).map(p=>`<span class="ev-person"><i>${escHtml(evInitials(p.name))}</i>${escHtml(p.name)}${p.guest?'<em>guest</em>':''}</span>`).join('')||'<span class="of-meta">Just you so far</span>'}</div></div>`:''}`;
+      <div class="ev-people">${(ev.people||[]).map(p=>`<span class="ev-person"><i>${escHtml(evInitials(p.name))}</i>${escHtml(p.name)}${p.guest?'<em>guest</em>':''}${ev.creator&&p.id!==(ev.me||{}).id?`<button class="ev-x" aria-label="Remove ${escHtml(p.name)} from the event" onclick="evRemovePerson('${p.id}')">×</button>`:''}</span>`).join('')||'<span class="of-meta">Just you so far</span>'}</div></div>`:''}`;
 }
 // ── who can see what (organiser only) ──
 // The event's creator chooses, for each person who has joined, which parts of the event they can see. It is stored as one small record per
@@ -4470,18 +4536,27 @@ function clMakeThumb(cv,alpha){
 }
 
 // ── Adding photos (camera / upload) ──
-function closetCamera(){const el=document.getElementById('closet-cam');if(el)el.click();}
-function closetLibrary(){const el=document.getElementById('closet-lib');if(el)el.click();}
+// One sheet for both ways of adding: take a photo, or pick one or several from the library.
+function clAddSheet(){
+  openModal(`<div class="modal-head"><div class="modal-title">Add to closet</div><button class="modal-close" onclick="closeModal()">×</button></div>
+    <p class="cl-hint" style="margin-top:0">The background is removed for you. You can pick several photos at once.</p>
+    ${capPickHTML('closetFilesPicked',true)}<div id="cap-status"></div>`);
+}
+function closetCamera(){clAddSheet();}
+function closetLibrary(){clAddSheet();}
 function closetFilesPicked(input){
   const files=Array.from(input.files||[]);input.value='';
   if(!files.length)return;
   // The add dialog can be dismissed by tapping outside it, so check the DOM rather than trusting leftover state.
-  if(document.getElementById('cl-prev')){closetQueue=closetQueue.concat(files);}
-  else{closetDraft=null;closetQueue=files;clNext();}
+  if(document.getElementById('cl-prev')){closetQueue=closetQueue.concat(files);clToast(files.length+(files.length===1?' photo':' photos')+' waiting');}
+  else{closetDraft=null;closetQueue=files;closetLoading();clNext();}
 }
+// Shown straight away after picking, so it never looks like nothing happened while the background is being removed.
+function closetLoading(){openModal(`<div class="modal-head"><div class="modal-title">Add to closet</div><button class="modal-close" onclick="clCancelAdd()">×</button></div><div class="cap-working" style="padding:28px 0"><span class="cap-spin"></span>Getting your photo ready…</div>`);}
 async function clNext(){
   const f=closetQueue.shift();
   if(!f){closetDraft=null;closeModal();return;}
+  if(!document.getElementById('cl-prev'))closetLoading();
   try{
     const dataURL=await new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsDataURL(f);});
     const im=await loadImageFromDataURL(dataURL);
@@ -4507,7 +4582,8 @@ function clOpenAddModal(){
     <div class="cl-checker"><canvas id="cl-prev" onpointerdown="clPointerDown(event)" onpointermove="clPointerMove(event)" onpointerup="clPointerUp()" onpointercancel="clPointerUp()"></canvas></div>
     <label class="cl-check"><input type="checkbox" id="cl-usecut" ${d.useCut?'checked':''} onchange="clToggleCut(this.checked)"/> Remove background</label>
     <p id="cl-msg" class="cl-hint" style="margin-top:0"></p>
-    <div id="cl-tools" style="${d.useCut?'':'display:none'}">
+    <details id="cl-fine" class="cap-more" style="${d.useCut?'':'display:none'}"><summary>Fine-tune the cut-out</summary>
+    <div id="cl-tools">
       <label class="field-label">Automatic — sensitivity <span id="cl-sens-val">${d.sens}</span></label><input type="range" id="cl-sens" min="8" max="100" value="${d.sens}" style="width:100%" oninput="clSens(this.value)"/>
       <p class="cl-hint">Raise it if background is left behind; lower it if the piece is being eaten away. Moving it redoes the automatic step (and your touch-ups).</p>
       <label class="field-label" style="margin-top:6px">Touch up yourself</label>
@@ -4521,7 +4597,7 @@ function clOpenAddModal(){
       <div id="cl-brush-wrap"><label class="field-label">Brush size</label><div class="cl-brushrow"><input type="range" id="cl-brush" min="10" max="220" value="${d.brush}" oninput="clBrush(this.value)"/><span class="cl-dotbox"><span id="cl-dot" class="cl-dot"></span></span></div></div>
       <div id="cl-tol-wrap" style="display:none"><label class="field-label">Colour tolerance <span id="cl-tol-val">${d.tol}</span></label><input type="range" id="cl-tol" min="8" max="100" value="${d.tol}" style="width:100%" oninput="clTol(this.value)"/></div>
       <p class="cl-hint">Rub over the picture with your finger to rub background away, or switch to Paint back to restore a bit you went over. <b>Tap to remove</b> clears the whole patch of similar colour you tap — good for leftover floor or shadow.</p>
-    </div>
+    </div></details>
     ${clFieldsHTML('ca',{cat:'Tops'})}
     <div class="modal-row"><button class="btn-solid sm" onclick="clSaveItem()">Save to closet</button><button class="btn-ghost" onclick="clSkipAdd()">${more?'Skip':'Cancel'}</button></div>`);
   clDrawPreview();
@@ -4538,7 +4614,7 @@ function clDrawPreview(){
 function clToggleCut(on){
   const d=closetDraft;if(!d)return;d.useCut=on;
   if(on&&!d.work){if(!d.cut)clRunCut();d.autoFailed=!d.cut;d.work=clCopyCanvas(d.cut||d.orig);d.undo=[];}   // no auto result: start from the plain photo
-  document.getElementById('cl-tools').style.display=on?'':'none';
+  document.getElementById('cl-fine').style.display=on?'':'none';
   clUpdateUndoBtn();clDrawPreview();
 }
 function clSens(v){
@@ -4636,7 +4712,7 @@ async function clSaveItem(){
 
 // ── Wardrobe: the closet's own photo store (favourite + delete) ──
 function clWardrobeHTML(c){
-  if(!c.items.length)return`<div class="empty">Your closet is empty.<br/>Tap the camera button below to photograph your first piece.</div>`;
+  if(!c.items.length)return`<div class="empty">Your closet is empty.<br/>Tap Capture below, or Add photos above, to add your first piece.</div>`;
   const chips=[['all','All'],['fav','Favourites']].concat(CLOSET_CATS.map(x=>[x,x]));
   const list=c.items.filter(i=>closetFilter==='all'||(closetFilter==='fav'?i.fav:i.cat===closetFilter)).sort((a,b)=>(b.date||0)-(a.date||0));
   return`<div class="tag-row">${chips.map(([k,l])=>`<button class="tag-pill${closetFilter===k?' active':''}" onclick="clSetFilter('${k}')">${l}</button>`).join('')}</div>
@@ -4711,7 +4787,7 @@ function renderCloset(main){
   else if(closetTab==='stats')body=clStatsHTML(c);
   else body=closetPackId?clPackDetailHTML(c):clPackingHTML(c);
   const title=(CLOSET_TABS.find(t=>t[0]===closetTab)||[0,'Closet'])[1];
-  const actions=closetTab==='wardrobe'?`${quickNotesBtn('closet')}<button class="btn-ghost" onclick="closetLibrary()">Upload</button>`:'';
+  const actions=closetTab==='wardrobe'?`${quickNotesBtn('closet')}<button class="btn-ghost" onclick="clAddSheet()">Add photos</button>`:'';
   const head=(editing||inPack)?'':`<div class="section-rule"><div class="section-title">${title}</div><div class="flex-center">${actions}</div></div>`;
   main.innerHTML=head+body;
   if(closetTab==='outfits'&&closetOutfitId&&outfitDraft){bindOutfitBoard();hydrateClosetImgs(document.getElementById('ob-board'));}
