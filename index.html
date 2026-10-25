@@ -475,7 +475,7 @@ textarea.field-input{border:1px solid var(--line);border-radius:8px;padding:10px
 .song-num{font-size:15px;color:var(--muted)}
 /* map, headings, weather symbols, overnight */
 .ev-map-wrap{margin:2px 0 16px}
-.ev-map{height:240px;border-radius:16px;overflow:hidden;background:var(--bone);border:1px solid var(--line)}
+.ev-map{position:relative;z-index:0;isolation:isolate;height:240px;border-radius:16px;overflow:hidden;background:var(--bone);border:1px solid var(--line)}
 .ev-map.small{height:180px}
 .ev-map-off{padding:70px 16px;text-align:center;font-size:13px;color:var(--muted)}
 .ev-map-legend{display:flex;flex-wrap:wrap;gap:12px;margin-top:8px;font-size:12.5px;color:var(--muted)}
@@ -497,7 +497,7 @@ textarea.field-input{border:1px solid var(--line);border-radius:8px;padding:10px
 .evd-list{display:flex;flex-direction:column;gap:10px;margin-bottom:6px}
 .evd-row{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:rgba(var(--ink-rgb),.035);border:1px solid var(--line);border-radius:14px;padding:12px;cursor:pointer;font-family:var(--sans);color:var(--ink)}
 .evd-row.today{border-color:var(--ink)}
-.evd-tag{flex-shrink:0;color:#fff;font-size:12.5px;font-weight:600;border-radius:999px;padding:3px 10px}
+.evd-tag{flex-shrink:0;color:var(--ink);background:rgba(var(--ink-rgb),.07);font-size:12.5px;font-weight:600;border-radius:999px;padding:3px 10px}
 .evd-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
 .evd-title{font-family:var(--serif);font-size:21px;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .evd-sub{font-size:12.5px;color:var(--muted)}
@@ -669,6 +669,65 @@ textarea.field-input{border:1px solid var(--line);border-radius:8px;padding:10px
 .ev-set-block{margin-top:20px;padding-top:16px;border-top:1px solid var(--line)}
 .ev-switch{display:flex;align-items:center;gap:10px;font-size:15px;margin-top:8px;cursor:pointer}
 .ev-switch input{width:20px;height:20px;accent-color:var(--ink)}
+.evi{display:inline-block;vertical-align:middle;flex-shrink:0}
+.ev-cat{display:inline-flex;align-items:center;justify-content:center;margin-right:9px;color:var(--muted);vertical-align:-4px}
+.ev-catrow{display:flex;flex-wrap:wrap;gap:8px;margin:2px 0 16px}
+.ev-catchip{display:inline-flex;flex-direction:column;align-items:center;gap:5px;min-width:64px;padding:10px 8px 8px;border:1px solid var(--line);border-radius:12px;background:none;color:var(--muted);font-family:var(--sans);font-size:12px;cursor:pointer}
+.ev-catchip span{line-height:1}
+.ev-catchip.on{background:var(--ink);border-color:var(--ink);color:var(--cream)}
+.ev-two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.ev-placerow{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:-8px 0 14px}
+.ev-placesel{flex:1;min-width:0;max-width:60%;border:none;border-bottom:1px solid var(--line);background:none;padding:4px 0;font-family:var(--sans);font-size:13px;color:var(--muted)}
+.ev-route{font-size:14px;color:var(--ink);margin-top:2px}
+.ev-route i{font-style:normal;color:var(--muted);margin:0 7px;font-size:12.5px}
+.ev-lock{display:inline-block;margin-top:4px;font-size:11.5px;letter-spacing:.04em;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:1px 9px}
+.ev-embed{margin:-2px 0 14px;border-radius:12px;overflow:hidden;border:1px solid var(--line)}
+.ev-embed iframe{display:block;width:100%;height:260px;border:0}
+.ev-movelist{display:grid;gap:8px}
+.ev-movebtn{display:flex;align-items:baseline;gap:12px;text-align:left;border:1px solid var(--line);border-radius:12px;background:none;color:var(--ink);padding:11px 14px;font-family:var(--sans);font-size:14px;cursor:pointer}
+.ev-movebtn span{font-size:12px;color:var(--muted);min-width:42px}
+.ev-movebtn b{font-weight:500;flex:1}
+.ev-movebtn em{font-style:normal;font-size:12.5px;color:var(--muted)}
+.ev-movebtn.on{opacity:.45;cursor:default}
+.evpop{font-family:var(--sans);min-width:170px}
+.evpop-img{display:block;width:100%;max-width:220px;height:110px;object-fit:cover;border-radius:8px;margin-bottom:8px}
+.evpop-title{display:block;font-family:var(--serif);font-size:18px;line-height:1.2;color:#1a1a1a;text-decoration:underline;margin-bottom:2px}
+.evpop-sub{font-size:12px;color:#666;margin-bottom:6px}
+.evpop-open{font-size:12.5px;color:#333}
+.ev-host{padding:10px 0 14px;border-top:1px solid rgba(var(--ink-rgb),.1)}
+.ev-host:first-of-type{border-top:none}
+.ev-host-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px}
+.ev-host-name{font-family:var(--serif);font-size:21px}
+.ev-host-tools{display:inline-flex;align-items:center;gap:6px}
+.ev-unassigned{margin:6px 0 10px}
+.ev-role{margin-left:auto;display:inline-flex;border:1px solid var(--line);border-radius:999px;padding:2px;gap:2px}
+.ev-role button{border:none;background:none;border-radius:999px;padding:3px 11px;font-family:var(--sans);font-size:12px;color:var(--muted);cursor:pointer}
+.ev-role button.on{background:var(--ink);color:var(--cream)}
+.ev-saved{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:6px 0;font-size:14px}
+.ev-saved span{display:flex;flex-direction:column}
+.ev-saved i{font-style:normal;font-size:12px;color:var(--muted)}
+.ev-sug-btns{display:inline-flex;gap:6px}
+.ev-sug-tag{display:inline-block;vertical-align:middle;margin-right:9px;font-family:var(--sans);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:2px 8px}
+.ev-sugitems{margin:10px 0 4px}
+.ev-sugitem{display:flex;align-items:center;gap:8px;padding:8px 0;border-top:1px solid rgba(var(--ink-rgb),.08)}
+.ev-sugitem label{flex:1;display:flex;align-items:center;gap:10px;font-size:15px;cursor:pointer;min-width:0}
+.ev-sugitem label span{overflow-wrap:anywhere}
+.ev-sugitem input[type=checkbox]{width:19px;height:19px;accent-color:var(--ink);flex-shrink:0}
+.ev-sugitem.done label span{text-decoration:line-through;color:var(--muted)}
+.ev-sugitem .ev-vote{padding:3px 9px;font-size:13px}
+.ev-sugitem .ev-vote svg{width:14px;height:14px}
+.ev-add{display:flex;gap:8px;align-items:center;margin-top:8px}
+.ev-add .field-input{margin:0;flex:1}
+.ev-titles{margin:0 auto 0 0;font-size:13.5px;color:var(--muted)}
+.ev-titles input{width:17px;height:17px}
+.ev-seg-row{align-items:center}
+.evc-day.titled{aspect-ratio:auto;min-height:54px;padding:4px 2px}
+.evc-day em{font-style:normal;font-size:9.5px;line-height:1.15;max-width:100%;padding:0 2px;text-align:center;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;color:var(--warm)}
+.mb-auto{display:flex;flex-wrap:wrap;gap:4px;width:100%;box-sizing:border-box}
+.mb-t{position:relative;flex:0 0 auto;overflow:hidden;width:120px;height:90px}
+.mb-t img{display:block;width:100%;height:100%;object-fit:cover}
+.mood-board.mb-auto{gap:4px;padding:12px}
+.mb-del{position:absolute;top:3px;right:3px;background:rgba(168,32,32,.85);border:none;color:#fff;width:20px;height:20px;font-size:13px;cursor:pointer}
 .ev-invite{padding:8px 0 4px}
 .ev-bk{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid var(--bone);font-size:15px}
 /* days out schedule */
@@ -1936,16 +1995,44 @@ function renderItemList(items,roomId){
   return items.map(it=>`<div class="item-row">${it.img?`<img class="item-thumb" src="${it.img}"/>`:`<div class="item-thumb-ph">🛋</div>`}<div class="item-body"><div class="item-name">${it.name||'Item'}</div>${it.store?`<div class="item-store">${it.store}</div>`:''}${it.link?`<a class="item-link" href="${it.link}" target="_blank" rel="noopener">${it.link}</a>`:''}</div>${it.price?`<div class="item-price">£${it.price.toLocaleString(undefined,{minimumFractionDigits:2})}</div>`:''}<button class="icon-btn" onclick="deleteItem('${roomId}','${it.id}')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg></button></div>`).join('');
 }
 
+// ── mood boards lay themselves out ──
+// Pictures sit in tidy rows: every row is stretched to the full width, each picture keeps its own shape. Runs whenever a board appears,
+// a picture finishes loading, or the window changes size.
+function mbLayout(box){
+  const cs=getComputedStyle(box),W=box.clientWidth-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight),gap=4;
+  if(W<=40)return;
+  const tiles=[].slice.call(box.querySelectorAll('.mb-t')),target=W<500?120:170;
+  const ar=tiles.map(t=>{const i=t.querySelector('img');return i&&i.naturalWidth?i.naturalWidth/i.naturalHeight:1.33;});
+  let row=[],sum=0;
+  const put=(items,h)=>{items.forEach(({t,a})=>{t.style.width=Math.floor(a*h)+'px';t.style.height=Math.round(h)+'px';});};
+  const flush=last=>{
+    if(!row.length)return;
+    const h=(W-gap*(row.length-1))/sum;
+    put(row,last&&h>target*1.5?target:h);row=[];sum=0;
+  };
+  tiles.forEach((t,i)=>{
+    row.push({t,a:ar[i]});sum+=ar[i];
+    if((sum*target)+gap*(row.length-1)>=W)flush(false);
+  });
+  flush(true);
+}
+let mbTimer=0;
+function mbLayoutAll(){cancelAnimationFrame(mbTimer);mbTimer=requestAnimationFrame(()=>document.querySelectorAll('.mb-auto').forEach(mbLayout));}
+document.addEventListener('load',e=>{if(e.target&&e.target.matches&&e.target.matches('.mb-t img'))mbLayoutAll();},true);
+window.addEventListener('resize',mbLayoutAll);
+new MutationObserver(m=>{if(m.some(r=>[].some.call(r.addedNodes,n=>n.nodeType===1&&(n.matches('.mb-auto')||n.querySelector('.mb-auto'))))) mbLayoutAll();}).observe(document.documentElement,{childList:true,subtree:true});
+
 // ── ROOM MOOD BOARD ──
 function renderRoomMoodboard(room){
   const mb=room.moodboard||{colors:[],tiles:[],notes:''};
   const swatches=mb.colors.length?mb.colors.map((c,i)=>`<div class="mb-swatch-wrap"><div class="mb-swatch" style="background:${c.hex}" title="${c.ral?'RAL '+c.ral:''}"></div><button class="mb-swatch-del" onclick="removeRoomColor('${room.id}',${i})">×</button><div class="mb-swatch-label">${c.ral?'RAL '+c.ral:c.name||''}</div></div>`).join(''):`<p style="font-size:13px;color:var(--muted);">No colours yet.</p>`;
-  const tiles=mb.tiles&&mb.tiles.length?mb.tiles.map((tile,ti)=>`<div style="position:relative;overflow:hidden;border:1px solid var(--bone);display:inline-block;vertical-align:top"><img src="${tile.img}" style="width:${tile.size==='sm'?120:tile.size==='lg'?250:180}px;height:${tile.size==='sm'?90:tile.size==='lg'?180:130}px;object-fit:cover;display:block"/><button onclick="removeRoomMoodTile('${room.id}',${ti})" style="position:absolute;top:3px;right:3px;background:rgba(168,32,32,.85);border:none;color:#fff;width:18px;height:18px;font-size:12.5px;cursor:pointer">×</button></div>`).join(''):`<p style="font-size:13px;color:var(--muted);">No images yet.</p>`;
+  const tiles=mb.tiles&&mb.tiles.length?mb.tiles.map((tile,ti)=>`<div class="mood-tile mb-t"><img src="${tile.img}" alt=""/><button class="mb-del" aria-label="Remove image" onclick="removeRoomMoodTile('${room.id}',${ti})">×</button></div>`).join(''):`<p style="font-size:13px;color:var(--muted);">No images yet.</p>`;
+  const tilesBox=mb.tiles&&mb.tiles.length?`<div class="mb-auto">${tiles}</div>`:tiles;
   return`<div style="margin-bottom:20px">
     <div class="flex-between mb14"><div style="font-family:var(--sans);font-size:16px;color:var(--muted)">Colour palette</div><button class="btn-ghost" onclick="openAddColor('${room.id}')">+ Add colour</button></div>
     <div style="display:flex;flex-wrap:wrap;gap:12px;margin-bottom:20px">${swatches}</div>
     <div class="flex-between mb14"><div style="font-family:var(--sans);font-size:16px;color:var(--muted)">Inspiration images</div><button class="btn-ghost" onclick="openAddRoomMoodTile('${room.id}')">+ Add image</button></div>
-    <div style="display:flex;flex-wrap:wrap;gap:10px">${tiles}</div>
+    ${tilesBox}
     ${mb.notes?`<div style="margin-top:14px;font-size:13px;color:var(--muted);">${mb.notes}</div>`:''}
   </div>`;
 }
@@ -2227,12 +2314,12 @@ function evFind(d,id){return d.events.find(e=>e.id===id);}
 function evBoot(){const b=getStore('maison_evq_'+currentUser,null)||{};return{q:b.q||{},sk:b.sk||{},pq:b.pq||{}};}
 function evBootSave(b){setStore('maison_evq_'+currentUser,b);}
 function evMeta(ev){return{name:ev.name,location:ev.location||'',notes:ev.notes||'',days:ev.days||[],startTime:ev.startTime||'09:00',owner:ev.owner||null,deleted:!!ev.deleted,upd:ev.upd||0};}
-function evAllKeys(ev){const m={meta:evMeta(ev)};(ev.acts||[]).forEach(a=>{m['a_'+a.id]=a;});(ev.todos||[]).forEach(t=>{m['k_'+t.id]=t;});(ev.lists||[]).forEach(l=>{m['l_'+l.id]=l;});(ev.sugs||[]).forEach(s=>{m['s_'+s.id]=s;});(ev.votes||[]).forEach(v=>{m['v_'+v.id]=v;});(ev.photos||[]).forEach(p=>{m['ph_'+p.id]=p;});(ev.perms||[]).forEach(x=>{m['h_'+x.id]=x;});(ev.people||[]).forEach(p=>{m['p_'+p.id]=p;});Object.keys(ev.dinfo||{}).forEach(day=>{m['d_'+day.replace(/-/g,'')]=ev.dinfo[day];});return m;}
+function evAllKeys(ev){const m={meta:evMeta(ev)};(ev.acts||[]).forEach(a=>{m['a_'+a.id]=a;});(ev.todos||[]).forEach(t=>{m['k_'+t.id]=t;});(ev.lists||[]).forEach(l=>{m['l_'+l.id]=l;});(ev.sugs||[]).forEach(s=>{m['s_'+s.id]=s;});(ev.votes||[]).forEach(v=>{m['v_'+v.id]=v;});(ev.photos||[]).forEach(p=>{m['ph_'+p.id]=p;});(ev.perms||[]).forEach(x=>{m['h_'+x.id]=x;});(ev.stays||[]).forEach(s=>{m['o_'+s.id]=s;});(ev.sitems||[]).forEach(i=>{m['si_'+i.id]=i;});(ev.people||[]).forEach(p=>{m['p_'+p.id]=p;});Object.keys(ev.dinfo||{}).forEach(day=>{m['d_'+day.replace(/-/g,'')]=ev.dinfo[day];});return m;}
 function evApply(ev,key,val){
   if(key==='meta'){if(val){ev.name=val.name;ev.location=val.location||'';ev.notes=val.notes||'';ev.days=val.days||[];ev.startTime=val.startTime||'09:00';ev.owner=val.owner||ev.owner||null;ev.deleted=!!val.deleted;ev.upd=val.upd||ev.upd||0;}return;}
   const us=key.indexOf('_'),pre=key.slice(0,us),id=key.slice(us+1);
   if(pre==='d'){const day=id.slice(0,4)+'-'+id.slice(4,6)+'-'+id.slice(6,8);ev.dinfo=ev.dinfo||{};if(val==null)delete ev.dinfo[day];else ev.dinfo[day]=val;return;}
-  const list={a:'acts',k:'todos',p:'people',l:'lists',s:'sugs',v:'votes',ph:'photos',h:'perms'}[pre];if(!list)return;
+  const list={a:'acts',k:'todos',p:'people',l:'lists',s:'sugs',v:'votes',ph:'photos',h:'perms',o:'stays',si:'sitems'}[pre];if(!list)return;
   const arr=ev[list]=ev[list]||[],i=arr.findIndex(x=>x.id===id);
   if(val==null){if(i>=0)arr.splice(i,1);}else if(i>=0)arr[i]=val;else arr.push(val);
 }
@@ -2389,7 +2476,7 @@ function openEvent(id){
 // ── day picker (multi-select calendar) ──
 function evPickerHTML(){
   const p=evPick,first=new Date(p.y,p.m,1),lead=(first.getDay()+6)%7,dim=new Date(p.y,p.m+1,0).getDate(),today=clKey(new Date());
-  let cells='';for(let i=0;i<lead;i++)cells+='<span></span>';
+  const showT=evShowTitles();let cells='';for(let i=0;i<lead;i++)cells+='<span></span>';
   for(let d=1;d<=dim;d++){const k=p.y+'-'+String(p.m+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');cells+=`<button type="button" class="evp-day${(lead+d-1)%7>=5?' wknd':''}${p.sel.indexOf(k)>=0?' on':''}${k===today?' today':''}" onclick="evPickToggle('${k}')">${d}</button>`;}
   const sel=p.sel.slice().sort(),txt=sel.length?sel.length+' day'+(sel.length!==1?'s':'')+' chosen: '+sel.slice(0,4).map(k=>evDateObj(k).toLocaleDateString('en-GB',{day:'numeric',month:'short'})).join(', ')+(sel.length>4?' …':''):'Tap one or more days';
   return`<div class="evp-head"><button type="button" class="icon-btn" onclick="evPickNav(-1)" aria-label="Previous month">‹</button><div class="evp-title">${first.toLocaleDateString('en-GB',{month:'long',year:'numeric'})}</div><button type="button" class="icon-btn" onclick="evPickNav(1)" aria-label="Next month">›</button></div>
@@ -2434,14 +2521,17 @@ function renderEvent(main){
 }
 function evCalHTML(ev){
   const m=evCalMonth,first=new Date(m.y,m.m,1),lead=(first.getDay()+6)%7,dim=new Date(m.y,m.m+1,0).getDate(),today=clKey(new Date());
-  let cells='';for(let i=0;i<lead;i++)cells+='<span></span>';
+  const showT=evShowTitles();let cells='';for(let i=0;i<lead;i++)cells+='<span></span>';
   for(let d=1;d<=dim;d++){
     const k=m.y+'-'+String(m.m+1).padStart(2,'0')+'-'+String(d).padStart(2,'0'),has=ev.days.indexOf(k)>=0,wk=(lead+d-1)%7>=5?' wknd':'';
-    cells+=has?`<button class="evc-day has${wk}${k===today?' today':''}" onclick="evOpenDay('${k}')" aria-label="${escHtml(evLong(k))}"><b>${d}</b></button>`:`<span class="evc-day off${wk}${k===today?' today':''}"><b>${d}</b></span>`;
+    const ttl=has&&showT?(evDayInfo(ev,k).title||''):'';
+    cells+=has?`<button class="evc-day has${wk}${k===today?' today':''}${ttl?' titled':''}" onclick="evOpenDay('${k}')" aria-label="${escHtml(evLong(k)+(ttl?', '+ttl:''))}"><b>${d}</b>${ttl?`<em>${escHtml(ttl)}</em>`:''}</button>`:`<span class="evc-day off${wk}${k===today?' today':''}"><b>${d}</b></span>`;
   }
   return`<div class="evp-head"><button class="icon-btn" onclick="evCalNav(-1)" aria-label="Previous month">‹</button><div class="evp-title">${first.toLocaleDateString('en-GB',{month:'long',year:'numeric'})}</div><button class="icon-btn" onclick="evCalNav(1)" aria-label="Next month">›</button></div>
     <div class="evp-dow"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div><div class="evc-grid">${cells}</div>`;
 }
+function evShowTitles(){try{return localStorage.getItem('maison_evtitles')==='1';}catch(e){return false;}}
+function evSetTitles(on){try{localStorage.setItem('maison_evtitles',on?'1':'0');}catch(e){}showSection('event');}
 function evCalNav(n){const d=new Date(evCalMonth.y,evCalMonth.m+n,1);evCalMonth={y:d.getFullYear(),m:d.getMonth()};showSection('event');}
 function evOpenDay(k){evDay=k;showSection('event');window.scrollTo(0,0);}
 function evGoing(ev,day){return(ev.people||[]).filter(p=>(p.out||[]).indexOf(day)<0);}
@@ -2454,7 +2544,7 @@ function evHomeHTML(ev){
     <div class="ev-meta"><span class="ev-count">${escHtml(evCountdown(ev))}</span><span id="ev-status" class="of-meta"></span></div>
     ${ev.notes?`<p class="ev-notes">${escHtml(ev.notes)}</p>`:''}
     ${evMapHTML(ev,null)}
-    <div class="ev-seg-row"><div class="ev-seg" role="group" aria-label="How to show the days"><button class="${evViewMode()==='cal'?'on':''}" onclick="evSetView('cal')">Calendar</button><button class="${evViewMode()==='days'?'on':''}" onclick="evSetView('days')">Headings</button></div></div>
+    <div class="ev-seg-row">${evViewMode()==='cal'?`<label class="ev-switch ev-titles"><input type="checkbox" ${evShowTitles()?'checked':''} onchange="evSetTitles(this.checked)"/><span>Day titles</span></label>`:''}<div class="ev-seg" role="group" aria-label="How to show the days"><button class="${evViewMode()==='cal'?'on':''}" onclick="evSetView('cal')">Calendar</button><button class="${evViewMode()==='days'?'on':''}" onclick="evSetView('days')">Headings</button></div></div>
     ${evViewMode()==='days'?evDaysViewHTML(ev):`<div class="evc">${evCalHTML(ev)}</div>`}
     ${evSummaryHTML(ev)}
     ${evHiddenNote(ev)}
@@ -2484,15 +2574,16 @@ function evPermsHTML(ev){
   if(!ev.shared)return`<div class="ev-set-block">${head}<p class="cl-hint">Once you share the event and people join, you can choose here which parts each person can see.</p></div>`;
   const others=(ev.people||[]).filter(p=>!p.guest&&p.id!==(ev.me||{}).id);
   if(!others.length)return`<div class="ev-set-block">${head}<p class="cl-hint">Nobody else has joined yet. When they do, you can choose which parts each person can see.</p></div>`;
-  return`<div class="ev-set-block">${head}<p class="cl-hint">Tick the parts each person can see. Unticked parts are hidden in their MAISON app. This is not a security lock: someone with the link who knows how could still read the event.</p>
-    ${others.map(p=>{const hide=(((ev.perms||[]).find(x=>x.id===p.id))||{}).hide||[];return`<div class="ev-perm"><div class="ev-perm-name"><i>${escHtml(evInitials(p.name))}</i>${escHtml(p.name)}</div><div class="cl-chips">${EV_PARTS.map(([k,l])=>`<label class="cl-chip"><input type="checkbox"${hide.indexOf(k)<0?' checked':''} onchange="evPermSet('${p.id}','${k}',this.checked)"/><span>${l}</span></label>`).join('')}</div></div>`;}).join('')}</div>`;
+  return`<div class="ev-set-block">${head}<p class="cl-hint">Mark people as hosts or guests. Activities you tick "Hide from guests" on are hidden from anyone marked Guest. Tick the parts each person can see. Unticked parts are hidden in their MAISON app. This is not a security lock: someone with the link who knows how could still read the event.</p>
+    ${others.map(p=>{const px=(ev.perms||[]).find(x=>x.id===p.id)||{},hide=px.hide||[],isG=px.role==='guest';return`<div class="ev-perm"><div class="ev-perm-name"><i>${escHtml(evInitials(p.name))}</i>${escHtml(p.name)}<span class="ev-role"><button class="${isG?'':'on'}" aria-pressed="${!isG}" onclick="evRoleSet('${p.id}','host')">Host</button><button class="${isG?'on':''}" aria-pressed="${isG}" onclick="evRoleSet('${p.id}','guest')">Guest</button></span></div><div class="cl-chips">${EV_PARTS.map(([k,l])=>`<label class="cl-chip"><input type="checkbox"${hide.indexOf(k)<0?' checked':''} onchange="evPermSet('${p.id}','${k}',this.checked)"/><span>${l}</span></label>`).join('')}</div></div>`;}).join('')}</div>`;
 }
 function evPermSet(pid,part,on){
   evMutate(activeEventId,(ev,put)=>{
     if(!ev.creator)return;
     const cur=(ev.perms||[]).find(x=>x.id===pid),hide=((cur&&cur.hide)||[]).filter(x=>x!==part);
     if(!on)hide.push(part);
-    if(hide.length)put('h_'+pid,{id:pid,hide,upd:Date.now()});else put('h_'+pid,null);
+    const role=cur&&cur.role==='guest'?'guest':undefined;
+    if(hide.length||role)put('h_'+pid,role?{id:pid,hide,role,upd:Date.now()}:{id:pid,hide,upd:Date.now()});else put('h_'+pid,null);
   });
 }
 function evDayNav(dir){
@@ -2514,15 +2605,19 @@ function evDayField(field,val,forDay){
 const EV_DRESS=['Casual','Smart casual','Smart','Cocktail','Black tie','Fancy dress','Beach','Walking gear','Wear white','Wear black'];
 function evRowsHTML(ev,acts){
   let prevEnd=-1;
+  const ico=(d,t,fn,a)=>`<button class="icon-btn" title="${t}" aria-label="${t} ${escHtml(a.name)}" onclick="${fn}('${a.id}')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${d}</svg></button>`;
   return acts.map(a=>{
-    const s=doToMin(a.time),e=s==null?null:s+doMins(a),clash=s!=null&&prevEnd>s;if(e!=null)prevEnd=Math.max(prevEnd,e);const lk=safeLink(a.link);
-    return`<div class="item-row do-row${clash?' clash':''}"><div class="do-time">${s==null?'<span class="do-notime">No time</span>':doFmt(s)+'<span>'+doFmt(e)+'</span>'}</div><div class="item-body"><span class="cat-badge">${escHtml(a.cat||'Other')}</span><div class="item-name">${escHtml(a.name)}</div>${a.where?`<a class="item-link" href="${escHtml(evMapsUrl(a))}" target="_blank" rel="noopener">${escHtml(a.where)}</a>`:''}${a.notes?`<div class="of-meta">${escHtml(a.notes)}</div>`:''}${clash?'<div class="do-clash">Overlaps the activity before it</div>':''}${lk?`<a class="item-link" href="${escHtml(lk)}" target="_blank" rel="noopener">${escHtml(a.link)}</a>`:''}${evCan(ev,'photos')?evActPhotosHTML(ev,a):''}</div>${a.price&&evCan(ev,'costs')?`<div class="item-price">${evMoney(a.price)}</div>`:''}<button class="icon-btn" title="Edit" aria-label="Edit ${escHtml(a.name)}" onclick="evActForm('${a.id}')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></button><button class="icon-btn" title="Delete" onclick="evDelAct('${a.id}')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg></button></div>`;
+    const isJ=a.cat==='Journey'||a.cat==='Travel';
+    const s=doToMin(a.time),e=s==null?null:s+doMins(a),clash=s!=null&&prevEnd>s;if(e!=null)prevEnd=Math.max(prevEnd,e);
+    const lk=safeLink(a.link),embed=evEmbedURL(a);
+    const sub=isJ&&(a.from||a.to)?`<div class="ev-route">${escHtml(a.from||'…')}<i>to</i>${escHtml(a.to||'…')}</div>`:(a.where?`<a class="item-link" href="${escHtml(evMapsUrl(a))}" target="_blank" rel="noopener">${escHtml(a.where)}</a>`:'');
+    return`<div class="item-row do-row${clash?' clash':''}" id="ra-${a.id}"><div class="do-time">${s==null?'<span class="do-notime">No time</span>':doFmt(s)+'<span>'+doFmt(e)+'</span>'}</div><div class="item-body"><div class="item-name"><span class="ev-cat" title="${escHtml(a.cat||'Other')}">${evCatIcon(a.cat,a.mode,19)}</span>${escHtml(a.name)}</div>${sub}${a.notes?`<div class="of-meta">${escHtml(a.notes)}</div>`:''}${clash?'<div class="do-clash">Overlaps the activity before it</div>':''}${lk?`<a class="item-link" href="${escHtml(lk)}" target="_blank" rel="noopener">${escHtml(a.link)}</a>`:''}${a.hideGuests&&ev.creator?'<span class="ev-lock">Hidden from guests</span>':''}${embed?`<button class="ev-addph" onclick="evToggleEmbed('${a.id}')">${isJ?'Route':'Map'}</button>`:''}${evCan(ev,'photos')?evActPhotosHTML(ev,a):''}</div>${a.price&&evCan(ev,'costs')?`<div class="item-price">${evMoney(a.price)}</div>`:''}${ico('<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/>','Edit','evActForm',a)}${ico('<path d="M12 3v18M3 12h18M8 7l4-4 4 4M8 17l4 4 4-4M7 8l-4 4 4 4M17 8l4 4-4 4"/>','Move','evMoveModal',a)}${ico('<polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/>','Delete','evDelAct',a)}</div>`;
   }).join('');
 }
 function evSectionHTML(ev,part){
   const eve=part==='eve',info=evDayInfo(ev,evDay);
   // only this day's activities for this part of the day
-  const acts=doSorted((ev.acts||[]).filter(a=>a.day===evDay&&(a.part||'day')===part));
+  const acts=doSorted(evActsVis(ev).filter(a=>a.day===evDay&&(a.part||'day')===part));
   const rows=acts.length?evRowsHTML(ev,acts):`<div class="empty" style="padding:16px 0;font-size:13px">${eve?'Nothing planned for the evening yet.':'Nothing planned for the day yet.'}</div>`;
   const inp=(label,field,val,opts)=>`<label class="ev-field${opts&&opts.grow?' grow':''}${opts&&opts.half?' half':''}"><span>${label}</span><input ${opts&&opts.type?`type="${opts.type}"`:'type="text"'}${opts&&opts.list?` list="${opts.list}"`:''} value="${escHtml(val)}"${opts&&opts.ph?` placeholder="${escHtml(opts.ph)}"`:''} autocomplete="off" onchange="evDayField('${field}',this.value${opts&&opts.type==='time'?'':'.trim()'})"/></label>`;
   return`<div class="ev-sec">
@@ -2542,7 +2637,7 @@ function evPeopleHTML(ev,day){
     <div class="ev-people">${going.map(p=>`<span class="ev-person"><i>${escHtml(evInitials(p.name))}</i>${escHtml(p.name)}${p.guest?'<em>guest</em>':''}<button class="ev-x" aria-label="Remove ${escHtml(p.name)} from this day" onclick="evDayRemove('${p.id}')">×</button></span>`).join('')||'<span class="of-meta">Nobody yet. Tap Add.</span>'}</div></div>`;
 }
 function evDayHTML(ev){
-  const days=evDaysSorted(ev),i=days.indexOf(evDay),all=(ev.acts||[]).filter(a=>a.day===evDay);
+  const days=evDaysSorted(ev),i=days.indexOf(evDay),all=evActsVis(ev).filter(a=>a.day===evDay);
   const going=evGoing(ev,evDay),info=evDayInfo(ev,evDay);
   const total=all.reduce((s,a)=>s+(a.price||0),0),each=total/Math.max(1,going.length);
   const arrow=(dir,off,label,d)=>`<button class="ev-arrow" ${off?'disabled':''} onclick="evDayNav(${dir})" aria-label="${label}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="${d}"/></svg></button>`;
@@ -2713,47 +2808,203 @@ function evDayTextSoon(field,el){
 }
 
 // ── activities ──
+// ── activity types: icons, journeys, saved places, moving, guest visibility ──
+const EV_CATS=['Activity','Food & Drink','Drinks','Shopping','Journey','Other'];   // offered when adding; older 'Travel' activities still work
+const EV_CAT_MINS=Object.assign({},DO_CAT_MINS,{'Drinks':60,'Journey':90});
+const EV_ICON={
+  'Activity':'<path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M13 5v2M13 11v2M13 17v2"/>',
+  'Food & Drink':'<path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/>',
+  'Drinks':'<path d="M8 22h8M12 15v7M7 10h10"/><path d="M12 15a5 5 0 0 0 5-5c0-2-.5-4-2-8H9c-1.5 4-2 6-2 8a5 5 0 0 0 5 5Z"/>',
+  'Shopping':'<path d="M5 8h14l-1 12H6z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/>',
+  'Journey':'<circle cx="6" cy="19" r="2.6"/><circle cx="18" cy="5" r="2.6"/><path d="M8.6 19h7.9a3.5 3.5 0 0 0 0-7h-9a3.5 3.5 0 0 1 0-7h8"/>',
+  'Other':'<path d="M12 21s-6-5.2-6-10a6 6 0 0 1 12 0c0 4.8-6 10-6 10z"/><circle cx="12" cy="11" r="2.2"/>'
+};
+EV_ICON['Travel']=EV_ICON['Journey'];
+const EV_MODES=[['car','Car'],['train','Train'],['plane','Flight'],['bus','Bus'],['boat','Boat'],['walk','Walk']];
+const EV_MODE_ICON={
+  car:'<path d="M4 15l1.6-4.8A2 2 0 0 1 7.5 9h9a2 2 0 0 1 1.9 1.2L20 15"/><rect x="3" y="15" width="18" height="4.5" rx="1.6"/><path d="M7 19.5V21M17 19.5V21"/>',
+  train:'<rect x="5" y="3" width="14" height="14" rx="3"/><path d="M5 11h14M9 21l2-4M15 21l-2-4"/><path d="M9 14h.01M15 14h.01"/>',
+  plane:'<path d="M3 12l18-8-5 16-4.5-5.5L7 17v-5z"/><path d="M11.5 14.5L21 4"/>',
+  bus:'<rect x="4" y="3" width="16" height="15" rx="3"/><path d="M4 11h16M7 21v-3M17 21v-3"/><path d="M8 14.5h.01M16 14.5h.01"/>',
+  boat:'<path d="M3 17l2 3h14l2-3z"/><path d="M12 3v11M12 4l6 8h-6M11 7l-5 5h5"/>',
+  walk:'<circle cx="13" cy="4.5" r="1.6"/><path d="M9.5 21l2.2-6-2.2-2.3 1.8-4.7 3 1.2 2 3.3M11.7 15l3.1 2 .9 4"/>'
+};
+function evCatIcon(cat,mode,size){
+  const body=((cat==='Journey'||cat==='Travel')&&mode&&EV_MODE_ICON[mode])||EV_ICON[cat]||EV_ICON['Other'];
+  return`<svg class="evi" width="${size||19}" height="${size||19}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${body}</svg>`;
+}
+// Guests: the creator marks people as hosts or guests in Settings; an activity can be hidden from guests.
+function evGuest(ev){if(ev.creator)return false;const x=(ev.perms||[]).find(p=>p.id===(ev.me||{}).id);return!!(x&&x.role==='guest');}
+function evVisAct(ev,a){return!(a.hideGuests&&evGuest(ev));}
+function evActsVis(ev){return(ev.acts||[]).filter(a=>evVisAct(ev,a));}
+
+// ── saved places (yours, kept across all your events) ──
+let evForm={picked:{}};
+function evPlaces(){return userData('places',[]);}
+function evPlaceOpts(){return'<option value="">Saved places…</option>'+evPlaces().map(p=>`<option value="${p.id}">${escHtml(p.name)}</option>`).join('');}
+function evPlacePick(inputId,pid){
+  if(!pid)return;const p=evPlaces().find(x=>x.id===pid);if(!p)return;
+  const inp=document.getElementById(inputId);if(inp)inp.value=p.name;
+  evForm.picked[inputId]={name:p.name,lat:p.lat,lon:p.lon,mapUrl:p.mapUrl||''};
+  const sel=document.getElementById(inputId+'-sel');if(sel)sel.value='';
+}
+function evFormEdited(inputId){const inp=document.getElementById(inputId),pk=evForm.picked[inputId];if(pk&&inp&&inp.value.trim()!==pk.name)delete evForm.picked[inputId];}
+async function evPlaceSave(inputId){
+  const inp=document.getElementById(inputId),text=inp&&inp.value.trim();if(!text){clToast('Type the place first');return;}
+  const name=(prompt('Name this place so you can pick it again (e.g. Greg and Glynis House):',text)||'').trim();if(!name)return;
+  const ev=evFind(evData(),activeEventId);
+  let co=evForm.picked[inputId];
+  if(!co){clToast('Finding the place…');const g=await evGeocode(text,ev&&ev.location);co=g?{lat:g.lat,lon:g.lon,mapUrl:g.mapUrl||''}:{lat:null,lon:null,mapUrl:''};}
+  const list=evPlaces().filter(p=>p.name.toLowerCase()!==name.toLowerCase());
+  list.push({id:uid(),name,where:text,lat:co.lat,lon:co.lon,mapUrl:co.mapUrl||''});
+  saveData('places',list);
+  inp.value=name;evForm.picked[inputId]={name,lat:co.lat,lon:co.lon,mapUrl:co.mapUrl||''};
+  document.querySelectorAll('.ev-placesel').forEach(s=>{s.innerHTML=evPlaceOpts();});
+  clToast(co.lat!=null?'Place saved':'Saved (no map pin found for it)');
+}
+function evSavedHTML(){
+  const pl=evPlaces(),hs=userData('hosts',[]);if(!pl.length&&!hs.length)return'';
+  const row=(n,sub,fn,id)=>`<div class="ev-saved"><span><b>${escHtml(n)}</b>${sub?`<i>${escHtml(sub)}</i>`:''}</span><button class="icon-btn" aria-label="Forget ${escHtml(n)}" onclick="${fn}('${id}')">×</button></div>`;
+  return`<div class="ev-set-block"><div class="ev-strip-title">Your saved places and hosts</div><p class="cl-hint">Only on your account. Saved when you add an activity or a host; forget any here.</p>${pl.map(p=>row(p.name,p.where,'evPlaceDelete',p.id)).join('')}${hs.map(h=>row(h.name,h.place||'Host','evHostDelete',h.id)).join('')}</div>`;
+}
+function evPlaceDelete(pid){saveData('places',evPlaces().filter(p=>p.id!==pid));openEventSettings();}
+function evHostDelete(hid){saveData('hosts',(userData('hosts',[])).filter(h=>h.id!==hid));openEventSettings();}
+
+// ── the add / edit activity form ──
+function evCatChips(sel){
+  const list=EV_CATS.concat(sel&&EV_CATS.indexOf(sel)<0&&sel!=='Travel'?[sel]:[]);
+  return list.map(c=>`<button type="button" class="ev-catchip${(c===sel||(sel==='Travel'&&c==='Journey'))?' on':''}" data-cat="${escHtml(c)}" onclick="evFormCat(this.dataset.cat)">${evCatIcon(c,null,21)}<span>${escHtml(c==='Food & Drink'?'Food':c)}</span></button>`).join('');
+}
+function evFormCat(cat){
+  document.getElementById('ea-cat').value=cat;
+  document.querySelectorAll('.ev-catchip').forEach(b=>b.classList.toggle('on',b.dataset.cat===cat));
+  const j=cat==='Journey';
+  document.getElementById('ea-jny').style.display=j?'':'none';
+  document.getElementById('ea-std').style.display=j?'none':'';
+}
+function evFormMode(mode){
+  document.getElementById('ea-mode').value=mode;
+  document.querySelectorAll('.ev-modechip').forEach(b=>b.classList.toggle('on',b.dataset.mode===mode));
+}
+function evPlaceField(id,label,val,ph){
+  return`<label class="field-label">${label}</label><input id="${id}" class="field-input" value="${escHtml(val||'')}" placeholder="${escHtml(ph)}" autocomplete="off" oninput="evFormEdited('${id}')"/>
+    <div class="ev-placerow"><select id="${id}-sel" class="ev-placesel" onchange="evPlacePick('${id}',this.value)">${evPlaceOpts()}</select><button type="button" class="ev-addph" onclick="evPlaceSave('${id}')">Save this place</button></div>`;
+}
 function evActForm(actId,part,pre){
   const ev=evFind(evData(),activeEventId);if(!ev)return;
   const a=actId?(ev.acts||[]).find(x=>x.id===actId):null;if(actId&&!a)return;
   const v=a||Object.assign({cat:'Activity',day:evDay||evDaysSorted(ev)[0],part:part==='eve'?'eve':'day'},pre||{}),pt=(v.part||'day');
+  const cat=(v.cat==='Travel')?'Journey':v.cat,j=cat==='Journey';
+  evForm={picked:{}};
   openModal(`<div class="modal-head"><div class="modal-title">${a?'Edit activity':'Add activity'}</div><button class="modal-close" onclick="closeModal()">×</button></div>
     ${a&&a.by?`<p class="cl-hint" style="margin:-6px 0 14px">Added by ${escHtml(a.by)}</p>`:''}
-    <label class="field-label">Name</label><input id="ea-name" class="field-input" value="${escHtml(v.name||'')}" placeholder="e.g. Lunch at The Seafood Bar…"/>
-    <label class="field-label">Part of the day</label><select id="ea-part" class="field-input"><option value="day"${pt==='day'?' selected':''}>Day out</option><option value="eve"${pt==='eve'?' selected':''}>Evening</option></select>
-    <label class="field-label">Category</label><select id="ea-cat" class="field-input">${Object.keys(DO_CAT_MINS).concat(v.cat&&!DO_CAT_MINS[v.cat]?[v.cat]:[]).map(c=>`<option${v.cat===c?' selected':''}>${escHtml(c)}</option>`).join('')}</select>
-    <label class="field-label">Location</label><input id="ea-where" class="field-input" value="${escHtml(v.where||'')}" placeholder="A place name, or paste a Google Maps link" autocomplete="off"/>
-    <label class="ev-switch" style="margin:-6px 0 6px"><input type="checkbox" id="ea-pin"${v.pin===false?'':' checked'}/><span>Show on the map</span></label>
-    ${v.where&&v.pin!==false?`<p class="cl-hint" style="margin-top:0">${v.lat!=null?'Pinned on the map.':'No pin yet: that place was not found. Add the town, or paste a Google Maps link.'}</p>`:''}
+    <label class="field-label">What kind of thing is it?</label>
+    <div class="ev-catrow">${evCatChips(cat)}</div><input type="hidden" id="ea-cat" value="${escHtml(cat)}"/>
+    <label class="field-label">Name</label><input id="ea-name" class="field-input" value="${escHtml(v.name||'')}" placeholder="${j?'Optional, e.g. Train to St Ives':'e.g. Lunch at The Seafood Bar'}" autocomplete="off"/>
+    <div id="ea-jny" style="display:${j?'':'none'}">
+      <label class="field-label">How</label>
+      <div class="ev-catrow">${EV_MODES.map(([k,l])=>`<button type="button" class="ev-catchip ev-modechip${(v.mode||'car')===k?' on':''}" data-mode="${k}" onclick="evFormMode('${k}')">${evCatIcon('Journey',k,21)}<span>${l}</span></button>`).join('')}</div><input type="hidden" id="ea-mode" value="${escHtml(v.mode||'car')}"/>
+      ${evPlaceField('ea-from','From',v.from,'Where does it start?')}
+      ${evPlaceField('ea-to','To',v.to,'Where does it end?')}
+      <div class="ev-two"><div><label class="field-label">Departs</label><input id="ea-dep" class="field-input" type="time" value="${escHtml(v.dep||v.time||'')}"/></div><div><label class="field-label">Arrives</label><input id="ea-arr" class="field-input" type="time" value="${escHtml(v.arr||'')}"/></div></div>
+    </div>
+    <div id="ea-std" style="display:${j?'none':''}">
+      ${evPlaceField('ea-where','Location',v.where,'A place name, or paste a Google Maps link')}
+      <label class="ev-switch" style="margin:-6px 0 6px"><input type="checkbox" id="ea-pin"${v.pin===false?'':' checked'}/><span>Show on the map</span></label>
+      ${v.where&&v.pin!==false&&!j?`<p class="cl-hint" style="margin-top:0">${v.lat!=null?'Pinned on the map.':'No pin yet: that place was not found. Add the town, or paste a Google Maps link.'}</p>`:''}
+      <div class="ev-two"><div><label class="field-label">Starts</label><input id="ea-time" class="field-input" type="time" value="${escHtml(j?'':(v.time||''))}"/></div><div><label class="field-label">Minutes</label><input id="ea-mins" class="field-input" type="number" min="5" step="5" value="${j?'':(v.mins||'')}" placeholder="Usual length"/></div></div>
+    </div>
+    <label class="field-label">Which part of the day</label><select id="ea-part" class="field-input"><option value="day"${pt==='day'?' selected':''}>Day out</option><option value="eve"${pt==='eve'?' selected':''}>Evening</option></select>
     <label class="field-label">Day</label><select id="ea-day" class="field-input">${evDaysSorted(ev).map(k=>`<option value="${k}"${v.day===k?' selected':''}>${escHtml(evLong(k))}</option>`).join('')}</select>
-    <label class="field-label">Start time (leave empty to let Arrange times choose)</label><input id="ea-time" class="field-input" type="time" value="${escHtml(v.time||'')}"/>
-    <label class="field-label">How long (minutes)</label><input id="ea-mins" class="field-input" type="number" min="5" step="5" value="${v.mins||''}" placeholder="Usual length for this kind of activity"/>
     <label class="field-label">Link</label><input id="ea-link" class="field-input" type="url" value="${escHtml(v.link||'')}" placeholder="https://…"/>
     ${evCan(ev,'costs')?`<label class="field-label">Price (for the whole group)</label><input id="ea-price" class="field-input" type="number" value="${v.price||''}" placeholder="0.00" min="0" step="0.01"/>`:''}
-    <label class="field-label">Notes (optional)</label><input id="ea-notes" class="field-input" value="${escHtml(v.notes||'')}" placeholder="Booking reference, what to bring…"/>
+    <label class="field-label">Notes</label><input id="ea-notes" class="field-input" value="${escHtml(v.notes||'')}" placeholder="Booking reference, what to bring…" autocomplete="off"/>
+    ${ev.creator?`<label class="ev-switch" style="margin:2px 0 12px"><input type="checkbox" id="ea-hideg"${v.hideGuests?' checked':''}/><span>Hide from guests</span></label>`:''}
     <div class="modal-row"><button class="btn-solid sm teal" onclick="evSaveAct(${actId?`'${actId}'`:'null'})">${a?'Save':'Add'}</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);
 }
+// Looks a place up only when it has changed (or has no pin yet). A saved place brings its own coordinates; a pasted Google Maps link is read directly.
+async function evResolve(inputId,text,prev,near){
+  if(!text)return{lat:null,lon:null,mapUrl:''};
+  const pk=evForm.picked[inputId];if(pk&&pk.name===text)return{lat:pk.lat,lon:pk.lon,mapUrl:pk.mapUrl||''};
+  if(prev&&prev.text===text&&prev.lat!=null)return{lat:prev.lat,lon:prev.lon,mapUrl:prev.mapUrl||''};
+  const g=await evGeocode(text,near);
+  return g?{lat:g.lat,lon:g.lon,mapUrl:g.mapUrl||'',name:(g.fromUrl&&g.name)?g.name:''}:{lat:null,lon:null,mapUrl:'',missed:true};
+}
 async function evSaveAct(actId){
-  const name=document.getElementById('ea-name').value.trim();if(!name){clToast('Give it a name');return;}
-  const rec={name,where:document.getElementById('ea-where').value.trim(),part:document.getElementById('ea-part').value==='eve'?'eve':'day',cat:document.getElementById('ea-cat').value,day:document.getElementById('ea-day').value,time:document.getElementById('ea-time').value||'',mins:parseInt(document.getElementById('ea-mins').value,10)||0,link:document.getElementById('ea-link').value.trim(),price:parseFloat((document.getElementById('ea-price')||{}).value)||0,notes:document.getElementById('ea-notes').value.trim()};
-  if(!document.getElementById('ea-price'))delete rec.price;   // costs are hidden from this person: keep the price that is already there
+  const cat=document.getElementById('ea-cat').value,isJ=cat==='Journey',val=id=>{const e=document.getElementById(id);return e?e.value.trim():'';};
+  const from=isJ?val('ea-from'):'',to=isJ?val('ea-to'):'';
+  let name=val('ea-name');if(!name&&isJ&&(from||to))name=(from||'Start')+' to '+(to||'end');
+  if(!name){clToast('Give it a name');return;}
+  const rec={name,cat,part:document.getElementById('ea-part').value==='eve'?'eve':'day',day:document.getElementById('ea-day').value,link:val('ea-link'),notes:val('ea-notes')};
+  const pe=document.getElementById('ea-price');if(pe)rec.price=parseFloat(pe.value)||0;   // hidden for people who can't see costs: keep the existing price
+  const he=document.getElementById('ea-hideg');if(he)rec.hideGuests=he.checked;
   const moved=rec.day!==evDay;
-  // Map pin: the place is looked up once, when it changes (or when it has no pin yet). A pasted Google Maps link is read directly.
-  const evNow=evFind(evData(),activeEventId),curAct=actId&&evNow?(evNow.acts||[]).find(x=>x.id===actId):null,wantPin=(document.getElementById('ea-pin')||{checked:true}).checked;
-  rec.pin=wantPin;let missed=false;
-  if(!rec.where||!wantPin){rec.lat=null;rec.lon=null;rec.mapUrl='';}
-  else if(curAct&&curAct.where===rec.where&&curAct.lat!=null){rec.lat=curAct.lat;rec.lon=curAct.lon;rec.mapUrl=curAct.mapUrl||'';}
-  else{
-    const btn=document.querySelector('#modal-box .btn-solid');if(btn){btn.disabled=true;btn.textContent='Finding the place…';}
-    const g=await evGeocode(rec.where,evNow&&evNow.location);
-    if(g){rec.lat=g.lat;rec.lon=g.lon;rec.mapUrl=g.mapUrl||'';if(g.fromUrl&&g.name)rec.where=g.name;}else{rec.lat=null;rec.lon=null;rec.mapUrl='';missed=true;}
+  const evNow=evFind(evData(),activeEventId),cur=actId&&evNow?(evNow.acts||[]).find(x=>x.id===actId):null,near=evNow&&evNow.location;
+  let missed=false;
+  const btn=document.querySelector('#modal-box .btn-solid');
+  const busy=()=>{if(btn){btn.disabled=true;btn.textContent='Finding the places…';}};
+  if(isJ){
+    rec.mode=val('ea-mode')||'car';rec.from=from;rec.to=to;rec.dep=val('ea-dep');rec.arr=val('ea-arr');rec.pin=true;
+    rec.time=rec.dep;rec.where='';
+    const d0=doToMin(rec.dep),d1=doToMin(rec.arr);rec.mins=(d0!=null&&d1!=null)?((d1-d0+1440)%1440):0;
+    busy();
+    const s=await evResolve('ea-from',from,cur&&{text:cur.from,lat:cur.lat,lon:cur.lon,mapUrl:cur.mapUrl},near);
+    const e=await evResolve('ea-to',to,cur&&{text:cur.to,lat:cur.lat2,lon:cur.lon2,mapUrl:''},near);
+    rec.lat=s.lat;rec.lon=s.lon;rec.mapUrl=s.mapUrl||'';rec.lat2=e.lat;rec.lon2=e.lon;
+    if((from&&s.lat==null)||(to&&e.lat==null))missed=true;
+  }else{
+    rec.where=val('ea-where');rec.time=val('ea-time');rec.mins=parseInt(val('ea-mins'),10)||0;
+    const wantPin=(document.getElementById('ea-pin')||{checked:true}).checked;rec.pin=wantPin;
+    rec.mode='';rec.from='';rec.to='';rec.dep='';rec.arr='';rec.lat2=null;rec.lon2=null;
+    if(!rec.where||!wantPin){rec.lat=null;rec.lon=null;rec.mapUrl='';}
+    else{
+      if(!(cur&&cur.where===rec.where&&cur.lat!=null))busy();
+      const g=await evResolve('ea-where',rec.where,cur&&{text:cur.where,lat:cur.lat,lon:cur.lon,mapUrl:cur.mapUrl},near);
+      rec.lat=g.lat;rec.lon=g.lon;rec.mapUrl=g.mapUrl||'';if(g.name)rec.where=g.name;if(g.missed)missed=true;
+    }
   }
   evMutate(activeEventId,(ev,put)=>{
-    const cur=actId?(ev.acts||[]).find(x=>x.id===actId):null,id=cur?cur.id:uid();
-    put('a_'+id,Object.assign({},cur||{by:(ev.me||{}).name||''},rec,{id,upd:Date.now()}));
+    const c2=actId?(ev.acts||[]).find(x=>x.id===actId):null,id=c2?c2.id:uid();
+    put('a_'+id,Object.assign({},c2||{by:(ev.me||{}).name||''},rec,{id,upd:Date.now()}));
   });
-  closeModal();showSection('event');if(missed)clToast('Saved, but that place could not be found for the map');else if(moved)clToast('Saved on '+evShort(rec.day));
+  closeModal();showSection('event');if(missed)clToast('Saved, but a place could not be found for the map');else if(moved)clToast('Saved on '+evShort(rec.day));
 }
+// Move an activity to another day (and/or between Day out and Evening) in one tap.
+function evMoveModal(actId){
+  const ev=evFind(evData(),activeEventId),a=ev&&(ev.acts||[]).find(x=>x.id===actId);if(!a)return;
+  const days=evDaysSorted(ev);
+  openModal(`<div class="modal-head"><div class="modal-title">Move to another day</div><button class="modal-close" onclick="closeModal()">×</button></div>
+    <p class="cl-hint" style="margin-top:0">${escHtml(a.name)}</p>
+    <div class="ev-movelist">${days.map((k,i)=>{const t=(evDayInfo(ev,k).title)||evShort(k);return`<button class="ev-movebtn${k===a.day?' on':''}" ${k===a.day?'disabled':''} onclick="evMoveTo('${a.id}','${k}')"><span>Day ${i+1}</span><b>${escHtml(t)}</b><em>${escHtml(evShort(k))}</em></button>`;}).join('')}</div>
+    <div class="ev-seg-row" style="justify-content:flex-start;margin-top:14px"><div class="ev-seg"><button class="${(a.part||'day')==='day'?'on':''}" onclick="evMoveTo('${a.id}',null,'day')">Day out</button><button class="${a.part==='eve'?'on':''}" onclick="evMoveTo('${a.id}',null,'eve')">Evening</button></div></div>
+    <div class="modal-row"><button class="btn-ghost" onclick="closeModal()">Close</button></div>`);
+}
+function evMoveTo(actId,day,part){
+  evMutate(activeEventId,(ev,put)=>{
+    const a=(ev.acts||[]).find(x=>x.id===actId);if(!a)return;
+    put('a_'+actId,Object.assign({},a,{day:day||a.day,part:part||a.part||'day',upd:Date.now()}));
+  });
+  closeModal();showSection('event');clToast(day?'Moved to '+evShort(day):'Moved to '+(part==='eve'?'the evening':'the day'));
+}
+// Real Google Maps, inline: a place (with Google's own card: name, photo, link) or a journey's route.
+function evEmbedURL(a){
+  if((a.cat==='Journey'||a.cat==='Travel')&&(a.from||a.to)){
+    const pt=(t,la,lo)=>t||(la!=null?la+','+lo:'');
+    return'https://www.google.com/maps?saddr='+encodeURIComponent(pt(a.from,a.lat,a.lon))+'&daddr='+encodeURIComponent(pt(a.to,a.lat2,a.lon2))+'&output=embed';
+  }
+  if(a.lat!=null)return'https://www.google.com/maps?q='+encodeURIComponent(a.where||a.name)+'&ll='+a.lat+','+a.lon+'&z=15&output=embed';
+  return a.where?'https://www.google.com/maps?q='+encodeURIComponent(a.where)+'&z=14&output=embed':'';
+}
+function evToggleEmbed(actId){
+  const row=document.getElementById('ra-'+actId);if(!row)return;
+  const nxt=row.nextElementSibling;
+  if(nxt&&nxt.classList.contains('ev-embed')){nxt.remove();return;}
+  const ev=evFind(evData(),activeEventId),a=ev&&(ev.acts||[]).find(x=>x.id===actId),u=a&&evEmbedURL(a);if(!u)return;
+  const box=document.createElement('div');box.className='ev-embed';
+  box.innerHTML=`<iframe src="${escHtml(u)}" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen title="Google Maps"></iframe>`;
+  row.after(box);
+}
+
 function evDelAct(id){
   const ev=evFind(evData(),activeEventId),a=ev&&(ev.acts||[]).find(x=>x.id===id);if(!a)return;
   if(!confirm('Delete "'+a.name+'"?'))return;
@@ -2839,11 +3090,17 @@ function evPins(ev,onlyDay){
   const out=[];
   evDaysSorted(ev).forEach(day=>{
     if(onlyDay&&day!==onlyDay)return;
-    doSorted((ev.acts||[]).filter(a=>a.day===day&&a.lat!=null&&a.lon!=null)).forEach((a,i)=>out.push({a,n:i+1,day,color:evDayColor(ev,day),photo:evCan(ev,'photos')?evActFirstPhoto(ev,a):null}));
+    doSorted(evActsVis(ev).filter(a=>a.day===day&&a.lat!=null&&a.lon!=null)).forEach((a,i)=>out.push({a,n:i+1,day,color:evDayColor(ev,day),photo:evCan(ev,'photos')?evActFirstPhoto(ev,a):null}));
   });
   return out;
 }
-function evMapsUrl(a){return a.mapUrl||('https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(a.lat!=null?a.lat+','+a.lon:(a.where||a.name)));}
+function evMapsUrl(a){
+  if((a.cat==='Journey'||a.cat==='Travel')&&(a.from||a.to)){
+    const pt=(t,la,lo)=>t||(la!=null?la+','+lo:'');
+    return'https://www.google.com/maps/dir/?api=1&origin='+encodeURIComponent(pt(a.from,a.lat,a.lon))+'&destination='+encodeURIComponent(pt(a.to,a.lat2,a.lon2));
+  }
+  return a.mapUrl||('https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(a.where||(a.lat!=null?a.lat+','+a.lon:a.name)));
+}
 // Coordinates (and a place name) from a pasted Google Maps link. Short links (maps.app.goo.gl) can't be read without a server, so they give null.
 function evCoordsFromMapsUrl(u){
   let m=/@(-?\d+\.\d+),(-?\d+\.\d+)/.exec(u)||/!3d(-?\d+\.\d+)!4d(-?\d+\.\d+)/.exec(u)||/[?&](?:q|ll|query|destination|center)=(-?\d+\.\d+)(?:,|%2C)(-?\d+\.\d+)/i.exec(u);
@@ -2902,9 +3159,17 @@ async function evMapInit(){
   pins.forEach(p=>{
     const html=p.photo?`<div class="evm evm-ph" style="--c:${p.color}"><img data-evph="${p.photo.id}" alt=""/><b>${p.n}</b></div>`:`<div class="evm" style="--c:${p.color}"><b>${p.n}</b></div>`;
     const m=L.marker([p.a.lat,p.a.lon],{zIndexOffset:p.photo?500:0,icon:L.divIcon({html,className:'evm-wrap',iconSize:[46,46],iconAnchor:[23,23],popupAnchor:[0,-22]})}).addTo(map);
-    m.bindPopup(`<b>${escHtml(p.a.name)}</b><br>${escHtml(evShort(p.day))}${p.a.time?' · '+escHtml(p.a.time):''}<br><a href="${escHtml(evMapsUrl(p.a))}" target="_blank" rel="noopener">Open in Google Maps</a>`);
+    // Tap a pin: its photo and title; tap the title to open the real Google Maps there.
+    const isJ=p.a.cat==='Journey'||p.a.cat==='Travel';
+    m.bindPopup(`<div class="evpop">${p.photo?`<img class="evpop-img" data-evph="${p.photo.id}" alt=""/>`:''}<a class="evpop-title" href="${escHtml(evMapsUrl(p.a))}" target="_blank" rel="noopener">${escHtml(p.a.name)}</a><div class="evpop-sub">${escHtml(evShort(p.day))}${p.a.time?' · '+escHtml(p.a.time):''}${isJ&&p.a.arr?' to '+escHtml(p.a.arr):''}</div><a class="evpop-open" href="${escHtml(evMapsUrl(p.a))}" target="_blank" rel="noopener">${isJ?'Open the route in Google Maps':'Open in Google Maps'}</a></div>`,{minWidth:170});
     all.push([p.a.lat,p.a.lon]);
+    if(isJ&&p.a.lat2!=null){   // a journey: a solid line to where it ends, with a small dot there
+      L.polyline([[p.a.lat,p.a.lon],[p.a.lat2,p.a.lon2]],{color:p.color,weight:4,opacity:.9}).addTo(map);
+      L.circleMarker([p.a.lat2,p.a.lon2],{radius:6,color:'#fff',weight:2,fillColor:p.color,fillOpacity:1}).addTo(map);
+      all.push([p.a.lat2,p.a.lon2]);
+    }
   });
+  map.on('popupopen',e=>evHydratePhotos(e.popup.getElement()));
   if(all.length>1)map.fitBounds(all,{padding:[44,44],maxZoom:15});else map.setView(all[0],14);
   evMapObj=map;evHydratePhotos(el);
   setTimeout(()=>{if(evMapObj===map)map.invalidateSize();},200);
@@ -2916,32 +3181,145 @@ function evViewMode(){try{return localStorage.getItem('maison_evview')==='days'?
 function evSetView(m){try{localStorage.setItem('maison_evview',m);}catch(e){}showSection('event');}
 function evDayThumbIds(ev,day){
   const ids=[];
-  doSorted((ev.acts||[]).filter(a=>a.day===day)).forEach(a=>{const p=evActFirstPhoto(ev,a);if(p)ids.push(p.id);});
+  doSorted(evActsVis(ev).filter(a=>a.day===day)).forEach(a=>{const p=evActFirstPhoto(ev,a);if(p)ids.push(p.id);});
   (ev.photos||[]).filter(p=>p.day===day&&!p.act&&!p.sug).sort((a,b)=>(a.upd||0)-(b.upd||0)).forEach(p=>ids.push(p.id));
   return ids.slice(0,4);
 }
 function evDaysViewHTML(ev){
   const days=evDaysSorted(ev),today=clKey(new Date());
   return`<div class="evd-list">${days.map((k,i)=>{
-    const info=evDayInfo(ev,k),n=(ev.acts||[]).filter(a=>a.day===k).length,col=evDayColor(ev,k);
+    const info=evDayInfo(ev,k),n=evActsVis(ev).filter(a=>a.day===k).length;
     const ph=evCan(ev,'photos')?evDayThumbIds(ev,k):[],wx=evCan(ev,'weather')?wxMiniIcon(ev,k):'';
-    return`<button class="evd-row${k===today?' today':''}" onclick="evOpenDay('${k}')"><span class="evd-tag" style="background:${col}">Day ${i+1}</span><span class="evd-main"><span class="evd-title">${escHtml(info.title||evShort(k))}</span><span class="evd-sub">${info.title?escHtml(evShort(k))+(evCan(ev,'schedule')?' · ':''):''}${evCan(ev,'schedule')?n+(n===1?' thing':' things'):''}</span></span>${wx}${ph.length?`<span class="evd-ph">${ph.map(id=>`<img data-evph="${id}" alt=""/>`).join('')}</span>`:''}</button>`;
+    return`<button class="evd-row${k===today?' today':''}" onclick="evOpenDay('${k}')"><span class="evd-tag">Day ${i+1}</span><span class="evd-main"><span class="evd-title">${escHtml(info.title||evShort(k))}</span><span class="evd-sub">${info.title?escHtml(evShort(k))+(evCan(ev,'schedule')?' · ':''):''}${evCan(ev,'schedule')?n+(n===1?' thing':' things'):''}</span></span>${wx}${ph.length?`<span class="evd-ph">${ph.map(id=>`<img data-evph="${id}" alt=""/>`).join('')}</span>`:''}</button>`;
   }).join('')}</div>`;
 }
 // One quiet line instead of a row of stat boxes.
 function evSummaryHTML(ev){
-  const bits=[],n=(ev.acts||[]).length,ppl=(ev.people||[]).length,total=(ev.acts||[]).reduce((s,a)=>s+(a.price||0),0);
+  const bits=[],vis=evActsVis(ev),n=vis.length,ppl=(ev.people||[]).length,total=vis.reduce((s,a)=>s+(a.price||0),0);
   if(evCan(ev,'schedule'))bits.push(n+(n===1?' activity':' activities'));
   if(evCan(ev,'people'))bits.push(ppl+(ppl===1?' person':' people'));
   if(evCan(ev,'schedule')&&evCan(ev,'costs')&&total)bits.push(evMoney(total)+(ppl>1?' ('+evMoney(total/Math.max(1,ppl))+' each)':''));
   return bits.length?`<p class="ev-sum">${bits.join(' · ')}</p>`:'';
 }
 // Overnight host: its own coloured section at the bottom of the day.
+// ── overnight: hosts, and which guests stay with which host ──
+// Each host for a night is its own record `o_<id>` = {id,day,name,place,guests:[personIds],upd}, so two people editing different hosts never overwrite
+// each other. A night-time host typed in before this existed (dinfo.nightHost) still shows, as a host with no guests, and becomes a real record the
+// first time you touch it. Hosts you use often can be saved (yours, across events).
+function evStaysFor(ev,day){
+  const real=(ev.stays||[]).filter(s=>s.day===day),legacy=(evDayInfo(ev,day).nightHost||'').trim(),out=real.slice();
+  if(legacy&&!real.some(s=>(s.name||'').toLowerCase()===legacy.toLowerCase()))out.push({id:'legacy',day,name:legacy,place:'',guests:[],legacy:true,upd:0});
+  return out.sort((a,b)=>(a.upd||0)-(b.upd||0));
+}
+// Turns the old single night-time host into a real host record (returns its id).
+function evStayRealize(ev,put,sid,day){
+  if(sid!=='legacy')return sid;
+  const name=(evDayInfo(ev,day).nightHost||'').trim(),id=uid();
+  put('o_'+id,{id,day,name,place:'',guests:[],upd:Date.now()});
+  const cur=(ev.dinfo||{})[day]||{};put('d_'+day.replace(/-/g,''),Object.assign({},cur,{day,nightHost:'',upd:Date.now()}));
+  return id;
+}
 function evNightHTML(ev){
   if(!evCan(ev,'schedule'))return'';
-  const info=evDayInfo(ev,evDay);
-  return`<div class="ev-sec ev-night"><div class="ev-sec-head"><div class="ev-sec-title">Overnight</div></div><div class="ev-fields"><label class="ev-field grow"><span>Overnight host</span><input type="text" list="ev-ppl" value="${escHtml(info.nightHost)}" placeholder="Who is hosting overnight?" autocomplete="off" onchange="evDayField('nightHost',this.value.trim())"/></label></div></div>`;
+  const day=evDay,stays=evStaysFor(ev,day),going=evGoing(ev,day),goingIds=new Set(going.map(p=>p.id));
+  const assigned=new Set();stays.forEach(s=>(s.guests||[]).forEach(g=>assigned.add(g)));
+  const left=going.filter(p=>!assigned.has(p.id)&&!stays.some(s=>(s.name||'').toLowerCase()===(p.name||'').toLowerCase()));
+  const nm=id=>{const p=(ev.people||[]).find(x=>x.id===id);return p?p.name:'';};
+  const card=s=>`<div class="ev-host"><div class="ev-host-head"><div class="ev-host-name">${escHtml(s.name)}</div><span class="ev-host-tools"><button class="ev-addph" onclick="evStayGuestModal('${s.id}')">+ Guest</button><button class="icon-btn" title="Remove host" aria-label="Remove host ${escHtml(s.name)}" onclick="evStayDelete('${s.id}')">×</button></span></div>${s.place?`<div class="of-meta">${escHtml(s.place)}</div>`:''}
+    <div class="ev-people">${(s.guests||[]).filter(g=>goingIds.has(g)).map(g=>`<span class="ev-person"><i>${escHtml(evInitials(nm(g)))}</i>${escHtml(nm(g))}<button class="ev-x" aria-label="Remove ${escHtml(nm(g))}" onclick="evStayGuestRemove('${s.id}','${g}')">×</button></span>`).join('')||'<span class="of-meta">No guests yet</span>'}</div></div>`;
+  return`<div class="ev-sec ev-night"><div class="ev-sec-head"><div class="ev-sec-title">Overnight</div><button class="btn-ghost" onclick="evStayModal()">+ Host</button></div>
+    ${stays.map(card).join('')}${stays.length&&left.length?`<div class="of-meta ev-unassigned">Not placed yet: ${left.map(p=>escHtml(p.name)).join(', ')}</div>`:''}</div>`;
 }
+function evStayModal(){
+  const ev=evFind(evData(),activeEventId);if(!ev)return;
+  const hosts=userData('hosts',[]);
+  evForm={picked:{}};
+  openModal(`<div class="modal-head"><div class="modal-title">Add a host</div><button class="modal-close" onclick="closeModal()">×</button></div>
+    <p class="cl-hint" style="margin-top:0">${escHtml(evLong(evDay))}</p>
+    <label class="field-label">Host</label><input id="es-hname" class="field-input" list="es-hnames" placeholder="Who is hosting?" autocomplete="off"/>
+    <datalist id="es-hnames">${(ev.people||[]).map(p=>`<option value="${escHtml(p.name)}"></option>`).join('')}</datalist>
+    ${hosts.length?`<div class="ev-placerow" style="margin-top:-8px"><select class="ev-placesel" onchange="evHostPick(this.value)"><option value="">Saved hosts…</option>${hosts.map(h=>`<option value="${h.id}">${escHtml(h.name)}${h.place?' · '+escHtml(h.place):''}</option>`).join('')}</select></div>`:''}
+    ${evPlaceField('es-hplace','Where they are staying (optional)','', 'e.g. Greg and Glynis House')}
+    <label class="ev-switch" style="margin:2px 0 12px"><input type="checkbox" id="es-hsave"/><span>Save this host for next time</span></label>
+    <div class="modal-row"><button class="btn-solid sm teal" onclick="evStayAdd()">Add host</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);
+}
+function evHostPick(hid){const h=userData('hosts',[]).find(x=>x.id===hid);if(!h)return;document.getElementById('es-hname').value=h.name;document.getElementById('es-hplace').value=h.place||'';}
+function evStayAdd(){
+  const name=document.getElementById('es-hname').value.trim();if(!name){clToast('Who is hosting?');return;}
+  const place=document.getElementById('es-hplace').value.trim(),day=evDay;
+  evMutate(activeEventId,(ev,put)=>{const id=uid();put('o_'+id,{id,day,name,place,guests:[],upd:Date.now()});});
+  if(document.getElementById('es-hsave').checked){
+    const list=userData('hosts',[]).filter(h=>h.name.toLowerCase()!==name.toLowerCase());list.push({id:uid(),name,place});saveData('hosts',list);
+  }
+  closeModal();showSection('event');
+}
+function evStayGuestModal(sid){
+  const ev=evFind(evData(),activeEventId);if(!ev)return;
+  const day=evDay,stays=evStaysFor(ev,day),s=stays.find(x=>x.id===sid);if(!s)return;
+  const going=evGoing(ev,day),where=pid=>{const o=stays.find(x=>(x.guests||[]).indexOf(pid)>=0);return o;};
+  const rows=going.filter(p=>(s.guests||[]).indexOf(p.id)<0).map(p=>{const o=where(p.id);return`<button class="ev-person add" onclick="evStayAssign('${sid}','${p.id}')"><i>${escHtml(evInitials(p.name))}</i>${escHtml(p.name)}${o?`<em>with ${escHtml(o.name)}</em>`:''}<b>+</b></button>`;}).join('');
+  openModal(`<div class="modal-head"><div class="modal-title">Guests staying with ${escHtml(s.name)}</div><button class="modal-close" onclick="closeModal()">×</button></div>
+    ${rows?`<p class="cl-hint" style="margin-top:0">Tap to add. Someone already with another host moves across.</p><div class="ev-people" style="margin-bottom:16px">${rows}</div>`:'<p class="cl-hint">Everyone going that day is already here.</p>'}
+    <div class="modal-row"><button class="btn-ghost" onclick="closeModal()">Done</button></div>`);
+}
+function evStayAssign(sid,pid){
+  const day=evDay;
+  evMutate(activeEventId,(ev,put)=>{
+    const target=evStayRealize(ev,put,sid,day);
+    (ev.stays||[]).filter(x=>x.day===day&&x.id!==target&&(x.guests||[]).indexOf(pid)>=0).forEach(x=>put('o_'+x.id,Object.assign({},x,{guests:x.guests.filter(g=>g!==pid),upd:Date.now()})));
+    const t=(ev.stays||[]).find(x=>x.id===target);if(!t)return;
+    if((t.guests||[]).indexOf(pid)<0)put('o_'+target,Object.assign({},t,{guests:(t.guests||[]).concat([pid]),upd:Date.now()}));
+  });
+  showSection('event');evStayGuestModal(sid==='legacy'?((evStaysFor(evFind(evData(),activeEventId),day).find(x=>x.guests&&x.guests.indexOf(pid)>=0)||{}).id||sid):sid);
+}
+function evStayGuestRemove(sid,pid){
+  const day=evDay;
+  evMutate(activeEventId,(ev,put)=>{const s=(ev.stays||[]).find(x=>x.id===sid);if(s)put('o_'+sid,Object.assign({},s,{guests:(s.guests||[]).filter(g=>g!==pid),upd:Date.now()}));});
+  showSection('event');
+}
+function evStayDelete(sid){
+  const day=evDay;if(!confirm('Remove this host from the night?'))return;
+  evMutate(activeEventId,(ev,put)=>{
+    if(sid==='legacy'){const cur=(ev.dinfo||{})[day]||{};put('d_'+day.replace(/-/g,''),Object.assign({},cur,{day,nightHost:'',upd:Date.now()}));}
+    else put('o_'+sid,null);
+  });
+  showSection('event');
+}
+
+// ── hosts and guests (set by the organiser) ──
+function evRoleSet(pid,role){
+  evMutate(activeEventId,(ev,put)=>{
+    if(!ev.creator)return;
+    const cur=(ev.perms||[]).find(x=>x.id===pid),hide=(cur&&cur.hide)||[];
+    if(role==='guest'||hide.length)put('h_'+pid,{id:pid,hide,role:role==='guest'?'guest':'host',upd:Date.now()});else put('h_'+pid,null);
+  });
+  openEventSettings();
+}
+
+// ── suggestion checklists ──
+// A suggestion can be an idea or a checklist. A checklist's items are their own records `si_<id>` = {id,sid,text,done,by,upd}, and each item is voted on
+// like any suggestion (a vote's target is the item's id).
+function evSugItems(ev,sid){return(ev.sitems||[]).filter(i=>i.sid===sid).sort((a,b)=>(a.upd||0)-(b.upd||0));}
+function evVoteBtns(ev,id){
+  const t=evVoteTally(ev,id),mine=evMyVote(ev,id);
+  return`<span class="ev-votes"><button class="ev-vote${mine>0?' on':''}" aria-pressed="${mine>0}" aria-label="Thumbs up" onclick="evVote('${id}',1)">${EV_THUMB_UP}<b>${t.up}</b></button><button class="ev-vote down${mine<0?' on':''}" aria-pressed="${mine<0}" aria-label="Thumbs down" onclick="evVote('${id}',-1)">${EV_THUMB_DOWN}<b>${t.down}</b></button></span>`;
+}
+function evSugListHTML(ev,s){
+  const me=(ev.me||{}).id,items=evSugItems(ev,s.id);
+  return`<div class="ev-sugitems">${items.map(it=>{const mineIt=it.by&&it.by.id===me;return`<div class="ev-sugitem${it.done?' done':''}"><label><input type="checkbox" ${it.done?'checked':''} onchange="evSugItemTick('${it.id}')"/><span>${escHtml(it.text)}</span></label>${evVoteBtns(ev,it.id)}${(mineIt||ev.creator)?`<button class="icon-btn" aria-label="Remove ${escHtml(it.text)}" onclick="evSugItemDelete('${it.id}')">×</button>`:''}</div>`;}).join('')}
+    <div class="ev-add"><input id="esi-${s.id}" class="field-input" placeholder="Add an item" autocomplete="off" onkeydown="if(event.key==='Enter')evSugItemAdd('${s.id}')"/><button class="btn-ghost" onclick="evSugItemAdd('${s.id}')">Add</button></div></div>`;
+}
+function evSugItemAdd(sid){
+  const inp=document.getElementById('esi-'+sid),text=inp&&inp.value.trim();if(!text)return;
+  evMutate(activeEventId,(ev,put)=>{const id=uid(),me=ev.me||{};put('si_'+id,{id,sid,text,done:false,by:{id:me.id,name:me.name},upd:Date.now()});});
+  showSection('event');const n=document.getElementById('esi-'+sid);if(n)n.focus();
+}
+function evSugItemTick(iid){evMutate(activeEventId,(ev,put)=>{const it=(ev.sitems||[]).find(x=>x.id===iid);if(it)put('si_'+iid,Object.assign({},it,{done:!it.done}));});showSection('event');}
+function evSugItemDelete(iid){
+  evMutate(activeEventId,(ev,put)=>{put('si_'+iid,null);(ev.votes||[]).filter(v=>v.s===iid).forEach(v=>put('v_'+v.id,null));});
+  showSection('event');
+}
+
 
 // ── weather symbols ──
 const WX_SVG={
@@ -3124,40 +3502,43 @@ function evSugCardHTML(ev,s){
   const th=evCan(ev,'photos')?evPhotoThumbs(ev,p=>p.sug===s.id):'',lk=safeLink(s.link);
   let host=lk;try{host=new URL(lk).hostname.replace(/^www\./,'');}catch(e){}
   return`<div class="ev-sug">
-    <div class="ev-sug-title">${escHtml(s.title)}</div>
+    <div class="ev-sug-title">${s.kind==='list'?'<span class="ev-sug-tag">Checklist</span>':''}${escHtml(s.title)}</div>
     ${s.text?`<div class="ev-sug-text">${escHtml(s.text)}</div>`:''}
+    ${s.kind==='list'?evSugListHTML(ev,s):''}
     ${lk?`<a class="item-link" href="${escHtml(lk)}" target="_blank" rel="noopener">${escHtml(host)}</a>`:''}
     ${th?`<div class="ev-ph-strip">${th}</div>`:''}
     <div class="ev-sug-meta">Suggested by ${escHtml((s.by&&s.by.name)||'someone')}${s.day&&ev.days.indexOf(s.day)>=0?' · for '+escHtml(evShort(s.day)):''}</div>
     <div class="ev-sug-actions">
-      <span class="ev-votes"><button class="ev-vote${mine>0?' on':''}" aria-pressed="${mine>0}" aria-label="Thumbs up" onclick="evVote('${s.id}',1)">${EV_THUMB_UP}<b>${t.up}</b></button><button class="ev-vote down${mine<0?' on':''}" aria-pressed="${mine<0}" aria-label="Thumbs down" onclick="evVote('${s.id}',-1)">${EV_THUMB_DOWN}<b>${t.down}</b></button></span>
+      ${s.kind==='list'?'':evVoteBtns(ev,s.id)}
       ${evCan(ev,'photos')?`<button class="btn-ghost sm" onclick="evPickPhotos({sug:'${s.id}'})">Add photo</button>`:''}
-      ${evCan(ev,'schedule')?`<button class="btn-ghost sm" onclick="evSugToActivity('${s.id}')">Add to schedule</button>`:''}
+      ${evCan(ev,'schedule')&&s.kind!=='list'?`<button class="btn-ghost sm" onclick="evSugToActivity('${s.id}')">Add to schedule</button>`:''}
       ${canEdit?`<button class="btn-ghost sm" onclick="evSugModal('${s.id}')">Edit</button>`:''}${canDel?`<button class="btn-ghost sm danger" onclick="evSugDelete('${s.id}')">Delete</button>`:''}
     </div></div>`;
 }
 function evSugsHTML(ev){
   const list=(ev.sugs||[]).slice().sort((a,b)=>{const x=evVoteTally(ev,a.id),y=evVoteTally(ev,b.id);return(y.up-y.down)-(x.up-x.down)||(b.upd||0)-(a.upd||0);});
-  return`<div class="ev-block"><div class="flex-between mb14"><div class="ev-strip-title">Suggestions</div><button class="btn-ghost" onclick="evSugModal(null)">+ Suggest</button></div>
+  return`<div class="ev-block"><div class="flex-between mb14"><div class="ev-strip-title">Suggestions</div><span class="ev-sug-btns"><button class="btn-ghost" onclick="evSugModal(null)">+ Idea</button><button class="btn-ghost" onclick="evSugModal(null,'list')">+ Checklist</button></span></div>
     ${list.map(s=>evSugCardHTML(ev,s)).join('')}</div>`;
 }
-function evSugModal(sid){
+function evSugModal(sid,kind){
   const ev=evFind(evData(),activeEventId);if(!ev)return;
   const s=sid?(ev.sugs||[]).find(x=>x.id===sid):null;if(sid&&!s)return;
-  openModal(`<div class="modal-head"><div class="modal-title">${s?'Edit suggestion':'New suggestion'}</div><button class="modal-close" onclick="closeModal()">×</button></div>
-    <label class="field-label">What is your idea?</label><input id="es-sug-title" class="field-input" value="${escHtml(s?s.title:'')}" placeholder="e.g. Boat trip to the seals" autocomplete="off"/>
+  const isL=s?s.kind==='list':kind==='list';evSugKind=isL?'list':'';
+  openModal(`<div class="modal-head"><div class="modal-title">${s?(isL?'Edit checklist':'Edit suggestion'):(isL?'New checklist':'New suggestion')}</div><button class="modal-close" onclick="closeModal()">×</button></div>
+    <label class="field-label">${isL?'Name your checklist':'What is your idea?'}</label><input id="es-sug-title" class="field-input" value="${escHtml(s?s.title:'')}" placeholder="${isL?'e.g. Things to pack, Restaurants to try':'e.g. Boat trip to the seals'}" autocomplete="off"/>
     <label class="field-label">A few words (optional)</label><textarea id="es-sug-text" class="field-input" rows="3" placeholder="Why it's a good idea, cost, how long…">${escHtml(s?s.text:'')}</textarea>
     <label class="field-label">Link (optional)</label><input id="es-sug-link" class="field-input" type="url" value="${escHtml(s?s.link:'')}" placeholder="https://…" autocomplete="off"/>
     <label class="field-label">For which day (optional)</label><select id="es-sug-day" class="field-input"><option value="">Any day</option>${evDaysSorted(ev).map(k=>`<option value="${k}"${s&&s.day===k?' selected':''}>${escHtml(evLong(k))}</option>`).join('')}</select>
-    <p class="cl-hint">You can add photos from the suggestion once it is saved.</p>
+    <p class="cl-hint">${isL?'Add the items once it is saved. Everyone can add items and vote on each one.':'You can add photos from the suggestion once it is saved.'}</p>
     <div class="modal-row"><button class="btn-solid sm teal" onclick="evSugSave(${s?`'${s.id}'`:'null'})">${s?'Save':'Suggest'}</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);
 }
+let evSugKind='';
 function evSugSave(sid){
   const title=document.getElementById('es-sug-title').value.trim();if(!title){clToast('Give your idea a name');return;}
   const text=document.getElementById('es-sug-text').value.trim(),link=document.getElementById('es-sug-link').value.trim(),day=document.getElementById('es-sug-day').value;
   evMutate(activeEventId,(ev,put)=>{
     const cur=sid?(ev.sugs||[]).find(x=>x.id===sid):null,id=cur?cur.id:uid(),me=ev.me||{};
-    put('s_'+id,{id,title,text,link,day,by:cur?cur.by:{id:me.id,name:me.name},upd:Date.now()});
+    put('s_'+id,Object.assign({id,title,text,link,day,by:cur?cur.by:{id:me.id,name:me.name},upd:Date.now()},(cur?cur.kind==='list':evSugKind==='list')?{kind:'list'}:{}));
   });
   closeModal();showSection('event');
 }
@@ -3166,6 +3547,7 @@ function evSugDelete(sid){
   if(!confirm('Delete "'+s.title+'"?'))return;
   evMutate(activeEventId,(e,put)=>{
     put('s_'+sid,null);
+    (e.sitems||[]).filter(i=>i.sid===sid).forEach(i=>{put('si_'+i.id,null);(e.votes||[]).filter(v=>v.s===i.id).forEach(v=>put('v_'+v.id,null));});
     (e.votes||[]).filter(v=>v.s===sid).forEach(v=>put('v_'+v.id,null));
     (e.photos||[]).filter(p=>p.sug===sid).forEach(p=>put('ph_'+p.id,null));
   });
@@ -3180,7 +3562,7 @@ function evSugToActivity(sid){
 // ── calendar export ──
 function evGcalDay(ev,day){
   const n=evDateObj(day);n.setDate(n.getDate()+1);
-  const info=evDayInfo(ev,day),lines=p=>doSorted((ev.acts||[]).filter(a=>a.day===day&&(a.part||'day')===p)).map(a=>(a.time?a.time+' ':'')+a.name+(a.where?' at '+a.where:'')+(a.notes?' - '+a.notes:''));
+  const info=evDayInfo(ev,day),lines=p=>doSorted(evActsVis(ev).filter(a=>a.day===day&&(a.part||'day')===p)).map(a=>(a.time?a.time+' ':'')+a.name+(a.where?' at '+a.where:'')+(a.notes?' - '+a.notes:''));
   const blocks=[],d1=lines('day'),d2=lines('eve');
   if(d1.length||info.dressDay)blocks.push(['Day out'+(info.dressDay?' - dress code: '+info.dressDay:'')].concat(d1).join('\n'));
   if(d2.length||info.dressEve||info.mealHost)blocks.push(['Evening'+(info.dressEve?' - dress code: '+info.dressEve:'')].concat(info.mealHost?['Meal host: '+info.mealHost]:[],d2).join('\n'));
@@ -3193,7 +3575,7 @@ function evDownloadIcs(){
   const L=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//MAISON//Events//EN','CALSCALE:GREGORIAN'],stamp=new Date().toISOString().replace(/[-:]/g,'').replace(/\.\d+/,'');
   const add=(uid2,start,end,title,desc,allDay,loc)=>{loc=loc||ev.location;L.push('BEGIN:VEVENT','UID:'+uid2+'@maison','DTSTAMP:'+stamp,allDay?'DTSTART;VALUE=DATE:'+start:'DTSTART:'+start,allDay?'DTEND;VALUE=DATE:'+end:'DTEND:'+end,'SUMMARY:'+evIcsText(title));if(desc)L.push('DESCRIPTION:'+evIcsText(desc));if(loc)L.push('LOCATION:'+evIcsText(loc));L.push('END:VEVENT');};
   evDaysSorted(ev).forEach(day=>{
-    const acts=doSorted((ev.acts||[]).filter(a=>a.day===day)),d0=day.replace(/-/g,''),nx=evDateObj(day);nx.setDate(nx.getDate()+1);
+    const acts=doSorted(evActsVis(ev).filter(a=>a.day===day)),d0=day.replace(/-/g,''),nx=evDateObj(day);nx.setDate(nx.getDate()+1);
     const timed=acts.filter(a=>doToMin(a.time)!=null);
     const untimed=acts.filter(a=>doToMin(a.time)==null);
     if(!timed.length||untimed.length)add(ev.id+day,d0,clKey(nx).replace(/-/g,''),ev.name,untimed.map(a=>a.name).join(', '),true);   // all-day banner, listing anything without a time
@@ -3224,6 +3606,7 @@ function openEventSettings(){
     <div class="modal-row"><button class="btn-solid sm teal" onclick="evSaveDetails()">Save</button><button class="btn-ghost" onclick="evChangeDays()">Change days</button></div>
     <div class="ev-set-block"><div class="ev-strip-title">Share</div>${share}</div>
     ${evPermsHTML(ev)}
+    ${evSavedHTML()}
     <div class="ev-set-block"><div class="ev-strip-title">On your home screen</div>
       <label class="ev-switch"><input type="checkbox" ${pinned?'checked':''} onchange="evTogglePin(this.checked)"/><span>Show this event on my MAISON home screen</span></label></div>
     <div class="ev-set-block"><div class="ev-strip-title">Calendar and backup</div>
@@ -3618,7 +4001,7 @@ function deleteRecipe(id){
 function renderMoodBoardSection(context){
   const boards=userData(`moodboards_${context}`,[]);
   if(!boards.length)return`<div class="empty"><div class="empty-icon">🎨</div>No mood boards yet.</div><div style="text-align:center;margin-top:16px"><button class="btn-solid sm" onclick="createMoodBoard('${context}')">Create mood board</button></div>`;
-  return`<div class="flex-between mb14"><div></div><button class="btn-solid sm" onclick="createMoodBoard('${context}')">+ New board</button></div>${boards.map((board,bi)=>`<div style="margin-bottom:32px"><div class="flex-between mb14"><div style="font-family:var(--sans);font-size:20px;font-weight:700">${board.title||'Untitled'}</div><div class="flex-center"><button class="btn-ghost" onclick="openEditBoard('${context}',${bi})">Edit</button><button class="btn-ghost danger" onclick="deleteMoodBoard('${context}',${bi})">Delete</button></div></div>${board.palette&&board.palette.length?`<div class="mood-palette">${board.palette.map(c=>`<div class="palette-swatch" style="background:${c}"></div>`).join('')}</div>`:''}<div class="mood-board${!board.tiles||!board.tiles.length?' empty-board':''}">${!board.tiles||!board.tiles.length?'<span style="color:var(--muted);font-size:14px">Empty. Edit to add images.</span>':board.tiles.map(tile=>`<div class="mood-tile size-${tile.size||'md'}"><img src="${tile.img}" loading="lazy"/>${tile.note?`<div class="tile-note">${tile.note}</div>`:''}</div>`).join('')}</div>${board.notes?`<div style="font-size:13px;color:var(--muted);margin-top:10px;">${board.notes}</div>`:''}</div>`).join('')}`;
+  return`<div class="flex-between mb14"><div></div><button class="btn-solid sm" onclick="createMoodBoard('${context}')">+ New board</button></div>${boards.map((board,bi)=>`<div style="margin-bottom:32px"><div class="flex-between mb14"><div style="font-family:var(--sans);font-size:20px;font-weight:700">${board.title||'Untitled'}</div><div class="flex-center"><button class="btn-ghost" onclick="openEditBoard('${context}',${bi})">Edit</button><button class="btn-ghost danger" onclick="deleteMoodBoard('${context}',${bi})">Delete</button></div></div>${board.palette&&board.palette.length?`<div class="mood-palette">${board.palette.map(c=>`<div class="palette-swatch" style="background:${c}"></div>`).join('')}</div>`:''}<div class="mood-board${!board.tiles||!board.tiles.length?' empty-board':' mb-auto'}">${!board.tiles||!board.tiles.length?'<span style="color:var(--muted);font-size:14px">Empty. Edit to add images.</span>':board.tiles.map(tile=>`<div class="mood-tile mb-t"><img src="${tile.img}" alt=""/>${tile.note?`<div class="tile-note">${tile.note}</div>`:''}</div>`).join('')}</div>${board.notes?`<div style="font-size:13px;color:var(--muted);margin-top:10px;">${board.notes}</div>`:''}</div>`).join('')}`;
 }
 // Mood board button: boards for the area you're in — House planning (house boards), Closet (style boards),
 // Other (wedding + honeymoon boards). Per-room palettes still live inside each room.
