@@ -99,6 +99,7 @@ function evMutate(evId,fn){
   const meta=patch=>{Object.assign(ev,patch);puts.push({k:'meta',v:evMeta(ev)});};
   fn(ev,put,meta);ev.upd=Date.now();
   if(!evSave(d))return null;
+  if(ev.viewId&&ev.creator)evViewSoon(evId);
   if(ev.shared&&puts.length){
     const last={};puts.forEach(p=>{last[p.k]=p;});
     const b=evBoot();b.q[evId]=(b.q[evId]||[]).filter(x=>!last[x.k]).concat(Object.values(last));evBootSave(b);
@@ -172,7 +173,7 @@ async function evPull(evId){
     evRemoveLocal(evId);clToast('You were removed from "'+ev.name+'"');
     if(currentSection==='event'&&activeEventId===evId){activeEventId=null;showSection('dayout');}return true;
   }
-  if(changed){evSave(d);if(ev.creator)evSnapSoon(evId);if(currentSection==='event'&&activeEventId===evId)evSoftRefresh();else if(currentSection==='dayout'||currentSection==='dashboard')showSection(currentSection);}
+  if(changed){evSave(d);if(ev.creator){evSnapSoon(evId);if(ev.viewId)evViewSoon(evId);}if(currentSection==='event'&&activeEventId===evId)evSoftRefresh();else if(currentSection==='dayout'||currentSection==='dashboard')showSection(currentSection);}
   evUpdStatus();return true;
 }
 // The organiser can take anyone out of the whole event (not just one day): their person record, what they could see, their votes, and any bed they were assigned.

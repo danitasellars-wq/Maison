@@ -724,6 +724,23 @@ textarea.field-input{border:1px solid var(--line);border-radius:8px;padding:10px
 .cap-more>summary::-webkit-details-marker{display:none}
 .cap-more>summary::after{content:" +"}
 .cap-more[open]>summary::after{content:" −"}
+#viewer{position:fixed;inset:0;overflow:auto;background:var(--cream);color:var(--ink);font-family:var(--sans);z-index:50}
+.vw-wrap{max-width:640px;margin:0 auto;padding:28px 20px 60px}
+.vw-brand{font-family:var(--serif);letter-spacing:.32em;font-size:15px;color:var(--muted);margin-bottom:34px}
+.vw-title{font-family:var(--serif);font-weight:500;font-size:42px;line-height:1.05;margin:0 0 8px}
+.vw-range{font-size:14px;color:var(--muted);margin-bottom:34px}
+.vw-msg{font-size:15px;color:var(--muted)}
+.vw-day{padding:22px 0;border-top:1px solid var(--line)}
+.vw-daytitle{font-family:var(--serif);font-size:28px;line-height:1.15}
+.vw-date{font-size:13.5px;color:var(--muted);margin-top:2px}
+.vw-part{margin-top:16px}
+.vw-label{font-size:12.5px;letter-spacing:.06em;color:var(--muted);margin-bottom:6px}
+.vw-host{font-size:14.5px;margin-bottom:6px}
+.vw-act{display:flex;gap:16px;padding:8px 0}
+.vw-time{width:46px;flex-shrink:0;font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums}
+.vw-name{font-size:16px}
+.vw-sub{font-size:13.5px;color:var(--muted);margin-top:2px}
+.vw-foot{margin-top:30px;font-size:12.5px;color:var(--muted)}
 .ev-hideday{margin:-4px 0 14px;font-size:13.5px;color:var(--muted)}
 .ev-titles{margin:0 auto 0 0;font-size:13.5px;color:var(--muted)}
 .ev-titles input{width:17px;height:17px}

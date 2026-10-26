@@ -283,6 +283,7 @@ function openEventSettings(){
     <label class="field-label">Your name in this event</label><input id="es-me" class="field-input" value="${escHtml((ev.me||{}).name||'')}"/>
     <div class="modal-row"><button class="btn-solid sm teal" onclick="evSaveDetails()">Save</button><button class="btn-ghost" onclick="evChangeDays()">Change days</button></div>
     <div class="ev-set-block"><div class="ev-strip-title">Share</div>${share}</div>
+    ${evViewHTML(ev)}
     ${evPermsHTML(ev)}
     ${evSavedHTML()}
     <div class="ev-set-block"><div class="ev-strip-title">On your home screen</div>

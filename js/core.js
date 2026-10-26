@@ -157,6 +157,8 @@ function evBootSync(){
   }catch(e){}
 }
 window.addEventListener('load',()=>{
+  const vm=/^#view=([0-9a-f]{32})$/.exec(location.hash||'');
+  if(vm){viewerBoot(vm[1]);return;}   // a read-only link: no sign-in, nothing else of the app is started
   evStashInvite();
   checkDriveRedirect();
   checkBkDriveRedirect();
