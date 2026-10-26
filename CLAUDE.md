@@ -1,6 +1,6 @@
 # MAISON
 
-A single-file HTML/CSS/JS home & wedding planning journal app. No build step, no framework, no backend — everything lives in `index.html`. Deployed via GitHub Pages, auto-publishing ~60 seconds after any push to `main`.
+A home, wedding, closet and events planning journal app in plain HTML/CSS/JS. No build step, no framework, no backend. `index.html` is just the page shell; the styles are in `css/maison.css` and the code is split into plain script files in `js/` (see "File layout" below). Deployed via GitHub Pages, auto-publishing ~60 seconds after any push to `main`.
 
 - **Repo:** https://github.com/danitasellars-wq/Maison
 - **Live app:** https://danitasellars-wq.github.io/Maison/
@@ -8,13 +8,36 @@ A single-file HTML/CSS/JS home & wedding planning journal app. No build step, no
 
 ## Working agreement
 
-- Edit `index.html` directly for all changes — it is the entire app.
+- Edit the right file in `js/` (or `css/maison.css`) — see "File layout". Run `powershell -File stamp.ps1` before every commit that touches `js/` or `css/` so phones pick up the new files instead of cached ones.
 - **Never push automatically.** Only commit/push when the user explicitly says "push this" or "deploy this".
 - Use clear, descriptive commit messages explaining *why*, not just what.
 - After any push, remind the user to check **https://danitasellars-wq.github.io/Maison/** (allow ~60 seconds for GitHub Pages to rebuild).
 - No Node/npm on this machine — there is no build step to run, and `node` is not on PATH. Don't try to `npm install` anything.
 - Local preview: a PowerShell static server lives at `.claude/serve.ps1` with `.claude/launch.json` (config name `maison`, port 4174). It is **git-excluded** (`.git/info/exclude`), so it isn't in the repo — recreate it by copying `Daybook/.claude/` if missing. `file://` previews are static snapshots with no JS, so always use the server. The Google sign-in can't complete on localhost-preview, so to test signed-in UI inject a fake session and reload: `localStorage.setItem('maison_sess',JSON.stringify({sub:'testuser',email:null,name:'Test',exp:Date.now()+864e5}))`.
 
+## File layout (split 2026-10; no behaviour change)
+
+All the `js/*.js` files are ordinary scripts (not ES modules) that share one global scope, loaded by `<script>` tags in `index.html` in this order — functions are global because the HTML uses inline `onclick="…"`. Never reorder them, and a top-level statement that runs at load may only use things from files above it.
+
+| File | What is in it |
+|---|---|
+| `core.js` | RAL colours, state, photo processing + IndexedDB store, Google sign-in |
+| `sync.js` | Drive sync, photo file sync, photo migration, visible Drive backup |
+| `app.js` | navigation/areas/dock, modal, cook mode, side panel, links panel, photo helpers |
+| `capture.js` | Capture sheet (photos, videos, any file), `viewMedia` |
+| `house.js` | quick notes, rooms/home, mood boards (room + auto layout), floor plan |
+| `dayout.js` | Days out plans |
+| `events-data.js` | events: data, cloud sync, dates, lists, add event, event page, who can see what |
+| `events-day.js` | checklists, activities, saved places, the add/edit activity form |
+| `events-map.js` | weather, map + Google day map, headings view, overnight hosts, roles, suggestion checklists |
+| `events-more.js` | weather symbols, event photos, suggestions, calendar export, settings/sharing, backups, joining |
+| `wedding-recipes.js` | Wedding, Honeymoon, Recipes |
+| `moods-dashboard.js` | global mood boards, dashboard, backup reminder |
+| `music.js` | Music + in-app player |
+| `closet.js` | the whole Closet area |
+| `settings.js` | wallpaper, feedback, settings, colour schemes, clear data |
+
+Search for a function's name to find it. To check syntax without Node, load the page and run `new Function(await (await fetch("/js/NAME.js")).text())` in the browser pane.
 ## Getting set up on a new Claude Code account
 
 Nothing in this project is tied to a specific Claude/Anthropic account — it's a plain git repo, and Claude Code itself stores no project state outside this folder (aside from `.claude/` conversation history, which isn't needed since this file is the handoff).
@@ -141,7 +164,7 @@ Events need one small cloud database that everyone's app can reach. MAISON has n
    ```
 4. **Project settings (gear) → General → Your apps → Web (</>)** → register an app (no hosting) → copy ``projectId`` and ``apiKey`` from the config shown.
 5. Google Cloud console → APIs & Services → Credentials → open that API key → **Application restrictions: Websites** → add ``https://danitasellars-wq.github.io/*``; **API restrictions** → only *Cloud Firestore API* (if database sign-in is ever switched on, also tick *Identity Toolkit API* and *Token Service API*). (The key is visible in the page source by design; this restriction is what protects it.)
-6. (Step 5, restricting the API key to the website, is done by hand in the Google Cloud console. Check it has been done.) Put the two values into ``const EV_CLOUD={projectId:'…',apiKey:'…'};`` in ``index.html`` (// ── EVENTS ── section), test by sharing an event and opening the link on another phone/account, then push.
+6. (Step 5, restricting the API key to the website, is done by hand in the Google Cloud console. Check it has been done.) Put the two values into ``const EV_CLOUD={projectId:'…',apiKey:'…'};`` in ``js/events-data.js``, test by sharing an event and opening the link on another phone/account, then push.
 
 Free-tier limits (Firestore Spark: 50k reads / 20k writes per day) are plenty for friends-and-family events; the app polls once per 6s only while an event page is open. Firestore has no automatic backup on the free plan, so backups are done by the app: **(1)** every member's own MAISON copy rides the normal Drive sync; **(2)** for events *you created*, ``evSnapshot`` writes a dated file ``mzevent_<id>_YYYYMMDD.json`` into your own Drive appData (one per day, updated through the day, last 14 kept; needs Cloud Sync on; triggered 10s after app start, after changes, and on sharing) and **Settings → Restore from backup** (``evBackupsModal`` / ``evRestore``) puts an earlier day back for everyone; **(3)** **Download backup file** exports the event as JSON. Sharing asks first if Cloud Sync is off. A scheduled Firestore export (needs the paid Blaze plan) could be added later if a server-side backup is wanted.
 ## GitHub Actions / "Claude Code Remote" exploration
