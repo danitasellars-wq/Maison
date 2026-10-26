@@ -720,6 +720,8 @@ textarea.field-input{border:1px solid var(--line);border-radius:8px;padding:10px
 .ev-add .field-input{margin:0;flex:1}
 .cap-pick{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:6px 0 14px}
 .cap-big{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;min-height:92px;padding:16px 8px;border:1px solid var(--line);border-radius:14px;background:none;color:var(--ink);font-family:var(--sans);font-size:14px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.ev-gmap iframe{display:block;width:100%;height:100%;border:0}
+.ev-map-note{margin-top:8px;font-size:12.5px;color:var(--muted)}
 .cap-big.wide{grid-column:1/-1;min-height:70px;flex-direction:row;gap:12px}
 .kind-badge{position:absolute;left:8px;top:8px;z-index:2;background:rgba(20,16,10,.72);color:#fff;font-family:var(--sans);font-size:11.5px;border-radius:999px;padding:2px 9px;pointer-events:none}
 .cap-video{display:block;width:100%;max-height:60vh;background:#000;border-radius:10px}
@@ -3068,11 +3070,11 @@ function evActForm(actId,part,pre){
 // Looks a place up only when it has changed (or has no pin yet). A saved place brings its own coordinates; a pasted Google Maps link is read directly.
 async function evResolve(inputId,text,prev,near){
   if(!text)return{lat:null,lon:null,mapUrl:''};
-  const pk=evForm.picked[inputId];if(pk&&pk.name===text)return{lat:pk.lat,lon:pk.lon,mapUrl:pk.mapUrl||''};
-  if(prev&&prev.text===text&&prev.lat!=null)return{lat:prev.lat,lon:prev.lon,mapUrl:prev.mapUrl||''};
+  const pk=evForm.picked[inputId];if(pk&&pk.name===text)return{lat:pk.lat,lon:pk.lon,mapUrl:pk.mapUrl||'',guess:false};
+  if(prev&&prev.text===text&&prev.lat!=null)return{lat:prev.lat,lon:prev.lon,mapUrl:prev.mapUrl||'',guess:!!prev.guess};
   const g=await evGeocode(text,near);
   if(g&&g.failed)return{lat:null,lon:null,mapUrl:g.mapUrl||'',name:g.name||'',missed:true,short:!!g.short};
-  return g?{lat:g.lat,lon:g.lon,mapUrl:g.mapUrl||'',name:(g.fromUrl&&g.name)?g.name:''}:{lat:null,lon:null,mapUrl:'',missed:true};
+  return g?{lat:g.lat,lon:g.lon,mapUrl:g.mapUrl||'',name:(g.fromUrl&&g.name)?g.name:'',guess:!!g.guess}:{lat:null,lon:null,mapUrl:'',missed:true};
 }
 async function evSaveAct(actId){
   const cat=document.getElementById('ea-cat').value,isJ=cat==='Journey',val=id=>{const e=document.getElementById(id);return e?e.value.trim():'';};
@@ -3092,19 +3094,19 @@ async function evSaveAct(actId){
     rec.time=rec.dep;rec.where='';
     const d0=doToMin(rec.dep),d1=doToMin(rec.arr);rec.mins=(d0!=null&&d1!=null)?((d1-d0+1440)%1440):0;
     busy();
-    const s=await evResolve('ea-from',from,cur&&{text:cur.from,lat:cur.lat,lon:cur.lon,mapUrl:cur.mapUrl},near);
+    const s=await evResolve('ea-from',from,cur&&{text:cur.from,lat:cur.lat,lon:cur.lon,mapUrl:cur.mapUrl,guess:cur.guess},near);
     const e=await evResolve('ea-to',to,cur&&{text:cur.to,lat:cur.lat2,lon:cur.lon2,mapUrl:''},near);
-    rec.lat=s.lat;rec.lon=s.lon;rec.mapUrl=s.mapUrl||'';rec.lat2=e.lat;rec.lon2=e.lon;
+    rec.lat=s.lat;rec.lon=s.lon;rec.mapUrl=s.mapUrl||'';rec.lat2=e.lat;rec.lon2=e.lon;rec.guess=!!(s.guess||e.guess);
     if((from&&s.lat==null)||(to&&e.lat==null))missed=true;
   }else{
     rec.where=val('ea-where');rec.time=val('ea-time');rec.mins=parseInt(val('ea-mins'),10)||0;
     const wantPin=(document.getElementById('ea-pin')||{checked:true}).checked;rec.pin=wantPin;
     rec.mode='';rec.from='';rec.to='';rec.dep='';rec.arr='';rec.lat2=null;rec.lon2=null;
-    if(!rec.where||!wantPin){rec.lat=null;rec.lon=null;rec.mapUrl='';}
+    if(!rec.where||!wantPin){rec.lat=null;rec.lon=null;rec.mapUrl='';rec.guess=false;}
     else{
       if(!(cur&&cur.where===rec.where&&cur.lat!=null))busy();
-      const g=await evResolve('ea-where',rec.where,cur&&{text:cur.where,lat:cur.lat,lon:cur.lon,mapUrl:cur.mapUrl},near);
-      rec.lat=g.lat;rec.lon=g.lon;rec.mapUrl=g.mapUrl||'';if(g.name)rec.where=g.name;if(g.missed)missed=true;if(g.short)short=true;
+      const g=await evResolve('ea-where',rec.where,cur&&{text:cur.where,lat:cur.lat,lon:cur.lon,mapUrl:cur.mapUrl,guess:cur.guess},near);
+      rec.lat=g.lat;rec.lon=g.lon;rec.mapUrl=g.mapUrl||'';rec.guess=!!g.guess;if(g.name)rec.where=g.name;if(g.missed)missed=true;if(g.short)short=true;
     }
   }
   evMutate(activeEventId,(ev,put)=>{
@@ -3248,26 +3250,57 @@ function evMapsUrl(a){
 // What a pasted Google Maps link can tell us without a server. A full link usually carries coordinates (@lat,lon, !3d..!4d.., ?q=lat,lon) and/or a place name
 // (/place/Name, /search/Name, ?q=Name). Short links (maps.app.goo.gl, goo.gl/maps) hide everything behind a redirect the browser is not allowed to follow.
 function evMapsLink(u){
-  let m=/@(-?\d+\.\d+),(-?\d+\.\d+)/.exec(u)||/!3d(-?\d+\.\d+)!4d(-?\d+\.\d+)/.exec(u)||/[?&](?:q|ll|sll|query|destination|daddr|center)=(?:loc:)?(-?\d+\.\d+)(?:,|%2C|\+)(-?\d+\.\d+)/i.exec(u)||/\/maps\/(?:place|search|dir)\/(-?\d+\.\d+),\+?(-?\d+\.\d+)/.exec(u);
+  // The place's own pin is !3d<lat>!4d<lon> (the last one is the destination on a directions link). The @lat,lon in a link is only where the map was
+  // centred when the link was copied, which can be well away from the place, so it is the last resort and never used on directions links.
+  const pins=[];u.replace(/!3d(-?\d+\.\d+)!4d(-?\d+\.\d+)/g,(s,a,b)=>{pins.push([a,b]);return s;});
+  let m=pins.length?[0].concat(pins[pins.length-1]):null;
+  m=m||/[?&](?:q|ll|query|destination|daddr)=(?:loc:)?(-?\d+\.\d+)(?:,|%2C|\+)(-?\d+\.\d+)/i.exec(u)||/\/maps\/(?:place|search)\/(-?\d+\.\d+),\+?(-?\d+\.\d+)/.exec(u);
+  if(!m&&!/\/maps\/dir\//.test(u))m=/@(-?\d+\.\d+),(-?\d+\.\d+)/.exec(u);
+  const exact=!!pins.length||/[?&](?:q|ll|query)=(?:loc:)?-?\d/.test(u);
   let name='';
   const dec=s=>{try{return decodeURIComponent(s.replace(/\+/g,' ')).trim();}catch(e){return s.replace(/\+/g,' ').trim();}};
   const n=/\/maps\/(?:place|search)\/([^/@?]+)/.exec(u)||/[?&](?:q|query|destination|daddr)=([^&]+)/i.exec(u);
   if(n){name=dec(n[1]);if(/^(-?\d+\.\d+)[, ]+(-?\d+\.\d+)$/.test(name))name='';}
   const short=/(?:maps\.app\.goo\.gl|goo\.gl\/maps|g\.co\/kgs|share\.google)/i.test(u);
-  return{lat:m?parseFloat(m[1]):null,lon:m?parseFloat(m[2]):null,name,short};
+  return{lat:m?parseFloat(m[1]):null,lon:m?parseFloat(m[2]):null,name,short,exact};
 }
 function evCoordsFromMapsUrl(u){const r=evMapsLink(u);return r.lat==null?null:{lat:r.lat,lon:r.lon,name:r.name,mapUrl:u,fromUrl:true};}
-async function evNominatim(q){
+// OpenStreetMap's free search. `box` ([lon1,lat1,lon2,lat2]) limits the answer to an area, so "Cafe Rosa" means the one near the event.
+async function evNominatim(q,box){
   try{
     const ctl=new AbortController(),t=setTimeout(()=>ctl.abort(),6000);
-    const r=await fetch('https://nominatim.openstreetmap.org/search?format=json&limit=1&q='+encodeURIComponent(q),{signal:ctl.signal,headers:{Accept:'application/json'}});
+    const r=await fetch('https://nominatim.openstreetmap.org/search?format=json&limit=1&q='+encodeURIComponent(q)+(box?'&viewbox='+box.join(',')+'&bounded=1':''),{signal:ctl.signal,headers:{Accept:'application/json'}});
     clearTimeout(t);
     const j=await r.json();if(j&&j[0])return{lat:parseFloat(j[0].lat),lon:parseFloat(j[0].lon)};
   }catch(e){}
   return null;
 }
-// Looks a place up (OpenStreetMap's free search). Accepts a plain place name, a Google Maps link, or what Google Maps' Share button gives you (the place's
-// name and address followed by a link). Tries the place together with the event's own location first, since "The Seafood Bar" alone is ambiguous.
+const evCentres={};
+// Where the event is (its "Where" text), cached for the session, so place searches can be kept to that area.
+async function evCentre(near){
+  if(!near)return null;
+  if(!(near in evCentres))evCentres[near]=await evNominatim(near);
+  return evCentres[near];
+}
+function evKm(a,b){const R=6371,rad=x=>x*Math.PI/180,dl=rad(b.lat-a.lat),dn=rad(b.lon-a.lon),s=Math.sin(dl/2)**2+Math.cos(rad(a.lat))*Math.cos(rad(b.lat))*Math.sin(dn/2)**2;return 2*R*Math.asin(Math.sqrt(s));}
+// Best guess at where a piece of text is. Order: inside the event's area (about 60 miles around its Where) with and without the Where added; a UK
+// postcode on its own (accurate to the street); then anywhere, but a result more than ~300 km from the event is thrown away rather than pinned wrongly.
+async function evFindText(q,near){
+  const c=await evCentre(near),box=c?[c.lon-1,c.lat+.7,c.lon+1,c.lat-.7]:null;
+  const tries=[];
+  if(box){tries.push([q,box]);if(near&&q.toLowerCase().indexOf(near.toLowerCase())<0)tries.push([q+', '+near,box]);}
+  const pc=/\b([A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2})\b/i.exec(q);
+  if(pc)tries.push([pc[1].toUpperCase(),null]);
+  if(!box){if(near&&q.toLowerCase().indexOf(near.toLowerCase())<0)tries.push([q+', '+near,null]);tries.push([q,null]);}
+  else tries.push([q,null]);
+  for(const [s,b] of tries){
+    const g=await evNominatim(s,b);
+    if(g&&(!c||evKm(c,g)<300))return g;
+  }
+  return null;
+}
+// Looks a place up. Accepts a plain place name, a Google Maps link, or what Google Maps' Share button gives you (the place's name and address followed
+// by a link). A link with the place's own coordinates is exact; anything found by name is a best guess (`guess:true`).
 async function evGeocode(text,near){
   const raw=(text||'').trim();if(!raw)return null;
   const um=/https?:\/\/\S+/i.exec(raw),url=um?um[0]:'';
@@ -3275,18 +3308,16 @@ async function evGeocode(text,near){
   if(url){
     const info=evMapsLink(url),first=rest[0]||'',all=rest.join(', ');
     const name=first||info.name;
-    if(info.lat!=null)return{lat:info.lat,lon:info.lon,name,mapUrl:url,fromUrl:true};
+    if(info.lat!=null)return{lat:info.lat,lon:info.lon,name,mapUrl:url,fromUrl:true,guess:!info.exact};
     const tries=[];
     if(all)tries.push(all);
     if(info.name&&tries.indexOf(info.name)<0)tries.push(info.name);
     if(first&&tries.indexOf(first)<0)tries.push(first);
-    const more=[];tries.forEach(q=>{if(near&&q.toLowerCase().indexOf(near.toLowerCase())<0)more.push(q+', '+near);});
-    for(const q of tries.concat(more)){const g=await evNominatim(q);if(g)return{lat:g.lat,lon:g.lon,name,mapUrl:url,fromUrl:true};}
+    for(const q of tries){const g=await evFindText(q,near);if(g)return{lat:g.lat,lon:g.lon,name,mapUrl:url,fromUrl:true,guess:true};}
     return{lat:null,lon:null,name,mapUrl:url,fromUrl:true,failed:true,short:info.short&&!tries.length};
   }
-  const tries=[];if(near&&raw.toLowerCase().indexOf(near.toLowerCase())<0)tries.push(raw+', '+near);tries.push(raw);
-  for(const q of tries){const g=await evNominatim(q);if(g)return g;}
-  return null;
+  const g=await evFindText(raw,near);
+  return g?{lat:g.lat,lon:g.lon,guess:true}:null;
 }let evLeafletP=null,evMapObj=null;
 function loadLeaflet(){
   if(window.L&&L.map)return Promise.resolve();
@@ -3296,14 +3327,38 @@ function loadLeaflet(){
   evLeafletP=Promise.all([css,js]).then(()=>{},e=>{evLeafletP=null;throw e;});
   return evLeafletP;
 }
+// A day can be shown on real Google Maps (always right, because Google finds each place from its name) or as pins on our own map (shows photos and
+// colours, but a pin found by name can be a little off, and is marked "approximate"). The choice is remembered on this device.
+function evMapMode(){try{return localStorage.getItem('maison_evmapmode')==='pins'?'pins':'google';}catch(e){return'google';}}
+function evSetMapMode(m){try{localStorage.setItem('maison_evmapmode',m);}catch(e){}showSection('event');}
+function evStopText(s,near){
+  s=(s||'').trim();if(!s||/^https?:\/\//i.test(s))return'';
+  return near&&s.length<40&&s.toLowerCase().indexOf(near.toLowerCase())<0?s+', '+near:s;
+}
+// The day's places in time order, as text Google can find. A journey adds where it starts and where it ends.
+function evDayStops(ev,day){
+  const out=[],add=s=>{const x=evStopText(s,ev.location);if(x&&out[out.length-1]!==x)out.push(x);};
+  doSorted(evActsVis(ev).filter(a=>a.day===day&&a.pin!==false)).forEach(a=>{
+    if(a.cat==='Journey'||a.cat==='Travel'){add(a.from);add(a.to);}else add(a.where);
+  });
+  return out.slice(0,9);
+}
+function evGoogleDayURL(stops){
+  if(stops.length===1)return'https://www.google.com/maps?q='+encodeURIComponent(stops[0])+'&output=embed';
+  return'https://www.google.com/maps?output=embed&saddr='+encodeURIComponent(stops[0])+'&daddr='+stops.slice(1).map(encodeURIComponent).join('+to:');
+}
 function evMapHTML(ev,onlyDay){
   if(!evCan(ev,'schedule'))return'';
-  const pins=evPins(ev,onlyDay);if(!pins.length)return'';
+  const pins=evPins(ev,onlyDay),stops=onlyDay?evDayStops(ev,onlyDay):[];
+  if(!pins.length&&!stops.length)return'';
+  const google=stops.length&&(!pins.length||evMapMode()==='google');
+  const toggle=stops.length&&pins.length?`<div class="ev-seg-row" style="margin-bottom:8px"><div class="ev-seg" role="group" aria-label="Map type"><button class="${google?'on':''}" onclick="evSetMapMode('google')">Google Maps</button><button class="${google?'':'on'}" onclick="evSetMapMode('pins')">Pins</button></div></div>`:'';
+  if(google)return`<div class="ev-map-wrap">${toggle}<div class="ev-map small ev-gmap"><iframe src="${escHtml(evGoogleDayURL(stops))}" title="Google Maps for this day" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe></div></div>`;
   const days=Array.from(new Set(pins.map(p=>p.day)));
   const legend=!onlyDay&&days.length>1?`<div class="ev-map-legend">${days.map(d=>`<span><i style="background:${evDayColor(ev,d)}"></i>Day ${evDaysSorted(ev).indexOf(d)+1}</span>`).join('')}</div>`:'';
-  return`<div class="ev-map-wrap"><div id="ev-map" class="ev-map${onlyDay?' small':''}" role="img" aria-label="Map of the planned places"></div>${legend}</div>`;
-}
-function evMapDestroy(){if(evMapObj){try{evMapObj.remove();}catch(e){}evMapObj=null;}}
+  const guess=pins.some(p=>p.a.guess)?`<div class="ev-map-note">Pins found by name are approximate. Switch to Google Maps for the exact place.</div>`:'';
+  return`<div class="ev-map-wrap">${toggle}<div id="ev-map" class="ev-map${onlyDay?' small':''}" role="img" aria-label="Map of the planned places"></div>${legend}${guess}</div>`;
+}function evMapDestroy(){if(evMapObj){try{evMapObj.remove();}catch(e){}evMapObj=null;}}
 async function evMapInit(){
   evMapDestroy();
   const el=document.getElementById('ev-map');if(!el)return;
