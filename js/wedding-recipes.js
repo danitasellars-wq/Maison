@@ -35,37 +35,32 @@ function renderWeddingHome(w){
   const cards=[{id:'inspo',name:'Inspiration',photos:w.inspo,meta:w.inspoMeta||{}}].concat(w.folders.map(f=>({id:f.id,name:f.name,photos:f.photos||[],meta:f}))).map(f=>{
     const vis=wfVisible(f.photos).slice().sort((a,b)=>(b.liked?1:0)-(a.liked?1:0)),n=vis.length,imgs=vis.slice(0,4);
     const cover=n?`<div class="wd-cover c${Math.min(imgs.length,4)}">${imgs.map(p=>`<img src="${p.img}" alt="" loading="lazy"/>`).join('')}</div>`:`<div class="wd-cover empty"><span>${escHtml((f.name||'?').charAt(0).toUpperCase())}</span></div>`;
-    const extra=[(f.meta.links||[]).length?`${f.meta.links.length} link${f.meta.links.length!==1?'s':''}`:'',f.meta.notes?'notes':''].filter(Boolean).join(' · ');
+    const nb=userData('moodboards_'+wfBoardCtx(f.id),[]).length,extra=[nb?`${nb} board${nb!==1?'s':''}`:'',(f.meta.links||[]).length?`${f.meta.links.length} link${f.meta.links.length!==1?'s':''}`:'',f.meta.notes?'notes':''].filter(Boolean).join(' · ');
     return`<button class="wd-folder" onclick="openWeddingFolder('${f.id}')">${cover}<div class="wd-folder-name">${escHtml(f.name)}</div><div class="wd-folder-meta">${n?n+' photo'+(n!==1?'s':''):'Empty'}${extra?' · '+extra:''}</div></button>`;
   }).join('');
-  const oldBoards=userData('moodboards_wedding',[]);
-  const oldRow=oldBoards.length?`<button class="area-row wd-old" onclick="mbArea='other';showSection('moodboards')"><div><div class="area-row-title" style="font-size:22px">Earlier mood boards</div><div class="area-row-meta">${oldBoards.length} board${oldBoards.length!==1?'s':''} you made before folders</div></div><span class="area-chev">→</span></button>`:'';
   return`<div class="section-rule"><div><div class="section-title">Wedding</div></div>${quickNotesBtn('wedding')}</div>
     ${summary}
     <div class="st-h"><span>Folders</span><button class="btn-ghost" onclick="openNewWeddingFolder()">+ New folder</button></div>
-    <div class="wd-folders">${cards}<button class="wd-folder wd-new" onclick="openNewWeddingFolder()"><div class="wd-cover empty"><span>+</span></div><div class="wd-folder-name">New folder</div></button></div>
-    ${oldRow}`;
+    <div class="wd-folders">${cards}<button class="wd-folder wd-new" onclick="openNewWeddingFolder()"><div class="wd-cover empty"><span>+</span></div><div class="wd-folder-name">New folder</div></button></div>`;
 }
 function renderWeddingFolder(w){
-  const f=wfRef(w,weddingFolder),m=f.meta,vis=wfVisible(f.photos),n=vis.length,links=m.links||[],view=m.view==='board'?'board':'grid';
+  const f=wfRef(w,weddingFolder),m=f.meta,vis=wfVisible(f.photos),n=vis.length,links=m.links||[];
   const isInspo=f.id==='inspo';
   let photosHtml;
   if(!n)photosHtml=`<div class="wd-empty"><div>Empty</div><button class="btn-solid sm" onclick="triggerCapture()">+ Add photos</button></div>`;
-  else if(view==='board'){
-    const tiles=vis.slice().sort((a,b)=>(b.liked?1:0)-(a.liked?1:0)).map(p=>`<div class="mood-tile mb-t" onclick="viewPhoto('${p.id}','${f.type}','${f.ctx}')"><img src="${p.img}" alt=""/>${p.kind?`<span class="kind-badge">${p.kind==='video'?'▶ Video':'File'}</span>`:''}</div>`).join('');
-    photosHtml=`<div class="mood-board mb-auto wd-board">${tiles}</div>`;
-  }else photosHtml=renderPhotoGrid(f.photos,f.type,f.ctx);
+  else photosHtml=renderPhotoGrid(f.photos,f.type,f.ctx);
   const linkRows=links.map(l=>`<div class="wd-link"><a href="${escHtml(l.url)}" target="_blank" rel="noopener"><span class="wd-link-title">${escHtml(l.title||l.url)}</span><span class="wd-link-url">${escHtml(l.url.replace(/^https?:\/\//i,''))}</span></a><button class="wd-link-x" aria-label="Remove link" onclick="wfRemoveLink('${l.id}')">×</button></div>`).join('');
   return`<div class="section-rule"><div><div class="section-title">${escHtml(f.name)}</div><div class="section-sub">${n} photo${n!==1?'s':''}</div></div><div class="flex-center">${isInspo?'':`<button class="btn-ghost" onclick="openEditWeddingFolder('${f.id}')">Edit</button>`}<button class="btn-solid sm" onclick="triggerCapture()">+ Add photos</button></div></div>
-    <div class="st-h"><span>Photos</span>${n?`<span class="wd-seg"><button class="${view==='grid'?'active':''}" onclick="wfSetView('grid')">Grid</button><button class="${view==='board'?'active':''}" onclick="wfSetView('board')">Board</button></span>`:''}</div>
+    <div class="st-h"><span>Photos</span></div>
     ${photosHtml}
+    <div class="st-h"><span>Mood boards</span></div>
+    ${renderMoodBoardSection(wfBoardCtx(f.id))}
     <div class="st-h"><span>Notes</span></div>
     <textarea id="wf-notes" class="field-input" rows="4" placeholder="Ideas, supplier details, prices, things to ask…" onchange="wfSaveNotes()">${escHtml(m.notes||'')}</textarea>
     <div class="st-h"><span>Links</span><button class="btn-ghost" onclick="openAddWeddingLink()">+ Add link</button></div>
     ${linkRows}`;
 }
 function openWeddingFolder(id){weddingFolder=id;showSection('wedding');}
-function wfSetView(v){const w=weddingData(),f=wfRef(w,weddingFolder);if(!f)return;f.meta.view=v;saveData('wedding',w);showSection('wedding');}
 function wfSaveNotes(){const w=weddingData(),f=wfRef(w,weddingFolder),el=document.getElementById('wf-notes');if(!f||!el)return;f.meta.notes=el.value.trim();saveData('wedding',w);}
 function openAddWeddingLink(){
   openModal(`<div class="modal-head"><div class="modal-title">Add link</div><button class="modal-close" onclick="closeModal()">×</button></div><label class="field-label">Title</label><input id="wl-title" class="field-input" placeholder="e.g. Florist quote…"/><label class="field-label">Web address</label><input id="wl-url" class="field-input" type="url" placeholder="https://…"/><div class="modal-row"><button class="btn-solid sm" onclick="wfSaveLink()">Add</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);
@@ -102,6 +97,7 @@ function deleteWeddingFolder(id){
   const n=(f.photos||[]).length;
   if(!confirm(`Delete "${f.name}"${n?` and its ${n} photo${n!==1?'s':''}`:''}? This can't be undone.`))return;
   (f.photos||[]).forEach(p=>{idbDeletePhoto(p.id).catch(()=>{});deleteRemotePhoto(p.id).catch(()=>{});});
+  const bk='moodboards_wf_'+id;userData(bk,[]).forEach(b=>(b.tiles||[]).forEach(x=>{idbDeletePhoto(x.id).catch(()=>{});deleteRemotePhoto(x.id).catch(()=>{});}));try{localStorage.removeItem('maison_'+currentUser+'_'+bk);}catch(e){}
   w.folders=w.folders.filter(x=>x.id!==id);saveData('wedding',w);
   weddingFolder=null;closeModal();showSection('wedding');
 }
@@ -119,9 +115,10 @@ function renderHoneymoon(main){
   const inspo=h.inspo||[],budget=h.budget||0;
   const spent=h.rooms.flatMap(r=>r.items||[]).reduce((s,i)=>s+(i.price||0),0)+inspo.reduce((s,p)=>s+(p.price||0),0);
   const pct=budget>0?Math.min(spent/budget*100,100):0,over=budget>0&&spent>budget;
-  const tabs=['inspo','rooms','budget'].map(t=>`<button class="room-tab${honeymoonTab===t?' active':''}" onclick="setHoneymoonTab('${t}')">${t==='inspo'?'Inspiration':t==='rooms'?'Destinations':'Budget'}</button>`).join('');
+  const tabs=['inspo','boards','rooms','budget'].map(t=>`<button class="room-tab${honeymoonTab===t?' active':''}" onclick="setHoneymoonTab('${t}')">${t==='inspo'?'Inspiration':t==='boards'?'Mood boards':t==='rooms'?'Destinations':'Budget'}</button>`).join('');
   let content='';
   if(honeymoonTab==='inspo')content=renderPhotoGrid(inspo,'honeymoon_inspo','honeymoon');
+  else if(honeymoonTab==='boards')content=renderMoodBoardSection('honeymoon');
   else if(honeymoonTab==='rooms'){
     let inner='';
     if(!h.rooms.length)inner=`<div class="empty"><div class="empty-icon">✈️</div>Add your first destination.</div>`;

@@ -868,5 +868,3 @@ body.has-player #main-content{padding-bottom:80px}
 .wd-link-title{display:block;font-size:15.5px;font-weight:500}
 .wd-link-url{display:block;font-size:12.5px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .wd-link-x{background:none;border:none;color:var(--muted);font-size:22px;line-height:1;padding:4px 8px;cursor:pointer}
-.mood-board.wd-board{min-height:0;border:none;padding:0;background:none;margin-bottom:6px}
-.wd-board .mb-t{cursor:pointer}

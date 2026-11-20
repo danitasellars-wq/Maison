@@ -145,7 +145,7 @@ function referencedPhotoIds(){
   const h=userData('honeymoon',{rooms:[],inspo:[]});(h.inspo||[]).forEach(push);(h.rooms||[]).forEach(r=>(r.photos||[]).forEach(push));
   const d=userData('dayout',{plans:[]});(d.plans||[]).forEach(pl=>(pl.photos||[]).forEach(push));
   const rec=userData('recipes',{items:[]});rec.items.forEach(it=>{if(it.img&&it.id)ids.push(it.id);(it.photos||[]).forEach(push);});
-  ['wedding','home','honeymoon','closet'].forEach(ctx=>{userData(`moodboards_${ctx}`,[]).forEach(b=>(b.tiles||[]).forEach(push));});
+  mbContexts().forEach(ctx=>{userData(`moodboards_${ctx}`,[]).forEach(b=>(b.tiles||[]).forEach(push));});
   ((userData('closet',null)||{}).items||[]).forEach(push);
   const evd=userData('events',null)||{};(evd.events||[]).forEach(e=>(e.photos||[]).forEach(p=>{if(p&&p.id&&p.mid===(e.me||{}).id)ids.push(p.id);}));
   return ids.concat(referencedAudioIds());
@@ -288,7 +288,7 @@ async function migrateInlinePhotos(){
     if(await migratePhotoArray(it.photos||[]))recChanged=true;
   }
   if(recChanged){saveData('recipes',rec);changed=true;}
-  for(const ctx of['wedding','home','honeymoon','closet']){
+  for(const ctx of mbContexts()){
     const boards=userData(`moodboards_${ctx}`,[]);
     let bChanged=false;
     for(const b of boards)if(await migratePhotoArray(b.tiles||[]))bChanged=true;
