@@ -305,7 +305,7 @@ function evStayGuestModal(sid){
   const going=evGoing(ev,day),where=pid=>{const o=stays.find(x=>(x.guests||[]).indexOf(pid)>=0);return o;};
   const rows=going.filter(p=>(s.guests||[]).indexOf(p.id)<0).map(p=>{const o=where(p.id);return`<button class="ev-person add" onclick="evStayAssign('${sid}','${p.id}')"><i>${escHtml(evInitials(p.name))}</i>${escHtml(p.name)}${o?`<em>with ${escHtml(o.name)}</em>`:''}<b>+</b></button>`;}).join('');
   openModal(`<div class="modal-head"><div class="modal-title">Guests staying with ${escHtml(s.name)}</div><button class="modal-close" onclick="closeModal()">×</button></div>
-    ${rows?`<p class="cl-hint" style="margin-top:0">Tap to add. Someone already with another host moves across.</p><div class="ev-people" style="margin-bottom:16px">${rows}</div>`:'<p class="cl-hint">Everyone going that day is already here.</p>'}
+    ${rows?`<div class="ev-people" style="margin-bottom:16px">${rows}</div>`:'<p class="cl-hint">Everyone going that day is already here.</p>'}
     <div class="modal-row"><button class="btn-ghost" onclick="closeModal()">Done</button></div>`);
 }
 function evStayAssign(sid,pid){

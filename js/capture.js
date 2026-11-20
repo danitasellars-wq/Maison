@@ -85,7 +85,7 @@ function triggerCapture(){
   }
   if(!area)opts.push({v:'closet',label:'Closet (new piece)'});
   if(!opts.length){
-    openModal(`<div class="modal-head"><div class="modal-title">Add a room first</div><button class="modal-close" onclick="closeModal()">×</button></div><p class="cl-hint" style="margin-top:0">Photos in House planning are saved into a room. Create one, then use the camera.</p><div class="modal-row"><button class="btn-solid sm" onclick="closeModal();setHomeView('rooms');openAddRoom()">Add a room</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);
+    openModal(`<div class="modal-head"><div class="modal-title">Add a room first</div><button class="modal-close" onclick="closeModal()">×</button></div><div class="modal-row"><button class="btn-solid sm" onclick="closeModal();setHomeView('rooms');openAddRoom()">Add a room</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);
     return;
   }
   capOpts=opts;

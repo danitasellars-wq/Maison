@@ -161,7 +161,7 @@ function clMakeThumb(cv,alpha){
 // One sheet for both ways of adding: take a photo, or pick one or several from the library.
 function clAddSheet(){
   openModal(`<div class="modal-head"><div class="modal-title">Add to closet</div><button class="modal-close" onclick="closeModal()">×</button></div>
-    <p class="cl-hint" style="margin-top:0">The background is removed for you. You can pick several photos at once.</p>
+
     ${capPickHTML('closetFilesPicked',true)}<div id="cap-status"></div>`);
 }
 function closetCamera(){clAddSheet();}
@@ -207,7 +207,7 @@ function clOpenAddModal(){
     <details id="cl-fine" class="cap-more" style="${d.useCut?'':'display:none'}"><summary>Fine-tune the cut-out</summary>
     <div id="cl-tools">
       <label class="field-label">Automatic — sensitivity <span id="cl-sens-val">${d.sens}</span></label><input type="range" id="cl-sens" min="8" max="100" value="${d.sens}" style="width:100%" oninput="clSens(this.value)"/>
-      <p class="cl-hint">Raise it if background is left behind; lower it if the piece is being eaten away. Moving it redoes the automatic step (and your touch-ups).</p>
+
       <label class="field-label" style="margin-top:6px">Touch up yourself</label>
       <div class="tag-row" style="margin-bottom:10px">
         <button type="button" class="tag-pill cl-mode active" data-m="erase" onclick="clSetMode('erase')">Erase</button>
@@ -218,7 +218,7 @@ function clOpenAddModal(){
       </div>
       <div id="cl-brush-wrap"><label class="field-label">Brush size</label><div class="cl-brushrow"><input type="range" id="cl-brush" min="10" max="220" value="${d.brush}" oninput="clBrush(this.value)"/><span class="cl-dotbox"><span id="cl-dot" class="cl-dot"></span></span></div></div>
       <div id="cl-tol-wrap" style="display:none"><label class="field-label">Colour tolerance <span id="cl-tol-val">${d.tol}</span></label><input type="range" id="cl-tol" min="8" max="100" value="${d.tol}" style="width:100%" oninput="clTol(this.value)"/></div>
-      <p class="cl-hint">Rub over the picture with your finger to rub background away, or switch to Paint back to restore a bit you went over. <b>Tap to remove</b> clears the whole patch of similar colour you tap — good for leftover floor or shadow.</p>
+
     </div></details>
     ${clFieldsHTML('ca',{cat:'Tops'})}
     <div class="modal-row"><button class="btn-solid sm" onclick="clSaveItem()">Save to closet</button><button class="btn-ghost" onclick="clSkipAdd()">${more?'Skip':'Cancel'}</button></div>`);
@@ -334,7 +334,7 @@ async function clSaveItem(){
 
 // ── Wardrobe: the closet's own photo store (favourite + delete) ──
 function clWardrobeHTML(c){
-  if(!c.items.length)return`<div class="empty">Your closet is empty.<br/>Tap Capture below, or Add photos above, to add your first piece.</div>`;
+  if(!c.items.length)return`<div class="empty">Your closet is empty.</div>`;
   const chips=[['all','All'],['fav','Favourites']].concat(CLOSET_CATS.map(x=>[x,x]));
   const list=c.items.filter(i=>closetFilter==='all'||(closetFilter==='fav'?i.fav:i.cat===closetFilter)).sort((a,b)=>(b.date||0)-(a.date||0));
   return`<div class="tag-row">${chips.map(([k,l])=>`<button class="tag-pill${closetFilter===k?' active':''}" onclick="clSetFilter('${k}')">${l}</button>`).join('')}</div>
@@ -422,8 +422,8 @@ function clMiniBoard(c,o){
 }
 function clOutfitsHTML(c){
   const head=`<div class="flex-between mb14"><div></div><button class="btn-solid sm" onclick="clNewOutfit()">+ New outfit</button></div>`;
-  if(!c.items.length)return head+`<div class="empty">Add some clothes in <b>Wardrobe</b> first, then build outfits here.</div>`;
-  if(!c.outfits.length)return head+`<div class="empty">No outfits yet.<br/>Tap <b>+ New outfit</b>, or try the <b>Shuffle</b> tab.</div>`;
+  if(!c.items.length)return head+`<div class="empty">No clothes yet.</div>`;
+  if(!c.outfits.length)return head+`<div class="empty">No outfits yet.</div>`;
   return head+`<div id="of-filters">${clOutfitFiltersHTML()}</div><div id="of-list">${clOutfitGridHTML(c)}</div>`;
 }
 function clOutfitFiltersHTML(){
@@ -433,7 +433,7 @@ function clOutfitFiltersHTML(){
 function clOutfitGridHTML(c){
   const wornBy={};Object.values(c.calendar).forEach(arr=>arr.forEach(e=>{if(e.worn&&e.outfitId)wornBy[e.outfitId]=(wornBy[e.outfitId]||0)+1;}));
   const list=c.outfits.filter(o=>{const t=clOutfitTags(c,o);return(ofFilter.occ==='all'||t.occ.indexOf(ofFilter.occ)>=0)&&(ofFilter.season==='all'||t.seasons.indexOf(ofFilter.season)>=0);});
-  if(!list.length)return`<div class="empty">No outfits match${ofFilter.occ!=='all'?' '+clTagLabel(CL_OCC,ofFilter.occ).toLowerCase():''}${ofFilter.season!=='all'?' '+clTagLabel(CL_SEASONS,ofFilter.season).toLowerCase():''} yet.<br/>Tag pieces in your wardrobe, or tag an outfit when you edit it.</div>`;
+  if(!list.length)return`<div class="empty">No outfits match${ofFilter.occ!=='all'?' '+clTagLabel(CL_OCC,ofFilter.occ).toLowerCase():''}${ofFilter.season!=='all'?' '+clTagLabel(CL_SEASONS,ofFilter.season).toLowerCase():''} yet.</div>`;
   const btn='padding:4px 10px;font-size:12px';
   return`<div class="of-grid">${list.map(o=>{const n=clOutfitItemIds(c,o).length,w=wornBy[o.id]||0,t=clOutfitTags(c,o),tg=clTagsText(t.occ,t.seasons);return`<div class="of-card"><div style="cursor:pointer" onclick="clEditOutfit('${o.id}')">${clMiniBoard(c,o)}</div><div class="of-body"><div class="of-name">${escHtml(o.name)}</div><div class="of-meta">${n} piece${n!==1?'s':''} · worn ${w}×</div>${tg?`<div class="of-tags">${tg}</div>`:''}<div class="flex-center" style="margin-top:8px;gap:6px"><button class="btn-ghost" style="${btn}" onclick="clEditOutfit('${o.id}')">Edit</button><button class="btn-ghost" style="${btn}" onclick="clWearToday('${o.id}')">Wear today</button><button class="btn-ghost danger" style="${btn}" onclick="clDeleteOutfit('${o.id}')">×</button></div></div></div>`;}).join('')}</div>`;
 }
@@ -497,7 +497,7 @@ function clBoardInner(c){
   return parts||`<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:24px;text-align:center;color:var(--muted);font-size:14px;pointer-events:none">Tap a piece below to add it to the board</div>`;
 }
 function clToolsHTML(){
-  if(!obSel)return`<p class="cl-hint" style="text-align:center">Tap a piece to select it · drag to move · drag the gold dot to resize</p>`;
+  if(!obSel)return``;
   return`<div class="ob-tools">${[['smaller','Smaller'],['bigger','Larger'],['back','Send back'],['forward','Bring forward'],['remove','Remove']].map(([k,l])=>`<button class="btn-ghost${k==='remove'?' danger':''}" onclick="clObAction('${k}')">${l}</button>`).join('')}</div>`;
 }
 function clAddStripHTML(c){
@@ -592,7 +592,7 @@ function clCalendarHTML(c){
   }
   return`<div class="cal-head"><button class="cal-nav" onclick="clCalNav(-1)">‹</button><div class="cal-title">${label}</div><button class="cal-nav" onclick="clCalNav(1)">›</button></div>
     <div class="cal-grid">${['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map(x=>`<div class="cal-dow">${x}</div>`).join('')}${cells}</div>
-    <p class="cl-hint" style="margin-top:14px;text-align:center">${worn} worn · ${planned} planned this month.<br/>Tap a day to pin an outfit. A ✓ means you wore it — that's what drives cost-per-wear.</p>
+    <p class="cl-hint" style="margin-top:14px;text-align:center">${worn} worn · ${planned} planned this month.</p>
     <div style="text-align:center"><button class="btn-ghost" onclick="clCalToday()">Today</button></div>`;
 }
 function clCalNav(delta){const[y,m]=closetCalMonth.split('-').map(Number);const d=new Date(y,m-1+delta,1);closetCalMonth=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');showSection('closet');}
@@ -602,11 +602,11 @@ function clOpenDay(key){
   const title=new Date(key+'T12:00:00').toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'});
   const future=key>clKey(new Date());
   const rows=arr.map(e=>{const o=c.outfits.find(x=>x.id===e.outfitId);return`<div class="pk-row" style="cursor:default"><div class="cl-mini56">${o?clMiniBoard(c,o):''}</div><div style="flex:1;min-width:0"><div class="of-name">${escHtml(e.name||'Outfit')}</div><div class="of-meta">${e.worn?'Worn ✓':'Planned'}</div></div><button class="btn-ghost" style="padding:5px 10px" onclick="clToggleWorn('${key}','${e.id}')">${e.worn?'Undo worn':'Mark worn'}</button><button class="btn-ghost danger" style="padding:5px 10px" onclick="clUnpin('${key}','${e.id}')">×</button></div>`;}).join('');
-  const picks=c.outfits.length?`<div class="of-grid sm">${c.outfits.map(o=>`<div class="of-pick" onclick="clPin('${key}','${o.id}')">${clMiniBoard(c,o)}<div class="of-name" style="font-size:12px;margin-top:3px">${escHtml(o.name)}</div></div>`).join('')}</div>`:`<p class="cl-hint">Build an outfit first (Outfits tab), then pin it to a day here.</p>`;
+  const picks=c.outfits.length?`<div class="of-grid sm">${c.outfits.map(o=>`<div class="of-pick" onclick="clPin('${key}','${o.id}')">${clMiniBoard(c,o)}<div class="of-name" style="font-size:12px;margin-top:3px">${escHtml(o.name)}</div></div>`).join('')}</div>`:``;
   openModal(`<div class="modal-head"><div class="modal-title">${title}</div><button class="modal-close" onclick="closeModal()">×</button></div>
     ${rows||`<p class="cl-hint">Nothing pinned for this day yet.</p>`}
     <div class="field-label" style="margin-top:18px">Pin an outfit</div>
-    <p class="cl-hint" style="margin:0">${future?'This is a future day, so it is saved as a plan — tap Mark worn once you have worn it.':'Outfits pinned to today or earlier are logged as worn.'}</p>
+    
     ${picks}`);
 }
 function clPin(key,oid){
@@ -634,7 +634,7 @@ function clShuffleCur(c,cat){const pool=clShufflePool(c,cat);if(!pool.length)ret
 function clShuffleInner(c){
   return SHUFFLE_CATS.map(cat=>{
     const cur=clShuffleCur(c,cat);
-    if(!cur)return`<div class="sh-row"><div class="sh-row-head"><span class="field-label" style="margin:0">${cat}</span></div><div class="cl-hint" style="padding:14px 0;margin:0">No ${cat.toLowerCase()}${shuffleState.favOnly?' in your favourites':''} yet — add some in Wardrobe.</div></div>`;
+    if(!cur)return`<div class="sh-row"><div class="sh-row-head"><span class="field-label" style="margin:0">${cat}</span></div><div class="cl-hint" style="padding:14px 0;margin:0">No ${cat.toLowerCase()}${shuffleState.favOnly?' in your favourites':''} yet.</div></div>`;
     const{pool,n,k}=cur,it=pool[k],prev=pool[(k-1+n)%n],next=pool[(k+1)%n],locked=!!shuffleState.lock[cat];
     return`<div class="sh-row"><div class="sh-row-head"><span class="field-label" style="margin:0">${cat} <span class="of-meta">${k+1} / ${n}</span></span><button class="tag-pill${locked?' active':''}" onclick="clShuffleLock('${cat}')">${locked?'Locked':'Lock'}</button></div>
       <div class="sh-stage"><button class="sh-arrow" onclick="clShuffleStep('${cat}',-1)">‹</button><div class="sh-slot">${n>1?`<img class="sh-side" src="${prev.thumb}" alt=""/>`:''}<img class="sh-main" data-cimg="${it.id}" src="${it.thumb}" alt=""/>${n>1?`<img class="sh-side" src="${next.thumb}" alt=""/>`:''}</div><button class="sh-arrow" onclick="clShuffleStep('${cat}',1)">›</button></div>
@@ -642,7 +642,7 @@ function clShuffleInner(c){
   }).join('');
 }
 function clShuffleHTML(c){
-  if(!c.items.length)return`<div class="empty">Add some tops, bottoms and shoes in <b>Wardrobe</b>, then come back to shuffle them together.</div>`;
+  if(!c.items.length)return`<div class="empty">Nothing to shuffle yet.</div>`;
   return`<div class="flex-between mb14"><div></div><button class="tag-pill${shuffleState.favOnly?' active':''}" onclick="clShuffleFav()">Favourites only</button></div>
     <div id="sh-area">${clShuffleInner(c)}</div>
     <div class="modal-row" style="justify-content:center;margin-top:16px"><button class="btn-solid sm" onclick="clShuffleGo()">Shuffle</button><button class="btn-ghost" onclick="clShuffleSave(false)">Save as outfit</button><button class="btn-ghost" onclick="clShuffleSave(true)">Save &amp; wear today</button></div>`;
@@ -683,7 +683,7 @@ function clAgo(dateKey){
   const m=Math.floor(days/30);return m+' month'+(m!==1?'s':'')+' ago';
 }
 function clStatsHTML(c){
-  if(!c.items.length)return`<div class="empty">Add clothes and log outfits on the calendar to see your wardrobe analytics.</div>`;
+  if(!c.items.length)return`<div class="empty">Nothing to show yet.</div>`;
   const st=clWearStats(c),W=i=>st.wears[i.id]||0;
   const total=c.items.reduce((s,i)=>s+(i.price||0),0);
   const worn=c.items.filter(i=>W(i)>0),unworn=c.items.filter(i=>!W(i));
@@ -699,7 +699,7 @@ function clStatsHTML(c){
   const thumbRow=i=>({label:i.name,thumb:i.thumb});
   return`<div class="st-tiles">${tile(clMoney(total),'Total wardrobe cost')}${tile(c.items.length,'Pieces')}${tile(totalWears?clMoney(wornCost/totalWears):'—','Avg cost per wear')}${tile(util+'%','Closet utilisation')}${tile(st.total,'Outfit wears logged')}${tile(clMoney(unwornCost),'Tied up in unworn')}</div>
     <div class="st-h"><span>Cost per wear</span><span class="flex-center" style="gap:6px"><button class="tag-pill${closetStatsSort==='best'?' active':''}" onclick="clSetStatsSort('best')">Best value</button><button class="tag-pill${closetStatsSort==='worst'?' active':''}" onclick="clSetStatsSort('worst')">Most expensive</button></span></div>
-    ${cpw.length?clBars(cpw.map(x=>Object.assign(thumbRow(x.i),{val:x.v,right:`${clMoney(x.v)} · ${W(x.i)}×`})),closetStatsSort==='best'?'green':'red'):`<p class="cl-hint">Log outfits as worn on the Calendar (and add prices to your pieces) to see cost per wear.</p>`}
+    ${cpw.length?clBars(cpw.map(x=>Object.assign(thumbRow(x.i),{val:x.v,right:`${clMoney(x.v)} · ${W(x.i)}×`})),closetStatsSort==='best'?'green':'red'):``}
     <div class="st-h"><span>Most worn</span></div>
     ${most.length?clBars(most.map(i=>Object.assign(thumbRow(i),{val:W(i),right:`${W(i)}×`})),'gold'):`<p class="cl-hint">Nothing worn yet.</p>`}
     <div class="st-h"><span>Least worn</span></div>
@@ -739,7 +739,7 @@ function clPackDetailHTML(c){
     <div class="st-bar-track" style="margin:10px 0 4px"><div class="st-bar-fill green" style="width:${pr.tot?pr.done/pr.tot*100:0}%"></div></div>
     <div class="of-meta" style="margin-bottom:18px">${pr.done} of ${pr.tot} packed · ${pr.pieces} piece${pr.pieces!==1?'s':''} from ${outs.length} outfit${outs.length!==1?'s':''}</div>
     <div class="st-h"><span>Outfits</span><button class="btn-ghost" style="padding:4px 10px" onclick="clPackOutfitsModal('${p.id}')">+ Add outfits</button></div>
-    ${outs.length?`<div class="of-grid sm" style="margin-bottom:18px">${outs.map(o=>`<div class="of-pick">${clMiniBoard(c,o)}<div class="flex-between" style="flex-wrap:nowrap;gap:4px;margin-top:3px"><div class="of-name" style="font-size:12px">${escHtml(o.name)}</div><button class="btn-ghost danger" style="padding:0 6px;font-size:12px" onclick="clPackRemoveOutfit('${p.id}','${o.id}')">×</button></div></div>`).join('')}</div>`:`<p class="cl-hint">Add your pre-made outfits and every piece you need to pack is listed automatically.</p>`}
+    ${outs.length?`<div class="of-grid sm" style="margin-bottom:18px">${outs.map(o=>`<div class="of-pick">${clMiniBoard(c,o)}<div class="flex-between" style="flex-wrap:nowrap;gap:4px;margin-top:3px"><div class="of-name" style="font-size:12px">${escHtml(o.name)}</div><button class="btn-ghost danger" style="padding:0 6px;font-size:12px" onclick="clPackRemoveOutfit('${p.id}','${o.id}')">×</button></div></div>`).join('')}</div>`:``}
     <div class="st-h"><span>Pack these</span><span class="flex-center" style="gap:6px"><button class="btn-ghost" style="padding:4px 10px" onclick="clPackPieceModal('${p.id}')">+ Add a piece</button>${pr.done?`<button class="btn-ghost" style="padding:4px 10px" onclick="clPackUncheck('${p.id}')">Reset ticks</button>`:''}</span></div>
     ${groups||`<p class="cl-hint">No pieces yet.</p>`}
     <div class="st-h" style="margin-top:22px"><span>Everything else</span></div>
@@ -775,7 +775,7 @@ function clPackOutfitsModal(pid){
   const c=closetData(),p=c.packing.find(x=>x.id===pid);if(!p)return;
   const sel=new Set(p.outfitIds||[]);
   openModal(`<div class="modal-head"><div class="modal-title">Add outfits</div><button class="modal-close" onclick="closeModal()">×</button></div>
-    ${c.outfits.length?`<p class="cl-hint" style="margin-top:0">Tap outfits to add or remove them. Every piece in them is added to the list.</p><div class="of-grid sm">${c.outfits.map(o=>`<div class="of-pick${sel.has(o.id)?' on':''}" onclick="clPackToggleOutfit('${pid}','${o.id}')">${clMiniBoard(c,o)}<div class="of-name" style="font-size:12px;margin-top:3px">${escHtml(o.name)}</div></div>`).join('')}</div>`:`<p class="cl-hint">You have not built any outfits yet — make some in the Outfits tab.</p>`}
+    ${c.outfits.length?`<div class="of-grid sm">${c.outfits.map(o=>`<div class="of-pick${sel.has(o.id)?' on':''}" onclick="clPackToggleOutfit('${pid}','${o.id}')">${clMiniBoard(c,o)}<div class="of-name" style="font-size:12px;margin-top:3px">${escHtml(o.name)}</div></div>`).join('')}</div>`:`<p class="cl-hint">No outfits yet.</p>`}
     <div class="modal-row" style="margin-top:16px"><button class="btn-solid sm" onclick="closeModal()">Done</button></div>`);
 }
 function clPackToggleOutfit(pid,oid){clPackMutate(pid,p=>{p.outfitIds=p.outfitIds||[];const i=p.outfitIds.indexOf(oid);if(i>=0)p.outfitIds.splice(i,1);else p.outfitIds.push(oid);},clPackOutfitsModal);}
@@ -783,7 +783,7 @@ function clPackPieceModal(pid){
   const c=closetData(),p=c.packing.find(x=>x.id===pid);if(!p)return;
   const have=new Set(clPackItems(c,p).map(e=>e.id)),list=c.items.filter(i=>!have.has(i.id));
   openModal(`<div class="modal-head"><div class="modal-title">Add a piece</div><button class="modal-close" onclick="closeModal()">×</button></div>
-    ${list.length?`<div class="of-grid sm">${list.map(i=>`<div class="of-pick" onclick="clPackAddPiece('${pid}','${i.id}')"><div class="mini-board" style="aspect-ratio:1"><img src="${i.thumb}" alt="" style="left:6%;top:6%;width:88%"/></div><div class="of-name" style="font-size:12px;margin-top:3px">${escHtml(i.name)}</div></div>`).join('')}</div>`:`<p class="cl-hint">Every piece in your closet is already on this list.</p>`}
+    ${list.length?`<div class="of-grid sm">${list.map(i=>`<div class="of-pick" onclick="clPackAddPiece('${pid}','${i.id}')"><div class="mini-board" style="aspect-ratio:1"><img src="${i.thumb}" alt="" style="left:6%;top:6%;width:88%"/></div><div class="of-name" style="font-size:12px;margin-top:3px">${escHtml(i.name)}</div></div>`).join('')}</div>`:``}
     <div class="modal-row" style="margin-top:16px"><button class="btn-solid sm" onclick="closeModal()">Done</button></div>`);
 }
 function clPackAddPiece(pid,id){clPackMutate(pid,p=>{p.extraItemIds=p.extraItemIds||[];if(p.extraItemIds.indexOf(id)<0)p.extraItemIds.push(id);},clPackPieceModal);}

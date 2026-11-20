@@ -31,7 +31,7 @@ function renderWeddingHome(w){
   const cd=weddingCountdown(w),bits=[w.venue,w.theme].filter(Boolean).map(escHtml);
   const summary=(cd||bits.length||w.notes)
     ?`<div class="wd-summary"><div class="wd-sum-main">${cd?`<div class="wd-count">${cd.big}</div><div class="wd-count-sub">${cd.small}</div><div class="wd-date">${escHtml(cd.dateStr)}</div>`:''}${bits.length?`<div class="wd-bits">${bits.join(' · ')}</div>`:''}${w.notes?`<div class="wd-sum-notes">${escHtml(w.notes)}</div>`:''}</div><button class="btn-ghost" onclick="openWeddingDetails()">Edit</button></div>`
-    :`<button class="wd-summary wd-summary-empty" onclick="openWeddingDetails()"><div><div class="wd-sum-title">Set your wedding details</div><div class="wd-sum-hint">Date, venue and theme, with a countdown</div></div><span class="area-chev">→</span></button>`;
+    :`<button class="wd-summary wd-summary-empty" onclick="openWeddingDetails()"><div><div class="wd-sum-title">Set your wedding details</div></div><span class="area-chev">→</span></button>`;
   const cards=[{id:'inspo',name:'Inspiration',photos:w.inspo,meta:w.inspoMeta||{}}].concat(w.folders.map(f=>({id:f.id,name:f.name,photos:f.photos||[],meta:f}))).map(f=>{
     const vis=wfVisible(f.photos).slice().sort((a,b)=>(b.liked?1:0)-(a.liked?1:0)),n=vis.length,imgs=vis.slice(0,4);
     const cover=n?`<div class="wd-cover c${Math.min(imgs.length,4)}">${imgs.map(p=>`<img src="${p.img}" alt="" loading="lazy"/>`).join('')}</div>`:`<div class="wd-cover empty"><span>${escHtml((f.name||'?').charAt(0).toUpperCase())}</span></div>`;
@@ -43,14 +43,14 @@ function renderWeddingHome(w){
   return`<div class="section-rule"><div><div class="section-title">Wedding</div></div>${quickNotesBtn('wedding')}</div>
     ${summary}
     <div class="st-h"><span>Folders</span><button class="btn-ghost" onclick="openNewWeddingFolder()">+ New folder</button></div>
-    <div class="wd-folders">${cards}<button class="wd-folder wd-new" onclick="openNewWeddingFolder()"><div class="wd-cover empty"><span>+</span></div><div class="wd-folder-name">New folder</div><div class="wd-folder-meta">Venue, flowers, dress…</div></button></div>
+    <div class="wd-folders">${cards}<button class="wd-folder wd-new" onclick="openNewWeddingFolder()"><div class="wd-cover empty"><span>+</span></div><div class="wd-folder-name">New folder</div></button></div>
     ${oldRow}`;
 }
 function renderWeddingFolder(w){
   const f=wfRef(w,weddingFolder),m=f.meta,vis=wfVisible(f.photos),n=vis.length,links=m.links||[],view=m.view==='board'?'board':'grid';
   const isInspo=f.id==='inspo';
   let photosHtml;
-  if(!n)photosHtml=`<div class="wd-empty"><div>No photos in this folder yet.</div><button class="btn-solid sm" onclick="triggerCapture()">+ Add photos</button></div>`;
+  if(!n)photosHtml=`<div class="wd-empty"><div>Empty</div><button class="btn-solid sm" onclick="triggerCapture()">+ Add photos</button></div>`;
   else if(view==='board'){
     const tiles=vis.slice().sort((a,b)=>(b.liked?1:0)-(a.liked?1:0)).map(p=>`<div class="mood-tile mb-t" onclick="viewPhoto('${p.id}','${f.type}','${f.ctx}')"><img src="${p.img}" alt=""/>${p.kind?`<span class="kind-badge">${p.kind==='video'?'▶ Video':'File'}</span>`:''}</div>`).join('');
     photosHtml=`<div class="mood-board mb-auto wd-board">${tiles}</div>`;
@@ -59,7 +59,6 @@ function renderWeddingFolder(w){
   return`<div class="section-rule"><div><div class="section-title">${escHtml(f.name)}</div><div class="section-sub">${n} photo${n!==1?'s':''}</div></div><div class="flex-center">${isInspo?'':`<button class="btn-ghost" onclick="openEditWeddingFolder('${f.id}')">Edit</button>`}<button class="btn-solid sm" onclick="triggerCapture()">+ Add photos</button></div></div>
     <div class="st-h"><span>Photos</span>${n?`<span class="wd-seg"><button class="${view==='grid'?'active':''}" onclick="wfSetView('grid')">Grid</button><button class="${view==='board'?'active':''}" onclick="wfSetView('board')">Board</button></span>`:''}</div>
     ${photosHtml}
-    ${n&&view==='grid'?`<div class="cl-hint">Press and hold a photo to move it to another folder.</div>`:''}
     <div class="st-h"><span>Notes</span></div>
     <textarea id="wf-notes" class="field-input" rows="4" placeholder="Ideas, supplier details, prices, things to ask…" onchange="wfSaveNotes()">${escHtml(m.notes||'')}</textarea>
     <div class="st-h"><span>Links</span><button class="btn-ghost" onclick="openAddWeddingLink()">+ Add link</button></div>

@@ -104,35 +104,35 @@ function areaRows(a){
     const home=userData('home',{rooms:[]}),fp=userData('floorplan',{img:null});
     const spent=home.rooms.reduce((s,r)=>s+(r.items||[]).reduce((x,i)=>x+(i.price||0),0)+(r.photos||[]).filter(p=>!p.archived).reduce((x,p)=>x+(p.price||0),0),0);
     return[
-      R('Rooms',home.rooms.length?n(home.rooms.length,'room')+(spent?` · ${clMoney(spent)}`:''):'Add your first room',"setHomeView('rooms')"),
-      R('Floor plan',fp.img?'Tap the plan to pin rooms':'Upload a floor plan',"setHomeView('floorplan')"),
+      R('Rooms',home.rooms.length?n(home.rooms.length,'room')+(spent?` · ${clMoney(spent)}`:''):'',"setHomeView('rooms')"),
+      R('Floor plan',fp.img?'':'',"setHomeView('floorplan')"),
     ];
   }
   if(a==='closet'){
     const c=closetData(),days=Object.keys(c.calendar).length,total=c.items.reduce((s,i)=>s+(i.price||0),0);
     return[
-      R('Wardrobe',c.items.length?n(c.items.length,'piece'):'Add your first piece',"clSetTab('wardrobe')"),
-      R('Outfits',c.outfits.length?n(c.outfits.length,'outfit'):'Build flat-lay outfits',"clSetTab('outfits')"),
-      R('Calendar',days?n(days,'day')+' planned or logged':'Plan what to wear',"clSetTab('calendar')"),
-      R('Shuffle','Mix tops, bottoms & shoes',"clSetTab('shuffle')"),
-      R('Stats',c.items.length&&total?`${clMoney(total)} · cost per wear`:'Cost per wear & utilisation',"clSetTab('stats')"),
-      R('Packing',c.packing.length?n(c.packing.length,'list'):'Trip & capsule lists',"clSetTab('packing')"),
+      R('Wardrobe',c.items.length?n(c.items.length,'piece'):'',"clSetTab('wardrobe')"),
+      R('Outfits',c.outfits.length?n(c.outfits.length,'outfit'):'',"clSetTab('outfits')"),
+      R('Calendar',days?n(days,'day')+' planned or logged':'',"clSetTab('calendar')"),
+      R('Shuffle','',"clSetTab('shuffle')"),
+      R('Stats',c.items.length&&total?`${clMoney(total)} · cost per wear`:'',"clSetTab('stats')"),
+      R('Packing',c.packing.length?n(c.packing.length,'list'):'',"clSetTab('packing')"),
     ];
   }
   const w=userData('wedding',{inspo:[]}),h=userData('honeymoon',{rooms:[]}),d=userData('dayout',{plans:[]}),rec=userData('recipes',{items:[]}),mu=userData('music',{playlists:[]});
   const wF=w.folders||[],wP=[w.inspo||[]].concat(wF.map(f=>f.photos||[])).reduce((s,a)=>s+a.filter(p=>!p.archived).length,0),songs=mu.playlists.reduce((s,p)=>s+(p.songs||[]).length,0);
   return[
-    R('Wedding',w.wdate?new Date(w.wdate+'T12:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'}):(wF.length||wP?(wF.length?n(wF.length,'folder')+' · ':'')+n(wP,'photo'):'Folders, inspiration & details'),"weddingFolder=null;showSection('wedding')"),
-    R('Honeymoon',h.rooms.length?n(h.rooms.length,'destination'):'Plan your trip',"showSection('honeymoon')"),
-    R('Days out',d.plans.length?n(d.plans.length,'plan'):'Plan a day out',"showSection('dayout')"),
-    R('Recipes',rec.items.length?n(rec.items.length,'recipe'):'Save your first',"showSection('recipes')"),
-    R('Music',mu.playlists.length?n(mu.playlists.length,'playlist')+(songs?' · '+n(songs,'song'):''):'Create a playlist',"showSection('music')"),
+    R('Wedding',w.wdate?new Date(w.wdate+'T12:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'}):(wF.length||wP?(wF.length?n(wF.length,'folder')+' · ':'')+n(wP,'photo'):''),"weddingFolder=null;showSection('wedding')"),
+    R('Honeymoon',h.rooms.length?n(h.rooms.length,'destination'):'',"showSection('honeymoon')"),
+    R('Days out',d.plans.length?n(d.plans.length,'plan'):'',"showSection('dayout')"),
+    R('Recipes',rec.items.length?n(rec.items.length,'recipe'):'',"showSection('recipes')"),
+    R('Music',mu.playlists.length?n(mu.playlists.length,'playlist')+(songs?' · '+n(songs,'song'):''):'',"showSection('music')"),
   ];
 }
 function renderArea(main,a){
   const info=AREAS[a];if(!info){showSection('dashboard');return;}
   main.innerHTML=`<div class="section-rule"><div><div class="section-title">${info.name}</div></div></div>
-    <div class="area-list">${areaRows(a).map(r=>`<button class="area-row" onclick="${r.go}"><div><div class="area-row-title">${r.title}</div><div class="area-row-meta">${r.meta}</div></div><span class="area-chev">→</span></button>`).join('')}</div>`;
+    <div class="area-list">${areaRows(a).map(r=>`<button class="area-row" onclick="${r.go}"><div><div class="area-row-title">${r.title}</div>${r.meta?`<div class="area-row-meta">${r.meta}</div>`:''}</div><span class="area-chev">→</span></button>`).join('')}</div>`;
 }
 
 // ── MODAL ──

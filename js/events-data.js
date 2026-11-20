@@ -250,7 +250,7 @@ function evCardHTML(ev){
 function evStripHTML(){
   const list=evData().events.slice().sort((a,b)=>(evDaysSorted(a)[0]||'9').localeCompare(evDaysSorted(b)[0]||'9'));
   return`<div class="ev-strip"><div class="section-rule sub"><div><div class="section-title">Events</div></div><button class="btn-solid sm teal" onclick="openAddEvent()">+ Add event</button></div>
-    ${list.length?`<div class="ev-cards">${list.map(evCardHTML).join('')}</div>`:`<p class="cl-hint">Plan a trip or a party with other people. Choose the days, send a link, and everyone sees the same calendar.</p>`}</div>`;
+    ${list.length?`<div class="ev-cards">${list.map(evCardHTML).join('')}</div>`:``}</div>`;
 }
 function evPinnedHTML(){
   const d=evData(),list=d.pins.map(id=>evFind(d,id)).filter(Boolean);
@@ -359,9 +359,9 @@ function evHiddenNote(ev){
 function evPermsHTML(ev){
   if(!ev.creator)return'';
   const head=`<div class="ev-strip-title">Who can see what</div>`;
-  if(!ev.shared)return`<div class="ev-set-block">${head}<p class="cl-hint">Once you share the event and people join, you can choose here which parts each person can see.</p></div>`;
+  if(!ev.shared)return`<div class="ev-set-block">${head}</div>`;
   const others=(ev.people||[]).filter(p=>!p.guest&&p.id!==(ev.me||{}).id);
-  if(!others.length)return`<div class="ev-set-block">${head}<p class="cl-hint">Nobody else has joined yet. When they do, you can choose which parts each person can see.</p></div>`;
+  if(!others.length)return`<div class="ev-set-block">${head}</div>`;
   return`<div class="ev-set-block">${head}<p class="cl-hint">Mark people as hosts or guests. Activities you tick "Hide from guests" on are hidden from anyone marked Guest. Tick the parts each person can see. Unticked parts are hidden in their MAISON app. This is not a security lock: someone with the link who knows how could still read the event.</p>
     ${others.map(p=>{const px=(ev.perms||[]).find(x=>x.id===p.id)||{},hide=px.hide||[],isG=px.role==='guest';return`<div class="ev-perm"><div class="ev-perm-name"><i>${escHtml(evInitials(p.name))}</i>${escHtml(p.name)}<span class="ev-role"><button class="${isG?'':'on'}" aria-pressed="${!isG}" onclick="evRoleSet('${p.id}','host')">Host</button><button class="${isG?'on':''}" aria-pressed="${isG}" onclick="evRoleSet('${p.id}','guest')">Guest</button></span></div><div class="cl-chips">${EV_PARTS.map(([k,l])=>`<label class="cl-chip"><input type="checkbox"${hide.indexOf(k)<0?' checked':''} onchange="evPermSet('${p.id}','${k}',this.checked)"/><span>${l}</span></label>`).join('')}</div></div>`;}).join('')}</div>`;
 }

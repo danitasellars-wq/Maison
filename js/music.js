@@ -3,7 +3,7 @@
 function renderMusic(main){
   const m=userData('music',{playlists:[]});
   if(!m.playlists.length){
-    main.innerHTML=`<div class="section-rule"><div><div class="section-title">Music</div></div><div class="flex-center">${quickNotesBtn('music')}<button class="btn-solid sm" onclick="openAddPlaylist()">+ Playlist</button></div></div><div class="empty"><div class="empty-icon">🎵</div>No playlists yet. Create your first one!</div>`;
+    main.innerHTML=`<div class="section-rule"><div><div class="section-title">Music</div></div><div class="flex-center">${quickNotesBtn('music')}<button class="btn-solid sm" onclick="openAddPlaylist()">+ Playlist</button></div></div><div class="empty"><div class="empty-icon">🎵</div>No playlists yet.</div>`;
     return;
   }
   if(!activeMusicPlaylistId||!m.playlists.find(p=>p.id===activeMusicPlaylistId))activeMusicPlaylistId=m.playlists[0].id;
@@ -22,7 +22,7 @@ function renderMusic(main){
       ${link?`<a href="${escHtml(link)}" target="_blank" rel="noopener" class="song-link-btn">${s.audio?'Link':'Play'}</a>`:''}
       <button class="icon-btn" title="Delete" onclick="deleteSong('${pl.id}','${s.id}')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg></button>
     </div>
-  </div>`;}).join(''):`<div class="empty" style="padding:20px 0;font-size:13px">No songs yet — add your first!</div>`;
+  </div>`;}).join(''):`<div class="empty" style="padding:20px 0;font-size:13px">No songs yet.</div>`;
   main.innerHTML=`<div class="section-rule"><div><div class="section-title">Music</div></div><div class="flex-center">${quickNotesBtn('music')}<button class="btn-solid sm" onclick="openAddPlaylist()">+ Playlist</button></div></div>
     <div class="room-tabs-row">${tabs}</div>
     <div class="flex-between mb14" style="padding-top:16px">
@@ -74,7 +74,7 @@ function openAddSong(playlistId){
     <input id="song-link" class="field-input" type="url" placeholder="https://…"/>
     <label class="field-label">Or upload the song</label>
     <input id="song-file" class="field-input" type="file" accept="audio/*,.mp3,.m4a,.aac,.wav,.ogg,.flac" onchange="songFilePicked(this)"/>
-    <p class="cl-hint" id="song-file-hint">Add a link, upload a file, or both. Uploaded songs play inside MAISON and sync through Google Drive.</p>
+    <p class="cl-hint" id="song-file-hint"></p>
     <label class="field-label">Note (optional)</label>
     <input id="song-note" class="field-input" placeholder="Why you love it…"/>
     <div class="modal-row"><button class="btn-solid sm" id="song-save" onclick="saveSong('${playlistId}')">Add to playlist</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);

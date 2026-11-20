@@ -56,7 +56,7 @@ function evListModal(listId){
     <label class="field-label">Name</label><input id="el-title" class="field-input" value="${escHtml(l?l.title:'')}" placeholder="e.g. Things to bring" autocomplete="off"/>
     <label class="field-label">Who can see it</label>
     <div class="cl-chips"><label class="cl-chip"><input type="radio" name="el-vis" value="shared"${shared?' checked':''}/><span>Shared with everyone</span></label><label class="cl-chip"><input type="radio" name="el-vis" value="private"${shared?'':' checked'}/><span>Private, just me</span></label></div>
-    <p class="cl-hint">A private list stays on your own devices and in your own Google Drive backup. Nobody else on the event can see it.</p>
+
     <div class="modal-row"><button class="btn-solid sm teal" onclick="evListSave(${l?`'${l.id}'`:'null'})">${l?'Save':'Create'}</button><button class="btn-ghost" onclick="closeModal()">Cancel</button>${l?`<button class="btn-ghost danger" onclick="evListDelete('${l.id}')">Delete list</button>`:''}</div>`);
 }
 function evListSave(listId){
@@ -204,7 +204,7 @@ async function evPlaceSave(inputId){
 function evSavedHTML(){
   const pl=evPlaces(),hs=userData('hosts',[]);if(!pl.length&&!hs.length)return'';
   const row=(n,sub,fn,id)=>`<div class="ev-saved"><span><b>${escHtml(n)}</b>${sub?`<i>${escHtml(sub)}</i>`:''}</span><button class="icon-btn" aria-label="Forget ${escHtml(n)}" onclick="${fn}('${id}')">×</button></div>`;
-  return`<div class="ev-set-block"><div class="ev-strip-title">Your saved places and hosts</div><p class="cl-hint">Only on your account. Saved when you add an activity or a host; forget any here.</p>${pl.map(p=>row(p.name,p.where,'evPlaceDelete',p.id)).join('')}${hs.map(h=>row(h.name,h.place||'Host','evHostDelete',h.id)).join('')}</div>`;
+  return`<div class="ev-set-block"><div class="ev-strip-title">Your saved places and hosts</div>${pl.map(p=>row(p.name,p.where,'evPlaceDelete',p.id)).join('')}${hs.map(h=>row(h.name,h.place||'Host','evHostDelete',h.id)).join('')}</div>`;
 }
 function evPlaceDelete(pid){saveData('places',evPlaces().filter(p=>p.id!==pid));openEventSettings();}
 function evHostDelete(hid){saveData('hosts',(userData('hosts',[])).filter(h=>h.id!==hid));openEventSettings();}
