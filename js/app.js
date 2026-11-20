@@ -59,6 +59,7 @@ function backLabel(){
   if(s.indexOf('area_')===0)return'Home';
   if(s==='closet'){if(closetOutfitId&&outfitDraft)return'Outfits';if(closetTab==='packing'&&closetPackId)return'Packing';}
   if(s==='event')return evDay?'Calendar':'Days out';
+  if(s==='wedding'&&weddingFolder)return'Wedding';
   const a=areaOf(s);return a?AREAS[a].short:'Home';
 }
 function renderHeaderNav(){
@@ -71,6 +72,7 @@ function goBack(){
   if(s==='dashboard')return;
   if(s.indexOf('area_')===0){showSection('dashboard');return;}
   if(s==='event'){if(evDay){evDay=null;showSection('event');window.scrollTo(0,0);}else{activeEventId=null;showSection('dayout');}return;}
+  if(s==='wedding'&&weddingFolder){weddingFolder=null;showSection('wedding');window.scrollTo(0,0);return;}
   if(s==='closet'){
     if(closetOutfitId&&outfitDraft){clCloseEditor();return;}
     if(closetTab==='packing'&&closetPackId){clClosePack();return;}
@@ -118,9 +120,9 @@ function areaRows(a){
     ];
   }
   const w=userData('wedding',{inspo:[]}),h=userData('honeymoon',{rooms:[]}),d=userData('dayout',{plans:[]}),rec=userData('recipes',{items:[]}),mu=userData('music',{playlists:[]});
-  const wP=(w.inspo||[]).filter(p=>!p.archived).length,songs=mu.playlists.reduce((s,p)=>s+(p.songs||[]).length,0);
+  const wF=w.folders||[],wP=[w.inspo||[]].concat(wF.map(f=>f.photos||[])).reduce((s,a)=>s+a.filter(p=>!p.archived).length,0),songs=mu.playlists.reduce((s,p)=>s+(p.songs||[]).length,0);
   return[
-    R('Wedding',w.wdate?new Date(w.wdate+'T12:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'}):(wP?n(wP,'photo'):'Inspiration & details'),"showSection('wedding')"),
+    R('Wedding',w.wdate?new Date(w.wdate+'T12:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'}):(wF.length||wP?(wF.length?n(wF.length,'folder')+' · ':'')+n(wP,'photo'):'Folders, inspiration & details'),"weddingFolder=null;showSection('wedding')"),
     R('Honeymoon',h.rooms.length?n(h.rooms.length,'destination'):'Plan your trip',"showSection('honeymoon')"),
     R('Days out',d.plans.length?n(d.plans.length,'plan'):'Plan a day out',"showSection('dayout')"),
     R('Recipes',rec.items.length?n(rec.items.length,'recipe'):'Save your first',"showSection('recipes')"),
@@ -195,6 +197,7 @@ function getAllPhotos(archivedOnly=false){
   home.rooms.forEach(r=>(r.photos||[]).filter(p=>archivedOnly?p.archived===true:!p.archived).forEach(p=>all.push({photo:p,type:'home_room',contextId:r.id,label:r.name,sectionKey:'home'})));
   const w=userData('wedding',{inspo:[]});
   (w.inspo||[]).filter(p=>archivedOnly?p.archived===true:!p.archived).forEach(p=>all.push({photo:p,type:'wedding',contextId:'wedding',label:'Wedding',sectionKey:'wedding'}));
+  (w.folders||[]).forEach(f=>(f.photos||[]).filter(p=>archivedOnly?p.archived===true:!p.archived).forEach(p=>all.push({photo:p,type:'wedding_folder',contextId:f.id,label:'Wedding: '+f.name,sectionKey:'wedding'})));
   const h=userData('honeymoon',{rooms:[],inspo:[]});
   (h.inspo||[]).filter(p=>archivedOnly?p.archived===true:!p.archived).forEach(p=>all.push({photo:p,type:'honeymoon_inspo',contextId:'honeymoon',label:'Honeymoon',sectionKey:'honeymoon'}));
   h.rooms.forEach(r=>(r.photos||[]).filter(p=>archivedOnly?p.archived===true:!p.archived).forEach(p=>all.push({photo:p,type:'honeymoon_room',contextId:r.id,label:r.name,sectionKey:'honeymoon'})));
@@ -253,10 +256,11 @@ function panelToggleLike(photoId,type,contextId){const arr=getPhotosArray(type,c
 function restorePhoto(photoId,type,contextId){const arr=getPhotosArray(type,contextId);const p=arr.find(p=>p.id===photoId);if(p){p.archived=false;savePhotosArray(type,contextId,arr);}renderSidePanel();updatePanelBadge();showSection(currentSection);}
 function deleteFromPanel(photoId,type,contextId){if(!confirm('Permanently delete?'))return;savePhotosArray(type,contextId,getPhotosArray(type,contextId).filter(p=>p.id!==photoId));idbDeletePhoto(photoId).catch(()=>{});deleteRemotePhoto(photoId).catch(()=>{});renderSidePanel();updatePanelBadge();}
 function openAssignPhoto(photoId,fromType,fromContextId){
-  const home=userData('home',{rooms:[]});const h=userData('honeymoon',{rooms:[]});const d=userData('dayout',{plans:[]});
+  const home=userData('home',{rooms:[]});const h=userData('honeymoon',{rooms:[]});const d=userData('dayout',{plans:[]});const wd=userData('wedding',{folders:[]});
   const dests=[
     ...home.rooms.map(r=>({label:`${r.name} (Home)`,type:'home_room',contextId:r.id})),
     {label:'Wedding inspiration',type:'wedding',contextId:'wedding'},
+    ...(wd.folders||[]).map(f=>({label:`${f.name} (Wedding folder)`,type:'wedding_folder',contextId:f.id})),
     {label:'Honeymoon inspiration',type:'honeymoon_inspo',contextId:'honeymoon'},
     ...h.rooms.map(r=>({label:`${r.name} (Honeymoon)`,type:'honeymoon_room',contextId:r.id})),
     ...d.plans.map(pl=>({label:`${pl.name} (Day Out)`,type:'dayout_plan',contextId:pl.id}))
@@ -273,7 +277,7 @@ function doMovePhoto(photoId,fromType,fromContextId,toType,toContextId){
 function navigateToPhoto(type,contextId,sectionKey){
   closeSidePanel();
   if(sectionKey==='home'){activeRoomId=contextId;homeView='rooms';activeRoomTab='photos';showSection('home');}
-  else if(sectionKey==='wedding'){weddingTab='inspo';showSection('wedding');}
+  else if(sectionKey==='wedding'){weddingFolder=type==='wedding_folder'?contextId:'inspo';showSection('wedding');}
   else if(sectionKey==='honeymoon'){if(type==='honeymoon_room')activeHoneymoonRoomId=contextId;honeymoonTab=type==='honeymoon_room'?'rooms':'inspo';showSection('honeymoon');}
   else if(sectionKey==='dayout'){activeDayOutId=contextId;showSection('dayout');}
   else if(sectionKey==='recipes'){closeSidePanel();showSection('recipes');}
@@ -299,6 +303,11 @@ function getAllLinks(){
   });
   const w=userData('wedding',{inspo:[]});
   (w.inspo||[]).filter(p=>p.link&&!p.archived).forEach(p=>all.push({title:p.note||'Wedding Link',url:p.link,label:'Wedding',icon:'💍'}));
+  (w.inspoMeta&&w.inspoMeta.links||[]).forEach(l=>all.push({title:l.title||l.url,url:l.url,label:'Wedding',icon:'💍'}));
+  (w.folders||[]).forEach(f=>{
+    (f.photos||[]).filter(p=>p.link&&!p.archived).forEach(p=>all.push({title:p.note||'Wedding Link',url:p.link,label:'Wedding: '+f.name,icon:'💍'}));
+    (f.links||[]).forEach(l=>all.push({title:l.title||l.url,url:l.url,label:'Wedding: '+f.name,icon:'💍'}));
+  });
   const h=userData('honeymoon',{rooms:[],inspo:[]});
   (h.inspo||[]).filter(p=>p.link&&!p.archived).forEach(p=>all.push({title:p.note||'Honeymoon Link',url:p.link,label:'Honeymoon',icon:'✈️'}));
   h.rooms.forEach(r=>{
@@ -341,6 +350,7 @@ function saveLink(){
 function getPhotosArray(type,contextId){
   if(type==='home_room'){const home=userData('home',{rooms:[]});const room=home.rooms.find(r=>r.id===contextId);return room?(room.photos=room.photos||[],room.photos):[];}
   if(type==='wedding'){const w=userData('wedding',{inspo:[]});return w.inspo=w.inspo||[];}
+  if(type==='wedding_folder'){const w=userData('wedding',{inspo:[]});const f=(w.folders||[]).find(x=>x.id===contextId);return f?(f.photos=f.photos||[],f.photos):[];}
   if(type==='honeymoon_room'){const h=userData('honeymoon',{rooms:[]});const room=h.rooms.find(r=>r.id===contextId);return room?(room.photos=room.photos||[],room.photos):[];}
   if(type==='honeymoon_inspo'){const h=userData('honeymoon',{rooms:[],inspo:[]});return h.inspo=h.inspo||[];}
   if(type==='dayout_plan'){const d=userData('dayout',{plans:[]});const pl=d.plans.find(p=>p.id===contextId);return pl?(pl.photos=pl.photos||[],pl.photos):[];}
@@ -350,6 +360,7 @@ function getPhotosArray(type,contextId){
 function savePhotosArray(type,contextId,arr){
   if(type==='home_room'){const home=userData('home',{rooms:[]});const room=home.rooms.find(r=>r.id===contextId);if(room){room.photos=arr;saveData('home',home);}}
   else if(type==='wedding'){const w=userData('wedding',{inspo:[]});w.inspo=arr;saveData('wedding',w);}
+  else if(type==='wedding_folder'){const w=userData('wedding',{inspo:[]});const f=(w.folders||[]).find(x=>x.id===contextId);if(f){f.photos=arr;saveData('wedding',w);}}
   else if(type==='honeymoon_room'){const h=userData('honeymoon',{rooms:[]});const room=h.rooms.find(r=>r.id===contextId);if(room){room.photos=arr;saveData('honeymoon',h);}}
   else if(type==='honeymoon_inspo'){const h=userData('honeymoon',{rooms:[],inspo:[]});h.inspo=arr;saveData('honeymoon',h);}
   else if(type==='dayout_plan'){const d=userData('dayout',{plans:[]});const pl=d.plans.find(p=>p.id===contextId);if(pl){pl.photos=arr;saveData('dayout',d);}}

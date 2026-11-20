@@ -4,7 +4,7 @@
 // pre-selected); on the home screen every destination is offered. Everything lands in the All photos gallery too.
 function capturePreselect(opts){
   const s=currentSection,has=v=>opts.some(o=>o.v===v);
-  const want=s==='home'&&activeRoomId?'home_'+activeRoomId:s==='wedding'?'wedding':s==='honeymoon'?'honeymoon':s==='dayout'&&activeDayOutId?'dayout_'+activeDayOutId:s==='recipes'?'recipes_new':null;
+  const want=s==='home'&&activeRoomId?'home_'+activeRoomId:s==='wedding'?(weddingFolder&&weddingFolder!=='inspo'?'wedding_'+weddingFolder:'wedding'):s==='honeymoon'?'honeymoon':s==='dayout'&&activeDayOutId?'dayout_'+activeDayOutId:s==='recipes'?'recipes_new':null;
   if(want&&has(want))return want;
   const last=localStorage.getItem('maison_lastdest');
   return last&&has(last)?last:opts[0].v;
@@ -76,7 +76,9 @@ function triggerCapture(){
   const opts=[];
   if(!area||area==='house')home.rooms.forEach(r=>opts.push({v:'home_'+r.id,label:r.name+' (Room)'}));
   if(!area||area==='other'){
-    opts.push({v:'wedding',label:'Wedding inspiration'},{v:'honeymoon',label:'Honeymoon inspiration'});
+    opts.push({v:'wedding',label:'Wedding inspiration'});
+    (userData('wedding',{folders:[]}).folders||[]).forEach(f=>opts.push({v:'wedding_'+f.id,label:'Wedding folder: '+f.name}));
+    opts.push({v:'honeymoon',label:'Honeymoon inspiration'});
     d.plans.forEach(pl=>opts.push({v:'dayout_'+pl.id,label:pl.name+' (Day Out)'}));
     opts.push({v:'recipes_new',label:'New Recipe'});
     rec.items.forEach(ri=>opts.push({v:'recipe_'+ri.id,label:'Add to recipe: '+(ri.title||'Recipe')}));
@@ -131,6 +133,7 @@ async function capFilesPicked(input){
 function capTarget(dest){
   if(dest.indexOf('home_')===0){const d=userData('home',{rooms:[]}),room=d.rooms.find(r=>r.id===dest.slice(5));return room?{photos:room.photos=room.photos||[],save:()=>saveData('home',d)}:null;}
   if(dest==='wedding'){const d=userData('wedding',{inspo:[]});return{photos:d.inspo=d.inspo||[],save:()=>saveData('wedding',d)};}
+  if(dest.indexOf('wedding_')===0){const d=userData('wedding',{inspo:[]}),f=(d.folders||[]).find(x=>x.id===dest.slice(8));return f?{photos:f.photos=f.photos||[],save:()=>saveData('wedding',d)}:null;}
   if(dest==='honeymoon'){const d=userData('honeymoon',{rooms:[],inspo:[],budget:0});return{photos:d.inspo=d.inspo||[],save:()=>saveData('honeymoon',d)};}
   if(dest.indexOf('dayout_')===0){const d=userData('dayout',{plans:[]}),pl=d.plans.find(p=>p.id===dest.slice(7));return pl?{photos:pl.photos=pl.photos||[],save:()=>saveData('dayout',d)}:null;}
   if(dest.indexOf('recipe_')===0){const d=userData('recipes',{items:[]}),ri=d.items.find(i=>i.id===dest.slice(7));return ri?{photos:ri.photos=ri.photos||[],save:()=>saveData('recipes',d)}:null;}

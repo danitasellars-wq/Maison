@@ -141,7 +141,7 @@ function referencedPhotoIds(){
   const push=p=>{if(p&&p.id){ids.push(p.id);if(p.kind)bigPhotoIds.add(p.id);}};
   const home=userData('home',{rooms:[]});
   (home.rooms||[]).forEach(r=>{(r.photos||[]).forEach(push);((r.moodboard&&r.moodboard.tiles)||[]).forEach(push);});
-  const w=userData('wedding',{inspo:[]});(w.inspo||[]).forEach(push);
+  const w=userData('wedding',{inspo:[]});(w.inspo||[]).forEach(push);(w.folders||[]).forEach(f=>(f.photos||[]).forEach(push));
   const h=userData('honeymoon',{rooms:[],inspo:[]});(h.inspo||[]).forEach(push);(h.rooms||[]).forEach(r=>(r.photos||[]).forEach(push));
   const d=userData('dayout',{plans:[]});(d.plans||[]).forEach(pl=>(pl.photos||[]).forEach(push));
   const rec=userData('recipes',{items:[]});rec.items.forEach(it=>{if(it.img&&it.id)ids.push(it.id);(it.photos||[]).forEach(push);});
@@ -270,7 +270,9 @@ async function migrateInlinePhotos(){
   }
   if(changed)saveData('home',home);
   const w=userData('wedding',{inspo:[]});
-  if(await migratePhotoArray(w.inspo||[])){saveData('wedding',w);changed=true;}
+  let wChanged=await migratePhotoArray(w.inspo||[]);
+  for(const f of(w.folders||[]))if(await migratePhotoArray(f.photos||[]))wChanged=true;
+  if(wChanged){saveData('wedding',w);changed=true;}
   const h=userData('honeymoon',{rooms:[],inspo:[]});
   let hChanged=await migratePhotoArray(h.inspo||[]);
   for(const r of(h.rooms||[]))if(await migratePhotoArray(r.photos||[]))hChanged=true;

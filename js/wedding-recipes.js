@@ -1,18 +1,117 @@
 // MAISON · wedding-recipes.js — plain script, shares globals with the other files in js/ (load order is set in index.html).
 // ── WEDDING ──
-let weddingTab='inspo';
-function renderWedding(main){
-  const w=userData('wedding',{inspo:[],wdate:'',venue:'',theme:'',notes:''});
-  if(weddingTab==='moodboard')weddingTab='inspo';   // mood boards now live behind the Mood board button
-  const tabs=['inspo','details'].map(t=>`<button class="room-tab${weddingTab===t?' active':''}" onclick="setWeddingTab('${t}')">${t==='inspo'?'Inspiration':'Details'}</button>`).join('');
-  let content='';
-  if(weddingTab==='inspo')content=`<div class="flex-between mb14"><div style="font-family:var(--sans);font-size:16px;color:var(--muted)">Inspiration gallery</div></div>${renderPhotoGrid(w.inspo||[],'wedding','wedding')}`;
-  else if(weddingTab==='moodboard')content=renderMoodBoardSection('wedding');
-  else content=`<label class="field-label">Wedding date</label><input id="w-date" class="field-input" type="date" value="${w.wdate||''}"/><label class="field-label">Venue</label><input id="w-venue" class="field-input" placeholder="The Grand Hotel…" value="${w.venue||''}"/><label class="field-label">Theme / Aesthetic</label><input id="w-theme" class="field-input" placeholder="Garden romance…" value="${w.theme||''}"/><label class="field-label">Notes</label><textarea id="w-notes" class="field-input" rows="4">${w.notes||''}</textarea><button class="btn-solid sm" onclick="saveWeddingDetails()">Save details</button>`;
-  main.innerHTML=`<div class="section-rule"><div><div class="section-title">Wedding</div><div class="section-sub">Gather inspiration &amp; build your vision.</div></div>${quickNotesBtn('wedding')}</div><div class="room-tabs-row">${tabs}</div>${content}`;
+// One page, no tabs. The top shows the wedding summary (countdown, date, venue, theme); below it sit FOLDERS, each its own mood board of
+// photos plus notes and links. "Inspiration" is the built-in folder (it is the original wedding photo list, `w.inspo`, so nothing had to be
+// migrated); every other folder lives in `w.folders` as {id,name,notes,links:[{id,title,url}],view,photos:[]}.
+// weddingFolder: null = the folder list, 'inspo' or a folder id = that folder is open.
+let weddingTab='inspo',weddingFolder=null;
+function weddingData(){const w=userData('wedding',{inspo:[]});w.inspo=w.inspo||[];w.folders=w.folders||[];return w;}
+// {name, photos (the live array), meta (the object holding notes/links/view), type/ctx for the photo helpers}
+function wfRef(w,fid){
+  if(fid==='inspo'){w.inspoMeta=w.inspoMeta||{notes:'',links:[],view:'grid'};return{id:'inspo',name:'Inspiration',photos:w.inspo,meta:w.inspoMeta,type:'wedding',ctx:'wedding',dest:'wedding'};}
+  const f=w.folders.find(x=>x.id===fid);if(!f)return null;
+  f.photos=f.photos||[];return{id:f.id,name:f.name,photos:f.photos,meta:f,type:'wedding_folder',ctx:f.id,dest:'wedding_'+f.id};
 }
-function setWeddingTab(t){weddingTab=t;showSection('wedding');}
-function saveWeddingDetails(){const w=userData('wedding',{inspo:[]});w.wdate=document.getElementById('w-date').value;w.venue=document.getElementById('w-venue').value.trim();w.theme=document.getElementById('w-theme').value.trim();w.notes=document.getElementById('w-notes').value.trim();saveData('wedding',w);alert('Details saved!');}
+function wfVisible(photos){return(photos||[]).filter(p=>!p.archived);}
+function renderWedding(main){
+  const w=weddingData();
+  if(weddingFolder&&!wfRef(w,weddingFolder))weddingFolder=null;
+  main.innerHTML=weddingFolder?renderWeddingFolder(w):renderWeddingHome(w);
+}
+function weddingCountdown(w){
+  if(!w.wdate)return null;
+  const t=new Date(w.wdate+'T12:00:00'),now=new Date();now.setHours(12,0,0,0);
+  const d=Math.round((t-now)/864e5);
+  const dateStr=t.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  if(d>0)return{big:String(d),small:d===1?'day to go':'days to go',dateStr};
+  if(d===0)return{big:'Today',small:'is the big day',dateStr};
+  return{big:String(-d),small:-d===1?'day since the wedding':'days since the wedding',dateStr};
+}
+function renderWeddingHome(w){
+  const cd=weddingCountdown(w),bits=[w.venue,w.theme].filter(Boolean).map(escHtml);
+  const summary=(cd||bits.length||w.notes)
+    ?`<div class="wd-summary"><div class="wd-sum-main">${cd?`<div class="wd-count">${cd.big}</div><div class="wd-count-sub">${cd.small}</div><div class="wd-date">${escHtml(cd.dateStr)}</div>`:''}${bits.length?`<div class="wd-bits">${bits.join(' · ')}</div>`:''}${w.notes?`<div class="wd-sum-notes">${escHtml(w.notes)}</div>`:''}</div><button class="btn-ghost" onclick="openWeddingDetails()">Edit</button></div>`
+    :`<button class="wd-summary wd-summary-empty" onclick="openWeddingDetails()"><div><div class="wd-sum-title">Set your wedding details</div><div class="wd-sum-hint">Date, venue and theme, with a countdown</div></div><span class="area-chev">→</span></button>`;
+  const cards=[{id:'inspo',name:'Inspiration',photos:w.inspo,meta:w.inspoMeta||{}}].concat(w.folders.map(f=>({id:f.id,name:f.name,photos:f.photos||[],meta:f}))).map(f=>{
+    const vis=wfVisible(f.photos).slice().sort((a,b)=>(b.liked?1:0)-(a.liked?1:0)),n=vis.length,imgs=vis.slice(0,4);
+    const cover=n?`<div class="wd-cover c${Math.min(imgs.length,4)}">${imgs.map(p=>`<img src="${p.img}" alt="" loading="lazy"/>`).join('')}</div>`:`<div class="wd-cover empty"><span>${escHtml((f.name||'?').charAt(0).toUpperCase())}</span></div>`;
+    const extra=[(f.meta.links||[]).length?`${f.meta.links.length} link${f.meta.links.length!==1?'s':''}`:'',f.meta.notes?'notes':''].filter(Boolean).join(' · ');
+    return`<button class="wd-folder" onclick="openWeddingFolder('${f.id}')">${cover}<div class="wd-folder-name">${escHtml(f.name)}</div><div class="wd-folder-meta">${n?n+' photo'+(n!==1?'s':''):'Empty'}${extra?' · '+extra:''}</div></button>`;
+  }).join('');
+  const oldBoards=userData('moodboards_wedding',[]);
+  const oldRow=oldBoards.length?`<button class="area-row wd-old" onclick="mbArea='other';showSection('moodboards')"><div><div class="area-row-title" style="font-size:22px">Earlier mood boards</div><div class="area-row-meta">${oldBoards.length} board${oldBoards.length!==1?'s':''} you made before folders</div></div><span class="area-chev">→</span></button>`:'';
+  return`<div class="section-rule"><div><div class="section-title">Wedding</div><div class="section-sub">Folders for every idea, photo and plan.</div></div>${quickNotesBtn('wedding')}</div>
+    ${summary}
+    <div class="st-h"><span>Folders</span><button class="btn-ghost" onclick="openNewWeddingFolder()">+ New folder</button></div>
+    <div class="wd-folders">${cards}<button class="wd-folder wd-new" onclick="openNewWeddingFolder()"><div class="wd-cover empty"><span>+</span></div><div class="wd-folder-name">New folder</div><div class="wd-folder-meta">Venue, flowers, dress…</div></button></div>
+    ${oldRow}`;
+}
+function renderWeddingFolder(w){
+  const f=wfRef(w,weddingFolder),m=f.meta,vis=wfVisible(f.photos),n=vis.length,links=m.links||[],view=m.view==='board'?'board':'grid';
+  const isInspo=f.id==='inspo';
+  let photosHtml;
+  if(!n)photosHtml=`<div class="wd-empty"><div>No photos in this folder yet.</div><button class="btn-solid sm" onclick="triggerCapture()">+ Add photos</button></div>`;
+  else if(view==='board'){
+    const tiles=vis.slice().sort((a,b)=>(b.liked?1:0)-(a.liked?1:0)).map(p=>`<div class="mood-tile mb-t" onclick="viewPhoto('${p.id}','${f.type}','${f.ctx}')"><img src="${p.img}" alt=""/>${p.kind?`<span class="kind-badge">${p.kind==='video'?'▶ Video':'File'}</span>`:''}</div>`).join('');
+    photosHtml=`<div class="mood-board mb-auto wd-board">${tiles}</div>`;
+  }else photosHtml=renderPhotoGrid(f.photos,f.type,f.ctx);
+  const linkRows=links.map(l=>`<div class="wd-link"><a href="${escHtml(l.url)}" target="_blank" rel="noopener"><span class="wd-link-title">${escHtml(l.title||l.url)}</span><span class="wd-link-url">${escHtml(l.url.replace(/^https?:\/\//i,''))}</span></a><button class="wd-link-x" aria-label="Remove link" onclick="wfRemoveLink('${l.id}')">×</button></div>`).join('');
+  return`<div class="section-rule"><div><div class="section-title">${escHtml(f.name)}</div><div class="section-sub">${n} photo${n!==1?'s':''}</div></div><div class="flex-center">${isInspo?'':`<button class="btn-ghost" onclick="openEditWeddingFolder('${f.id}')">Edit</button>`}<button class="btn-solid sm" onclick="triggerCapture()">+ Add photos</button></div></div>
+    <div class="st-h"><span>Photos</span>${n?`<span class="wd-seg"><button class="${view==='grid'?'active':''}" onclick="wfSetView('grid')">Grid</button><button class="${view==='board'?'active':''}" onclick="wfSetView('board')">Board</button></span>`:''}</div>
+    ${photosHtml}
+    ${n&&view==='grid'?`<div class="cl-hint">Press and hold a photo to move it to another folder.</div>`:''}
+    <div class="st-h"><span>Notes</span></div>
+    <textarea id="wf-notes" class="field-input" rows="4" placeholder="Ideas, supplier details, prices, things to ask…" onchange="wfSaveNotes()">${escHtml(m.notes||'')}</textarea>
+    <div class="st-h"><span>Links</span><button class="btn-ghost" onclick="openAddWeddingLink()">+ Add link</button></div>
+    ${linkRows||`<div class="cl-hint" style="margin-top:0">Save supplier sites, Pinterest boards or quotes for this folder.</div>`}`;
+}
+function openWeddingFolder(id){weddingFolder=id;showSection('wedding');}
+function wfSetView(v){const w=weddingData(),f=wfRef(w,weddingFolder);if(!f)return;f.meta.view=v;saveData('wedding',w);showSection('wedding');}
+function wfSaveNotes(){const w=weddingData(),f=wfRef(w,weddingFolder),el=document.getElementById('wf-notes');if(!f||!el)return;f.meta.notes=el.value.trim();saveData('wedding',w);}
+function openAddWeddingLink(){
+  openModal(`<div class="modal-head"><div class="modal-title">Add link</div><button class="modal-close" onclick="closeModal()">×</button></div><label class="field-label">Title</label><input id="wl-title" class="field-input" placeholder="e.g. Florist quote…"/><label class="field-label">Web address</label><input id="wl-url" class="field-input" type="url" placeholder="https://…"/><div class="modal-row"><button class="btn-solid sm" onclick="wfSaveLink()">Add</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);
+}
+function wfSaveLink(){
+  let url=document.getElementById('wl-url').value.trim();if(!url)return;
+  if(!/^https?:\/\//i.test(url))url='https://'+url;
+  const title=document.getElementById('wl-title').value.trim();
+  const w=weddingData(),f=wfRef(w,weddingFolder);if(!f)return;
+  f.meta.links=f.meta.links||[];f.meta.links.push({id:uid(),title,url});saveData('wedding',w);closeModal();showSection('wedding');
+}
+function wfRemoveLink(id){const w=weddingData(),f=wfRef(w,weddingFolder);if(!f)return;f.meta.links=(f.meta.links||[]).filter(l=>l.id!==id);saveData('wedding',w);showSection('wedding');}
+function openNewWeddingFolder(){
+  openModal(`<div class="modal-head"><div class="modal-title">New folder</div><button class="modal-close" onclick="closeModal()">×</button></div><label class="field-label">Folder name</label><input id="wf-name" class="field-input" placeholder="e.g. Flowers, Venue, Dress, Cake…" autocomplete="off"/><div class="modal-row"><button class="btn-solid sm" onclick="saveNewWeddingFolder()">Create</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);
+  setTimeout(()=>{const el=document.getElementById('wf-name');if(el)el.focus();},50);
+}
+function saveNewWeddingFolder(){
+  const name=document.getElementById('wf-name').value.trim();if(!name)return;
+  const w=weddingData(),id=uid();w.folders.push({id,name,notes:'',links:[],view:'grid',photos:[]});
+  if(!saveData('wedding',w))return;
+  weddingFolder=id;closeModal();showSection('wedding');
+}
+function openEditWeddingFolder(id){
+  const w=weddingData(),f=w.folders.find(x=>x.id===id);if(!f)return;
+  openModal(`<div class="modal-head"><div class="modal-title">Edit folder</div><button class="modal-close" onclick="closeModal()">×</button></div><label class="field-label">Folder name</label><input id="wf-name" class="field-input" value="${escHtml(f.name)}" autocomplete="off"/><div class="modal-row"><button class="btn-solid sm" onclick="saveWeddingFolderName('${id}')">Save</button><button class="btn-ghost danger" onclick="deleteWeddingFolder('${id}')">Delete folder</button></div>`);
+}
+function saveWeddingFolderName(id){
+  const name=document.getElementById('wf-name').value.trim();if(!name)return;
+  const w=weddingData(),f=w.folders.find(x=>x.id===id);if(f){f.name=name;saveData('wedding',w);}
+  closeModal();showSection('wedding');
+}
+function deleteWeddingFolder(id){
+  const w=weddingData(),f=w.folders.find(x=>x.id===id);if(!f)return;
+  const n=(f.photos||[]).length;
+  if(!confirm(`Delete "${f.name}"${n?` and its ${n} photo${n!==1?'s':''}`:''}? This can't be undone.`))return;
+  (f.photos||[]).forEach(p=>{idbDeletePhoto(p.id).catch(()=>{});deleteRemotePhoto(p.id).catch(()=>{});});
+  w.folders=w.folders.filter(x=>x.id!==id);saveData('wedding',w);
+  weddingFolder=null;closeModal();showSection('wedding');
+}
+function openWeddingDetails(){
+  const w=weddingData();
+  openModal(`<div class="modal-head"><div class="modal-title">Wedding details</div><button class="modal-close" onclick="closeModal()">×</button></div><label class="field-label">Wedding date</label><input id="w-date" class="field-input" type="date" value="${escHtml(w.wdate||'')}"/><label class="field-label">Venue</label><input id="w-venue" class="field-input" placeholder="The Grand Hotel…" value="${escHtml(w.venue||'')}"/><label class="field-label">Theme / aesthetic</label><input id="w-theme" class="field-input" placeholder="Garden romance…" value="${escHtml(w.theme||'')}"/><label class="field-label">Notes</label><textarea id="w-notes" class="field-input" rows="3">${escHtml(w.notes||'')}</textarea><div class="modal-row"><button class="btn-solid sm" onclick="saveWeddingDetails()">Save</button><button class="btn-ghost" onclick="closeModal()">Cancel</button></div>`);
+}
+function setWeddingTab(t){weddingFolder=null;showSection('wedding');}
+function saveWeddingDetails(){const w=weddingData();w.wdate=document.getElementById('w-date').value;w.venue=document.getElementById('w-venue').value.trim();w.theme=document.getElementById('w-theme').value.trim();w.notes=document.getElementById('w-notes').value.trim();saveData('wedding',w);closeModal();showSection('wedding');}
 
 // ── HONEYMOON ──
 let activeHoneymoonRoomId=null,honeymoonTab='inspo';
