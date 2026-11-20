@@ -1,9 +1,9 @@
 // MAISON · dayout.js — plain script, shares globals with the other files in js/ (load order is set in index.html).
 // ── DAYS OUT ──
-function dayOutPlansHead(){return`<div class="section-rule sub"><div><div class="section-title">Plans</div><div class="section-sub">Your own days out, with a budget and photos.</div></div><button class="btn-solid sm teal" onclick="openAddDayOutPlan()">+ Add plan</button></div>`;}
+function dayOutPlansHead(){return`<div class="section-rule sub"><div><div class="section-title">Plans</div></div><button class="btn-solid sm teal" onclick="openAddDayOutPlan()">+ Add plan</button></div>`;}
 function renderDayOut(main){
   const d=userData('dayout',{plans:[]});
-  if(!d.plans.length){main.innerHTML=`<div class="section-rule"><div><div class="section-title">Days out</div><div class="section-sub">Plan trips, days out &amp; adventures.</div></div></div>${evStripHTML()}${dayOutPlansHead()}<div class="empty"><div class="empty-icon">🗺️</div>No plans yet. Add your first day out!</div>`;return;}
+  if(!d.plans.length){main.innerHTML=`<div class="section-rule"><div><div class="section-title">Days out</div></div></div>${evStripHTML()}${dayOutPlansHead()}<div class="empty"><div class="empty-icon">🗺️</div>No plans yet. Add your first day out!</div>`;return;}
   if(!activeDayOutId||!d.plans.find(p=>p.id===activeDayOutId))activeDayOutId=d.plans[0].id;
   const plan=d.plans.find(p=>p.id===activeDayOutId);
   const photos=plan.photos||[],items=plan.items||[];
@@ -12,7 +12,7 @@ function renderDayOut(main){
   const tabs=d.plans.map((p,i)=>`<button class="room-tab${p.id===activeDayOutId?' active':''}" draggable="true" ondragstart="dragRoomStart(event,${i})" ondragover="dragRoomOver(event,${i})" ondragleave="dragRoomLeave(event)" ondrop="dropRoom(event,${i},'dayout')" ondragend="dragRoomEnd(event)" onclick="setActiveDayOut('${p.id}')"><span class="drag-handle">⋮⋮</span>${escHtml(p.name)}</button>`).join('');
   const sorted=doSorted(items);let prevEnd=-1;
   const itemsHtml=sorted.length?sorted.map(it=>{const s=doToMin(it.time),e=s==null?null:s+doMins(it),clash=s!=null&&prevEnd>s;if(e!=null)prevEnd=Math.max(prevEnd,e);const lk=safeLink(it.link);return`<div class="item-row do-row${clash?' clash':''}"><div class="do-time">${s==null?'<span class="do-notime">No time</span>':doFmt(s)+'<span>'+doFmt(e)+'</span>'}</div><div class="item-body"><span class="cat-badge">${escHtml(it.cat||'Other')}</span><div class="item-name">${escHtml(it.name)}</div>${it.notes?`<div class="of-meta">${escHtml(it.notes)}</div>`:''}${clash?'<div class="do-clash">Overlaps the activity before it</div>':''}${lk?`<a class="item-link" href="${escHtml(lk)}" target="_blank" rel="noopener">${escHtml(it.link)}</a>`:''}</div>${it.price?`<div class="item-price">£${it.price.toLocaleString(undefined,{minimumFractionDigits:2})}</div>`:''}<button class="btn-ghost" style="padding:4px 10px;font-size:12px" onclick="openDayOutItem('${plan.id}','${it.id}')">Edit</button><button class="icon-btn" title="Delete" onclick="deleteDayOutItem('${plan.id}','${it.id}')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg></button></div>`;}).join(''):`<div class="empty" style="padding:20px 0;font-size:13px">No activities yet. Add one, give it a time, and your day lays itself out here.</div>`;
-  main.innerHTML=`<div class="section-rule"><div><div class="section-title">Days out</div><div class="section-sub">Plan trips, days out &amp; adventures.</div></div></div>
+  main.innerHTML=`<div class="section-rule"><div><div class="section-title">Days out</div></div></div>
     ${evStripHTML()}
     ${dayOutPlansHead()}
     <div class="room-tabs-row">${tabs}</div>

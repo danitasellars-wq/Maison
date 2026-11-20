@@ -249,7 +249,7 @@ function evCardHTML(ev){
 }
 function evStripHTML(){
   const list=evData().events.slice().sort((a,b)=>(evDaysSorted(a)[0]||'9').localeCompare(evDaysSorted(b)[0]||'9'));
-  return`<div class="ev-strip"><div class="section-rule sub"><div><div class="section-title">Events</div><div class="section-sub">Trips and plans shared with other people.</div></div><button class="btn-solid sm teal" onclick="openAddEvent()">+ Add event</button></div>
+  return`<div class="ev-strip"><div class="section-rule sub"><div><div class="section-title">Events</div></div><button class="btn-solid sm teal" onclick="openAddEvent()">+ Add event</button></div>
     ${list.length?`<div class="ev-cards">${list.map(evCardHTML).join('')}</div>`:`<p class="cl-hint">Plan a trip or a party with other people. Choose the days, send a link, and everyone sees the same calendar.</p>`}</div>`;
 }
 function evPinnedHTML(){

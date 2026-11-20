@@ -32,8 +32,8 @@ function setActiveRoom(id){if(id!==activeRoomId)activeRoomTab='overview';activeR
 
 function renderHome(main){
   const home=userData('home',{rooms:[]});
-  if(homeView==='floorplan'){main.innerHTML=`<div class="section-rule"><div><div class="section-title">Floor plan</div><div class="section-sub">Visualise your space.</div></div>${quickNotesBtn('home')}</div>${renderFloorPlanView()}`;return;}
-  if(!home.rooms.length){main.innerHTML=`<div class="section-rule"><div><div class="section-title">Rooms</div><div class="section-sub">Add rooms to start planning.</div></div><div class="flex-center">${quickNotesBtn('home')}<button class="btn-solid sm" onclick="openAddRoom()">+ Room</button></div></div><div class="empty">No rooms yet.</div>`;return;}
+  if(homeView==='floorplan'){main.innerHTML=`<div class="section-rule"><div><div class="section-title">Floor plan</div></div>${quickNotesBtn('home')}</div>${renderFloorPlanView()}`;return;}
+  if(!home.rooms.length){main.innerHTML=`<div class="section-rule"><div><div class="section-title">Rooms</div></div><div class="flex-center">${quickNotesBtn('home')}<button class="btn-solid sm" onclick="openAddRoom()">+ Room</button></div></div><div class="empty">No rooms yet.</div>`;return;}
   if(!activeRoomId||!home.rooms.find(r=>r.id===activeRoomId))activeRoomId=home.rooms[0].id;
   const room=home.rooms.find(r=>r.id===activeRoomId);
   const tabs=home.rooms.map((r,i)=>`<button class="room-tab${r.id===activeRoomId?' active':''}" draggable="true" ondragstart="dragRoomStart(event,${i})" ondragover="dragRoomOver(event,${i})" ondragleave="dragRoomLeave(event)" ondrop="dropRoom(event,${i},'home')" ondragend="dragRoomEnd(event)" onclick="setActiveRoom('${r.id}')"><span class="drag-handle">⋮⋮</span>${r.name}</button>`).join('');
@@ -51,7 +51,7 @@ function renderHome(main){
   } else {
     content=renderRoomMoodboard(room);
   }
-  main.innerHTML=`<div class="section-rule"><div><div class="section-title">Rooms</div><div class="section-sub">Track every room, budget &amp; piece of furniture.</div></div><div class="flex-center">${quickNotesBtn('home')}<button class="btn-solid sm" onclick="openAddRoom()">+ Room</button></div></div><div class="room-tabs-row">${tabs}</div><div class="room-sub-tabs">${subTabs}</div>${content}`;
+  main.innerHTML=`<div class="section-rule"><div><div class="section-title">Rooms</div></div><div class="flex-center">${quickNotesBtn('home')}<button class="btn-solid sm" onclick="openAddRoom()">+ Room</button></div></div><div class="room-tabs-row">${tabs}</div><div class="room-sub-tabs">${subTabs}</div>${content}`;
 }
 
 function renderItemList(items,roomId){

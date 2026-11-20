@@ -40,7 +40,7 @@ function renderWeddingHome(w){
   }).join('');
   const oldBoards=userData('moodboards_wedding',[]);
   const oldRow=oldBoards.length?`<button class="area-row wd-old" onclick="mbArea='other';showSection('moodboards')"><div><div class="area-row-title" style="font-size:22px">Earlier mood boards</div><div class="area-row-meta">${oldBoards.length} board${oldBoards.length!==1?'s':''} you made before folders</div></div><span class="area-chev">→</span></button>`:'';
-  return`<div class="section-rule"><div><div class="section-title">Wedding</div><div class="section-sub">Folders for every idea, photo and plan.</div></div>${quickNotesBtn('wedding')}</div>
+  return`<div class="section-rule"><div><div class="section-title">Wedding</div></div>${quickNotesBtn('wedding')}</div>
     ${summary}
     <div class="st-h"><span>Folders</span><button class="btn-ghost" onclick="openNewWeddingFolder()">+ New folder</button></div>
     <div class="wd-folders">${cards}<button class="wd-folder wd-new" onclick="openNewWeddingFolder()"><div class="wd-cover empty"><span>+</span></div><div class="wd-folder-name">New folder</div><div class="wd-folder-meta">Venue, flowers, dress…</div></button></div>
@@ -63,7 +63,7 @@ function renderWeddingFolder(w){
     <div class="st-h"><span>Notes</span></div>
     <textarea id="wf-notes" class="field-input" rows="4" placeholder="Ideas, supplier details, prices, things to ask…" onchange="wfSaveNotes()">${escHtml(m.notes||'')}</textarea>
     <div class="st-h"><span>Links</span><button class="btn-ghost" onclick="openAddWeddingLink()">+ Add link</button></div>
-    ${linkRows||`<div class="cl-hint" style="margin-top:0">Save supplier sites, Pinterest boards or quotes for this folder.</div>`}`;
+    ${linkRows}`;
 }
 function openWeddingFolder(id){weddingFolder=id;showSection('wedding');}
 function wfSetView(v){const w=weddingData(),f=wfRef(w,weddingFolder);if(!f)return;f.meta.view=v;saveData('wedding',w);showSection('wedding');}
@@ -140,7 +140,7 @@ function renderHoneymoon(main){
   } else {
     content=`<div class="budget-block"><div class="budget-row"><div><div class="budget-label">Total budget</div><div class="budget-amount${over?' over':''}">£${spent.toLocaleString(undefined,{minimumFractionDigits:2})} / £${budget.toLocaleString()}</div></div><button class="btn-ghost" onclick="editOverallHoneymoonBudget()">Edit</button></div><div class="bar-track"><div class="bar-fill${over?' over':''}" style="width:${pct}%"></div></div><div class="bar-note${over?' over':''}">${over?'Over budget':'Remaining: £'+(budget-spent).toLocaleString(undefined,{minimumFractionDigits:2})}</div></div><div style="margin-top:18px">${h.rooms.map(r=>{const rs=(r.items||[]).reduce((s,i)=>s+(i.price||0),0);return`<div class="item-row"><div class="item-body"><div class="item-name">${r.name}</div><div class="item-store">Budget: £${(r.budget||0).toLocaleString()}</div></div><div class="item-price">£${rs.toLocaleString(undefined,{minimumFractionDigits:2})}</div></div>`;}).join('')}</div>`;
   }
-  main.innerHTML=`<div class="section-rule"><div><div class="section-title">Honeymoon</div><div class="section-sub">Plan your perfect getaway.</div></div>${quickNotesBtn('honeymoon')}</div><div class="room-tabs-row">${tabs}</div>${content}`;
+  main.innerHTML=`<div class="section-rule"><div><div class="section-title">Honeymoon</div></div>${quickNotesBtn('honeymoon')}</div><div class="room-tabs-row">${tabs}</div>${content}`;
 }
 function setHoneymoonTab(t){honeymoonTab=t;showSection('honeymoon');}
 function setActiveHoneymoonRoom(id){activeHoneymoonRoomId=id;showSection('honeymoon');}
@@ -158,7 +158,7 @@ function saveHoneymoonItem(roomId){const name=document.getElementById('hitem-nam
 let recipeFilter='All';
 function renderRecipes(main){
   const r=userData('recipes',{items:[]});const allTags=['All',...new Set(r.items.flatMap(i=>i.tags||[]))];const filtered=recipeFilter==='All'?r.items:r.items.filter(i=>(i.tags||[]).includes(recipeFilter));
-  main.innerHTML=`<div class="section-rule"><div><div class="section-title">Recipes</div><div class="section-sub">Save photos, notes &amp; full recipes.</div></div><div class="flex-center">${quickNotesBtn('recipes')}<button class="btn-solid sm" onclick="openAddRecipe()">+ Add recipe</button></div></div><div class="tag-row">${allTags.map(t=>`<button class="tag-pill${recipeFilter===t?' active':''}" onclick="setRecipeFilter('${t}')">${t}</button>`).join('')}</div>${filtered.length?`<div class="recipe-grid">${filtered.map(item=>{
+  main.innerHTML=`<div class="section-rule"><div><div class="section-title">Recipes</div></div><div class="flex-center">${quickNotesBtn('recipes')}<button class="btn-solid sm" onclick="openAddRecipe()">+ Add recipe</button></div></div><div class="tag-row">${allTags.map(t=>`<button class="tag-pill${recipeFilter===t?' active':''}" onclick="setRecipeFilter('${t}')">${t}</button>`).join('')}</div>${filtered.length?`<div class="recipe-grid">${filtered.map(item=>{
     const summary=item.text?`<div class="recipe-text">${escHtml(item.text.slice(0,180))}${item.text.length>180?'…':''}</div>`
       :((item.ingredients&&item.ingredients.length)?`<div class="recipe-text">${item.ingredients.length} ingredient${item.ingredients.length!==1?'s':''}${item.method&&item.method.length?` · ${item.method.length} step${item.method.length!==1?'s':''}`:''}</div>`:'');
     return`<div class="recipe-card">${item.img?`<img class="recipe-img" src="${item.img}" loading="lazy" onclick="viewRecipe('${item.id}')"/>`:''}<div class="recipe-body">${(item.tags||[]).map(t=>`<span class="recipe-tag">${escHtml(t)}</span>`).join('')}<div class="recipe-title">${escHtml(item.title)}</div>${summary}<div class="flex-center" style="margin-top:10px"><button class="btn-ghost" style="font-size:12px;padding:4px 12px" onclick="viewRecipe('${item.id}')">View</button><button class="btn-ghost danger" style="font-size:12px;padding:4px 12px" onclick="deleteRecipe('${item.id}')">Delete</button></div></div></div>`;

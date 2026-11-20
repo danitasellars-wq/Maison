@@ -131,7 +131,7 @@ function areaRows(a){
 }
 function renderArea(main,a){
   const info=AREAS[a];if(!info){showSection('dashboard');return;}
-  main.innerHTML=`<div class="section-rule"><div><div class="section-title">${info.name}</div><div class="section-sub">${info.sub}</div></div></div>
+  main.innerHTML=`<div class="section-rule"><div><div class="section-title">${info.name}</div></div></div>
     <div class="area-list">${areaRows(a).map(r=>`<button class="area-row" onclick="${r.go}"><div><div class="area-row-title">${r.title}</div><div class="area-row-meta">${r.meta}</div></div><span class="area-chev">→</span></button>`).join('')}</div>`;
 }
 

@@ -3,7 +3,7 @@
 function renderMusic(main){
   const m=userData('music',{playlists:[]});
   if(!m.playlists.length){
-    main.innerHTML=`<div class="section-rule"><div><div class="section-title">Music</div><div class="section-sub">Your favourite songs &amp; playlists.</div></div><div class="flex-center">${quickNotesBtn('music')}<button class="btn-solid sm" onclick="openAddPlaylist()">+ Playlist</button></div></div><div class="empty"><div class="empty-icon">🎵</div>No playlists yet. Create your first one!</div>`;
+    main.innerHTML=`<div class="section-rule"><div><div class="section-title">Music</div></div><div class="flex-center">${quickNotesBtn('music')}<button class="btn-solid sm" onclick="openAddPlaylist()">+ Playlist</button></div></div><div class="empty"><div class="empty-icon">🎵</div>No playlists yet. Create your first one!</div>`;
     return;
   }
   if(!activeMusicPlaylistId||!m.playlists.find(p=>p.id===activeMusicPlaylistId))activeMusicPlaylistId=m.playlists[0].id;
@@ -23,7 +23,7 @@ function renderMusic(main){
       <button class="icon-btn" title="Delete" onclick="deleteSong('${pl.id}','${s.id}')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg></button>
     </div>
   </div>`;}).join(''):`<div class="empty" style="padding:20px 0;font-size:13px">No songs yet — add your first!</div>`;
-  main.innerHTML=`<div class="section-rule"><div><div class="section-title">Music</div><div class="section-sub">Your favourite songs &amp; playlists.</div></div><div class="flex-center">${quickNotesBtn('music')}<button class="btn-solid sm" onclick="openAddPlaylist()">+ Playlist</button></div></div>
+  main.innerHTML=`<div class="section-rule"><div><div class="section-title">Music</div></div><div class="flex-center">${quickNotesBtn('music')}<button class="btn-solid sm" onclick="openAddPlaylist()">+ Playlist</button></div></div>
     <div class="room-tabs-row">${tabs}</div>
     <div class="flex-between mb14" style="padding-top:16px">
       <div style="font-family:var(--sans);font-size:16px;color:var(--muted)">${escHtml(pl.name)} <span style="font-size:12px;font-weight:400;">${songs.length} song${songs.length!==1?'s':''}</span></div>

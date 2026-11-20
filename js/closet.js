@@ -421,7 +421,7 @@ function clMiniBoard(c,o){
   return`<div class="mini-board">${(o.items||[]).map((x,i)=>{const it=clItem(c,x.itemId);return it?`<img src="${it.thumb}" alt="" style="left:${x.x}%;top:${x.y}%;width:${x.w}%;z-index:${i+1}"/>`:'';}).join('')}</div>`;
 }
 function clOutfitsHTML(c){
-  const head=`<div class="flex-between mb14"><div class="section-sub" style="margin:0">Build flat-lay outfits from your closet.</div><button class="btn-solid sm" onclick="clNewOutfit()">+ New outfit</button></div>`;
+  const head=`<div class="flex-between mb14"><div></div><button class="btn-solid sm" onclick="clNewOutfit()">+ New outfit</button></div>`;
   if(!c.items.length)return head+`<div class="empty">Add some clothes in <b>Wardrobe</b> first, then build outfits here.</div>`;
   if(!c.outfits.length)return head+`<div class="empty">No outfits yet.<br/>Tap <b>+ New outfit</b>, or try the <b>Shuffle</b> tab.</div>`;
   return head+`<div id="of-filters">${clOutfitFiltersHTML()}</div><div id="of-list">${clOutfitGridHTML(c)}</div>`;
@@ -643,7 +643,7 @@ function clShuffleInner(c){
 }
 function clShuffleHTML(c){
   if(!c.items.length)return`<div class="empty">Add some tops, bottoms and shoes in <b>Wardrobe</b>, then come back to shuffle them together.</div>`;
-  return`<div class="flex-between mb14"><div class="section-sub" style="margin:0">Spin tops, bottoms and shoes into a surprise look.</div><button class="tag-pill${shuffleState.favOnly?' active':''}" onclick="clShuffleFav()">Favourites only</button></div>
+  return`<div class="flex-between mb14"><div></div><button class="tag-pill${shuffleState.favOnly?' active':''}" onclick="clShuffleFav()">Favourites only</button></div>
     <div id="sh-area">${clShuffleInner(c)}</div>
     <div class="modal-row" style="justify-content:center;margin-top:16px"><button class="btn-solid sm" onclick="clShuffleGo()">Shuffle</button><button class="btn-ghost" onclick="clShuffleSave(false)">Save as outfit</button><button class="btn-ghost" onclick="clShuffleSave(true)">Save &amp; wear today</button></div>`;
 }
@@ -722,7 +722,7 @@ function clPackProgress(c,p){
   return{done:its.filter(e=>chk[e.id]).length+cu.filter(x=>x.done).length,tot:its.length+cu.length,pieces:its.length};
 }
 function clPackingHTML(c){
-  const head=`<div class="flex-between mb14"><div class="section-sub" style="margin:0">Trips &amp; seasonal capsules — add outfits and the suitcase list writes itself.</div><button class="btn-solid sm" onclick="clNewPackModal()">+ New list</button></div>`;
+  const head=`<div class="flex-between mb14"><div></div><button class="btn-solid sm" onclick="clNewPackModal()">+ New list</button></div>`;
   if(!c.packing.length)return head+`<div class="empty">No packing lists yet.</div>`;
   return head+`<div class="of-grid">${c.packing.map(p=>{const pr=clPackProgress(c,p);return`<div class="of-card" style="cursor:pointer" onclick="clOpenPack('${p.id}')"><div class="of-body"><div class="of-tag">${p.type==='capsule'?'Capsule':'Trip'}</div><div class="of-name">${escHtml(p.name)}</div><div class="of-meta">${(p.outfitIds||[]).length} outfit${(p.outfitIds||[]).length!==1?'s':''} · ${pr.pieces} piece${pr.pieces!==1?'s':''}</div><div class="st-bar-track" style="margin:8px 0 4px"><div class="st-bar-fill green" style="width:${pr.tot?pr.done/pr.tot*100:0}%"></div></div><div class="of-meta">${pr.done} of ${pr.tot} packed</div></div></div>`;}).join('')}</div>`;
 }
